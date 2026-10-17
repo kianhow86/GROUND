@@ -575,11 +575,11 @@ const FREE_LIMITS={sessions:40,replies:8}; // monthly sessions · daily replies 
 const CHANGELOG=[
   {v:'1.1',d:'2026-10-17',items:[
     'A Hub button now floats at the bottom of every screen, so one tap takes you home from anywhere.',
-    'Settings is redesigned: clear cards for You, Coaching, Usage & codes, Appearance, Sync and Your data.',
+    'Settings is redesigned: clear cards for Coaching, Usage & codes, Appearance, Sync and Your data.',
     'Tell K about you: your career stage, field, age range, what’s hardest and your biggest problem. K uses it in every piece of coaching.',
     'When K can’t answer, the screen now shows a short detail line, and Help me reply retries once on its own.',
     'Coaching: you can turn K’s spoken voice off.',
-    'Hub: K’s notebook and your profile now sit at the top, next to Settings. A dot shows until your profile is filled in.'
+    'Hub: K’s notebook and your profile (the person icon) now sit at the top, next to Settings. A dot shows until your profile is filled in.'
   ]},
   {v:'1.0',d:'2026-10-17',items:[
     'Ground is live: Help me reply, Practice a talk, Pitch it and Quick answer, all coached by K.',
@@ -1821,7 +1821,6 @@ function renderSettings(app){
   const u=_usage(),th=(window.__themePref?window.__themePref():'system'),done=_profileDone();
   let h='<main class="scr" style="--gap:12px"><div class="bar"><button class="ibtn r" data-go="hub" aria-label="Back">'+ic('back')+'</button><h1 class="h1 xl" style="font-size:30px">Settings</h1></div>';
   h+='<button class="st-row" data-sp="about"><span class="st-ic">'+kav('m')+'</span><span class="st-t"><b>About</b><span>Kian How · v'+APP_VERSION+'</span></span>'+ic('chev','s chev')+'</button>';
-  h+=_stRow('you',ic('people'),'#6447D6','You',_profileLine(),done<4?' <em class="st-new">'+(done?'ADD MORE':'START HERE')+'</em>':'');
   h+=_stRow('coaching',ic('quick'),'#C2457A','Coaching',[_coachLang().id==='auto'?'Auto':_coachLang().label,_nbOn()?'Remembers past sessions':'Memory off',S.aiConfig&&S.aiConfig.enabled?'AI on':'AI off'].join(' · '));
   h+=_stRow('usage',ic('clock'),'#0E8C8C','Usage & codes',PAYWALL_ON?S.credits+' sessions left':'This month: '+u.sessions+' sessions · replies today: '+u.replies);
   h+=_stRow('look',ic('settings'),'#1F7FA8','Appearance',{light:'Light',dark:'Dark',system:'Same as phone'}[th]||'Same as phone');
