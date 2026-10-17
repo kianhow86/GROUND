@@ -2343,13 +2343,41 @@ const TT_REAL={
   meeting:{name:'Meetings',sub:'Speak up and be heard',free:true,secs:[30,90],prompts:['Your manager turns to you: “You’ve been quiet. What do you think?”','Give a 30-second update on your project at the weekly team meeting.','The team is about to agree on a plan you think has a gap. Speak up.','The discussion has gone in circles for twenty minutes. Sum it up and suggest a next step.','You’re asked for your view on something outside your expertise.','Two colleagues disagree, and the chair asks you to weigh in.','You need more time on a deadline. Raise it in the meeting.','Disagree with your manager’s proposal, politely, in front of the team.','Someone just presented your idea as theirs. Respond in the meeting.','Close the meeting: recap what was decided and who does what.']},
   tough:{name:'Tough question',sub:'Stay composed',free:true,secs:[45,90],prompts:['Your manager, in your weekly one-on-one: “Your project is two weeks late. What happened?”','A client, after you sent your quote: “Your price is too high.”','The finance director, looking at your report: “Why should we trust your numbers?”','Someone in the audience, after your talk: “I don’t think that’s true.”','Your boss’s boss, at the team lunch: “What would you do differently if you ran this team?”','Your boss, in front of the whole team: “Why wasn’t this caught earlier?”','A senior colleague, when you ask to lead the new project: “You’ve never done this before. Why should we give you the lead?”','A colleague, right after you share your idea: “That won’t work here.”','A customer, on a support call: “This is the third time it’s broken. Why should I stay with you?”']},
   disagree:{name:'Disagree with your boss',sub:'Push back without a fight',free:true,grp:'conflict',secs:[30,75],prompts:[
-    'Your manager, in the team meeting: “So we’re agreed: we launch Friday and fix bugs after.” You think it’s a mistake.','Your boss: “I want the report in this format from now on.” The new format doubles your work for no clear reason.','Your manager, in your one-on-one: “Let’s cut the testing phase to save a week.”','Your boss, about your idea: “It’s too risky. Let’s just do what we did last year.”','Your manager: “I’ve promised the client we’ll deliver in two weeks.” Your team needs four.','Your boss rewrote your proposal before sending it, and you think the new version is weaker. She asks: “Happy with it?”','Your manager: “I’ve decided to move Mia onto your project. She starts Monday.” Nobody asked you.','Your team lead, after a client call: “Just say yes to whatever they ask. We can’t lose them.”']},
+    {who:'Your manager · team meeting',moment:'She’s about to lock the launch date. You think it’s too early.',line:'“So we’re agreed: we launch Friday and fix the bugs after.”'},
+    {who:'Your boss · his office',moment:'He wants a new report format. It doubles your work and you can’t see why.',line:'“From now on, I want the weekly report in this format.”'},
+    {who:'Your manager · one-on-one',moment:'She wants to cut testing to hit the date.',line:'“Let’s cut the testing phase. We need that week back.”'},
+    {who:'Your boss · after your pitch',moment:'You proposed a new approach. He likes the old one.',line:'“It’s too risky. Let’s just do what we did last year.”'},
+    {who:'Your manager · after a client call',moment:'He promised the client two weeks. Your team needs four.',line:'“I told them two weeks. You can make that work, right?”'},
+    {who:'Your boss · by your desk',moment:'She rewrote your proposal before sending it. You think hers is weaker.',line:'“I tightened up your proposal and sent it. Happy with it?”'},
+    {who:'Your team lead · after a client call',moment:'The client keeps adding requests, and he wants to agree to all of them.',line:'“Just say yes to whatever they ask. We can’t lose them.”'},
+    {who:'Your manager · Friday afternoon',moment:'He moved a colleague onto your project without asking you.',line:'“I’ve put Mia on your project. She starts Monday.”'}]},
   conflict:{name:'Clash with a teammate',sub:'Co-workers, team, friends',free:true,grp:'conflict',secs:[30,75],prompts:[
-    'In the team meeting, your colleague presents the idea you shared with them last week, as theirs. Afterward they say: “Great meeting, right?”','A teammate, the third time this month: “Sorry, I need one more day on my part.” Your deadline depends on it.','A co-worker, in the group chat for everyone to see: “Whoever made these slides didn’t check the numbers.” It was you.','A colleague keeps interrupting you in meetings. After today’s, they say: “You okay? You seemed quiet.”','Your teammate: “I redid your section last night. Mine’s cleaner, so I swapped it in.”','A friend you work with: “You never back me up in front of the boss.”','A close friend, after you canceled plans twice: “Honestly, it feels like you don’t make time for me anymore.”','A teammate, when you ask for their part: “I’m swamped. Can’t you just do it? You’re faster anyway.”']},
+    {who:'Jun · your teammate',moment:'He just presented your idea in the meeting as his own, and it went down well.',line:'“Great meeting, right? I think they loved the idea.”'},
+    {who:'Wen · your teammate',moment:'Her part is late for the third time this month. Your deadline depends on it.',line:'“Sorry, I need one more day on my part.”'},
+    {who:'Daniel · a co-worker',moment:'He criticized your slides in the group chat, in front of everyone.',line:'“Whoever made these slides didn’t check the numbers.”'},
+    {who:'Sophie · a colleague',moment:'She interrupts you in every meeting. Today was no different.',line:'“You okay? You seemed quiet in there.”'},
+    {who:'Kevin · your teammate',moment:'He redid your section overnight without asking.',line:'“I redid your section last night. Mine’s cleaner, so I swapped it in.”'},
+    {who:'Aisha · a friend you work with',moment:'She thinks you don’t stand up for her at work.',line:'“You never back me up in front of the boss.”'},
+    {who:'Mei · a close friend',moment:'You’ve canceled plans with her twice this month.',line:'“Honestly, it feels like you don’t make time for me anymore.”'},
+    {who:'Marco · your teammate',moment:'You asked for his part of the project. He wants you to do it.',line:'“I’m swamped. Can’t you just do it? You’re faster anyway.”'}]},
   feedback:{name:'Hard feedback',sub:'Say what they need to hear',free:true,grp:'conflict',secs:[30,75],prompts:[
-    'Your junior colleague’s draft has the same mistakes you pointed out last week. They ask: “Is it okay to send?”','A teammate’s presentation ran 20 minutes over and lost the room. They ask you: “How did I do?”','Someone on your team keeps arriving late to client calls. You’re having coffee with them.','A friend shows you the business plan they’re about to put their savings into: “Be honest, what do you think?”','A colleague’s jokes in meetings are making a new hire uncomfortable. You’re alone with them after lunch.','Your freelancer delivered work that’s fine but not what you briefed. They message: “Happy with it?”','A peer asks you: “Why do you think I didn’t get the promotion?” You have a good idea why.','Your intern: “I think I nailed the client email!” It was too casual for this client.']},
+    {who:'Leo · your junior colleague',moment:'His draft has the same mistakes you pointed out last week.',line:'“Is it okay to send this to the client?”'},
+    {who:'Grace · your teammate',moment:'Her presentation ran 20 minutes over and lost the room.',line:'“So, how did I do?”'},
+    {who:'Tom · on your team',moment:'He keeps joining client calls late. You’re having coffee with him.',line:'“Hey, you wanted to talk?”'},
+    {who:'Ivy · a friend',moment:'She’s about to put her savings into a business plan with a big hole in it.',line:'“Be honest. What do you think of the plan?”'},
+    {who:'Ben · a colleague',moment:'His jokes in meetings are making a new hire uncomfortable. You’re alone after lunch.',line:'“Ha, that meeting was fun, right?”'},
+    {who:'Nina · your freelancer',moment:'Her work is fine, but it isn’t what you briefed.',line:'“Here it is! Happy with it?”'},
+    {who:'Sam · a peer',moment:'He didn’t get the promotion, and you have a good idea why.',line:'“Why do you think I didn’t get it?”'},
+    {who:'Zoe · your intern',moment:'Her client email was far too casual for this client.',line:'“I think I nailed the client email!”'}]},
   sayno:{name:'Say no',sub:'Without burning the bridge',free:true,grp:'conflict',secs:[20,60],prompts:[
-    'Your manager, at 5 pm: “Can you take this on as well? It needs to be done by Monday.” Your week is already full.','A colleague: “Could you cover my presentation tomorrow? You know the material.” You don’t, really.','A friend: “You’re a designer, right? Could you do my wedding invitations? Should be quick.”','Your boss: “I’ve put you down to lead the office party committee. Great, right?”','A client you like, informally: “While you’re at it, could you also redo the website copy?” It isn’t in the contract.','A co-worker: “Can I borrow you for an hour? Just a quick favor.” It’s the third this week.','A former classmate: “Can you introduce me to your boss? I need a job.” You don’t know their work.','Your team lead: “We need someone to work this weekend. You don’t have kids, so…”']},
+    {who:'Your manager · 5 pm',moment:'Your week is already full.',line:'“Can you take this on as well? It needs to be done by Monday.”'},
+    {who:'Kevin · a colleague',moment:'He wants you to cover his presentation tomorrow. You barely know the material.',line:'“Could you cover my presentation tomorrow? You know the stuff.”'},
+    {who:'Ivy · a friend',moment:'She’s getting married and knows you’re a designer.',line:'“Could you do our wedding invitations? Should be quick.”'},
+    {who:'Your boss · in the corridor',moment:'He’s signed you up for something you don’t have time for.',line:'“I’ve put you down to run the office party committee. Great, right?”'},
+    {who:'Lena · a client you like',moment:'It isn’t in the contract.',line:'“While you’re at it, could you also redo the website copy?”'},
+    {who:'Jun · a co-worker',moment:'It’s the third “quick favor” this week.',line:'“Can I borrow you for an hour? Just a quick favor.”'},
+    {who:'Alex · a former classmate',moment:'You don’t know their work at all.',line:'“Can you introduce me to your boss? I really need a job.”'},
+    {who:'Your team lead · Thursday',moment:'Someone has to work this weekend.',line:'“We need someone this weekend. You don’t have kids, so…”'}]},
   proposal:{name:'Proposal',sub:'Win the job',grp:'client',secs:[60,120],prompts:[
     {c:'Ms Wang · runs three bakeries',job:'A new website with online ordering',pos:'Your offer: site + ordering in 6 weeks, ¥28,000, two rounds of changes',line:'“Okay, walk me through your proposal.”'},
     {c:'Mr Liu · owns a chain of four gyms',job:'A 3-month social media campaign',pos:'Your offer: 36 posts, 6 short videos, monthly report, ¥45,000',line:'“You have five minutes. Convince me it’s worth the budget.”'},
@@ -2440,6 +2468,14 @@ function _rwFuSecs(k){return k==='smalltalk'?[20,45]:[30,60];}
 function _rwFree(k){const sc=TT_REAL[k||RW.scenario];return !!(sc&&sc.free);}
 function _ttRealTime(sc){const [a,b]=sc.secs;if(a%60===0&&b%60===0)return (a/60)+'–'+(b/60)+' min';if(b<=60)return a+'–'+b+' sec';const m=x=>x%60?Math.floor(x/60)+':'+String(x%60).padStart(2,'0'):String(x/60);return (a<60?a+' sec':m(a)+' min')+'–'+m(b)+' min';}
 const RW_PEOPLE={
+  interview:['friendly but thorough','busy and a little impatient','warm, asks follow-ups','dry and hard to read','sharp, tests every claim'],
+  pitch:['busy, gives you one minute','curious but skeptical','friendly, hard to impress','numbers-first, wants proof'],
+  meeting:['busy, fair, short on time','skeptical of new ideas','supportive but wants specifics','a little impatient'],
+  tough:['firm and direct','frustrated, but fair','calm and very precise','under pressure from above'],
+  disagree:['confident, under pressure from above','reasonable but already decided','busy, hates surprises','open, if you bring facts'],
+  conflict:['a bit defensive, means well','stressed and overloaded','thinks they did nothing wrong','hurt, and showing it'],
+  feedback:['hoping for praise','a little defensive','eager to improve','tired and stretched thin'],
+  sayno:['friendly and persistent','assumes you’ll say yes','means well, a bit pushy','in a real bind'],
   smalltalk:['Lena, 29, works in logistics, came with a friend, a bit tired after work but friendly','Jun, 33, a nurse on night shifts, dry sense of humor','Sophie, 27, product designer, just moved to the city, a little shy at first','Marco, 35, runs a small coffee roastery, chatty once warmed up','a colleague from another department, friendly, in a bit of a hurry','a fellow guest, relaxed, happy to chat','someone senior, polite and a little reserved'],
   intro:['an operations manager at a logistics company, friendly, mildly curious','a freelance photographer, relaxed and chatty','a senior engineer, polite, a bit reserved','a startup founder, fast-talking, always networking','a parent, warm, a little distracted'],
   client:['friendly, but haggles out of habit','cold, polite and by the book','enthusiastic and talks fast','busy, decisive, hates long explanations','a bit anxious about money, double-checks everything','skeptical of freelancers, cares about quality','friendly, but counts every yuan']
@@ -2511,7 +2547,16 @@ function ttpOfflineReal(key){
   const seen=new Set(_ttSeenList());
   let fresh=sc.prompts.filter(q=>!seen.has(L(q)));
   if(!fresh.length){const l=_ttSeenList();for(let i=l.length-1;i>=0;i--)if(lines.includes(l[i]))l.splice(i,1);fresh=sc.prompts.slice();}
-  const it=_pick(fresh);RW.item=typeof it==='string'?null:it;return L(it);
+  const it=_pick(fresh);
+  if(typeof it!=='string'){RW.item=it;return it.line;}
+  // Narrated bank lines (“Your manager, in your one-on-one: “…””): split into who, the moment and the spoken line
+  const m=String(it).match(/^([^“:]{4,90}):\s*(“[^”]+”)\s*(.*)$/);
+  if(m&&(key==='tough'||key==='meeting')){const pre=m[1].trim(),ci=pre.indexOf(',');
+    const who=(ci>0?pre.slice(0,ci):pre).trim(),rest=(ci>0?pre.slice(ci+1):'').trim();
+    const moment=[rest?rest.charAt(0).toUpperCase()+rest.slice(1)+'.':'',m[3].trim()].filter(Boolean).join(' ');
+    if(/^(Your|A|An|The|Someone|At|In|On)\b/.test(who)&&who.length<50){RW.item={who:who.replace(/^(At|In|On) .*/,RW_ROLE[key]||'They'),moment:moment||(who.match(/^(At|In|On) /)?who+'.':''),line:m[2]};return m[2];}
+  }
+  RW.item=null;return it;
 }
 // ── The scene (AI when on, bank otherwise) ────────────────────────────────
 async function rwFetchScene(){
@@ -2741,7 +2786,9 @@ function renderReal(app){
   }else if(ph==='brief'){
     const b=_rwBriefOk()?RW.brief:null,cl=_rwIsClient();
     h+=gBar(sc.name,'rw-setup',_rwDots());
-    h+='<div class="g-block"><div class="g-kick">Who you’re talking to</div><div class="g-big">'+escHtml(b?(b.c?b.c.replace(' · ',' ')+'. '+String(RW.persona||'').replace(/^./,c=>c.toUpperCase())+'.':b.who+'. '+b.moment):RW.who||RW_ROLE[RW.scenario])+'</div></div>';
+    {const cap=s=>String(s||'').replace(/^./,c=>c.toUpperCase());
+     const big=b?(b.c?b.c.replace(' · ',' ')+'. '+cap(RW.persona)+'.':b.who.replace(' · ',', ')):(RW_ROLE[RW.scenario]||'The other person')+(RW.persona?'. '+cap(RW.persona)+'.':'');
+     h+='<div class="g-block"><div class="g-kick">Who you’re talking to</div><div class="g-big">'+escHtml(big)+'</div>'+(b&&b.who&&b.moment?'<p style="margin-top:8px;font-size:16px;line-height:1.45;font-weight:600">'+escHtml(b.moment)+'</p>':'')+'</div>';}
     if(b&&b.c)h+='<div class="g-card tight"><div class="g-row"><span class="t"><b>The job</b><span>'+escHtml(b.job)+'</span></span></div><div class="g-row"><span class="t"><b>'+escHtml(RW_POS_LBL[RW.scenario]||'Your position')+'</b><span>'+escHtml(b.pos)+'</span></span></div></div>';
     if(RW.fromCase)h+='<div class="g-block p-lav"><div class="g-kick">From the library · try the principle</div><div style="font-size:16px;font-weight:700;line-height:1.35">'+escHtml(RW.fromCase.principle)+'</div></div>';
     if(RW.prevFix)h+='<div class="g-block p-lav"><div class="g-kick">Last time, K said</div><div style="font-size:16px;font-weight:700;line-height:1.35">'+escHtml(_kShort(RW.prevFix,200))+'</div></div>';
@@ -2762,7 +2809,7 @@ function renderReal(app){
       h+=gBar(sc.name,'rw-restart',_rwDots());
       h+=_rwModeSwitch();
       h+='<div class="g-block" style="flex:1;display:flex;flex-direction:column"><div class="rowx"><span class="g-kick">'+escHtml(name)+(inFu?' says':' says')+(n?' · '+(inFu?RW.convo.length+1:1)+' of '+(n+1):'')+'</span>'+(ttsOk()&&!wait?'<button class="g-chip soft" style="margin-left:auto;min-height:36px" data-act="play">'+ic('play','s')+'Play again</button>':'')+'</div>'+
-         (wait?'<div class="think" style="margin-top:14px"><i style="background:var(--pi)"></i><i style="background:var(--pi)"></i><i style="background:var(--pi)"></i></div>':'<div class="g-big" style="font-size:23px">'+escHtml(line)+'</div>')+
+         (wait?'<div class="think" style="margin-top:14px"><i style="background:var(--pi)"></i><i style="background:var(--pi)"></i><i style="background:var(--pi)"></i></div>':'<div class="g-big" style="font-size:23px">'+escHtml(line)+'</div>'+(!inFu&&_rwBriefOk()&&RW.brief.moment?'<p style="margin-top:10px;font-size:14px;line-height:1.4;font-weight:600;opacity:.7">'+escHtml(RW.brief.moment)+'</p>':''))+
          (RW.rec?'<div id="rw-live" class="sub" style="margin-top:14px;color:var(--pi);opacity:.8;min-height:40px">Listening…</div>':'')+
          '<div class="g-wave" id="rw-wave" style="justify-content:flex-start;margin-top:auto;opacity:.5;--ink:var(--pi)">'+'<i></i>'.repeat(14)+'</div></div>';
       if(RW.mode==='type'){
