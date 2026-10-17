@@ -7,8 +7,8 @@ A single-file vanilla JS PWA (`index.html`, no build step) with four Netlify Fun
 ## Files
 
 ```
-index.html                  the whole app (CSS, theme bootstrap, JS)
-manifest.json · icons/      PWA
+public/index.html           the whole app (CSS, theme bootstrap, JS)
+public/manifest.json · public/icons/   PWA
 netlify/functions/ai.js     Claude (Sonnet) proxy, DeepSeek for mainland China, per-feature daily limits, owner stats
 netlify/functions/codes.js  unlock codes: make (owner), redeem (one device per code)
 netlify/functions/transcribe.js  Whisper fallback when the browser's captions caught little
@@ -18,10 +18,10 @@ netlify.toml · package.json
 
 ## Deploy
 
-1. New GitHub repo, push everything. New Netlify site from the repo (publish directory `.`, functions `netlify/functions`). Netlify Blobs needs no setup.
+1. New GitHub repo, push everything. New Netlify site from the repo (netlify.toml sets the publish directory to `public` and functions to `netlify/functions`; leave the build command empty). Netlify Blobs needs no setup.
 2. Environment variables in Netlify:
-   - `ANTHROPIC_API_KEY` (required)
-   - `OWNER_KEY` (required: a long random string; it unlocks unlimited use on your devices and the owner pages)
+   - `ANTHROPIC_API_KEY` (required; the name must be exactly this)
+   - `OWNER_KEY` (required: a long random string, 30+ characters, not a word or name. Netlify fails the build if any variable value also appears in the code)
    - `DEEPSEEK_API_KEY` (optional: users in mainland China are routed to DeepSeek)
    - `OPENAI_API_KEY` (optional: Whisper transcription fallback; without it the app keeps the browser's own captions)
 3. In `netlify/functions/*.js`, the `allowed` origins list has `https://ground.kianhow.com` and `https://groundbykianhow.netlify.app`. Change them to your real site URL (the first entry is the fallback origin).
