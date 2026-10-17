@@ -2527,11 +2527,22 @@ function _rwCtx(){const f=(S.rwField||'').trim(),pr=_rwIsClient()?[S.rwPrice?'Pr
 function _ttSeenList(){if(!Array.isArray(S.ttSeen))S.ttSeen=[];return S.ttSeen;}
 function _ttMarkSeen(q){const l=_ttSeenList();const i=l.indexOf(q);if(i!==-1)l.splice(i,1);l.push(q);while(l.length>240)l.shift();save();}
 function _rwResetConvo(){RW.convo=[];RW.fuQ=null;RW.fuLoading=false;RW.decision=null;RW.review=null;RW.notes=null;RW.transcript='';RW.words=0;RW.elapsed=0;RW.typed='';}
+// What the speaker is trying to achieve, and the default setting when a built-in scene has none
+const RW_AIM={interview:'Show them, with one real example, why you’re the person for this role.',pitch:'Get them to want the next conversation, inside a minute.',intro:'Leave them with one thing about you they’ll remember, and a reason to talk again.',smalltalk:'Turn a polite exchange into a real conversation, without forcing it.',meeting:'Be useful fast: your point first, then why, then what should happen next.',tough:'Stay calm, answer what they’re really worried about, and keep their trust.',disagree:'Change their mind, or at least get it reconsidered, and keep the relationship.',conflict:'Get the problem fixed without making an enemy.',feedback:'Say the hard thing so they hear it, and leave them able to act on it.',sayno:'Say no clearly, and keep the goodwill.',proposal:'Win the work at a price that works for you.',bargain:'Close the deal without giving away your price.',difficult:'Keep it calm, keep the client, and protect the agreement.',ground:'Keep your position, and the client, through three pushes.'};
+const RW_SETTING={interview:'A first-round interview for a job you really want. They have your CV in front of them and 30 minutes.',pitch:'You have about a minute of their attention, and they hear pitches all the time.',intro:'You’ve only just met. They’re friendly, but they meet a lot of people.',smalltalk:'An everyday moment. Nothing is at stake except whether this turns into a real conversation.',meeting:'A regular team meeting. Everyone is busy, and attention is short.',tough:'They’re not satisfied, and they want a straight answer.'};
+function _cap(s){return String(s||'').replace(/^./,c=>c.toUpperCase());}
 function _rwCast(item){
   const k=RW.scenario,cl=_rwIsClient(k);
   RW.brief=cl&&item&&item.c?{q:RW.question,c:item.c,job:item.job,pos:String(item.pos).replace(/^(You|Your offer|Your price|Your quote|Your position|The agreement)\s*:\s*/,'')}:(!cl&&item&&item.who?{q:RW.question,who:item.who,moment:item.moment}:null);
-  RW.persona=cl?_pick(RW_PEOPLE.client):_pick(RW_PEOPLE[k]||RW_PEOPLE.intro);
+  RW.persona=cl?_pick(RW_PEOPLE.client):(item&&item.who&&(k==='intro'||k==='smalltalk'))?_pick(['friendly and curious','relaxed and chatty','polite, a little reserved','warm, a bit distracted','dry sense of humor, easy to talk to']):_pick(RW_PEOPLE[k]||RW_PEOPLE.intro);
   RW.who=cl?((item&&item.c?item.c.replace(' · ',', ')+', ':'')+RW.persona):((item&&item.who?item.who.replace(' · ',', ')+'; ':'')+RW.persona);
+  // A built-in scene with no brief: build one, so the speaker always knows who, where and why
+  if(!cl&&!RW.brief){
+    const p=String(RW.persona||''),traitsOnly=!(k==='intro'||k==='smalltalk');
+    const instr=!/[“"]/.test(RW.question)&&k!=='interview';
+    const who=instr&&(k==='intro'||k==='pitch')?'The people you’re talking to · '+(k==='pitch'?p:'friendly, meeting you for the first time'):traitsOnly?(RW_ROLE[k]||'The other person')+' · '+p:_cap(p);
+    RW.brief={q:RW.question,who,moment:instr?RW.question:(RW_SETTING[k]||'')};
+  }
   RW.secret=cl?(RW.tougher?_pick(RW_SECRETS.filter(s=>s.k==='tight'||s.k==='bluff')):_pick(RW_SECRETS)):null;
 }
 function _rwBriefOk(){return !!(RW.brief&&RW.brief.q===RW.question);}
@@ -2555,6 +2566,12 @@ function ttpOfflineReal(key){
     const who=(ci>0?pre.slice(0,ci):pre).trim(),rest=(ci>0?pre.slice(ci+1):'').trim();
     const moment=[rest?rest.charAt(0).toUpperCase()+rest.slice(1)+'.':'',m[3].trim()].filter(Boolean).join(' ');
     if(/^(Your|A|An|The|Someone|At|In|On)\b/.test(who)&&who.length<50){RW.item={who:who.replace(/^(At|In|On) .*/,RW_ROLE[key]||'They'),moment:moment||(who.match(/^(At|In|On) /)?who+'.':''),line:m[2]};return m[2];}
+  }
+  // Other narrated lines (“At a gallery opening, someone beside you says: “…””): the narration is who and where
+  const n=String(it).match(/^([^“]{4,140}?)\s*(“[^”]+”)\s*(.*)$/);
+  if(n&&!_rwIsClient(key)){
+    const who=_cap(n[1].replace(/[:,]\s*$/,'').replace(/\s+(says|asks|opens with|laughs|smiles|says to you)$/i,'').replace(/,?\s+(they|he|she)$/i,'').trim());
+    RW.item={who,moment:n[3].trim()||RW_SETTING[key]||'',line:n[2]};return n[2];
   }
   RW.item=null;return it;
 }
@@ -2587,10 +2604,10 @@ async function rwFetchScene(){
       if(seen.length)msg+='\n\nDo not reuse or lightly reword any of these:\n- '+seen.join('\n- ');
       msg+='\n\nReply with the JSON only.';
       if(!_rwIsClient()){
-        const sysS='You write realistic role-play scenes for a speaking-practice app. The speaker will answer out loud, as themselves, to a real person in a real moment. Situation type: '+brief+'\nNever write an abstract, philosophical or hypothetical question. Plain, everyday American English.\nReply with JSON only, no markdown: {"who":"who is talking to the speaker, with their role, under 8 words, e.g. \'Your manager · weekly team meeting\'","moment":"what is happening right now, one plain sentence under 16 words","line":"exactly what they say to the speaker, spoken, in curly quotes, under 25 words"}';
+        const sysS='You write realistic role-play scenes for a speaking-practice app. The speaker will answer out loud, as themselves, to a real person in a real moment. Situation type: '+brief+'\nNever write an abstract, philosophical or hypothetical question. Plain, everyday American English.\nReply with JSON only, no markdown: {"who":"who is talking to the speaker: first name or role, who they are, and one telling detail, under 14 words, e.g. \'Wen, your manager · new in the role, wants a quick win\'","moment":"where you are, what just happened and why it matters to the speaker, two plain sentences, under 35 words","line":"exactly what they say to the speaker, spoken, in curly quotes, under 25 words"}';
         const j=_jsonFrom(await callCoach(sysS,msg,{maxTokens:200,featureId:'rw-turn'}));
         const line=String(j.line||'').trim();if(!line||line.length>240||!j.who||!j.moment)throw new Error('scene');
-        RW.question=line;RW.source='ai';RW.item={who:String(j.who).slice(0,70),moment:String(j.moment).slice(0,120)};
+        RW.question=line;RW.source='ai';RW.item={who:String(j.who).slice(0,90),moment:String(j.moment).slice(0,240)};
       }else{
         const sysB='You write realistic client role-play briefs for a practice app for freelancers and new professionals. Situation type: '+brief+'\nReply with JSON only, no markdown: {"client":"First name · who they are, under 8 words, e.g. \'Lena · runs a small tea brand\'","job":"the piece of work, under 10 words","position":"'+(RW_POS_LBL[RW.scenario]||'Your position')+': the speaker’s side, concrete, with ¥ figures where they apply, under 16 words. Vary it: sometimes final and non-negotiable, sometimes a price plus the lowest they will accept (write it as \'Lowest you’ll accept: ¥…\'), sometimes flexible on one thing but not another. Plain words only","line":"the client’s opening words, spoken, in curly quotes, under 22 words"}. Use Chinese-market pricing in yuan. Everyday plain English.'+(S.rwPrice?' The speaker’s real price is '+S.rwPrice+(S.rwLowest?' and the lowest they will accept is '+S.rwLowest:'')+': use those numbers as the speaker’s position.':'');
         const j=_jsonFrom(await callCoach(sysB,msg,{maxTokens:220,featureId:'rw-turn'}));
@@ -2788,7 +2805,8 @@ function renderReal(app){
     h+=gBar(sc.name,'rw-setup',_rwDots());
     {const cap=s=>String(s||'').replace(/^./,c=>c.toUpperCase());
      const big=b?(b.c?b.c.replace(' · ',' ')+'. '+cap(RW.persona)+'.':b.who.replace(' · ',', ')):(RW_ROLE[RW.scenario]||'The other person')+(RW.persona?'. '+cap(RW.persona)+'.':'');
-     h+='<div class="g-block"><div class="g-kick">Who you’re talking to</div><div class="g-big">'+escHtml(big)+'</div>'+(b&&b.who&&b.moment?'<p style="margin-top:8px;font-size:16px;line-height:1.45;font-weight:600">'+escHtml(b.moment)+'</p>':'')+'</div>';}
+     h+='<div class="g-block"><div class="g-kick">Who you’re talking to</div><div class="g-big">'+escHtml(big)+'</div>'+(b&&b.who&&b.moment?'<p style="margin-top:8px;font-size:16px;line-height:1.45;font-weight:600">'+escHtml(b.moment)+'</p>':'')+'</div>';
+     if(RW_AIM[RW.scenario]&&!(b&&b.c))h+='<div class="g-card tight"><div class="g-row top"><span class="t"><b>Your goal</b><span>'+escHtml(RW_AIM[RW.scenario])+'</span></span></div></div>';}
     if(b&&b.c)h+='<div class="g-card tight"><div class="g-row"><span class="t"><b>The job</b><span>'+escHtml(b.job)+'</span></span></div><div class="g-row"><span class="t"><b>'+escHtml(RW_POS_LBL[RW.scenario]||'Your position')+'</b><span>'+escHtml(b.pos)+'</span></span></div></div>';
     if(RW.fromCase)h+='<div class="g-block p-lav"><div class="g-kick">From the library · try the principle</div><div style="font-size:16px;font-weight:700;line-height:1.35">'+escHtml(RW.fromCase.principle)+'</div></div>';
     if(RW.prevFix)h+='<div class="g-block p-lav"><div class="g-kick">Last time, K said</div><div style="font-size:16px;font-weight:700;line-height:1.35">'+escHtml(_kShort(RW.prevFix,200))+'</div></div>';
@@ -2809,7 +2827,7 @@ function renderReal(app){
       h+=gBar(sc.name,'rw-restart',_rwDots());
       h+=_rwModeSwitch();
       h+='<div class="g-block" style="flex:1;display:flex;flex-direction:column"><div class="rowx"><span class="g-kick">'+escHtml(name)+(inFu?' says':' says')+(n?' · '+(inFu?RW.convo.length+1:1)+' of '+(n+1):'')+'</span>'+(ttsOk()&&!wait?'<button class="g-chip soft" style="margin-left:auto;min-height:36px" data-act="play">'+ic('play','s')+'Play again</button>':'')+'</div>'+
-         (wait?'<div class="think" style="margin-top:14px"><i style="background:var(--pi)"></i><i style="background:var(--pi)"></i><i style="background:var(--pi)"></i></div>':'<div class="g-big" style="font-size:23px">'+escHtml(line)+'</div>'+(!inFu&&_rwBriefOk()&&RW.brief.moment?'<p style="margin-top:10px;font-size:14px;line-height:1.4;font-weight:600;opacity:.7">'+escHtml(RW.brief.moment)+'</p>':''))+
+         (wait?'<div class="think" style="margin-top:14px"><i style="background:var(--pi)"></i><i style="background:var(--pi)"></i><i style="background:var(--pi)"></i></div>':'<div class="g-big" style="font-size:23px">'+escHtml(line)+'</div>'+(!inFu&&_rwBriefOk()&&RW.brief.moment&&RW.brief.moment!==RW.question?'<p style="margin-top:10px;font-size:14px;line-height:1.4;font-weight:600;opacity:.7">'+escHtml(RW.brief.moment)+'</p>':''))+
          (RW.rec?'<div id="rw-live" class="sub" style="margin-top:14px;color:var(--pi);opacity:.8;min-height:40px">Listening…</div>':'')+
          '<div class="g-wave" id="rw-wave" style="justify-content:flex-start;margin-top:auto;opacity:.5;--ink:var(--pi)">'+'<i></i>'.repeat(14)+'</div></div>';
       if(RW.mode==='type'){
