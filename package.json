@@ -1,0 +1,9 @@
+{
+  "name": "ground-by-kianhow",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Ground by KIAN HOW. Know what to say now. Practice what's coming.",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}

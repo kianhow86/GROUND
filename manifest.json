@@ -1,0 +1,14 @@
+{
+  "name": "Ground by KIAN HOW",
+  "short_name": "Ground",
+  "description": "Know what to say now. Practice what's coming.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#EEF1F4",
+  "theme_color": "#EEF1F4",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
