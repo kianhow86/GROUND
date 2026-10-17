@@ -332,6 +332,9 @@ details.convo summary::-webkit-details-marker{display:none}
 .v3-k .kav{width:24px;height:24px}
 .v3-k span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .v3-k b{color:var(--ink);font-weight:700}
+.v3-h.mid{font-size:27px;line-height:1.1}
+.v3-h.long{font-size:23px;line-height:1.15;letter-spacing:-.025em}
+.v3-k .wrap{white-space:normal;text-align:left;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .v3-wide{display:flex;flex-direction:column;justify-content:space-between;gap:14px;min-height:136px;padding:16px;border-radius:26px;background:var(--p);color:var(--pi);width:100%}
 .v3-wide .wtop,.v3-wide .wbot{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%}
 .v3-wide .wbot{align-items:flex-end}
@@ -351,6 +354,7 @@ details.convo summary::-webkit-details-marker{display:none}
 @media (max-height:700px){
   .scr.hub{--gap:10px}
   .scr.hub .v3-h{font-size:27px}
+  .scr.hub .v3-h.mid{font-size:24px}.scr.hub .v3-h.long{font-size:21px}
   .scr.hub .v3-k,.scr.hub .hub-last,.scr.hub .hub-usage{display:none}
   .scr.hub .v3-blk{min-height:160px;border-radius:22px}
   .scr.hub .v3-wide{min-height:116px;gap:8px}
@@ -579,6 +583,7 @@ const CHANGELOG=[
     'Tell K about you: your career stage, field, age range, what’s hardest and your biggest problem. K uses it in every piece of coaching.',
     'When K can’t answer, the screen now shows a short detail line, and Help me reply retries once on its own.',
     'Coaching: you can turn K’s spoken voice off.',
+    'Home: the big headline is now your focus for today: the habit K is tracking from your notebook, or today’s tip with where to try it.',
     'Hub: K’s notebook and your profile (the person icon) now sit at the top, next to Settings. A dot shows until your profile is filled in.'
   ]},
   {v:'1.0',d:'2026-10-17',items:[
@@ -1024,7 +1029,7 @@ async function _kTakeRefresh(){
     const sys="You are K, Kian How's voice as a communication coach: direct, warm, a little playful, never preachy. Write the one line K says on the app's home screen today. Keep the idea of today's line and make it land for this person, using at most one detail from their recent sessions. Two halves separated by a | character; the second half is the punch and is shown in bold. Under 12 words in total. Plain English. No greetings, no emojis, no quotes. Reply with the line only.";
     const ctx='Recent sessions:\n'+ent.map(e=>'- '+(e.sub||e.cat)+': '+(e.fix||e.worked||e.title)).join('\n');
     const raw=await callCoach(sys,"Today's line: "+it.t+' '+it.b+'\n\n'+ctx,{maxTokens:60,noLang:true,featureId:'focus-brief'});
-    const t=String(raw||'').replace(/^["“]|["”]$/g,'').replace(/\s+/g,' ').trim();
+    const t=String(raw||'').replace(/\*+/g,'').replace(/^["“]|["”]$/g,'').replace(/\s+/g,' ').trim();
     const parts=t.split('|').map(x=>x.trim()).filter(Boolean);
     if(parts.length===2&&t.length>=8&&t.length<=90){S.kTake={day:today,i,t:parts[0],b:parts[1]};save();if(V.view==='hub')render();}
   }catch(e){}
@@ -1587,12 +1592,20 @@ try{if('speechSynthesis'in window)speechSynthesis.onvoiceschanged=()=>{};}catch(
 // HUB (home): K's line, Help me reply · Practice a talk, Pitch it, the streak
 // strip with Quick answer, last session, the quiet usage line.
 // ═══════════════════════════════════════════════════════════════════════════
-function _hubHeadline(){
-  const n=_nbEntries().length;
-  if(!n)return 'Let’s get you ready.';
-  if(_doneToday())return 'Done for today.';
-  const lines=['Ready when you are.','What’s coming up?','One minute, then real.','Back at it.'];
-  return lines[_kDayIdx(lines.length)];
+// The headline is today's focus, not a status: the habit K is tracking from the
+// notebook, else today's line (made personal once a day). Status lives in the streak strip.
+const _HUB_GO={reply:'Help me reply',real:'Practice a talk',pitch:'Pitch it',quick:'Quick answer',settings:'Set your lowest',notebook:'Open the notebook'};
+function _clean(s){return String(s||'').replace(/\*+/g,'').replace(/\s+/g,' ').trim();}
+function _hubFocus(){
+  if(!_nbEntries().length){const k=_kLine();return {kick:'',h:'Let’s get you ready.',sub:'<span>'+escHtml(_clean(k.t))+' <b>'+escHtml(_clean(k.b))+'</b></span>',a:k.a};}
+  const note=S.nb&&S.nb.notes&&S.nb.notes[0],hb=note&&note.habits&&note.habits[0];
+  if(hb){const tr=hb.trend==='up'?'Getting better':hb.trend==='flat'?'Still coming back':'New';
+    return {kick:'Your focus · '+tr,h:_clean(hb.name).replace(/\.?$/,'.'),sub:'<span class="wrap"><b>Next time:</b> '+escHtml(_kShort(_clean(hb.next),120))+'</span>',a:'notebook'};}
+  const k=_kLine();let a=_clean(k.t),b=_clean(k.b);
+  // K's daily take comes back as two halves without punctuation: make it two sentences
+  if(S.kTake&&k.t===S.kTake.t&&!/[.,!?;:—]$/.test(a))b=b.charAt(0).toUpperCase()+b.slice(1),a+='.';
+  const line=(a+' '+b).replace(/\s+/g,' ').trim();
+  return {kick:'Today’s focus',h:line.charAt(0).toUpperCase()+line.slice(1),sub:'<span><b>Try it:</b> '+escHtml(_HUB_GO[k.a]||'Practice a talk')+' →</span>',a:k.a};
 }
 function _lastTile(){
   const e=_lastSession();if(!e)return '';
@@ -1601,11 +1614,11 @@ function _lastTile(){
   return '<button class="tl wide c-real hub-last" data-act="last"><span class="ico">'+ic('again','s')+'</span><span class="tx"><b>'+escHtml(t)+'</b><span class="tsub">'+escHtml(d==null?'':_relLabel(d))+'</span></span><span class="go-sm">Again</span></button>';
 }
 function renderHub(app){
-  const k=_kLine(),first=!_nbEntries().length,st=_streak(),u=_usage();
+  const k=_hubFocus(),first=!_nbEntries().length,st=_streak(),u=_usage();
   let h='<main class="scr hub">';
   h+='<div class="top"><div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div><div class="ibtns"><button class="ibtn" data-go="notebook" aria-label="K’s notebook">'+ic('book')+'</button><button class="ibtn" data-act="you" aria-label="About you">'+ic('user')+(typeof _profileDone==='function'&&!_profileDone()?'<i class="ibtn-dot"></i>':'')+'</button><button class="ibtn" data-go="settings" aria-label="Settings">'+ic('settings')+'</button></div></div>';
-  h+='<div><div class="v3-date">'+_todayStamp()+'</div><h1 class="v3-h">'+escHtml(_hubHeadline())+'</h1>'+
-     '<button class="v3-k" data-act="k" style="width:100%">'+kav()+'<span>'+escHtml(k.t)+' <b>'+escHtml(k.b)+'</b></span></button></div>';
+  h+='<div><div class="v3-date">'+_todayStamp()+(k.kick?' · '+escHtml(k.kick.toUpperCase()):'')+'</div><h1 data-act="k" class="v3-h'+(k.h.length>44?' long':k.h.length>26?' mid':'')+'">'+escHtml(k.h)+'</h1>'+
+     '<button class="v3-k" data-act="k" style="width:100%">'+kav()+k.sub+'</button></div>';
   h+='<div class="v3-two">'+
      '<button class="v3-blk '+(first?'first':'cmp')+' p-lav" data-go="reply"><span class="bi">'+ic('reply')+'</span><span class="ba">'+ic('arrowne','s')+'</span><b>Help me<br>reply</b><span class="s"><span class="lg-only">Paste it. K writes back.</span><span class="sm-only">Paste. K replies.</span></span></button>'+
      '<button class="v3-blk '+(first?'first':'cmp')+' p-teal" data-go="real"><span class="bi">'+ic('talk')+'</span><span class="ba">'+ic('arrowne','s')+'</span><b>Practice<br>a talk</b><span class="s">They push. You hold.</span></button></div>';
@@ -1616,7 +1629,7 @@ function renderHub(app){
   h+='</main>';
   app.innerHTML=h;
   app.querySelector('[data-act="you"]').addEventListener('click',()=>{go('settings',{setPage:'you',_spFromHub:true});});
-  app.querySelector('[data-act="k"]').addEventListener('click',()=>{if(k.a==='notebook'){go('notebook');}else go(k.a);});
+  app.querySelectorAll('[data-act="k"]').forEach(el=>el.addEventListener('click',()=>{if(k.a==='notebook'){go('notebook');}else go(k.a);}));
   const l=app.querySelector('[data-act="last"]');if(l)l.addEventListener('click',()=>{const e=_lastSession();if(!e)return;if(e.cat==='real')realAgain(e);else go(e.cat);});
   _kTakeRefresh();
 }
