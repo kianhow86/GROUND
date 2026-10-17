@@ -370,6 +370,18 @@ details.convo summary::-webkit-details-marker{display:none}
 .v3-wide .s{font-size:12.5px;font-weight:600;line-height:1.35;margin-top:6px;opacity:.72}
 .v3-wide .stages{display:flex;gap:6px}
 .v3-wide .stages i{font-style:normal;font-size:11px;font-weight:800;padding:5px 9px;border-radius:999px;background:rgba(0,0,0,.08);white-space:nowrap}
+.v3-focus{display:flex;flex-direction:column;gap:6px;padding:16px 16px 14px;border-radius:24px;background:var(--strip);border:1px solid var(--strip-line);color:#fff;flex-shrink:0}
+.vf-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.vf-kick{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#C4AEFF}
+.vf-last{font-size:12.5px;font-weight:600;color:rgba(255,255,255,.55);white-space:nowrap}
+.vf-h{font-size:25px;font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-top:4px}
+.vf-h.long{font-size:21px}
+.vf-sub{font-size:14px;line-height:1.4;color:rgba(255,255,255,.62);padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.1)}
+.vf-sub b{color:#fff;font-weight:700}
+.vf-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.vf-btns button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;border-radius:14px;font-size:15px;font-weight:800;padding:0 10px;white-space:nowrap}
+.vf-pri{background:#C4AEFF;color:#120C24}
+.vf-sec{background:rgba(255,255,255,.06);color:#fff;border:1px solid rgba(255,255,255,.14)}
 .v3-strip{display:flex;align-items:center;gap:14px;padding:12px 12px 12px 16px;border-radius:22px;background:var(--strip);border:1px solid var(--strip-line);color:#fff;width:100%}
 .v3-strip .n{font-size:30px;font-weight:800;letter-spacing:-.04em;line-height:1;color:#C4AEFF;font-variant-numeric:tabular-nums}
 .v3-strip .v3-st{flex:1;min-width:0;display:flex;flex-direction:column}
@@ -380,7 +392,8 @@ details.convo summary::-webkit-details-marker{display:none}
   .scr.hub{--gap:10px}
   .scr.hub .v3-h{font-size:27px}
   .scr.hub .v3-h.mid{font-size:24px}.scr.hub .v3-h.long{font-size:21px}
-  .scr.hub .v3-k,.scr.hub .hub-last,.scr.hub .hub-usage{display:none}
+  .scr.hub .v3-k,.scr.hub .hub-last,.scr.hub .hub-usage,.scr.hub .vf-sub{display:none}
+  .v3-focus{padding:13px 14px 12px}.vf-h{font-size:21px}.vf-h.long{font-size:18px}.vf-btns button{min-height:44px}
   .v3-lib .lib-main{padding:11px 14px}.v3-lib .lib-main b{-webkit-line-clamp:1}
   .scr.hub .v3-blk{min-height:160px;border-radius:22px}
   .scr.hub .v3-wide{min-height:116px;gap:8px}
@@ -606,6 +619,7 @@ const CHANGELOG=[
   {v:'1.2',d:'2026-10-17',items:[
     'The Library: real cases from the conversations every career runs into. Each one shows what most people say, what K would say, the principle underneath and Kian’s own story, then lets you practice it.',
     'A case of the day on the home screen, picked from the kinds of conversations you said matter to you.',
+    'Home: today’s focus is now a card you can act on, with when you last practiced and two buttons: try it, or see a case.',
     'Disagreement is now its own family: disagree with your boss, clash with a teammate or friend, give hard feedback, and say no.',
     'Practice is grouped into five families: Getting in, Money & clients, Disagreement, Being heard and People.',
     'Your last session and Redo it now live at the top of K’s notebook.'
@@ -1877,6 +1891,12 @@ function renderCase(app){
 // The headline is today's focus, not a status: the habit K is tracking from the
 // notebook, else today's line (made personal once a day). Status lives in the streak strip.
 const _HUB_GO={reply:'Help me reply',real:'Practice a talk',pitch:'Pitch it',quick:'Quick answer',settings:'Set your lowest',notebook:'Open the notebook'};
+const _FOCUS_WHY={reply:'K sets up a scene where you’ll need it. Try it out loud before it’s real.',real:'K sets up a scene where you’ll need it. Try it out loud before it’s real.',pitch:'Build it, run it, then take the questions.',quick:'Ten seconds to think, then answer. Like real life.',settings:'Write down your price and your lowest before the next talk.'};
+// Which practice scene fits today's focus
+function _focusScen(k){
+  if(k.a==='notebook'){const e=_nbEntries('real')[0];const s=e&&e.extra&&e.extra.scenario;return s&&TT_REAL[s]?s:'bargain';}
+  return {reply:'bargain',real:'ground'}[k.a]||'bargain';
+}
 function _clean(s){return String(s||'').replace(/\*+/g,'').replace(/\s+/g,' ').trim();}
 function _hubFocus(){
   if(!_nbEntries().length){const k=_kLine();return {kick:'',h:'Let’s get you ready.',sub:'<span>'+escHtml(_clean(k.t))+' <b>'+escHtml(_clean(k.b))+'</b></span>',a:k.a};}
@@ -1887,7 +1907,7 @@ function _hubFocus(){
   // K's daily take comes back as two halves without punctuation: make it two sentences
   if(S.kTake&&k.t===S.kTake.t&&!/[.,!?;:—]$/.test(a))b=b.charAt(0).toUpperCase()+b.slice(1),a+='.';
   const line=(a+' '+b).replace(/\s+/g,' ').trim();
-  return {kick:'Today’s focus',h:line.charAt(0).toUpperCase()+line.slice(1),sub:'<span><b>Try it:</b> '+escHtml(_HUB_GO[k.a]||'Practice a talk')+' →</span>',a:k.a};
+  return {kick:'Today’s focus',h:line.charAt(0).toUpperCase()+line.slice(1),sub:'<span>'+escHtml(_FOCUS_WHY[k.a]||'One small habit. Use it in your next real conversation.')+'</span>',a:k.a};
 }
 function _lastTile(){
   const e=_lastSession();if(!e)return '';
@@ -1907,8 +1927,18 @@ function renderHub(app){
   const k=_hubFocus(),first=!_nbEntries().length,st=_streak(),u=_usage();
   let h='<main class="scr hub">';
   h+='<div class="top"><div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div><div class="ibtns"><button class="ibtn" data-go="notebook" aria-label="K’s notebook">'+ic('book')+'</button><button class="ibtn" data-act="you" aria-label="About you">'+ic('user')+(typeof _profileDone==='function'&&!_profileDone()?'<i class="ibtn-dot"></i>':'')+'</button><button class="ibtn" data-go="settings" aria-label="Settings">'+ic('settings')+'</button></div></div>';
-  h+='<div><div class="v3-date">'+_todayStamp()+(k.kick?' · '+escHtml(k.kick.toUpperCase()):'')+'</div><h1 data-act="k" class="v3-h'+(k.h.length>44?' long':k.h.length>26?' mid':'')+'">'+escHtml(k.h)+'</h1>'+
-     '<button class="v3-k" data-act="k" style="width:100%">'+kav()+k.sub+'</button></div>';
+  // Today's focus, as an action card (the TM Companion "Speech coach" pattern): what, then two ways to act on it
+  {const last=_lastSession(),ld=last?_relDays(last.iso):null;
+   const lastTxt=last?'Last session '+(ld===0?'today':ld===1?'yesterday':ld+' days ago'):_todayStamp();
+   // Buttons do what the blocks below don't: practice THIS focus, and see a case about it
+   const pAct=first?'case':({pitch:'pitch',quick:'quick',settings:'settings'}[k.a]||'practice');
+   const pLbl=first?'Try a case':{pitch:'Pitch it',quick:'Quick answer',settings:'Set my numbers'}[pAct]||'Practice it';
+   const pIc=first?'book':{pitch:'pitch',quick:'quick',settings:'money'}[pAct]||'mic';
+   h+='<div class="v3-focus"><div class="vf-top"><span class="vf-kick">'+escHtml(first?'Start here':(k.kick||'Today’s focus'))+'</span><span class="vf-last">'+escHtml(lastTxt)+'</span></div>'+
+      '<h1 class="vf-h'+(k.h.length>48?' long':'')+'">'+escHtml(k.h)+'</h1>'+
+      '<p class="vf-sub">'+k.sub.replace(/<\/?span[^>]*>/g,'').replace(/ →$/,'')+'</p>'+
+      '<div class="vf-btns"><button class="vf-pri" data-focus="'+pAct+'">'+ic(pIc,'s')+escHtml(pLbl)+'</button>'+
+      '<button class="vf-sec" data-focus="'+(first?'you':'case')+'">'+ic(first?'user':'book','s')+(first?'Tell K about you':'See a case')+'</button></div></div>';}
   h+='<div class="v3-two">'+
      '<button class="v3-blk '+(first?'first':'cmp')+' p-lav" data-go="reply"><span class="bi">'+ic('reply')+'</span><span class="ba">'+ic('arrowne','s')+'</span><b>Help me<br>reply</b><span class="s"><span class="lg-only">Paste it. K writes back.</span><span class="sm-only">Paste. K replies.</span></span></button>'+
      '<button class="v3-blk '+(first?'first':'cmp')+' p-teal" data-go="real"><span class="bi">'+ic('talk')+'</span><span class="ba">'+ic('arrowne','s')+'</span><b>Practice<br>a talk</b><span class="s">They push. You hold.</span></button></div>';
@@ -1921,6 +1951,13 @@ function renderHub(app){
   app.innerHTML=h;
   app.querySelector('[data-act="you"]').addEventListener('click',()=>{go('settings',{setPage:'you',_spFromHub:true});});
   app.querySelectorAll('[data-act="k"]').forEach(el=>el.addEventListener('click',()=>{if(k.a==='notebook'){go('notebook');}else go(k.a);}));
+  app.querySelectorAll('[data-focus]').forEach(b=>b.addEventListener('click',()=>{const a=b.dataset.focus;
+    const scen=_focusScen(k);
+    if(a==='case'){const c=first?_caseOfDay():(CASES.find(x=>x.practice&&x.practice.scen===scen)||_caseOfDay());openCase(c.id);return;}
+    if(a==='you'){go('settings',{setPage:'you',_spFromHub:true});return;}
+    if(a==='practice'){RW.scenario=scen;RW.goal=_rwGoalOf(scen).k;RW.tougher=false;RW.fromReply=null;RW._keepCase={title:'Today’s focus',principle:k.h,label:'Today’s focus · use it here'};go('real');rwFetchScene();return;}
+    if(a==='settings'){go('settings',{setPage:'you',_spFromHub:true});return;}
+    go(a);}));
   {const lc=app.querySelector('[data-act="lib-case"]');if(lc)lc.addEventListener('click',()=>openCase(_caseOfDay().id));}
   _kTakeRefresh();
 }
@@ -2577,7 +2614,7 @@ function ttpOfflineReal(key){
 }
 // ── The scene (AI when on, bank otherwise) ────────────────────────────────
 async function rwFetchScene(){
-  _rwResetConvo();RW.item=null;RW.context=_rwCtx();RW.source='';RW.prevFix='';RW.fromCase=null;
+  _rwResetConvo();RW.item=null;RW.context=_rwCtx();RW.source='';RW.prevFix='';RW.fromCase=RW._keepCase||null;RW._keepCase=null;
   const sc=TT_REAL[RW.scenario]||TT_REAL.interview;
   const ctx=(RW.context||'').trim();
   if(_aiOn()){
@@ -2732,7 +2769,7 @@ async function rwAnalyze(){
     const d=RW.decision||RW.review;
     if(d){msg+='\n\nHOW IT ENDED (the speaker sees this on a card above your notes, so do not repeat it): '+(d.decision?'the client '+({deal:'agreed'+(d.terms?' ('+d.terms+')':''),think:'said they would think about it',walk:'walked away'})[d.decision]+'. What the client was hiding: '+(d.secret||''):(RW_VERDICT_H[RW.scenario]||RW_VERDICT_H.meeting)[d.verdict||'maybe'])+'\nUse this where it sharpens the diagnosis. One mention at most.';}
     msg+=nbContext('real');
-    if(RW.fromCase)msg+='\n\nTHEY ARE PRACTICING A CASE from the library: "'+RW.fromCase.title+'". The principle they just read: "'+RW.fromCase.principle+'". In your notes, say plainly whether they used it, quoting their words if they did.';
+    if(RW.fromCase)msg+='\n\nTHEY ARE PRACTICING '+(RW.fromCase.label?'TODAY’S FOCUS':'A CASE from the library: "'+RW.fromCase.title+'"')+'. The principle they are trying to use: "'+RW.fromCase.principle+'". In your notes, say plainly whether they used it, quoting their words if they did.';
     if(RW.prevFix)msg+='\n\nTHIS IS A REDO of the same scene. Last time your one thing was: "'+RW.prevFix+'". Start your notes by saying plainly whether they did it this time, quoting their words if they did.';
     RW.notes=RW.words<12?'No worries, let\'s give it another go.':await callCoach(sysUsed,msg,{maxTokens:RW.convo.length>1?480:400,featureId:'rw-eval',grace:true});
   }catch(e){RW.notes=renderAIError(e,'rw-retry');}
@@ -2808,7 +2845,7 @@ function renderReal(app){
      h+='<div class="g-block"><div class="g-kick">Who you’re talking to</div><div class="g-big">'+escHtml(big)+'</div>'+(b&&b.who&&b.moment?'<p style="margin-top:8px;font-size:16px;line-height:1.45;font-weight:600">'+escHtml(b.moment)+'</p>':'')+'</div>';
      if(RW_AIM[RW.scenario]&&!(b&&b.c))h+='<div class="g-card tight"><div class="g-row top"><span class="t"><b>Your goal</b><span>'+escHtml(RW_AIM[RW.scenario])+'</span></span></div></div>';}
     if(b&&b.c)h+='<div class="g-card tight"><div class="g-row"><span class="t"><b>The job</b><span>'+escHtml(b.job)+'</span></span></div><div class="g-row"><span class="t"><b>'+escHtml(RW_POS_LBL[RW.scenario]||'Your position')+'</b><span>'+escHtml(b.pos)+'</span></span></div></div>';
-    if(RW.fromCase)h+='<div class="g-block p-lav"><div class="g-kick">From the library · try the principle</div><div style="font-size:16px;font-weight:700;line-height:1.35">'+escHtml(RW.fromCase.principle)+'</div></div>';
+    if(RW.fromCase)h+='<div class="g-block p-lav"><div class="g-kick">'+escHtml(RW.fromCase.label||'From the library · try the principle')+'</div><div style="font-size:16px;font-weight:700;line-height:1.35">'+escHtml(RW.fromCase.principle)+'</div></div>';
     if(RW.prevFix)h+='<div class="g-block p-lav"><div class="g-kick">Last time, K said</div><div style="font-size:16px;font-weight:700;line-height:1.35">'+escHtml(_kShort(RW.prevFix,200))+'</div></div>';
     if(RW.fromReply)h+='<div class="g-card tight"><div class="g-row"><span class="t"><b>Their message</b><span>'+escHtml(_kShort(RW.question,160))+'</span></span></div>'+(RW.fromReply.reply?'<div class="g-row"><span class="t"><b>You replied</b><span>'+escHtml(_kShort(RW.fromReply.reply,160))+'</span></span></div>':'')+'</div>';
     if(cl&&RW.secret)h+='<div class="g-alert" style="display:flex;gap:12px;align-items:flex-start"><span style="color:#C4AEFF;margin-top:1px;display:flex">'+ic('lock','s')+'</span><div><b style="font-size:14.5px">'+escHtml(name)+' has a secret.</b><div class="sub" style="margin-top:3px">You’ll find out at the end. Ask good questions and you might find out sooner.</div></div></div>';
