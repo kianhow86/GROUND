@@ -259,6 +259,21 @@ html[data-theme="dark"] .hero{background:linear-gradient(180deg,color-mix(in srg
 .toast{position:fixed;left:50%;bottom:calc(var(--sab) + 24px);transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;background:#141A21;color:#fff;font-size:13px;font-weight:700;white-space:nowrap;z-index:60;box-shadow:0 6px 20px rgba(20,26,33,.22);animation:gr-up .2s}
 html[data-theme="dark"] .toast{background:#24272E}
 
+/* settings: TM Companion card rows */
+.st-row{display:flex;align-items:center;gap:14px;width:100%;min-height:74px;padding:14px 16px;border-radius:22px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);flex-shrink:0}
+.st-ic{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;flex-shrink:0;background:color-mix(in srgb,var(--c,#6447D6) var(--ico-tint),transparent);color:var(--c,#6447D6)}
+.st-ic .kav{width:44px;height:44px}
+html[data-theme="dark"] .st-ic{color:color-mix(in srgb,var(--c,#6447D6) 55%,#fff)}
+.st-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.st-t b{font-size:17px;font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+.st-t>span{font-size:13.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-new{font-style:normal;font-size:10px;font-weight:800;letter-spacing:.08em;padding:3px 7px;border-radius:999px;border:1.5px solid #2E7D4F;color:#2E7D4F}
+html[data-theme="dark"] .st-new{border-color:#8FD6A8;color:#8FD6A8}
+/* floating Hub pill (as in TM Companion) */
+#hubpill{position:fixed;left:50%;bottom:calc(var(--sab) + 16px);transform:translateX(-50%);z-index:30;display:flex;align-items:center;gap:8px;height:48px;padding:0 22px 0 18px;border-radius:999px;background:#141A21;color:#fff;font-size:15px;font-weight:700;box-shadow:0 6px 20px rgba(20,26,33,.24)}
+#hubpill .ic{width:18px;height:18px;color:#C4AEFF}
+html[data-theme="dark"] #hubpill{background:#24272E;border:1px solid rgba(255,255,255,.08)}
+body.has-hub .scr{padding-bottom:calc(var(--sab) + 84px)}
 /* settings */
 .seg3{display:flex;background:var(--seg-bg);border:1px solid var(--line);border-radius:12px;padding:3px;gap:3px}
 .seg3 button{flex:1;min-height:44px;display:grid;place-items:center;border-radius:9px;font-size:12.5px;font-weight:600;color:var(--ink-2);text-align:center}
@@ -547,7 +562,7 @@ html[data-theme="dark"] .g-alert{background:#1B1E24;border:1px solid rgba(255,25
 // hub, Help me reply, Pitch it and Quick answer are new, built to the handoff.
 // ═══════════════════════════════════════════════════════════════════════════
 'use strict';
-const APP_VERSION='1.0';
+const APP_VERSION='1.1';
 // Feature switches. Flip in code, ship, done.
 const PAYWALL_ON=false;   // free for now: the top-up screen and balance stay hidden
 const LIVE_ON=false;      // Live voice (real-time call) needs the relay server first
@@ -555,6 +570,13 @@ const TOPUP={price:'¥39',sessions:30};
 const FREE_LIMITS={sessions:40,replies:8}; // monthly sessions · daily replies (abuse stop while the paywall is off)
 
 const CHANGELOG=[
+  {v:'1.1',d:'2026-10-17',items:[
+    'A Hub button now floats at the bottom of every screen, so one tap takes you home from anywhere.',
+    'Settings is redesigned: clear cards for You, Coaching, Usage & codes, Appearance, Sync and Your data.',
+    'Tell K about you: your career stage, field, age range, what’s hardest and your biggest problem. K uses it in every piece of coaching.',
+    'When K can’t answer, the screen now shows a short detail line, and Help me reply retries once on its own.',
+    'Coaching: you can turn K’s spoken voice off.'
+  ]},
   {v:'1.0',d:'2026-10-17',items:[
     'Ground is live: Help me reply, Practice a talk, Pitch it and Quick answer, all coached by K.',
     'Help me reply drafts what to say, shows why line by line, and refuses to write a yes below your lowest price.',
@@ -587,7 +609,8 @@ let S={
   rwFollowups:1,rwFuBy:{},ttSeen:[],
   lastReply:null,      // last Help me reply result (so it survives a refresh)
   whatsNew:'',
-  kTake:null
+  kTake:null,
+  profile:{},ttsOff:false
 };
 let V={view:'hub'};
 const STORAGE_KEY='ground-v1';
@@ -596,6 +619,8 @@ function load(){
   if(!S.aiConfig)S.aiConfig={enabled:true,mode:'backend',apiKey:'',endpoint:'/.netlify/functions/ai',model:''};
   if(!S.usage)S.usage={month:'',sessions:0,day:'',replies:0};
   if(!Array.isArray(S.goals))S.goals=[];
+  if(!S.profile||typeof S.profile!=='object')S.profile={};
+  try{TTS.on=!S.ttsOff;}catch(e){}
 }
 function save(){
   try{localStorage.setItem(STORAGE_KEY,JSON.stringify(S));if(S.sync&&typeof _sySoon==='function')_sySoon();return true;}
@@ -710,8 +735,12 @@ async function copyText(t){
 // ── Router ─────────────────────────────────────────────────────────────────
 const HASH_FOR_VIEW={hub:'home',reply:'reply',real:'practice',pitch:'pitch',quick:'quick',settings:'settings',notebook:'notebook',sync:'sync',owner:'owner'};
 const VIEW_FOR_HASH=Object.fromEntries(Object.entries(HASH_FOR_VIEW).map(([v,h])=>[h,v]));
+function _stopAll(){try{if(typeof REC!=='undefined'&&REC.active)recStop();}catch(e){}try{speakStop();}catch(e){}
+  try{if(typeof QA!=='undefined'){clearInterval(QA._iv);QA.rec=false;if(QA.phase==='think'||QA.phase==='rec')QA.phase='q';}}catch(e){}
+  try{if(typeof RW!=='undefined')RW.rec=false;if(typeof PI!=='undefined'){if(PI.rec&&PI.phase==='run'){PI.run=null;PI.phase=PI.parts?'build':'setup';}PI.rec=false;}}catch(e){}}
 function go(view,extra){
   closeSheet();
+  if(view!==V.view)_stopAll();
   if(extra)Object.assign(V,extra);
   V.view=view;render();
   const h=HASH_FOR_VIEW[view];
@@ -725,8 +754,19 @@ function render(){
   const R={hub:renderHub,reply:renderReply,real:renderReal,pitch:renderPitch,quick:renderQuick,settings:renderSettings,notebook:renderNotebook,'nb-entry':renderNbEntry,sync:renderSync,owner:renderOwner};
   const fn=R[V.view]||renderHub;
   fn(app);
+  renderHubPill();
   window.scrollTo(0,0);
   wireCommon(app);
+}
+// The Hub pill: on every screen except the hub, onboarding, and the dark live screens
+function renderHubPill(){
+  let b=document.getElementById('hubpill');
+  const scr=document.querySelector('#app .scr');
+  const show=S.onboarded&&V.view!=='hub'&&V.view!=='owner'&&!(scr&&scr.classList.contains('g-call'));
+  document.body.classList.toggle('has-hub',!!show);
+  if(!show){if(b)b.remove();return;}
+  if(!b){b=document.createElement('button');b.id='hubpill';b.setAttribute('aria-label','Hub');b.innerHTML='<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg><span>Hub</span>';
+    b.addEventListener('click',()=>{V.setPage='';go('hub');});document.body.appendChild(b);}
 }
 function wireCommon(root){
   root.querySelectorAll('[data-go]').forEach(b=>{if(b.__wired)return;b.__wired=true;b.addEventListener('click',()=>{const v=b.dataset.go;if(v==='back'){goBack();}else go(v);});});
@@ -807,8 +847,10 @@ function _aiHeaders(extra){
   if(cfg.ownerKey)h['x-owner-key']=cfg.ownerKey;
   return h;
 }
+const COACH_FEATURES=['reply-draft','rw-eval','pitch-build','pitch-notes','quick-eval','nb-note','focus-brief'];
 async function callCoach(systemPrompt,userMessage,opts){
   opts=opts||{};
+  if(COACH_FEATURES.includes(opts.featureId)&&typeof _profileCtx==='function')systemPrompt=String(systemPrompt||'')+_profileCtx();
   if(!opts.noLang)systemPrompt=String(systemPrompt||'')+_coachLangLine();
   const cfg=S.aiConfig||{};
   if(!cfg.enabled)throw new Error('AI features are off. Turn them on in Settings.');
@@ -843,13 +885,14 @@ async function callCoach(systemPrompt,userMessage,opts){
 function _jsonFrom(raw){const s=String(raw||'').replace(/```json|```/g,'');const m=s.match(/\{[\s\S]*\}/);return JSON.parse(m?m[0]:s);}
 function _isLimitErr(e){return /^limit:/.test(String(e&&e.message||e));}
 function _isOfflineErr(e){const m=String(e&&e.message||e);return navigator.onLine===false||/fetch|network|Failed to reach/i.test(m);}
+function _errDetail(e){const m=String(e&&e.message||e||'').replace(/sk-[A-Za-z0-9_-]+/g,'…');return m?'<p class="small center-t" style="opacity:.7;max-width:300px;margin:6px auto 0;word-break:break-word">Detail: '+escHtml(m.slice(0,160))+'</p>':'';}
 function renderAIError(err,retryAction){
   const msg=String(err&&err.message||err||'Something went wrong.');
   let title='K couldn’t answer',body='',badge='',btn='';
   if(_isLimitErr(err)){title='You’ve used today’s allowance';body=/month/.test(msg)?'This month’s allowance is used up. It starts again on '+_nextMonthLabel()+'.':'It comes back at midnight. If I’ve sent you a code, enter it in Settings.';badge='<div class="badge g">'+ic('clock','l')+'</div>';btn='<button class="g-chip" data-go="settings">Open Settings</button>';}
   else if(_isOfflineErr(err)){title='No connection';body='K needs the internet. Check your connection and try again.';badge='<div class="badge err">'+ic('warn','l')+'</div>';if(retryAction)btn='<button class="g-chip dark" data-act="'+retryAction+'">Try again</button>';}
   else{title='Something went wrong';body='K didn’t answer. It isn’t anything you did. Try again in a moment.';badge='<div class="badge err">'+ic('warn','l')+'</div>';if(retryAction)btn='<button class="g-chip dark" data-act="'+retryAction+'">Try again</button>';}
-  return '<div class="g-card ai-err">'+badge+'<div class="g-q">'+escHtml(title)+'</div><p class="sub">'+escHtml(body)+'</p>'+btn+'</div>';
+  return '<div class="g-card ai-err">'+badge+'<div class="g-q">'+escHtml(title)+'</div><p class="sub">'+escHtml(body)+'</p>'+(_isLimitErr(err)?'':_errDetail(err))+btn+'</div>';
 }
 // ── Codes: redeem on the server, bound to this device token ───────────────
 async function redeemCode(code){
@@ -1584,45 +1627,6 @@ const FIELDS=[['Creative','creative'],['Tech','tech'],['Business & finance','biz
 function _goalNames(){const g=(S.goals||[]).map(k=>(GOALS.find(x=>x.k===k)||{}).t).filter(Boolean);return g.length?g.map(x=>x.replace(' & money','').replace('Meeting ','')).join(', '):'Not set';}
 function _numbersLabel(){const p=(S.rwPrice||'').trim(),l=(S.rwLowest||'').trim();return p||l?[p,l].filter(Boolean).join(' · '):'Not set';}
 
-// ── Onboarding ─────────────────────────────────────────────────────────────
-function renderOnboarding(app){
-  const step=V.obStep||0;
-  const steps='<div class="steps" style="width:112px"><i class="on"></i><i'+(step>=1?' class="on"':'')+'></i><i'+(step>=2?' class="on"':'')+'></i></div>';
-  let h='<main class="scr">';
-  if(step===0){
-    h+='<div class="top">'+steps+'<button class="skip" data-act="skip">Skip</button></div>';
-    h+='<div class="push"></div><div class="stack" style="gap:16px"><div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div>'+
-       '<h1 class="h1 xl">I’ve been pressed on price for twenty years. Let’s make sure you’re ready when it’s your turn.</h1>'+
-       '<div class="ob-who">'+kav()+'<div><b>Kian How</b><span>Composer and coach. Dishonored, Genshin Impact, Wolf Warrior.</span></div></div></div>';
-    h+='<div class="push"></div><ol class="ob-list"><li><i>1</i><span><b>My logic, not a textbook.</b> Know your lowest price. Give only to get something back.</span></li><li><i>2</i><span><b>Help now, practice before.</b> K drafts what to say, or you rehearse with someone who pushes back.</span></li><li><i>3</i><span><b>Notes on your exact words.</b> Every note quotes you and gives you a better line.</span></li></ol>';
-    h+='<button class="btn btn-pri" data-act="next" style="margin-top:4px">Let’s start</button>';
-  }else if(step===1){
-    h+='<div class="top"><button class="ibtn r" data-act="prev" aria-label="Back">'+ic('back')+'</button>'+steps+'<button class="skip" data-act="skip">Skip</button></div>';
-    h+='<div class="stack t" style="margin-top:6px"><h1 class="h1">What’s coming up?</h1><p class="sub">Pick one or more. I’ll start your practice there.</p></div>';
-    h+='<div class="stack" style="gap:10px;margin-top:4px">'+GOALS.map(g=>{const on=(S.goals||[]).includes(g.k);return '<button class="'+g.c+' opt'+(on?' on':'')+'" data-goal="'+g.k+'" aria-pressed="'+on+'"><span class="oi">'+ic(g.ic)+'</span><span class="ot"><b>'+escHtml(g.t)+'</b><span>'+escHtml(g.sub)+'</span></span><span class="tick">'+ic('check','s')+'</span></button>';}).join('')+'</div>';
-    h+='<p class="small push center-t">You can change this any time in Settings.</p><button class="btn btn-pri" data-act="next">Continue</button>';
-  }else{
-    h+='<div class="top"><button class="ibtn r" data-act="prev" aria-label="Back">'+ic('back')+'</button>'+steps+'<button class="skip" data-act="skip">Skip</button></div>';
-    h+='<div class="stack t" style="margin-top:6px"><h1 class="h1">Your field</h1><p class="sub">So K’s examples sound like your work.</p></div>';
-    h+='<div class="grid2">'+FIELDS.map(f=>'<button class="tile'+(S.rwField===f[0]?' on':'')+'" data-field="'+escHtml(f[0])+'" aria-pressed="'+(S.rwField===f[0])+'">'+ic(f[1])+escHtml(f[0])+'</button>').join('')+'</div>';
-    h+='<div class="card stack" style="gap:12px;margin-top:4px"><div class="between"><span class="h2" style="font-size:15px">Your numbers</span><span class="tag k">Optional</span></div>'+
-       '<div class="fieldset"><label class="lab" for="ob-price">Your price</label><input class="inp" id="ob-price" type="text" placeholder="e.g. ¥8,000 for a logo" value="'+escHtml(S.rwPrice||'')+'"></div>'+
-       '<div class="fieldset"><label class="lab" for="ob-low">The lowest you’ll accept</label><input class="inp" id="ob-low" type="text" placeholder="e.g. ¥6,500" value="'+escHtml(S.rwLowest||'')+'"></div>'+
-       '<div class="device">'+ic('phone','s')+'<span>These stay on this device. K uses them to coach you on price.</span></div></div>';
-    h+='<button class="btn btn-pri push" data-act="done">Done</button>';
-  }
-  h+='</main>';
-  app.innerHTML=h;
-  const on=(s,f)=>{const el=app.querySelector(s);if(el)el.addEventListener('click',f);};
-  const finish=()=>{S.onboarded=true;S.whatsNew=APP_VERSION;save();V.obStep=0;go('hub');};
-  on('[data-act="skip"]',finish);
-  on('[data-act="next"]',()=>{V.obStep=step+1;render();});
-  on('[data-act="prev"]',()=>{V.obStep=step-1;render();});
-  app.querySelectorAll('[data-goal]').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.goal;S.goals=S.goals||[];const i=S.goals.indexOf(k);if(i>=0)S.goals.splice(i,1);else S.goals.push(k);save();render();}));
-  app.querySelectorAll('[data-field]').forEach(b=>b.addEventListener('click',()=>{S.rwField=S.rwField===b.dataset.field?'':b.dataset.field;save();render();}));
-  on('[data-act="done"]',()=>{const p=app.querySelector('#ob-price'),l=app.querySelector('#ob-low');if(p)S.rwPrice=p.value.trim();if(l)S.rwLowest=l.value.trim();finish();});
-}
-
 // ── Code entry (shared by Settings, the limit sheet and the paywall) ──────
 function codeFieldHtml(id,sec){return '<div class="inline-in"><label class="lab" for="'+id+'" style="position:absolute;left:-9999px">Code</label><input class="inp code" id="'+id+'" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="GRD-XXXX-XX" maxlength="11"><button class="btn '+(sec?'btn-sec':'btn-pri')+'" data-codeuse="'+id+'">Use</button></div><div id="'+id+'-msg"></div>';}
 function wireCodeField(root,id,after){
@@ -1659,44 +1663,6 @@ function openLimitSheet(kind){
       '<button class="btn btn-sec" style="margin-top:4px" data-close>OK, see you in '+escHtml(month)+'</button>';
   }
   openSheet(h,{wire:sh=>{wireCodeField(sh,'lim-code',()=>{closeSheet();render();});const p=sh.querySelector('[data-act="prac"]');if(p)p.addEventListener('click',()=>{closeSheet();replyToPractice();});wireCommon(sh);}});
-}
-
-// ── Settings ───────────────────────────────────────────────────────────────
-function renderSettings(app){
-  const u=_usage(),th=(window.__themePref?window.__themePref():'system');
-  let h='<main class="scr" style="--gap:12px"><div class="bar"><button class="ibtn r" data-go="hub" aria-label="Back">'+ic('back')+'</button><h1 class="h1">Settings</h1></div>';
-  h+='<div class="sect">Your usage</div><div class="list">';
-  if(PAYWALL_ON)h+='<button class="row" data-act="bal"><span class="rt"><b>Sessions left</b><span>Top up any time</span></span><span class="rv">'+S.credits+'</span>'+ic('chev','s chev')+'</button>';
-  else h+='<div class="row"><span class="rt"><b>This month</b><span>Starts again on '+escHtml(_nextMonthLabel())+'</span></span><span class="rv">'+u.sessions+' practice '+(u.sessions===1?'session':'sessions')+'</span></div>';
-  h+='<div class="row"><span class="rt"><b>Replies today</b></span><span class="rv">'+u.replies+'</span></div></div>';
-  h+='<div class="sect">Have a code?</div><div class="card stack" style="gap:10px"><p class="sub">If I’ve sent you a code, enter it here.</p>'+codeFieldHtml('set-code')+'</div>';
-  h+='<div class="sect">You</div><div class="list">'+
-     '<button class="row" data-act="goals"><span class="rt"><b>What’s coming up</b></span><span class="rv">'+escHtml(_goalNames())+'</span>'+ic('chev','s chev')+'</button>'+
-     '<button class="row" data-act="field"><span class="rt"><b>Your field</b></span><span class="rv">'+escHtml(S.rwField||'Any')+'</span>'+ic('chev','s chev')+'</button>'+
-     '<button class="row" data-act="numbers"><span class="rt"><b>Your numbers</b><span>Stay on this device</span></span><span class="rv">'+escHtml(_numbersLabel())+'</span>'+ic('chev','s chev')+'</button>'+
-     '<button class="row" data-act="lang"><span class="rt"><b>K speaks</b></span><span class="rv">'+escHtml(_coachLang().label.split(' — ')[0])+'</span>'+ic('chev','s chev')+'</button></div>';
-  h+='<div class="sect">Look</div><div class="seg3" role="radiogroup" aria-label="Theme"><button data-theme="light"'+(th==='light'?' class="on"':'')+'>Light</button><button data-theme="dark"'+(th==='dark'?' class="on"':'')+'>Dark</button><button data-theme="system"'+(th==='system'?' class="on"':'')+'>Same as phone</button></div>';
-  h+='<div class="sect">Notebook</div><div class="list">'+
-     '<button class="row" data-go="notebook"><span class="rt"><b>K’s notebook</b><span>'+_nbEntries().length+' sessions</span></span>'+ic('chev','s chev')+'</button>'+
-     '<button class="row" data-go="sync"><span class="rt"><b>Sync between devices</b><span>'+escHtml(_syStatus().line)+'</span></span><span class="rv">'+escHtml(_syStatus().lab)+'</span>'+ic('chev','s chev')+'</button>'+
-     '<button class="row" data-act="mem"><span class="rt"><b>K remembers my sessions</b></span><span class="rv">'+(_nbOn()?'On':'Off')+'</span></button></div>';
-  h+='<div class="sect">About</div><div class="list">'+
-     '<button class="row" data-whatsnew><span class="rt"><b>What’s new</b></span><span class="rv">v'+APP_VERSION+'</span>'+ic('chev','s chev')+'</button>'+
-     '<button class="row" data-act="about"><span class="rt"><b>About Ground</b></span>'+ic('chev','s chev')+'</button>'+
-     '<button class="row" data-act="reset"><span class="rt"><b>Start over</b><span>Clears everything on this device</span></span></button></div>';
-  h+='<p class="small push center-t">Ground by KIAN HOW · v'+APP_VERSION+'</p></main>';
-  app.innerHTML=h;
-  wireCodeField(app,'set-code',()=>render());
-  app.querySelectorAll('[data-theme]').forEach(b=>b.addEventListener('click',()=>{S.theme=b.dataset.theme;save();window.__applyTheme(b.dataset.theme);render();}));
-  const on=(s,f)=>{const el=app.querySelector(s);if(el)el.addEventListener('click',f);};
-  on('[data-act="goals"]',()=>openSheet('<h2 class="h2">What’s coming up?</h2><div class="stack" style="gap:10px">'+GOALS.map(g=>{const o=(S.goals||[]).includes(g.k);return '<button class="'+g.c+' opt'+(o?' on':'')+'" data-goal="'+g.k+'"><span class="oi">'+ic(g.ic)+'</span><span class="ot"><b>'+g.t+'</b><span>'+g.sub+'</span></span><span class="tick">'+ic('check','s')+'</span></button>';}).join('')+'</div><button class="btn btn-pri" data-close>Done</button>',{wire:sh=>{sh.querySelectorAll('[data-goal]').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.goal;S.goals=S.goals||[];const i=S.goals.indexOf(k);if(i>=0)S.goals.splice(i,1);else S.goals.push(k);save();b.classList.toggle('on');}));},onClose:render}));
-  on('[data-act="field"]',()=>openSheet('<h2 class="h2">Your field</h2><div class="grid2">'+FIELDS.map(f=>'<button class="tile'+(S.rwField===f[0]?' on':'')+'" data-field="'+escHtml(f[0])+'">'+ic(f[1])+escHtml(f[0])+'</button>').join('')+'</div><input class="inp" id="set-field-other" placeholder="Or type yours: e.g. Architecture, Law" value="'+escHtml(FIELDS.some(f=>f[0]===S.rwField)?'':(S.rwField||''))+'"><button class="btn btn-pri" data-close>Done</button>',{wire:sh=>{sh.querySelectorAll('[data-field]').forEach(b=>b.addEventListener('click',()=>{S.rwField=S.rwField===b.dataset.field?'':b.dataset.field;sh.querySelector('#set-field-other').value='';save();sh.querySelectorAll('[data-field]').forEach(x=>x.classList.toggle('on',x.dataset.field===S.rwField));}));sh.querySelector('#set-field-other').addEventListener('input',e=>{S.rwField=e.target.value.trim();save();sh.querySelectorAll('[data-field]').forEach(x=>x.classList.remove('on'));});},onClose:render}));
-  on('[data-act="numbers"]',()=>openSheet('<h2 class="h2">Your numbers</h2><div class="fieldset"><label class="lab" for="set-price">Your price</label><input class="inp" id="set-price" placeholder="e.g. ¥8,000 for a logo" value="'+escHtml(S.rwPrice||'')+'"></div><div class="fieldset"><label class="lab" for="set-low">The lowest you’ll accept</label><input class="inp" id="set-low" placeholder="e.g. ¥6,500" value="'+escHtml(S.rwLowest||'')+'"></div><div class="device">'+ic('phone','s')+'<span>These stay on this device. K uses them to coach you on price.</span></div><button class="btn btn-pri" data-close>Done</button>',{wire:sh=>{sh.querySelector('#set-price').addEventListener('input',e=>{S.rwPrice=e.target.value.trim();save();});sh.querySelector('#set-low').addEventListener('input',e=>{S.rwLowest=e.target.value.trim();save();});},onClose:render}));
-  on('[data-act="lang"]',()=>openSheet('<h2 class="h2">K speaks</h2><p class="sub">Auto follows the language you speak. Pick one to fix it.</p><div class="list">'+COACH_LANGS.map(l=>'<button class="row" data-lang="'+l.id+'"><span class="rt"><b>'+escHtml(l.label)+'</b></span>'+((S.coachLang||'auto')===l.id?ic('check','s'):'')+'</button>').join('')+'</div>',{wire:sh=>{sh.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>{S.coachLang=b.dataset.lang;save();closeSheet();render();}));}}));
-  on('[data-act="mem"]',()=>{S.kMemory=!_nbOn();save();render();});
-  on('[data-act="bal"]',()=>openBalance());
-  on('[data-act="about"]',()=>openSheet('<div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div><h2 class="h2" style="font-size:20px">Talk like you’ve done this for twenty years.</h2><p class="sub">I’m Kian How, a composer and audio director (Dishonored, Genshin Impact, Wolf Warrior) and a communication coach. Ground coaches with my logic: know your lowest price, give only to get something back, stay warm and firm, and know when to walk away.</p><p class="sub">K is the coach inside the app. K speaks the way I do. Your recordings go to the AI services that transcribe and coach them; your notebook stays on your device unless you turn on sync, which stores an encrypted copy only your devices can read.</p><p class="sub">For users 18 and older. Practice is practice: use your own judgment in the real conversation.</p><button class="btn btn-pri" data-close>Got it</button>'));
-  on('[data-act="reset"]',()=>{if(confirm('Start over? This clears your notebook, settings and codes on this device.')){try{localStorage.removeItem(STORAGE_KEY);localStorage.removeItem('ground-theme');}catch(e){}location.hash='';location.reload();}});
 }
 
 // ── Paywall (designed, shipped off) ────────────────────────────────────────
@@ -1753,6 +1719,190 @@ function renderOwner(app){
   if(!V._ownLoaded){V._ownLoaded=true;V._ownBusy='load';ownerCodes('GET').then(r=>{V._ownCodes=r.codes||[];}).catch(e=>{V._ownErr='Couldn’t load codes: '+e.message;}).finally(()=>{V._ownBusy=null;if(V.view==='owner')render();});}
 }
 // ═══════════════════════════════════════════════════════════════════════════
+// YOU: the profile K coaches from. Everything stays on this device.
+// Onboarding (4 steps, skippable) · Settings home (TM Companion card rows) ·
+// the sub-pages (You, Coaching, Usage & codes, Appearance, Your data, About)
+// ═══════════════════════════════════════════════════════════════════════════
+const AGES=['18–21','22–25','26–30','31–40','41+'];
+const STAGES=[['student','Student'],['jobhunt','Looking for my first job'],['early','Working, 0–2 years'],['mid','Working, 3–5 years'],['senior','Working, 6+ years'],['freelance','Freelancer or own business'],['switch','Changing careers']];
+const ENGLISH=[['native','First language'],['fluent','Fluent'],['working','Good, but I search for words'],['learning','Still learning']];
+const STRUGGLES=[['money','Talking about money'],['no','Saying no'],['interview','Interviews'],['intro','Introducing myself'],['smalltalk','Small talk'],['meetings','Speaking up in meetings'],['difficult','Difficult people'],['nerves','Nerves'],['present','Presenting']];
+function _P(){if(!S.profile||typeof S.profile!=='object')S.profile={};return S.profile;}
+function _label(list,k){const x=list.find(a=>a[0]===k);return x?x[1]:'';}
+function _profileDone(){const p=_P();return [p.age,p.stage,S.rwField,p.role,p.english,(p.struggles||[]).length?1:'',p.problem].filter(Boolean).length;}
+function _profileLine(){const p=_P();const parts=[p.name,_label(STAGES,p.stage),S.rwField].filter(Boolean);return parts.length?parts.join(' · '):'Tell K about you';}
+// What K reads before coaching (coaching features only; the other side in a role-play never sees it)
+function _profileCtx(){
+  const p=_P();const L=[];
+  if(p.name)L.push('Their first name: '+p.name+' (use it rarely, at most once).');
+  if(p.age)L.push('Age: '+p.age+'.');
+  if(p.stage)L.push('Career stage: '+_label(STAGES,p.stage)+'.');
+  if(S.rwField||p.role)L.push('Work: '+[p.role,S.rwField?'field: '+S.rwField:''].filter(Boolean).join(', ')+'.');
+  if(p.english)L.push('English: '+_label(ENGLISH,p.english)+(p.firstLang?'; first language '+p.firstLang:'')+'. '+(p.english==='learning'||p.english==='working'?'Keep every sentence especially short and simple.':''));
+  if((p.struggles||[]).length)L.push('What they find hardest: '+p.struggles.map(k=>_label(STRUGGLES,k)).join(', ')+'.');
+  if(p.problem)L.push('In their own words, their biggest problem: "'+String(p.problem).slice(0,300)+'"');
+  if((S.goals||[]).length)L.push('What’s coming up for them: '+_goalNames()+'.');
+  if(S.rwPrice||S.rwLowest)L.push('Their price: '+(S.rwPrice||'not set')+'; the lowest they will accept: '+(S.rwLowest||'not set')+'.');
+  if(!L.length)return '';
+  return '\n\nWHO YOU ARE COACHING (from their profile; let it shape your examples and your words, never recite it back):\n- '+L.join('\n- ');
+}
+// chip helpers
+function chipsHtml(list,sel,attr,multi){return '<div class="g-chips">'+list.map(x=>{const on=multi?(sel||[]).includes(x[0]):sel===x[0];return '<button class="g-chip'+(on?' on':'')+'" data-'+attr+'="'+escHtml(x[0])+'">'+escHtml(x[1])+'</button>';}).join('')+'</div>';}
+function wireChips(root,attr,get,set,multi,after){root.querySelectorAll('[data-'+attr+']').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset[attr];
+  if(multi){const a=(get()||[]).slice();const i=a.indexOf(k);if(i>=0)a.splice(i,1);else a.push(k);set(a);root.querySelectorAll('[data-'+attr+']').forEach(x=>x.classList.toggle('on',a.includes(x.dataset[attr])));}
+  else{const v=get()===k?'':k;set(v);root.querySelectorAll('[data-'+attr+']').forEach(x=>x.classList.toggle('on',x.dataset[attr]===v));}
+  save();if(after)after();}));}
+
+// ── Onboarding ─────────────────────────────────────────────────────────────
+function renderOnboarding(app){
+  const step=V.obStep||0,N=4,p=_P();
+  const steps='<div class="steps" style="width:132px">'+Array.from({length:N},(_,i)=>'<i'+(i<=step?' class="on"':'')+'></i>').join('')+'</div>';
+  const top=(back)=>'<div class="top">'+(back?'<button class="ibtn r" data-act="prev" aria-label="Back">'+ic('back')+'</button>':'')+steps+'<button class="skip" data-act="skip">Skip</button></div>';
+  let h='<main class="scr">';
+  if(step===0){
+    h+=top(false);
+    h+='<div class="push"></div><div class="stack" style="gap:16px"><div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div>'+
+       '<h1 class="h1 xl">I’ve been pressed on price for twenty years. Let’s make sure you’re ready when it’s your turn.</h1>'+
+       '<div class="ob-who">'+kav()+'<div><b>Kian How</b><span>Composer and coach. Dishonored, Genshin Impact, Wolf Warrior.</span></div></div></div>';
+    h+='<div class="push"></div><ol class="ob-list"><li><i>1</i><span><b>My logic, not a textbook.</b> Know your lowest price. Give only to get something back.</span></li><li><i>2</i><span><b>Help now, practice before.</b> K drafts what to say, or you rehearse with someone who pushes back.</span></li><li><i>3</i><span><b>Notes on your exact words.</b> Every note quotes you and gives you a better line.</span></li></ol>';
+    h+='<button class="btn btn-pri" data-act="next" style="margin-top:4px">Let’s start</button>';
+  }else if(step===1){
+    h+=top(true);
+    h+='<div class="stack t" style="margin-top:6px"><h1 class="h1">What’s coming up?</h1><p class="sub">Pick one or more. I’ll start your practice there.</p></div>';
+    h+='<div class="stack" style="gap:10px;margin-top:4px">'+GOALS.map(g=>{const on=(S.goals||[]).includes(g.k);return '<button class="'+g.c+' opt'+(on?' on':'')+'" data-goal="'+g.k+'" aria-pressed="'+on+'"><span class="oi">'+ic(g.ic)+'</span><span class="ot"><b>'+escHtml(g.t)+'</b><span>'+escHtml(g.sub)+'</span></span><span class="tick">'+ic('check','s')+'</span></button>';}).join('')+'</div>';
+    h+='<p class="small push center-t">You can change this any time in Settings.</p><button class="btn btn-pri" data-act="next">Continue</button>';
+  }else if(step===2){
+    h+=top(true);
+    h+='<div class="stack t" style="margin-top:6px"><h1 class="h1">About you</h1><p class="sub">So K’s examples sound like your life, not a textbook.</p></div>';
+    h+='<div class="lab">Where are you now?</div>'+chipsHtml(STAGES,p.stage,'stage');
+    h+='<div class="lab">Your field</div><div class="grid2">'+FIELDS.map(f=>'<button class="tile'+(S.rwField===f[0]?' on':'')+'" data-field="'+escHtml(f[0])+'">'+ic(f[1])+escHtml(f[0])+'</button>').join('')+'</div>';
+    h+='<div class="lab">Age</div>'+chipsHtml(AGES.map(a=>[a,a]),p.age,'age');
+    h+='<div class="device">'+ic('phone','s')+'<span>Everything here stays on this device.</span></div>';
+    h+='<button class="btn btn-pri push" data-act="next">Continue</button>';
+  }else{
+    h+=top(true);
+    h+='<div class="stack t" style="margin-top:6px"><h1 class="h1">What’s hardest for you?</h1><p class="sub">Pick any. K will push you there first.</p></div>';
+    h+=chipsHtml(STRUGGLES,p.struggles||[],'str',true);
+    h+='<div class="fieldset"><label class="lab" for="ob-prob">In your own words <span style="text-transform:none;letter-spacing:0;font-weight:600">(optional)</span></label><textarea class="g-answer" id="ob-prob" style="min-height:84px" placeholder="e.g. Clients always ask for a discount and I say yes too fast.">'+escHtml(p.problem||'')+'</textarea></div>';
+    h+='<div class="card stack" style="gap:12px"><div class="between"><span class="h2" style="font-size:15px">Your numbers</span><span class="tag k">Optional</span></div>'+
+       '<div class="grid2"><div class="fieldset"><label class="lab" for="ob-price">Your price</label><input class="inp" id="ob-price" type="text" placeholder="¥8,000" value="'+escHtml(S.rwPrice||'')+'"></div>'+
+       '<div class="fieldset"><label class="lab" for="ob-low">Lowest you’ll take</label><input class="inp" id="ob-low" type="text" placeholder="¥6,500" value="'+escHtml(S.rwLowest||'')+'"></div></div>'+
+       '<div class="device">'+ic('phone','s')+'<span>These stay on this device. K uses them to coach you on price.</span></div></div>';
+    h+='<button class="btn btn-pri push" data-act="done">Done</button>';
+  }
+  h+='</main>';
+  app.innerHTML=h;
+  const on=(s,f)=>{const el=app.querySelector(s);if(el)el.addEventListener('click',f);};
+  const keep=()=>{const pr=app.querySelector('#ob-prob'),pc=app.querySelector('#ob-price'),lw=app.querySelector('#ob-low');if(pr)p.problem=pr.value.trim();if(pc)S.rwPrice=pc.value.trim();if(lw)S.rwLowest=lw.value.trim();save();};
+  const finish=()=>{keep();S.onboarded=true;S.whatsNew=APP_VERSION;save();V.obStep=0;go('hub');};
+  on('[data-act="skip"]',finish);
+  on('[data-act="next"]',()=>{keep();V.obStep=step+1;render();});
+  on('[data-act="prev"]',()=>{keep();V.obStep=step-1;render();});
+  on('[data-act="done"]',finish);
+  app.querySelectorAll('[data-goal]').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.goal;S.goals=S.goals||[];const i=S.goals.indexOf(k);if(i>=0)S.goals.splice(i,1);else S.goals.push(k);save();b.classList.toggle('on');}));
+  app.querySelectorAll('[data-field]').forEach(b=>b.addEventListener('click',()=>{S.rwField=S.rwField===b.dataset.field?'':b.dataset.field;save();app.querySelectorAll('[data-field]').forEach(x=>x.classList.toggle('on',x.dataset.field===S.rwField));}));
+  wireChips(app,'stage',()=>p.stage,v=>p.stage=v);
+  wireChips(app,'age',()=>p.age,v=>p.age=v);
+  wireChips(app,'str',()=>p.struggles,v=>p.struggles=v,true);
+}
+
+// ── Settings home: card rows, like TM Companion ───────────────────────────
+function _stRow(key,icon,tint,title,sub,extra){return '<button class="st-row" data-sp="'+key+'"><span class="st-ic" style="--c:'+tint+'">'+icon+'</span><span class="st-t"><b>'+escHtml(title)+(extra||'')+'</b><span>'+escHtml(sub)+'</span></span>'+ic('chev','s chev')+'</button>';}
+function renderSettings(app){
+  const sp=V.setPage||'';
+  if(sp)return renderSettingsPage(app,sp);
+  const u=_usage(),th=(window.__themePref?window.__themePref():'system'),done=_profileDone();
+  let h='<main class="scr" style="--gap:12px"><div class="bar"><button class="ibtn r" data-go="hub" aria-label="Back">'+ic('back')+'</button><h1 class="h1 xl" style="font-size:30px">Settings</h1></div>';
+  h+='<button class="st-row" data-sp="about"><span class="st-ic">'+kav('m')+'</span><span class="st-t"><b>About</b><span>Kian How · v'+APP_VERSION+'</span></span>'+ic('chev','s chev')+'</button>';
+  h+=_stRow('you',ic('people'),'#6447D6','You',_profileLine(),done<4?' <em class="st-new">'+(done?'ADD MORE':'START HERE')+'</em>':'');
+  h+=_stRow('coaching',ic('quick'),'#C2457A','Coaching',[_coachLang().id==='auto'?'Auto':_coachLang().label,_nbOn()?'Remembers past sessions':'Memory off',S.aiConfig&&S.aiConfig.enabled?'AI on':'AI off'].join(' · '));
+  h+=_stRow('usage',ic('clock'),'#0E8C8C','Usage & codes',PAYWALL_ON?S.credits+' sessions left':'This month: '+u.sessions+' sessions · replies today: '+u.replies);
+  h+=_stRow('look',ic('settings'),'#1F7FA8','Appearance',{light:'Light',dark:'Dark',system:'Same as phone'}[th]||'Same as phone');
+  h+=_stRow('sync',ic('sync'),'#2E7D4F','Sync',_syStatus().on?_syStatus().line:'Use your notebook on your phone and computer');
+  h+=_stRow('data',ic('book'),'#C2681B','Your data','Notebook · '+_nbEntries().length+' sessions · start over');
+  h+='<p class="small center-t" style="margin-top:6px;line-height:1.6">Everything stays on this device. Data leaves it only when you use an AI feature, or encrypted when you turn on sync.</p>';
+  h+='</main>';
+  app.innerHTML=h;
+  app.querySelectorAll('[data-sp]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.sp==='sync'){go('sync');return;}V.setPage=b.dataset.sp;render();}));
+}
+function renderSettingsPage(app,sp){
+  const p=_P(),u=_usage();
+  const T={you:'You',coaching:'Coaching',usage:'Usage & codes',look:'Appearance',data:'Your data',about:'About'}[sp]||'Settings';
+  let h='<main class="scr" style="--gap:12px"><div class="bar"><button class="ibtn r" data-act="st-back" aria-label="Back">'+ic('back')+'</button><h1 class="h1">'+escHtml(T)+'</h1></div>';
+  if(sp==='you'){
+    h+='<p class="sub">K reads this before every reply and every note, so the coaching fits you. It never leaves this device except inside a coaching request.</p>';
+    h+='<div class="card stack" style="gap:14px">'+
+       '<div class="fieldset"><label class="lab" for="pf-name">First name</label><input class="inp" id="pf-name" placeholder="What should K call you?" value="'+escHtml(p.name||'')+'"></div>'+
+       '<div class="fieldset"><span class="lab">Age</span>'+chipsHtml(AGES.map(a=>[a,a]),p.age,'age')+'</div></div>';
+    h+='<div class="sect">Work</div><div class="card stack" style="gap:14px">'+
+       '<div class="fieldset"><span class="lab">Where are you now?</span>'+chipsHtml(STAGES,p.stage,'stage')+'</div>'+
+       '<div class="fieldset"><span class="lab">Your field</span><div class="grid2">'+FIELDS.map(f=>'<button class="tile'+(S.rwField===f[0]?' on':'')+'" data-field="'+escHtml(f[0])+'">'+ic(f[1])+escHtml(f[0])+'</button>').join('')+'</div><input class="inp" id="pf-field" placeholder="Or type yours: Architecture, Law…" value="'+escHtml(FIELDS.some(f=>f[0]===S.rwField)?'':(S.rwField||''))+'"></div>'+
+       '<div class="fieldset"><label class="lab" for="pf-role">What you do</label><input class="inp" id="pf-role" placeholder="e.g. Brand designer at a small studio" value="'+escHtml(p.role||'')+'"></div></div>';
+    h+='<div class="sect">What’s hard</div><div class="card stack" style="gap:14px">'+
+       '<div class="fieldset"><span class="lab">Pick any</span>'+chipsHtml(STRUGGLES,p.struggles||[],'str',true)+'</div>'+
+       '<div class="fieldset"><label class="lab" for="pf-prob">Your biggest problem, in your words</label><textarea class="g-answer" id="pf-prob" style="min-height:96px" placeholder="e.g. Clients always ask for a discount and I say yes too fast.">'+escHtml(p.problem||'')+'</textarea></div>'+
+       '<div class="fieldset"><span class="lab">What’s coming up</span>'+chipsHtml(GOALS.map(g=>[g.k,g.t]),S.goals||[],'goal',true)+'</div></div>';
+    h+='<div class="sect">Language</div><div class="card stack" style="gap:14px">'+
+       '<div class="fieldset"><span class="lab">Your English</span>'+chipsHtml(ENGLISH,p.english,'eng')+'</div>'+
+       '<div class="fieldset"><label class="lab" for="pf-lang">First language</label><input class="inp" id="pf-lang" placeholder="e.g. Mandarin" value="'+escHtml(p.firstLang||'')+'"></div></div>';
+    h+='<div class="sect">Your numbers</div><div class="card stack" style="gap:12px"><div class="grid2"><div class="fieldset"><label class="lab" for="pf-price">Your price</label><input class="inp" id="pf-price" placeholder="¥8,000 for a logo" value="'+escHtml(S.rwPrice||'')+'"></div><div class="fieldset"><label class="lab" for="pf-low">Lowest you’ll take</label><input class="inp" id="pf-low" placeholder="¥6,500" value="'+escHtml(S.rwLowest||'')+'"></div></div><div class="device">'+ic('phone','s')+'<span>K uses these to coach you on price, and Help me reply won’t write a yes below your lowest.</span></div></div>';
+    h+='<button class="btn btn-sec" data-act="st-back" style="margin-top:4px">Done</button>';
+  }else if(sp==='coaching'){
+    h+='<div class="sect">K speaks</div><div class="list">'+COACH_LANGS.map(l=>'<button class="row" data-lang="'+l.id+'"><span class="rt"><b>'+escHtml(l.label)+'</b></span>'+((S.coachLang||'auto')===l.id?ic('check','s'):'')+'</button>').join('')+'</div>';
+    h+='<div class="sect">Memory</div><div class="list"><button class="row" data-act="mem"><span class="rt"><b>K remembers my sessions</b><span>K reads your last notes before coaching you again.</span></span><span class="rv">'+(_nbOn()?'On':'Off')+'</span></button>'+
+       '<button class="row" data-act="tts"><span class="rt"><b>The other side speaks out loud</b><span>In Take turns, you hear their lines.</span></span><span class="rv">'+(S.ttsOff?'Off':'On')+'</span></button></div>';
+  }else if(sp==='usage'){
+    h+='<div class="list">';
+    if(PAYWALL_ON)h+='<button class="row" data-act="bal"><span class="rt"><b>Sessions left</b><span>Top up any time</span></span><span class="rv">'+S.credits+'</span>'+ic('chev','s chev')+'</button>';
+    else h+='<div class="row"><span class="rt"><b>This month</b><span>Starts again on '+escHtml(_nextMonthLabel())+'</span></span><span class="rv">'+u.sessions+' practice '+(u.sessions===1?'session':'sessions')+'</span></div>';
+    h+='<div class="row"><span class="rt"><b>Replies today</b></span><span class="rv">'+u.replies+'</span></div></div>';
+    h+='<div class="sect">Have a code?</div><div class="card stack" style="gap:10px"><p class="sub">If I’ve sent you a code, enter it here.</p>'+codeFieldHtml('set-code')+'</div>';
+    if((S.codes||[]).length)h+='<div class="sect">Codes used here</div><div class="list">'+S.codes.slice().reverse().map(c=>'<div class="row"><span class="rt"><b class="code">'+escHtml(c.code)+'</b><span>'+escHtml(new Date(c.at).toLocaleDateString('en-US',{month:'short',day:'numeric'}))+'</span></span><span class="rv">+'+c.sessions+'</span></div>').join('')+'</div>';
+  }else if(sp==='look'){
+    const th=(window.__themePref?window.__themePref():'system');
+    h+='<div class="seg3" role="radiogroup" aria-label="Theme"><button data-theme="light"'+(th==='light'?' class="on"':'')+'>Light</button><button data-theme="dark"'+(th==='dark'?' class="on"':'')+'>Dark</button><button data-theme="system"'+(th==='system'?' class="on"':'')+'>Same as phone</button></div>';
+  }else if(sp==='data'){
+    h+='<div class="list"><button class="row" data-go="notebook"><span class="rt"><b>K’s notebook</b><span>'+_nbEntries().length+' sessions</span></span>'+ic('chev','s chev')+'</button>'+
+       '<button class="row" data-act="exp"><span class="rt"><b>Export notebook</b><span>A file you can keep</span></span></button></div>';
+    h+='<div class="list"><button class="row" data-act="clr"><span class="rt"><b style="color:var(--err)">Clear notebook</b><span>Your profile stays</span></span></button>'+
+       '<button class="row" data-act="reset"><span class="rt"><b style="color:var(--err)">Start over</b><span>Clears everything on this device</span></span></button></div>';
+  }else if(sp==='about'){
+    h+='<div class="card stack" style="gap:12px;align-items:flex-start">'+kav('l')+'<div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div><h2 class="h2" style="font-size:20px">Talk like you’ve done this for twenty years.</h2>'+
+       '<p class="sub">I’m Kian How, a composer and audio director (Dishonored, Genshin Impact, Wolf Warrior) and a communication coach. Ground coaches with my logic: know your lowest price, give only to get something back, stay warm and firm, and know when to walk away.</p>'+
+       '<p class="sub">K is the coach inside the app. K speaks the way I do.</p></div>';
+    h+='<div class="list"><button class="row" data-whatsnew><span class="rt"><b>What’s new</b></span><span class="rv">v'+APP_VERSION+'</span>'+ic('chev','s chev')+'</button></div>';
+    h+='<p class="small" style="line-height:1.6">Your recordings and messages go to the AI services that transcribe and coach them. Your notebook and profile stay on your device unless you turn on sync, which stores an encrypted copy only your devices can read. For users 18 and older. Practice is practice: use your own judgment in the real conversation.</p>';
+  }
+  h+='</main>';
+  app.innerHTML=h;
+  const on=(s,f)=>app.querySelectorAll(s).forEach(el=>el.addEventListener('click',f));
+  on('[data-act="st-back"]',()=>{V.setPage='';render();});
+  // You
+  const inp=(id,fn)=>{const el=app.querySelector('#'+id);if(el)el.addEventListener('input',()=>{fn(el.value.trim());save();});};
+  inp('pf-name',v=>p.name=v.slice(0,40));inp('pf-role',v=>p.role=v.slice(0,80));inp('pf-prob',v=>p.problem=v.slice(0,400));inp('pf-lang',v=>p.firstLang=v.slice(0,40));
+  inp('pf-price',v=>S.rwPrice=v);inp('pf-low',v=>S.rwLowest=v);
+  inp('pf-field',v=>{S.rwField=v;app.querySelectorAll('[data-field]').forEach(x=>x.classList.remove('on'));});
+  app.querySelectorAll('[data-field]').forEach(b=>b.addEventListener('click',()=>{S.rwField=S.rwField===b.dataset.field?'':b.dataset.field;const o=app.querySelector('#pf-field');if(o)o.value='';save();app.querySelectorAll('[data-field]').forEach(x=>x.classList.toggle('on',x.dataset.field===S.rwField));}));
+  wireChips(app,'stage',()=>p.stage,v=>p.stage=v);
+  wireChips(app,'age',()=>p.age,v=>p.age=v);
+  wireChips(app,'eng',()=>p.english,v=>p.english=v);
+  wireChips(app,'str',()=>p.struggles,v=>p.struggles=v,true);
+  wireChips(app,'goal',()=>S.goals,v=>S.goals=v,true);
+  // Coaching
+  app.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>{S.coachLang=b.dataset.lang;save();render();}));
+  on('[data-act="mem"]',()=>{S.kMemory=!_nbOn();save();render();});
+  on('[data-act="tts"]',()=>{S.ttsOff=!S.ttsOff;TTS.on=!S.ttsOff;save();render();});
+  // Usage
+  wireCodeField(app,'set-code',()=>render());
+  on('[data-act="bal"]',()=>openBalance());
+  // Look
+  app.querySelectorAll('[data-theme]').forEach(b=>b.addEventListener('click',()=>{S.theme=b.dataset.theme;save();window.__applyTheme(b.dataset.theme);render();}));
+  // Data
+  on('[data-act="exp"]',()=>nbExport());
+  on('[data-act="clr"]',()=>{if(confirm('Clear everything in K’s notebook on this device? Your profile stays. This can’t be undone.')){nbClear();render();}});
+  on('[data-act="reset"]',()=>{if(confirm('Start over? This clears your profile, notebook, settings and codes on this device.')){try{localStorage.removeItem(STORAGE_KEY);localStorage.removeItem('ground-theme');}catch(e){}location.hash='';location.reload();}});
+}
+// ═══════════════════════════════════════════════════════════════════════════
 // HELP ME REPLY: paste their message, K drafts what to say, shows why line by
 // line with a technique on each, and refuses to write a yes below your lowest.
 // Steps: paste → thinking → reply → why → (under-lowest guard)
@@ -1786,7 +1936,8 @@ async function rpDraft(tone){
   let msg='THEIR MESSAGE:\n'+RP.text.trim()+(tone?'\n\nADJUST: the previous draft was "'+RP.draft.draft+'". Write it again '+({warmer:'warmer: more human, more acknowledgement, same position',firmer:'firmer: fewer softeners, the position stated plainly, still polite',shorter:'shorter: cut it to about half, keep the position and the ask',yes:'as a yes: the user has decided to accept their number. Write the best version of saying yes that still gets something back (a deposit, faster payment, a smaller scope), without sulking'})[tone]+'.':'')+(guard?'\n\nNOTE: they are asking for about '+_fmtMoney(asked)+', which is below the user’s lowest ('+S.rwLowest+'). Hold the price and offer a smaller scope.':'')+nbContext('reply');
   try{
     const raw=await callCoach(_rpSys(),msg,{maxTokens:700,featureId:'reply-draft'});
-    const j=_jsonFrom(raw);
+    let j;try{j=_jsonFrom(raw);if(String(j.draft||'').trim().length<20)throw 0;}
+    catch(_){const raw2=await callCoach(_rpSys(),msg+'\n\nYour last answer could not be read. Reply again with valid JSON only, in the exact format asked.',{maxTokens:700,featureId:'reply-draft',grace:true});j=_jsonFrom(raw2);}
     const draft=String(j.draft||'').trim();if(draft.length<20)throw new Error('short');
     const why=(Array.isArray(j.why)?j.why:[]).map(w=>({quote:String(w.quote||'').trim(),technique:String(w.technique||'').trim(),why:String(w.why||'').trim()})).filter(w=>w.quote&&draft.toLowerCase().includes(w.quote.toLowerCase())).slice(0,4);
     RP.draft={draft,give:String(j.give||'').slice(0,40),get:String(j.get||'').slice(0,40),why,below:!!j.below_lowest||guard,asked,lowest};
@@ -1819,7 +1970,7 @@ function renderReply(app){
     h+=gBar('Help me reply','rp-back');
     h+='<div class="g-block"><div class="g-kick">'+escHtml(who)+' · '+escHtml(want)+'</div><div class="g-msg">“'+escHtml(_stripQ(RP.text))+'”</div></div>';
     if(_isLimitErr(RP.err)){h+='<div class="center"><span class="badge g">'+ic('clock','l')+'</span><h2 class="h2" style="font-size:19px;margin-top:4px">That’s today’s replies done.</h2><p class="sub" style="max-width:280px">You get more tomorrow, from midnight. Your message is saved, so it’ll be here.</p></div><div class="stack"><button class="btn btn-pri" data-act="to-practice">Practice this conversation instead</button><button class="btn-text" data-go="settings">Have a code? Enter it in Settings</button></div>';}
-    else{h+='<div class="center"><span class="badge err">'+ic('warn','l')+'</span><h2 class="h2" style="font-size:19px;margin-top:4px">K couldn’t finish that one.</h2><p class="sub" style="max-width:280px">Something went wrong on my side, not yours. Your message is still here.</p></div><div class="stack"><button class="btn btn-pri" data-act="retry">'+ic('again','s')+'Try again</button><p class="small center-t">Still not working? Check your connection, then try once more.</p></div>';}
+    else{h+='<div class="center"><span class="badge err">'+ic('warn','l')+'</span><h2 class="h2" style="font-size:19px;margin-top:4px">K couldn’t finish that one.</h2><p class="sub" style="max-width:280px">Something went wrong on my side, not yours. Your message is still here.</p>'+_errDetail(RP.err)+'</div><div class="stack"><button class="btn btn-pri" data-act="retry">'+ic('again','s')+'Try again</button><p class="small center-t">Still not working? Check your connection, then try once more.</p></div>';}
   }else if(st==='reply'){
     const d=RP.draft;
     h+=gBar('Your reply','rp-back',gDots(3,2));
