@@ -585,6 +585,7 @@ const CHANGELOG=[
     'Tell K about you: your career stage, field, age range, what’s hardest and your biggest problem. K uses it in every piece of coaching.',
     'When K can’t answer, the screen now shows a short detail line, and Help me reply retries once on its own.',
     'Coaching: you can turn K’s spoken voice off.',
+    'More natural voices: the people you practice with, the pitch panel and K’s model answers now speak in realistic voices, each person with their own. If that can’t load, your phone’s voice takes over.',
     'Home: the last-session card now shows what K told you to change. Tap it for the full notes, or Redo it, and K checks whether you did.',
     'Home: the big headline is now your focus for today: the habit K is tracking from your notebook, or today’s tip with where to try it.',
     'Hub: K’s notebook and your profile (the person icon) now sit at the top, next to Settings. A dot shows until your profile is filled in.'
@@ -1567,17 +1568,50 @@ async function recWhisper(r){
 }
 // ── The other side's voice ─────────────────────────────────────────────────
 const TTS={on:true,voice:null};
-function ttsOk(){return 'speechSynthesis' in window&&TTS.on;}
+function ttsOk(){return TTS.on&&(('speechSynthesis' in window)||!TTS.cloudOff);}
+// Natural voices from the server (OpenAI gpt-4o-mini-tts); the phone's own voice is the fallback.
+const _TTS_VOICES=['ash','coral','sage','verse','ballad','echo','shimmer','onyx'];
+function ttsVoiceFor(name){let h=0;const s=String(name||'');for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return _TTS_VOICES[h%_TTS_VOICES.length];}
+const _ttsCache=new Map();let _ttsEl=null;
+function _ttsAudio(){if(!_ttsEl){_ttsEl=new Audio();_ttsEl.preload='auto';_ttsEl.setAttribute('playsinline','');}return _ttsEl;}
+// iPhone only lets audio play after a tap: unlock the one shared player on the first tap
+try{document.addEventListener('pointerdown',function _u(){try{const el=_ttsAudio();el.src='data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQxAADB8AhSmxhIIEVCSiJrDCQBTcu3UrAIwUdkRgQbFAZC1CQEwTJ9mjRvBA4UOLD8nKVOWfh+UlK3z/177OXrfOdKl7pyn3Xf//WreyTRUoAWgBgkOAGbZHBgG1OF6zM82DWbZaUmMBptgQhGjsyYqc9ae9XFz280948NMBWInljyzsNRFLPWdnZGWrddDsjK1unuSrVN9jJsK8KuQtQCtMBjCEtImISdNKJOopIpBFpNSMbIHCSRpRR5iakjTiyzLhchUUBwCgyKiweBv/7UsQbg8isVNoMPMjAAAA0gAAABEVFGmgqK////9bP/6XCykxBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq';el.play().catch(()=>{});}catch(e){}document.removeEventListener('pointerdown',_u,true);},true);}catch(e){}
+async function _cloudSpeak(text,opts){
+  const cfg=S.aiConfig||{};
+  if(TTS.cloudOff||!cfg.enabled||cfg.mode==='direct')throw new Error('off');
+  const voice=opts.voice||'ash',k=voice+'|'+text;
+  let url=_ttsCache.get(k);
+  if(!url){
+    const endpoint=(cfg.endpoint||'/.netlify/functions/ai').replace(/\/ai$/,'/tts');
+    const res=await fetch(endpoint,{method:'POST',headers:_aiHeaders({'content-type':'application/json'}),body:JSON.stringify({text,voice,style:opts.style||''})});
+    if(res.status===503){TTS.cloudOff=true;throw new Error('off');}
+    if(!res.ok)throw new Error('tts '+res.status);
+    url=URL.createObjectURL(await res.blob());
+    _ttsCache.set(k,url);if(_ttsCache.size>24){const f=_ttsCache.keys().next().value;URL.revokeObjectURL(_ttsCache.get(f));_ttsCache.delete(f);}
+  }
+  const el=_ttsAudio();TTS._tok=(TTS._tok||0)+1;const tok=TTS._tok;
+  return new Promise((resolve,reject)=>{
+    el.onended=()=>resolve(true);el.onerror=()=>reject(new Error('play'));
+    el.src=url;el.play().catch(reject);
+    setTimeout(()=>{if(TTS._tok===tok)resolve(true);},Math.min(45000,4000+text.length*120));
+  });
+}
 function _ttsVoice(lang){
   try{const vs=speechSynthesis.getVoices();if(!vs.length)return null;const l=(lang||'en').toLowerCase();
     const pref=vs.filter(v=>v.lang.toLowerCase().startsWith(l.split('-')[0]));
     const nice=pref.find(v=>/Samantha|Daniel|Karen|Moira|Google|Natural|Premium|Enhanced|Siri/i.test(v.name))||pref.find(v=>v.localService)||pref[0];
     return nice||null;}catch(e){return null;}
 }
-function speak(text,opts){
+async function speak(text,opts){
   opts=opts||{};
+  if(!TTS.on||!text)return false;
+  TTS._stopped=false;
+  try{return await _cloudSpeak(_stripQ(text),opts);}catch(e){if(TTS._stopped){TTS._stopped=false;return false;}}
+  return _deviceSpeak(text,opts);
+}
+function _deviceSpeak(text,opts){
   return new Promise(resolve=>{
-    if(!ttsOk()||!text){resolve(false);return;}
+    if(!('speechSynthesis' in window)){resolve(false);return;}
     try{speechSynthesis.cancel();
       const u=new SpeechSynthesisUtterance(_stripQ(text));
       const lang=_CJK_TEST.test(text)?'zh-CN':(_coachLang().rec||'en-US');
@@ -1589,7 +1623,7 @@ function speak(text,opts){
     }catch(e){resolve(false);}
   });
 }
-function speakStop(){try{speechSynthesis.cancel();}catch(e){}}
+function speakStop(){try{speechSynthesis.cancel();}catch(e){}try{if(_ttsEl&&!_ttsEl.paused){TTS._stopped=true;TTS._tok=(TTS._tok||0)+1;_ttsEl.pause();_ttsEl.onended&&_ttsEl.onended();}}catch(e){}}
 try{if('speechSynthesis'in window)speechSynthesis.onvoiceschanged=()=>{};}catch(e){}
 // ═══════════════════════════════════════════════════════════════════════════
 // HUB (home): K's line, Help me reply · Practice a talk, Pitch it, the streak
@@ -2370,7 +2404,8 @@ async function rwAnalyze(){
   if(V.view==='real'&&(RW.phase==='done'||RW.phase==='better'))render();
 }
 // ── Voice: the other side speaks, you answer ──────────────────────────────
-async function rwSpeakLine(){if(RW.mode==='type'||!ttsOk())return;const line=RW.fuQ||RW.question;await speak(line);if(RW.mode==='live'&&RW.phase==='turn'&&!RW.rec)rwStartRec();}
+async function rwSpeakLine(){if(RW.mode==='type'||!ttsOk())return;const line=RW.fuQ||RW.question;const who=(RW.brief&&(RW.brief.c||RW.brief.who))||RW_ROLE[RW.scenario]||'the other person';
+  await speak(line,{voice:ttsVoiceFor(who+RW.scenario),style:'You are '+who+(RW.persona?', '+RW.persona:'')+', speaking in a real conversation. Stay in character, a little guarded.'});if(RW.mode==='live'&&RW.phase==='turn'&&!RW.rec)rwStartRec();}
 async function rwStartRec(){
   if(RW.rec)return;RW.rec=true;RW.elapsed=0;render();
   const ok=await recStart({onTick:r=>{const t=document.getElementById('rw-timer');if(t)t.textContent=fmtMs(r.elapsed*1000);const tr=document.getElementById('rw-live');if(tr&&r.transcript){const w=r.transcript.slice(-240).split(' '),k=Math.max(0,w.length-10);tr.innerHTML=escHtml(w.slice(0,k).join(' '))+(k?' ':'')+'<b>'+escHtml(w.slice(k).join(' '))+'</b>';}
@@ -2607,7 +2642,7 @@ async function piNextQuestion(){
   }
   if(!q)q=_pick({client:['What do we get in month one if it doesn’t work?','Why this price and not half of it?','Who else have you done this for?'],investors:['Why now?','What’s your margin on this?','What breaks first when you grow?'],boss:['What will this cost us, all in?','Who owns it if you’re away?','What could go wrong?'],panel:['What makes this different?','What’s your evidence?','What happens in year two?']}[PI.room]||['Why should we say yes?']);
   PI.panelQ={who:who.n,role:who.r,q};PI.qLoading=false;render();
-  if(PI.mode!=='type')await speak(q);
+  if(PI.mode!=='type')await speak(q,{voice:ttsVoiceFor(who.n),style:'You are '+who.n+', '+who.r+', asking a pointed question after hearing a pitch. Direct, curious, not hostile.'});
   if(PI.mode==='live'&&PI.phase==='room'&&!PI.rec)piAnswerStart();
 }
 async function piAnswerStart(){
@@ -2802,7 +2837,7 @@ async function qaNotes(){
 }
 async function qaStrong(){
   if(QA.strongLoading)return;
-  if(QA.strong){speak(QA.strong);return;}
+  if(QA.strong){speak(QA.strong,{voice:'ash',style:'You are K, a warm, confident communication coach, showing how a strong answer sounds out loud.'});return;}
   QA.strongLoading=true;render();
   try{
     const view=QA.goal==='client'?K_CLIENT_VIEW:QA.goal==='people'?K_PEOPLE_VIEW:K_INTERVIEW_VIEW;
@@ -2810,7 +2845,7 @@ async function qaStrong(){
     QA.strong=String(await callCoach(sys,'Question: "'+QA.q+'"',{maxTokens:260,featureId:'quick-eval'})).trim();
   }catch(e){showToast('K couldn’t write one just now');}
   QA.strongLoading=false;render();
-  if(QA.strong)speak(QA.strong);
+  if(QA.strong)speak(QA.strong,{voice:'ash',style:'You are K, a warm, confident communication coach, showing how a strong answer sounds out loud.'});
 }
 function _qaNotesHtml(){
   const n=QA.notes;if(!n)return '';let h='';

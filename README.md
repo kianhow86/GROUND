@@ -12,6 +12,7 @@ public/manifest.json · public/icons/   PWA
 netlify/functions/ai.js     Claude (Sonnet) proxy, DeepSeek for mainland China, per-feature daily limits, owner stats
 netlify/functions/codes.js  unlock codes: make (owner), redeem (one device per code)
 netlify/functions/transcribe.js  Whisper fallback when the browser's captions caught little
+netlify/functions/tts.js    natural voices (OpenAI gpt-4o-mini-tts), the phone's voice is the fallback
 netlify/functions/sync.js   encrypted notebook sync (the server only stores bytes)
 netlify.toml · package.json
 ```
@@ -23,7 +24,8 @@ netlify.toml · package.json
    - `ANTHROPIC_API_KEY` (required; the name must be exactly this)
    - `OWNER_KEY` (required: a long random string, 30+ characters, not a word or name. Netlify fails the build if any variable value also appears in the code)
    - `DEEPSEEK_API_KEY` (optional: users in mainland China are routed to DeepSeek)
-   - `OPENAI_API_KEY` (optional: Whisper transcription fallback; without it the app keeps the browser's own captions)
+   - `OPENAI_API_KEY` (optional but recommended: realistic voices via `tts.js` and the Whisper transcription fallback; without it the app uses the phone's own voice and captions)
+   - `TTS_DAILY_LIMIT` (optional, default 150 spoken lines per device per day) · `TTS_PROVIDER=none` turns the voices off
 3. In `netlify/functions/*.js`, the `allowed` origins list has `https://ground.kianhow.com` and `https://groundbykianhow.netlify.app`. Change them to your real site URL (the first entry is the fallback origin).
 4. Open the site once with `#owner=YOUR_OWNER_KEY` on each of your own devices. That stores the key locally and turns off limits there. `#owner` opens the codes page; `#owner=off` turns it off again.
 
