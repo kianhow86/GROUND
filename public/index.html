@@ -113,6 +113,9 @@ a{color:inherit}
 
 /* ── header ── */
 .top{display:flex;align-items:center;justify-content:space-between;min-height:44px;flex-shrink:0}
+.ibtns{display:flex;gap:8px}
+.ibtn{position:relative}
+.ibtn-dot{position:absolute;top:9px;right:9px;width:8px;height:8px;border-radius:50%;background:#7C5CF0;box-shadow:0 0 0 2px var(--bg)}
 .top-btns{display:flex;gap:6px}
 .bar{display:flex;align-items:center;gap:12px;min-height:44px;flex-shrink:0}
 .ibtn{width:44px;height:44px;border-radius:13px;background:var(--icon-btn-bg);border:1px solid var(--line);display:grid;place-items:center;color:var(--ink-2);flex-shrink:0}
@@ -575,7 +578,8 @@ const CHANGELOG=[
     'Settings is redesigned: clear cards for You, Coaching, Usage & codes, Appearance, Sync and Your data.',
     'Tell K about you: your career stage, field, age range, what’s hardest and your biggest problem. K uses it in every piece of coaching.',
     'When K can’t answer, the screen now shows a short detail line, and Help me reply retries once on its own.',
-    'Coaching: you can turn K’s spoken voice off.'
+    'Coaching: you can turn K’s spoken voice off.',
+    'Hub: K’s notebook and your profile now sit at the top, next to Settings. A dot shows until your profile is filled in.'
   ]},
   {v:'1.0',d:'2026-10-17',items:[
     'Ground is live: Help me reply, Practice a talk, Pitch it and Quick answer, all coached by K.',
@@ -693,6 +697,7 @@ const IC={
   clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
   chev:'<path d="M9 5l7 7-7 7"/>',
   qr:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c.9-4 4-6.5 8-6.5s7.1 2.5 8 6.5"/>',
   book:'<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M9 7h7"/><path d="M9 11h5"/>',
   sync:'<path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/>',
   x:'<path d="M6 6l12 12M18 6L6 18"/>',
@@ -741,6 +746,7 @@ function _stopAll(){try{if(typeof REC!=='undefined'&&REC.active)recStop();}catch
 function go(view,extra){
   closeSheet();
   if(view!==V.view)_stopAll();
+  if(view==='settings'&&V.view!=='settings'){V.setPage='';V._spFromHub=false;}
   if(extra)Object.assign(V,extra);
   V.view=view;render();
   const h=HASH_FOR_VIEW[view];
@@ -1597,7 +1603,7 @@ function _lastTile(){
 function renderHub(app){
   const k=_kLine(),first=!_nbEntries().length,st=_streak(),u=_usage();
   let h='<main class="scr hub">';
-  h+='<div class="top"><div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div><button class="ibtn" data-go="settings" aria-label="Settings">'+ic('settings')+'</button></div>';
+  h+='<div class="top"><div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div><div class="ibtns"><button class="ibtn" data-go="notebook" aria-label="K’s notebook">'+ic('book')+'</button><button class="ibtn" data-act="you" aria-label="About you">'+ic('user')+(typeof _profileDone==='function'&&!_profileDone()?'<i class="ibtn-dot"></i>':'')+'</button><button class="ibtn" data-go="settings" aria-label="Settings">'+ic('settings')+'</button></div></div>';
   h+='<div><div class="v3-date">'+_todayStamp()+'</div><h1 class="v3-h">'+escHtml(_hubHeadline())+'</h1>'+
      '<button class="v3-k" data-act="k" style="width:100%">'+kav()+'<span>'+escHtml(k.t)+' <b>'+escHtml(k.b)+'</b></span></button></div>';
   h+='<div class="v3-two">'+
@@ -1609,6 +1615,7 @@ function renderHub(app){
   h+='<p class="quiet push hub-usage">'+(PAYWALL_ON?escHtml(S.credits+' sessions left'):'This month: '+u.sessions+(u.sessions===1?' practice session':' practice sessions'))+'</p>';
   h+='</main>';
   app.innerHTML=h;
+  app.querySelector('[data-act="you"]').addEventListener('click',()=>{go('settings',{setPage:'you',_spFromHub:true});});
   app.querySelector('[data-act="k"]').addEventListener('click',()=>{if(k.a==='notebook'){go('notebook');}else go(k.a);});
   const l=app.querySelector('[data-act="last"]');if(l)l.addEventListener('click',()=>{const e=_lastSession();if(!e)return;if(e.cat==='real')realAgain(e);else go(e.cat);});
   _kTakeRefresh();
@@ -1823,7 +1830,7 @@ function renderSettings(app){
   h+='<p class="small center-t" style="margin-top:6px;line-height:1.6">Everything stays on this device. Data leaves it only when you use an AI feature, or encrypted when you turn on sync.</p>';
   h+='</main>';
   app.innerHTML=h;
-  app.querySelectorAll('[data-sp]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.sp==='sync'){go('sync');return;}V.setPage=b.dataset.sp;render();}));
+  app.querySelectorAll('[data-sp]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.sp==='sync'){go('sync');return;}V.setPage=b.dataset.sp;V._spFromHub=false;render();}));
 }
 function renderSettingsPage(app,sp){
   const p=_P(),u=_usage();
@@ -1876,7 +1883,7 @@ function renderSettingsPage(app,sp){
   h+='</main>';
   app.innerHTML=h;
   const on=(s,f)=>app.querySelectorAll(s).forEach(el=>el.addEventListener('click',f));
-  on('[data-act="st-back"]',()=>{V.setPage='';render();});
+  on('[data-act="st-back"]',()=>{V.setPage='';if(V._spFromHub){V._spFromHub=false;go('hub');}else render();});
   // You
   const inp=(id,fn)=>{const el=app.querySelector('#'+id);if(el)el.addEventListener('input',()=>{fn(el.value.trim());save();});};
   inp('pf-name',v=>p.name=v.slice(0,40));inp('pf-role',v=>p.role=v.slice(0,80));inp('pf-prob',v=>p.problem=v.slice(0,400));inp('pf-lang',v=>p.firstLang=v.slice(0,40));
