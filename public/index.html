@@ -187,6 +187,8 @@ html[data-theme="dark"] .hero{background:linear-gradient(180deg,color-mix(in srg
 .tl .tsub{font-size:12.5px;line-height:1.35;color:var(--ink-2)}
 .tl.wide{flex-direction:row;align-items:center;gap:12px;padding:14px 16px;border-radius:22px}
 .tl.wide .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.hub-last .hub-fix{white-space:normal;text-overflow:clip;font-size:15px;font-weight:700;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.go-sm .ic{margin-right:4px}
 .go-sm{flex-shrink:0;min-height:44px;padding:0 13px;border-radius:999px;background:color-mix(in srgb,var(--c) var(--ico-tint),transparent);color:var(--c);font-size:13px;font-weight:800;display:flex;align-items:center;gap:6px}
 
 /* chips */
@@ -583,6 +585,7 @@ const CHANGELOG=[
     'Tell K about you: your career stage, field, age range, what’s hardest and your biggest problem. K uses it in every piece of coaching.',
     'When K can’t answer, the screen now shows a short detail line, and Help me reply retries once on its own.',
     'Coaching: you can turn K’s spoken voice off.',
+    'Home: the last-session card now shows what K told you to change. Tap it for the full notes, or Redo it, and K checks whether you did.',
     'Home: the big headline is now your focus for today: the habit K is tracking from your notebook, or today’s tip with where to try it.',
     'Hub: K’s notebook and your profile (the person icon) now sit at the top, next to Settings. A dot shows until your profile is filled in.'
   ]},
@@ -1609,9 +1612,13 @@ function _hubFocus(){
 }
 function _lastTile(){
   const e=_lastSession();if(!e)return '';
+  // Last time: what K told you to change, so "Again" means something
   const d=_relDays(e.iso);
-  const t=e.cat==='real'?(e.sub||'Practice')+(e.extra&&e.extra.outcome?' · '+e.extra.outcome:''):e.cat==='pitch'?'Pitch · '+_kShort(e.title,28):'Quick answer · '+_kShort(e.title,26);
-  return '<button class="tl wide c-real hub-last" data-act="last"><span class="ico">'+ic('again','s')+'</span><span class="tx"><b>'+escHtml(t)+'</b><span class="tsub">'+escHtml(d==null?'':_relLabel(d))+'</span></span><span class="go-sm">Again</span></button>';
+  const what=e.cat==='real'?(e.sub||'Practice'):e.cat==='pitch'?'Pitch it':'Quick answer';
+  const fix=_clean(e.fix||'').replace(/^[^:]{0,40}:\s*/,'');
+  const kick='Last time · '+what+(d==null?'':' · '+_relLabel(d));
+  const body=fix?_kShort(fix,90):_kShort(_clean(e.title),60);
+  return '<div class="tl wide c-real hub-last"><button class="tx" data-act="last-open" style="text-align:left"><span class="tsub" style="font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:10.5px">'+escHtml(kick)+'</span><b class="hub-fix">'+escHtml(body)+'</b></button><button class="go-sm" data-act="last">'+ic('again','s')+'Redo it</button></div>';
 }
 function renderHub(app){
   const k=_hubFocus(),first=!_nbEntries().length,st=_streak(),u=_usage();
@@ -1630,6 +1637,7 @@ function renderHub(app){
   app.innerHTML=h;
   app.querySelector('[data-act="you"]').addEventListener('click',()=>{go('settings',{setPage:'you',_spFromHub:true});});
   app.querySelectorAll('[data-act="k"]').forEach(el=>el.addEventListener('click',()=>{if(k.a==='notebook'){go('notebook');}else go(k.a);}));
+  const lo=app.querySelector('[data-act="last-open"]');if(lo)lo.addEventListener('click',()=>{const e=_lastSession();if(!e)return;V.nbId=e.id;V._back='hub';go('nb-entry');});
   const l=app.querySelector('[data-act="last"]');if(l)l.addEventListener('click',()=>{const e=_lastSession();if(!e)return;if(e.cat==='real')realAgain(e);else go(e.cat);});
   _kTakeRefresh();
 }
@@ -2196,7 +2204,7 @@ function ttpOfflineReal(key){
 }
 // ── The scene (AI when on, bank otherwise) ────────────────────────────────
 async function rwFetchScene(){
-  _rwResetConvo();RW.item=null;RW.context=_rwCtx();RW.source='';
+  _rwResetConvo();RW.item=null;RW.context=_rwCtx();RW.source='';RW.prevFix='';
   const sc=TT_REAL[RW.scenario]||TT_REAL.interview;
   const ctx=(RW.context||'').trim();
   if(_aiOn()){
@@ -2239,7 +2247,7 @@ async function rwFetchScene(){
 // From Help me reply: the person, their message and your reply are the first turn
 function realStartFromReply(o){
   RW.scenario=o.scenario;RW.goal=_rwGoalOf(o.scenario).k;RW.tougher=false;_rwResetConvo();
-  RW.question=o.line;RW.source='reply';RW.item=null;
+  RW.question=o.line;RW.source='reply';RW.prevFix='';RW.item=null;
   const item=o.who==='client'?{c:'The client · from your message',job:'The work in the message',pos:(S.rwPrice||'')+(S.rwLowest?'. Lowest you’ll accept: '+S.rwLowest:'')||'Your price, as in your reply'}:{who:({boss:'Your boss or colleague',interviewer:'The interviewer',new:'Someone new'})[o.who]||'The other person',moment:'They sent you a message. You replied. Now they answer.'};
   _rwCast(item);
   RW.fromReply={reply:o.reply};
@@ -2248,7 +2256,7 @@ function realStartFromReply(o){
 function realAgain(e){
   const x=e.extra||{};if(!x.scenario||!TT_REAL[x.scenario]){go('real');return;}
   RW.scenario=x.scenario;RW.goal=_rwGoalOf(x.scenario).k;RW.tougher=false;_rwResetConvo();
-  RW.question=x.question||'';RW.source='repeat';_rwCast(x.brief&&(x.brief.c||x.brief.who)?x.brief:null);RW.fromReply=null;
+  RW.question=x.question||'';RW.source='repeat';RW.prevFix=_clean(e.fix||'');_rwCast(x.brief&&(x.brief.c||x.brief.who)?x.brief:null);RW.fromReply=null;
   RW.phase=RW.question?'brief':'setup';go('real');
 }
 // ── The other person's follow-up (the engine) ─────────────────────────────
@@ -2347,6 +2355,7 @@ async function rwAnalyze(){
     const d=RW.decision||RW.review;
     if(d){msg+='\n\nHOW IT ENDED (the speaker sees this on a card above your notes, so do not repeat it): '+(d.decision?'the client '+({deal:'agreed'+(d.terms?' ('+d.terms+')':''),think:'said they would think about it',walk:'walked away'})[d.decision]+'. What the client was hiding: '+(d.secret||''):(RW_VERDICT_H[RW.scenario]||RW_VERDICT_H.meeting)[d.verdict||'maybe'])+'\nUse this where it sharpens the diagnosis. One mention at most.';}
     msg+=nbContext('real');
+    if(RW.prevFix)msg+='\n\nTHIS IS A REDO of the same scene. Last time your one thing was: "'+RW.prevFix+'". Start your notes by saying plainly whether they did it this time, quoting their words if they did.';
     RW.notes=RW.words<12?'No worries, let\'s give it another go.':await callCoach(sysUsed,msg,{maxTokens:RW.convo.length>1?480:400,featureId:'rw-eval',grace:true});
   }catch(e){RW.notes=renderAIError(e,'rw-retry');}
   RW.loading=false;
@@ -2417,6 +2426,7 @@ function renderReal(app){
     h+=gBar(sc.name,'rw-setup',_rwDots());
     h+='<div class="g-block"><div class="g-kick">Who you’re talking to</div><div class="g-big">'+escHtml(b?(b.c?b.c.replace(' · ',' ')+'. '+String(RW.persona||'').replace(/^./,c=>c.toUpperCase())+'.':b.who+'. '+b.moment):RW.who||RW_ROLE[RW.scenario])+'</div></div>';
     if(b&&b.c)h+='<div class="g-card tight"><div class="g-row"><span class="t"><b>The job</b><span>'+escHtml(b.job)+'</span></span></div><div class="g-row"><span class="t"><b>'+escHtml(RW_POS_LBL[RW.scenario]||'Your position')+'</b><span>'+escHtml(b.pos)+'</span></span></div></div>';
+    if(RW.prevFix)h+='<div class="g-block p-lav"><div class="g-kick">Last time, K said</div><div style="font-size:16px;font-weight:700;line-height:1.35">'+escHtml(_kShort(RW.prevFix,200))+'</div></div>';
     if(RW.fromReply)h+='<div class="g-card tight"><div class="g-row"><span class="t"><b>Their message</b><span>'+escHtml(_kShort(RW.question,160))+'</span></span></div>'+(RW.fromReply.reply?'<div class="g-row"><span class="t"><b>You replied</b><span>'+escHtml(_kShort(RW.fromReply.reply,160))+'</span></span></div>':'')+'</div>';
     if(cl&&RW.secret)h+='<div class="g-alert" style="display:flex;gap:12px;align-items:flex-start"><span style="color:#C4AEFF;margin-top:1px;display:flex">'+ic('lock','s')+'</span><div><b style="font-size:14.5px">'+escHtml(name)+' has a secret.</b><div class="sub" style="margin-top:3px">You’ll find out at the end. Ask good questions and you might find out sooner.</div></div></div>';
     h+='<div class="push"></div><div class="g-kick">How do you want to answer?</div>'+_rwModeSwitch()+gCta('Start','start');
