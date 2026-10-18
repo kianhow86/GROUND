@@ -636,9 +636,8 @@ const FREE_LIMITS={sessions:40,replies:8}; // monthly sessions · daily replies 
 
 const CHANGELOG=[
   {v:'1.3',d:'2026-10-18',items:[
-    'New home screen: tell K what’s coming up, or paste what just happened. K reads it and takes you to the right tool, already filled in: a drafted reply, a practice scene, your pitch, or a quick answer.',
-    'You see what K understood, and can switch to a different tool with one tap.',
-    'K’s line for today now sits at the top as a note from K, with Practice it and See a case.'
+    'New on the home screen: tell K what’s coming up, or paste what just happened. K reads it and takes you to the right tool, already filled in: a drafted reply, a practice scene, your pitch, or a quick answer.',
+    'You see what K understood, and can switch to a different tool with one tap.'
   ]},
   {v:'1.2',d:'2026-10-17',items:[
     'The Library: real cases from the conversations every career runs into. Each one shows what most people say, what K would say, the principle underneath and Kian’s own story, then lets you practice it.',
@@ -1952,15 +1951,26 @@ function renderHub(app){
   const k=_hubFocus(),first=!_nbEntries().length,st=_streak(),u=_usage();
   let h='<main class="scr hub">';
   h+='<div class="top"><div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div><div class="ibtns"><button class="ibtn" data-go="notebook" aria-label="K’s notebook">'+ic('book')+'</button><button class="ibtn" data-act="you" aria-label="About you">'+ic('user')+(typeof _profileDone==='function'&&!_profileDone()?'<i class="ibtn-dot"></i>':'')+'</button><button class="ibtn" data-go="settings" aria-label="Settings">'+ic('settings')+'</button></div></div>';
-  // K's desk (canvas option C): K's line in a bubble, one box that reads the situation and routes it, then the tools
-  {const nm=(S.profile&&S.profile.name)||S.name||'';
-   const kick=_todayStamp()+(st?' · '+st+'-day streak':'');
-   const said=first?'Hi'+(nm?' '+nm:'')+', I’m K. Tell me what’s coming up, or what just happened, and I’ll get you ready.':(k.kick&&/focus/i.test(k.kick)&&k.kick!=='Today’s focus'?'Your focus: ':'Today: ')+k.h;
-   h+='<div class="desk-k">'+kav()+'<div class="desk-bubble"><small>'+escHtml(kick)+'</small><p>'+escHtml(said)+'</p>'+(first?'':'<div class="desk-links"><button data-focus="'+(({pitch:'pitch',quick:'quick',settings:'settings'})[k.a]||'practice')+'">Practice it</button><button data-focus="case">See a case</button></div>')+'</div></div>';
-   h+='<div class="desk"><label for="desk-text">What’s coming up, or what just happened?</label><textarea id="desk-text" rows="4" placeholder="Paste their message, or describe the conversation…">'+escHtml(V.deskText||'')+'</textarea>'+
-      '<button class="desk-go" data-act="desk-go"'+(V.deskBusy?' disabled':'')+'>'+(V.deskBusy?'<span class="think"><i></i><i></i><i></i></span>K is reading it…':'Help me with this'+ic('arrow','s'))+'</button></div>';
-   h+='<div class="g-kick" style="margin-top:2px">Or jump in</div><div class="desk-tools">'+
-      [['reply','reply','Reply','p-lav'],['real','talk','Practice','p-teal'],['pitch','pitch','Pitch','p-org'],['quick','quick','Quick','p-pink']].map(x=>'<button data-go="'+x[0]+'" class="'+x[3]+'"><span>'+ic(x[1])+'</span>'+x[2]+'</button>').join('')+'</div>';}
+  // Today's focus, as an action card (the TM Companion "Speech coach" pattern): what, then two ways to act on it
+  {const last=_lastSession(),ld=last?_relDays(last.iso):null;
+   const lastTxt=last?'Last session '+(ld===0?'today':ld===1?'yesterday':ld+' days ago'):_todayStamp();
+   // Buttons do what the blocks below don't: practice THIS focus, and see a case about it
+   const pAct=first?'case':({pitch:'pitch',quick:'quick',settings:'settings'}[k.a]||'practice');
+   const pLbl=first?'Try a case':{pitch:'Pitch it',quick:'Quick answer',settings:'Set my numbers'}[pAct]||'Practice it';
+   const pIc=first?'book':{pitch:'pitch',quick:'quick',settings:'money'}[pAct]||'mic';
+   h+='<div class="v3-focus"><div class="vf-top"><span class="vf-kick">'+escHtml(first?'Start here':(k.kick||'Today’s focus'))+'</span><span class="vf-last">'+escHtml(lastTxt)+'</span></div>'+
+      '<h1 class="vf-h'+(k.h.length>48?' long':'')+'">'+escHtml(k.h)+'</h1>'+
+      '<p class="vf-sub">'+k.sub.replace(/<\/?span[^>]*>/g,'').replace(/ →$/,'')+'</p>'+
+      '<div class="vf-btns"><button class="vf-pri" data-focus="'+pAct+'">'+ic(pIc,'s')+escHtml(pLbl)+'</button>'+
+      '<button class="vf-sec" data-focus="'+(first?'you':'case')+'">'+ic(first?'user':'book','s')+(first?'Tell K about you':'See a case')+'</button></div></div>';}
+  // The open box: describe the situation, K routes it to the right tool
+  h+='<div class="desk"><label for="desk-text">What’s coming up, or what just happened?</label><textarea id="desk-text" rows="3" placeholder="Paste their message, or describe the conversation…">'+escHtml(V.deskText||'')+'</textarea>'+
+     '<button class="desk-go" data-act="desk-go"'+(V.deskBusy?' disabled':'')+'>'+(V.deskBusy?'<span class="think"><i></i><i></i><i></i></span>K is reading it…':'Help me with this'+ic('arrow','s'))+'</button></div>';
+  h+='<div class="v3-two">'+
+     '<button class="v3-blk '+(first?'first':'cmp')+' p-lav" data-go="reply"><span class="bi">'+ic('reply')+'</span><span class="ba">'+ic('arrowne','s')+'</span><b>Help me<br>reply</b><span class="s"><span class="lg-only">Paste it. K writes back.</span><span class="sm-only">Paste. K replies.</span></span></button>'+
+     '<button class="v3-blk '+(first?'first':'cmp')+' p-teal" data-go="real"><span class="bi">'+ic('talk')+'</span><span class="ba">'+ic('arrowne','s')+'</span><b>Practice<br>a talk</b><span class="s">They push. You hold.</span></button></div>';
+  h+='<button class="v3-wide p-org" data-go="pitch"><span class="wtop"><span class="bi">'+ic('pitch')+'</span><span class="stages" aria-hidden="true"><i>Build</i><i>Run</i><i>Face the room</i></span></span><span class="wbot"><span class="wt"><b>Pitch it</b><span class="s">Present it. Then take the questions.</span></span><span class="ba">'+ic('arrowne','s')+'</span></span></button>';
+  h+='<div class="v3-strip"><span class="n">'+st+'</span><span class="v3-st"><b>'+(st?'day streak':'Start a streak')+'</b><span>'+(st?(_doneToday()?'Done today. Nice.':'Keep it going today.'):'One minute a day.')+'</span></span><button class="v3-qa" data-go="quick">'+ic('quick','s')+'Quick answer</button></div>';
   {const cs=_caseOfDay(),cc=_caseCat(cs.cat);
    h+='<div class="v3-lib '+cc.c+'"><button class="lib-main" data-act="lib-case"><small>Case of the day · '+escHtml(cc.t)+'</small><b>'+escHtml(cs.title)+'</b></button><button class="lib-all" data-go="library">'+ic('book','s')+'Library<span>'+CASES.length+'</span></button></div>';}
   h+='<p class="quiet push hub-usage">'+(PAYWALL_ON?escHtml(S.credits+' sessions left'):'This month: '+u.sessions+(u.sessions===1?' practice session':' practice sessions'))+'</p>';
