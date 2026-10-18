@@ -42,6 +42,7 @@ const DAILY_LIMITS = {
   "focus-brief": 2,
   "nb-note":     6,
   "desk-route":  30,
+  "desk-advice": 15,
   "default":     20
 };
 const GRACE = 8;

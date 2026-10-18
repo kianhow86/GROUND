@@ -638,6 +638,7 @@ const CHANGELOG=[
   {v:'1.3',d:'2026-10-18',items:[
     'New on the home screen: tell K what’s coming up, or paste what just happened. K reads it and takes you to the right tool, already filled in: a drafted reply, a practice scene, your pitch, or a quick answer.',
     'You see what K understood, and can switch to a different tool with one tap.',
+    'K’s advice: when you ask what to do, or something has gone wrong, K first tells you what’s really going on, what to do, what to say first and the principle behind it. Then you can write the message or rehearse it.',
     'Home is simpler: the focus card and streak bar are gone. The case of the day stays.'
   ]},
   {v:'1.2',d:'2026-10-17',items:[
@@ -837,7 +838,7 @@ function render(){
   if(!app)return;
   closeSheet();
   if(!S.onboarded&&V.view!=='owner'){return renderOnboarding(app);}
-  const R={hub:renderHub,reply:renderReply,real:renderReal,pitch:renderPitch,quick:renderQuick,settings:renderSettings,notebook:renderNotebook,library:renderLibrary,case:renderCase,'nb-entry':renderNbEntry,sync:renderSync,owner:renderOwner};
+  const R={hub:renderHub,reply:renderReply,real:renderReal,pitch:renderPitch,quick:renderQuick,settings:renderSettings,notebook:renderNotebook,advice:renderAdvice,library:renderLibrary,case:renderCase,'nb-entry':renderNbEntry,sync:renderSync,owner:renderOwner};
   const fn=R[V.view]||renderHub;
   fn(app);
   renderHubPill();
@@ -933,7 +934,7 @@ function _aiHeaders(extra){
   if(cfg.ownerKey)h['x-owner-key']=cfg.ownerKey;
   return h;
 }
-const COACH_FEATURES=['desk-route','reply-draft','rw-eval','pitch-build','pitch-notes','quick-eval','nb-note','focus-brief'];
+const COACH_FEATURES=['desk-route','desk-advice','reply-draft','rw-eval','pitch-build','pitch-notes','quick-eval','nb-note','focus-brief'];
 async function callCoach(systemPrompt,userMessage,opts){
   opts=opts||{};
   if(COACH_FEATURES.includes(opts.featureId)&&typeof _profileCtx==='function')systemPrompt=String(systemPrompt||'')+_profileCtx();
@@ -2273,6 +2274,7 @@ function renderSettingsPage(app,sp){
 // filled in. They see what K understood and can switch with one tap.
 // ═══════════════════════════════════════════════════════════════════════════
 const DESK_ROUTES={
+  advice:{t:'Get K’s advice',ic:'info',p:'p-lav',say:'You want to know what to do.'},
   reply:{t:'Draft my reply',ic:'reply',p:'p-lav',say:'You have a message to answer.'},
   practice:{t:'Practice it',ic:'talk',p:'p-teal',say:'You have a conversation coming up.'},
   pitch:{t:'Build my pitch',ic:'pitch',p:'p-org',say:'You have something to present.'},
@@ -2293,7 +2295,9 @@ function _deskGuess(text){
   else if(/\b(introduce|introduction)\b/.test(s))scen='intro';
   else if(/\b(client)\b/.test(s))scen='difficult';
   let route='practice';
-  if(/\b(pitch|presentation|present|investors|demo day|keynote|speech)\b/.test(s))route='pitch';
+  const asks=/(what should i|what do i|how do i|how should i|best way|don.?t know|not sure|help me|advice|messed up|screwed up|made a mistake|my fault|went wrong|angry|upset|furious|disappointed)/.test(s);
+  if(asks&&!quoted)route='advice';
+  else if(/\b(pitch|presentation|present|investors|demo day|keynote|speech)\b/.test(s))route='pitch';
   else if(quoted)route='reply';
   const who=/\b(client|customer)\b/.test(s)?'client':/\b(interview)\b/.test(s)?'interviewer':/\b(boss|manager|colleague|teammate|co-?worker)\b/.test(s)?'boss':'new';
   const want=/\b(price|discount|cheaper|budget)\b/.test(s)?'price':/\b(no|decline|can.?t)\b/.test(s)?'no':/\b(time|later|deadline)\b/.test(s)?'time':/\b(mistake|sorry|wrong)\b/.test(s)?'fix':'well';
@@ -2308,15 +2312,17 @@ async function deskRead(){
     V.deskBusy=true;render();
     const scenes=Object.keys(TT_REAL).map(k=>k+' ('+TT_REAL[k].name+')').join(', ');
     const sys='You are the front desk of a communication coaching app. A person describes a situation. Decide which tool helps them most, and fill it in.\n'+
-      'Tools: "reply" (they received a message and need to answer it: the text contains or describes what someone said to them, and the answer is written), "practice" (a spoken conversation is coming up or keeps happening: they want to rehearse it with K playing the other person), "pitch" (they must present or pitch something to a group or a decision maker), "quick" (they want a strong short answer to one question they expect to be asked).\n'+
+      'Tools: "advice" (they are asking what to do, something has gone wrong, emotions are high, or they need a plan before any words: choose this whenever they ask for guidance rather than a draft or a rehearsal; it is the safe default), "reply" (they received a message and need to answer it: the text contains or describes what someone said to them, and the answer is written), "practice" (a spoken conversation is coming up or keeps happening: they want to rehearse it with K playing the other person), "pitch" (they must present or pitch something to a group or a decision maker), "quick" (they want a strong short answer to one question they expect to be asked).\n'+
       'Practice scenarios (pick the closest key): '+scenes+'.\n'+
-      'Reply with JSON only, no markdown: {"route":"reply|practice|pitch|quick","why":"one short sentence to them, starting with You, saying what you understood (under 18 words)","scenario":"a practice key","who":"who they will talk to: name or role, who they are, one telling detail, under 14 words","moment":"where they are and what is at stake, under 30 words","line":"the first thing the other person will say, spoken, in curly quotes, under 25 words","reply_text":"for reply: the message they received, copied word for word if it is in their text, else empty","rwho":"client|boss|interviewer|new","rwant":"price|no|time|more|fix|well","pitch_line":"for pitch: what they are pitching, in one line","pitch_room":"client|investors|boss|panel","question":"for quick: the question they expect, in curly quotes"}';
+      'Reply with JSON only, no markdown: {"route":"advice|reply|practice|pitch|quick","why":"one short sentence to them, starting with You, saying what you understood (under 18 words)","scenario":"a practice key","who":"who they will talk to: name or role, who they are, one telling detail, under 14 words","moment":"where they are and what is at stake, under 30 words","line":"the first thing the other person will say, spoken, in curly quotes, under 25 words","reply_text":"for reply: the message they received, copied word for word if it is in their text, else empty","rwho":"client|boss|interviewer|new","rwant":"price|no|time|more|fix|well","pitch_line":"for pitch: what they are pitching, in one line","pitch_room":"client|investors|boss|panel","question":"for quick: the question they expect, in curly quotes"}';
     try{const raw=await callCoach(sys,'THEIR SITUATION:\n'+text,{maxTokens:420,featureId:'desk-route',noLang:true});r=_jsonFrom(raw);if(!DESK_ROUTES[r.route])r=null;}catch(e){r=null;}
     V.deskBusy=false;render();
   }
   if(!r)r=_deskGuess(text);
   if(r.route==='practice'&&!TT_REAL[r.scenario])r.scenario=_deskGuess(text).scenario;
-  V.deskRoute=r;openDeskSheet();
+  V.deskRoute=r;
+  if(r.route==='advice'){deskGo('advice');return;}
+  openDeskSheet();
 }
 function openDeskSheet(){
   const r=V.deskRoute;if(!r)return;const main=DESK_ROUTES[r.route];
@@ -2330,6 +2336,7 @@ function openDeskSheet(){
 }
 function deskGo(route){
   const r=Object.assign({},V.deskRoute||{}),text=V.deskText||'';
+  if(route==='advice'){V.adv={text,data:null,loading:true,err:null,scen:TT_REAL[r.scenario]?r.scenario:_deskGuess(text).scenario};go('advice');deskAdvice();return;}
   if(route==='reply'){
     if(!_canReply()){openLimitSheet('reply');return;}
     const msg=_clean(r.reply_text)&&r.reply_text.length>6?r.reply_text:text;
@@ -2347,7 +2354,7 @@ function deskGo(route){
     if(!(line&&r.who)){r.who=RW_ROLE[k]||'The other person';r.moment=_kShort(text,200);r.line=OPEN[k]||'“So, what’s on your mind?”';}
     {const line=_clean(r.line);
       RW.question=/^[“"]/.test(line)?line:'“'+line+'”';RW.source='desk';
-      _rwCast(_rwIsClient(k)?{c:_clean(r.who),job:_clean(r.moment)||'The work you described',pos:S.rwPrice?S.rwPrice+(S.rwLowest?'. Lowest you’ll accept: '+S.rwLowest:''):'Your usual terms'}:{who:_clean(r.who),moment:_clean(r.moment)});
+      _rwCast(_rwIsClient(k)?{c:_clean(r.who),job:_clean(r.moment)||_kShort(text,160),pos:(k==='bargain'||k==='ground'||k==='proposal')&&S.rwPrice?S.rwPrice+(S.rwLowest?'. Lowest you’ll accept: '+S.rwLowest:''):''}:{who:_clean(r.who),moment:_clean(r.moment)});
       RW.phase='brief';go('real');
     }
     return;
@@ -2362,6 +2369,62 @@ function deskGo(route){
     if(q){QA.q=/^[“"]/.test(q)?q.replace(/^[“"]|[”"]$/g,''):q;QA.goal=null;QA.phase='q';QA.take=null;QA.notes=null;QA.strong=null;}
     go('quick');return;
   }
+}
+
+// ── K's advice: read the situation, then what to do, what to say, the principle ──
+async function deskAdvice(){
+  const A=V.adv;if(!A)return;
+  if(!_aiOn()){A.loading=false;A.data=null;A.err='offline';render();return;}
+  const cases=CASES.map(c=>c.id+': '+c.title+' (principle: '+c.principle+')').join('\n');
+  const sys=K_VOICE+'\nSomeone has brought you a real situation and wants to know what to do. Coach them the way you coach: calm, direct, warm, practical. No blame, no lecture, no therapy talk.\n\n'+K_CLIENT_VIEW+'\n'+K_CONFLICT_VIEW+'\n'+K_PEOPLE_VIEW+'\n'+K_PLAIN+
+    '\n\nThe library cases and their principles (use the closest one if it truly fits):\n'+cases+'\n'+TECH_LIST+
+    '\n\nReply with JSON only, no markdown: {"read":"what is really going on and what matters most right now, 1–2 sentences, said to them","steps":["3 short steps in order, each starting with a verb, each under 20 words"],"say":"the first words they could actually say or write to open, spoken, under 40 words","avoid":"the one thing not to do, under 18 words","principle":"the principle underneath, 3–8 plain words","case":"the closest library case id, or empty","next":"reply|practice"}';
+  try{
+    const raw=await callCoach(sys,'THEIR SITUATION:\n'+A.text+nbContext('real'),{maxTokens:700,featureId:'desk-advice'});
+    let j;try{j=_jsonFrom(raw);}catch(_){j=_jsonFrom(await callCoach(sys,'THEIR SITUATION:\n'+A.text+'\n\nReply with valid JSON only.',{maxTokens:700,featureId:'desk-advice',grace:true}));}
+    const steps=(Array.isArray(j.steps)?j.steps:[]).map(_clean).filter(Boolean).slice(0,4);
+    if(!j.read||!steps.length)throw new Error('Unexpected answer');
+    A.data={read:_clean(j.read),steps,say:_clean(j.say),avoid:_clean(j.avoid),principle:_clean(j.principle),case:_case(j.case)?j.case:'',next:j.next==='reply'?'reply':'practice'};
+    nbAdd({cat:'reply',title:_kShort(A.text,80),sub:'K’s advice',fix:A.data.principle,worked:'',fb:'',_noNote:true});
+  }catch(e){A.err=e;}
+  A.loading=false;if(V.view==='advice')render();
+}
+function _adviceCases(scen){
+  const m=CASES.filter(c=>c.practice&&c.practice.scen===scen);
+  return (m.length?m:CASES.filter(c=>c.cat===(_rwGoalOf(scen)||{}).k)).slice(0,2);
+}
+function renderAdvice(app){
+  const A=V.adv;if(!A){go('hub');return;}
+  let h='<main class="scr p-lav">'+gBar('K’s advice','hub');
+  h+='<div class="g-card tight"><div class="g-row top"><span class="t"><b>What you told K</b><span>'+escHtml(_kShort(A.text,220))+'</span></span></div></div>';
+  if(A.loading){
+    h+='<div class="g-card" style="display:flex;flex-direction:column;gap:14px"><div class="g-k">'+kav()+'<div><b style="font-size:15px">K is thinking it through</b><div class="small" style="margin-top:2px">What matters most, what to do, and what to say first.</div></div></div><div class="stack" style="gap:9px"><div class="sk w9"></div><div class="sk w8"></div><div class="sk w9"></div><div class="sk w5"></div></div></div>';
+  }else if(A.data){
+    const d=A.data;
+    h+='<div class="g-block"><div class="g-k" style="align-items:flex-start">'+kav()+'<div><div class="g-kick">What’s really going on</div><div style="font-size:18px;font-weight:700;line-height:1.4;margin-top:4px">'+escHtml(d.read)+'</div></div></div></div>';
+    h+='<div class="g-card tight"><div class="g-kick" style="margin-bottom:4px">What to do</div>'+d.steps.map((s,i)=>'<div class="g-row top"><span class="g-num">'+(i+1)+'</span><span class="t"><span style="font-size:15.5px;line-height:1.45;color:var(--ink)">'+escHtml(s)+'</span></span></div>').join('')+'</div>';
+    if(d.say)h+='<div class="g-card case-k"><div class="g-kick">Say this first</div><div class="case-line">“'+escHtml(d.say.replace(/^[“"]|[”"]$/g,''))+'”</div><div style="display:flex;justify-content:flex-end;margin-top:8px"><button class="g-chip" data-act="adv-copy">'+ic('copy','s')+'Copy</button></div></div>';
+    if(d.avoid)h+='<div class="g-card tight"><div class="g-row top"><span class="t"><b>Avoid</b><span>'+escHtml(d.avoid)+'</span></span></div></div>';
+    if(d.principle)h+='<div class="case-pr"><small>The principle</small><b>'+escHtml(d.principle)+'</b></div>';
+    const c=d.case?_case(d.case):null;
+    if(c){const cc=_caseCat(c.cat);h+='<button class="lib-row '+cc.c+'" data-case="'+c.id+'"><span class="lib-dot"></span><span class="lib-t"><small>Related case · '+escHtml(cc.t)+'</small><b>'+escHtml(c.title)+'</b><span>'+escHtml(c.principle)+'</span></span>'+ic('chev','s')+'</button>';}
+    h+='<div class="push"></div><div class="g-kick">Then, when you’re ready</div><div class="g-row2" style="flex-direction:column">'+
+      gCta(d.next==='reply'?'Write the message with K':'Rehearse the conversation',d.next==='reply'?'adv-reply':'adv-practice')+
+      gCta(d.next==='reply'?'Rehearse the conversation':'Write the message with K',d.next==='reply'?'adv-practice':'adv-reply',{sec:true})+'</div>';
+  }else{
+    const cs=_adviceCases(A.scen);
+    h+='<div class="g-card"><div class="g-k">'+kav()+'<div><b style="font-size:15px">'+(A.err==='offline'?'K needs a connection to read this':'K couldn’t finish that one')+'</b><div class="small" style="margin-top:2px">'+(A.err==='offline'?'In the meantime, these cases are close to your situation.':'Try again in a moment. These cases are close to your situation.')+'</div></div></div>'+(A.err&&A.err!=='offline'?_errDetail(A.err):'')+'</div>';
+    h+='<div class="stack" style="gap:10px">'+cs.map(c=>{const cc=_caseCat(c.cat);return '<button class="lib-row '+cc.c+'" data-case="'+c.id+'"><span class="lib-dot"></span><span class="lib-t"><small>'+escHtml(cc.t)+'</small><b>'+escHtml(c.title)+'</b><span>'+escHtml(c.principle)+'</span></span>'+ic('chev','s')+'</button>';}).join('')+'</div>';
+    h+='<div class="push"></div>'+(A.err!=='offline'?gCta('Try again','adv-retry'):'');
+  }
+  h+='</main>';
+  app.innerHTML=h;wireCommon(app);
+  app.querySelectorAll('[data-case]').forEach(b=>b.addEventListener('click',()=>openCase(b.dataset.case)));
+  const on=(s,f)=>{const el=app.querySelector(s);if(el)el.addEventListener('click',f);};
+  on('[data-act="adv-copy"]',()=>copyText(A.data.say.replace(/^[“"]|[”"]$/g,'')));
+  on('[data-act="adv-retry"]',()=>{A.loading=true;A.err=null;render();deskAdvice();});
+  on('[data-act="adv-reply"]',()=>{V.deskRoute=Object.assign({},V.deskRoute||{},{rwant:'fix',reply_text:''});deskGo('reply');});
+  on('[data-act="adv-practice"]',()=>{V.deskRoute=Object.assign({},V.deskRoute||{},{scenario:A.scen});deskGo('practice');});
 }
 // ═══════════════════════════════════════════════════════════════════════════
 // HELP ME REPLY: paste their message, K drafts what to say, shows why line by
@@ -2957,7 +3020,7 @@ function renderReal(app){
      const big=b?(b.c?b.c.replace(' · ',' ')+'. '+cap(RW.persona)+'.':b.who.replace(' · ',', ')):(RW_ROLE[RW.scenario]||'The other person')+(RW.persona?'. '+cap(RW.persona)+'.':'');
      h+='<div class="g-block"><div class="g-kick">Who you’re talking to</div><div class="g-big">'+escHtml(big)+'</div>'+(b&&b.who&&b.moment?'<p style="margin-top:8px;font-size:16px;line-height:1.45;font-weight:600">'+escHtml(b.moment)+'</p>':'')+'</div>';
      if(RW_AIM[RW.scenario]&&!(b&&b.c))h+='<div class="g-card tight"><div class="g-row top"><span class="t"><b>Your goal</b><span>'+escHtml(RW_AIM[RW.scenario])+'</span></span></div></div>';}
-    if(b&&b.c)h+='<div class="g-card tight"><div class="g-row"><span class="t"><b>The job</b><span>'+escHtml(b.job)+'</span></span></div><div class="g-row"><span class="t"><b>'+escHtml(RW_POS_LBL[RW.scenario]||'Your position')+'</b><span>'+escHtml(b.pos)+'</span></span></div></div>';
+    if(b&&b.c)h+='<div class="g-card tight"><div class="g-row"><span class="t"><b>'+(RW.source==='desk'?'The situation':'The job')+'</b><span>'+escHtml(b.job)+'</span></span></div>'+(b.pos?'<div class="g-row"><span class="t"><b>'+escHtml(RW_POS_LBL[RW.scenario]||'Your position')+'</b><span>'+escHtml(b.pos)+'</span></span></div>':'')+'</div>';
     if(RW.fromCase)h+='<div class="g-block p-lav"><div class="g-kick">'+escHtml(RW.fromCase.label||'From the library · try the principle')+'</div><div style="font-size:16px;font-weight:700;line-height:1.35">'+escHtml(RW.fromCase.principle)+'</div></div>';
     if(RW.prevFix)h+='<div class="g-block p-lav"><div class="g-kick">Last time, K said</div><div style="font-size:16px;font-weight:700;line-height:1.35">'+escHtml(_kShort(RW.prevFix,200))+'</div></div>';
     if(RW.fromReply)h+='<div class="g-card tight"><div class="g-row"><span class="t"><b>Their message</b><span>'+escHtml(_kShort(RW.question,160))+'</span></span></div>'+(RW.fromReply.reply?'<div class="g-row"><span class="t"><b>You replied</b><span>'+escHtml(_kShort(RW.fromReply.reply,160))+'</span></span></div>':'')+'</div>';
