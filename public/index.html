@@ -760,6 +760,15 @@ html[data-theme="dark"] .g-alert{background:#1B1E24;border:1px solid rgba(255,25
 mark.sting{background:none;color:inherit;font-weight:800;box-shadow:inset 0 -.5em 0 rgba(0,0,0,.16);padding:0 .1em;border-radius:2px}
 mark.sting.own{display:table;margin-top:8px;font-size:1.25em;letter-spacing:-.01em;line-height:1.25}
 .case-feel{margin-top:8px;font-size:15px;font-style:italic;font-weight:600;opacity:.72;line-height:1.4}
+/* Should I say yes? */
+.yc-entry{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px 14px;border-radius:18px;background:var(--card);border:1px solid var(--line)}
+.yc-entry>span:first-child{width:38px;height:38px;border-radius:12px;background:#A9D98E;color:#0E2408;display:grid;place-items:center;flex-shrink:0}
+.yc-entry>span:nth-child(2){flex:1;display:flex;flex-direction:column;gap:2px}
+.yc-entry b{font-size:15.5px}.yc-entry small{font-size:12.5px;color:var(--ink-2)}
+.yc-entry>.ic{color:var(--ink-3)}
+.yc-dots{display:flex;gap:6px}.yc-dots i{width:22px;height:4px;border-radius:2px;background:var(--line)}.yc-dots i.on{background:var(--ink)}
+.yc-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.yc-btns .g-cta{justify-content:center}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -799,6 +808,8 @@ const CHANGELOG=[
   {v:'1.4',d:'2026-10-19',items:[
     'If you’ve told K what’s hardest, the home screen suggests where to start: one pick from K while you’re new, three to choose from after that. You can always type your own situation instead.',
     'The case of the day now comes from what you told K, not at random.',
+    'New: “Should I say yes?”, five quick questions before you agree to anything (in the Library).',
+    'Disagreement cases and K’s coaching now follow Kian’s own approach: read the leverage, pick your moment, never let it happen twice.',
     'Cases: try it first, then see how K would say it. Each moment now shows the sting and how it feels.',
     'Practice partners keep their roles straight (no more teammate accusing you of their own move).',
     'The floating Hub button is gone. When back doesn’t lead home, a hub icon sits at the top right.',
@@ -1195,6 +1206,8 @@ const K_CLIENT_VIEW=`How K sees client work (the coach's own view; let it shape 
 - Never think like a mere service provider. Something about you must stand out from a pool of similarly manufactured talent. Know what you are really selling (the result, the experience of working with you, reliability, peace of mind; not your hours) and say it. Aim to be the standard, not the best: common is common.
 - Clients don't care about your technique; they care whether you solve their problem. Talk about their problem, keep it simple.
 - Market rate is only a reference: what others agreed was acceptable. Never treat it as a rule you must justify yourself against.
+- Never belittle your own value to get the gig: if they know you’ll take less, why would they pay more? Say yes to less only for a reason: you believe in the project, it brings repeat work, or you get a share of the upside.
+- A soft no costs more than a firm one. Saying no to cheap work buys time for your own.
 - Know three numbers before you talk: your price, your lowest price, and how much of the gap you will defend. Know when to say no and walk away. Not every client is your client; walking away politely is a legitimate result.
 - Build a buffer of 10–20% into your price, so a discount doesn't hurt you. When they ask for a discount, give them something: a real 10–20%, or something extra (a free revision, a faster start) instead of money. A flat no can let the deal go cold. But never cut far: going from 100 to 20 makes your price look like a joke, and you with it. A discount request is a test of how far they can push; know where you hold the line.
 - If you give something, get something back: a smaller scope, phased payment, a longer timeline, a credit, more work later. Racing to the bottom to "get a foot in the door" teaches the client you are cheap.
@@ -1205,7 +1218,7 @@ const K_CLIENT_VIEW=`How K sees client work (the coach's own view; let it shape 
 If the speaker's situation includes their price or the lowest they will accept, judge whether they kept to it, and say so plainly.`;
 const K_INTERVIEW_VIEW=`How K sees interviews and introductions: bring something you did, not your grades (a sold-out student show beat a 4.0 GPA in Kian's first interview). Lead with one story only you can tell. Many interviews are just a conversation: be someone they'd like to work with. Soft skills beat raw talent; the most gifted people who struggle are the ones who can't explain their value.`;
 const K_PEOPLE_VIEW=`How K sees talking to people: it's a skill, not a personality (Kian was an introvert who scared customers away and learned to act outgoing). Connection matters as much as content. Answer, add one detail they can pick up, hand it back. Listening beats jumping topics. Never coach pickup lines, tricks or pressure; coach curiosity and being comfortably yourself.`;
-const K_CONFLICT_VIEW=`How K sees disagreement: it is part of every career, so the skill is having it well, not avoiding it. A professional communicates with respect, even when they disagree (Kian's three marks of a professional: you get paid, you're reliable, you communicate with respect). Agree on the goal before you argue the path. Correct the record, not the person. Say the fact and its effect, not a label. One issue at a time. Warm, then firm. Silence teaches people that what they did works; an explosion makes you the problem. Ask for their side, and mean it.`;
+const K_CONFLICT_VIEW=`How K sees disagreement (Kian’s view; let it shape the diagnosis without lecturing): Read the leverage first: what to do depends on the stakes and who holds the power. You are hired to do a job, not to win the creative argument, unless you own the outcome. Pick your moment with a boss: push back only when they are open to options; praise first, frame it as a discussion, and let them make the call. A lot of nitpicking is a show for their own boss; don’t take it personally. Never be a pushover: push back just enough. Whatever happens, don’t let it happen twice. If money fixes it and you can afford it, pay; if not, offer something real instead (like future work). Argue from the greater good, not your ego. A professional gets paid, is reliable and communicates with respect. Stay honest: never coach lying, blaming others or threatening people.`;
 const K_RULES='If the transcript is very short (under 15 words, mostly silence, or clearly incomplete) reply with exactly: "No worries, let\'s give it another go." Nothing else.';
 
 // ── Techniques (tap to learn). Each: title · summary · how · watch · from · outcome ──
@@ -1897,29 +1910,29 @@ const CASES=[
   // ── Disagreement ──
   {id:'credit',cat:'disagree',title:'A teammate takes credit for your idea',
    feel:'And you’re sitting there, fuming.',moment:'Last week you told a teammate your idea. Today, in the team meeting, they present it as their own. [[Your boss loves it.]]',
-   most:'Staying quiet, then complaining to everyone else later. Or snapping in the meeting: “That was my idea!”',
-   fails:'Staying quiet tells them they can do it again. Snapping in front of everyone makes you look petty, even if you’re right.',
+   most:'Exploding in the meeting without thinking. Or letting it slide and saying nothing.',
+   fails:'An outburst only works if you hold the leverage. Letting it slide tells them they can do it again.',
    kWhen:'in the meeting',k:'“Glad you like it. When I came up with this last week, I also had an idea for the next step. Can I take that part?”',
-   principle:'Correct the record, not the person.',
-   then:'After the meeting, talk to them alone, once, calmly: “That was my idea in there. Next time, let’s present it together.”',
+   principle:'Read your leverage. Then make sure it never happens twice.',
+   then:'Afterward, decide coolly: is this person worth sorting it out with, or do you quietly never work with them again? Either way, it doesn’t happen a second time.',
    story:null,tech:'warm-then-firm',
    practice:{scen:'conflict',who:'Your teammate · in the team meeting, your boss listening',moment:'They just presented your idea as their own. [[Your boss loves it.]]',role:'You are the teammate who just presented the speaker’s idea in the team meeting as if it were yours, with the boss listening. It did start with the speaker, but you tell yourself it was a team idea. You are friendly and a little defensive, and you don’t want to look bad in front of the boss. You never accuse the speaker of taking credit: you are the one who took it.',line:'“…so that’s the idea. Pretty happy with how it came together.”'}},
   {id:'boss-plan',cat:'disagree',title:'Your boss’s plan has a gap',
    feel:'And you can already see the mess coming.',moment:'Your manager wants to cut the testing week to hit a launch date. You’re fairly sure [[it will blow up after launch]].',
-   most:'“Okay.” Then hoping you’re wrong. Or: “That’s a bad idea.”',
-   fails:'Agreeing and worrying helps nobody. Calling it a bad idea makes it about who’s right, and the boss has to win that one.',
-   k:'“I’m with you on the date. The one risk I see is the payment flow: last time we skipped testing there, we lost two days fixing it live. Could we test just that part and still make Friday?”',
-   principle:'Agree on the goal. Disagree on the path.',
-   then:'Bring one fact, not five. Offer a smaller version of your idea they can say yes to. Then let them decide, and back the decision.',
+   most:'Arguing on the spot. Or saying nothing, then “I told you so” when it breaks.',
+   fails:'Arguing once they’ve decided makes it about their ego, and the boss wins that one. Saying nothing leaves you holding the blame.',
+   k:'“Your call, and I’ll make Friday work. One thing for you to weigh: last time we skipped testing on payments, we lost two days fixing it live. Want me to test just that part?”',
+   principle:'Pick your moment. Say it once, then let them decide.',
+   then:'Praise first, frame it as a question, not a fight. Then do the job well whatever they choose. You’re paid to deliver, not to win the argument.',
    story:null,tech:'two-good-options',
    practice:{scen:'disagree',who:'Your manager · one-on-one',moment:'They’ve decided to cut testing to launch a week early.',role:'You are the manager. You decided to cut testing because the launch date matters to your own boss. You listen to a clear, specific risk, but you push back on vague worries.',line:'“Let’s cut the testing phase. We need that week back.”'}},
   {id:'gatekeeper',cat:'disagree',title:'One person picks apart everything you do',
    feel:'You’re worn out, and starting to wonder why you bother.',moment:'Every idea has to go through the person at the top. Approvals take forever, and [[they question every detail]].',
-   most:'Sending more versions, faster, and hoping the next one sticks. Or quietly checking out.',
-   fails:'You’re guessing at a standard only they know. Every round you guess wrong costs you time and confidence.',
-   k:'“To save us both a few rounds: what are the two or three things that matter most to you on this? I’ll make sure those are right before I send anything.”',
-   principle:'Ask for their criteria before you hand in the work.',
-   then:'Write their answer down and repeat it back when you deliver: “You said A, B and C. Here’s how this does each.”',
+   most:'Taking every note to heart and redoing everything. Or arguing each point.',
+   fails:'Often the notes are for their own boss, to show they’re working. Fighting them, or breaking yourself over them, misreads the game.',
+   k:'“Thanks, this helps. Of these notes, which two matter most to you? I’ll nail those first.”',
+   principle:'Don’t take it personally. A lot of it is a show.',
+   then:'Make the changes they can see and keep the core of your work. Don’t pour your heart into round eight: there is no perfect project.',
    story:{src:'book',t:'On one big project, every idea and creative decision had to go through one man at the top. Approvals took forever, and he picked apart every detail until the composer on the job started asking himself what he was even doing there. It paid well, but it was no fun at all. What he took from it: there is no perfect project. Walk in knowing that, and you’ll be fine.'},
    tech:'their-problem',
    practice:{scen:'disagree',who:'The project lead · reviewing your work',moment:'This is the fourth round of changes on the same piece.',role:'You lead the project and keep asking for changes. You can’t say exactly what’s wrong; it just doesn’t feel right yet.',line:'“It’s close, but it’s still not quite there. Can you have another go?”'}},
@@ -1927,9 +1940,9 @@ const CASES=[
    feel:'You’re tired of being the safety net.',moment:'Their part arrives late again, and [[you’re the one staying late to cover it]].',
    most:'Covering for them and saying nothing. Or: “You’re always late.”',
    fails:'Covering trains them to keep doing it. “Always” is a label, and people defend themselves against labels instead of listening.',
-   k:'“Can I raise something? The last two handoffs came in after the deadline, and I stayed late both times to make ours. What’s getting in the way?”',
-   principle:'The fact and its effect. Then a question.',
-   then:'Agree one small thing together: an earlier check-in, a warning a day ahead. Then thank them the first time it works.',
+   k:'“Hey, your part’s always solid, and I need it on time too. The last two came in late and I covered both. What would help you hit Friday?”',
+   principle:'Start positive. If that fails, be plain about the consequence.',
+   then:'If it slips again, say it once, calmly, and mean it: “If this keeps happening, I’ll have to bring someone else in.”',
    story:null,tech:'labeling',aka:'Close to the Situation–Behavior–Impact model',
    practice:{scen:'feedback',who:'Your teammate · over coffee',moment:'Their part has been late twice this month, and you’ve covered both times.',role:'You are the teammate whose work was late twice; the speaker covered for you both times. You know it, you feel a bit awkward, and at first you make excuses (too much on your plate).',line:'“Hey, you wanted to talk?”'}},
   {id:'one-more',cat:'disagree',title:'Your boss hands you one more project',
@@ -1944,10 +1957,10 @@ const CASES=[
   {id:'friend-free',cat:'disagree',title:'A friend wants your work for free',
    feel:'You love them. You don’t want to work for free.',moment:'“You’re a designer, right? Could you do my wedding invitations? [[Should be quick.]]”',
    most:'Yes, then resenting every revision. Or an awkward excuse that hurts more than a clear answer.',
-   fails:'Free work for friends is where friendships go to get strained. A vague excuse makes them guess, and they guess the worst.',
-   k:'“I’d love to help. For friends I do a friend rate, and I’ll make it something special. Or if the budget’s tight, I know someone great who’s cheaper.”',
-   principle:'Protect the friendship by not working for free and resenting it.',
-   then:'If you do decide to gift it, say so out loud and set the limit: “This one’s my gift, one round of changes.”',
+   fails:'A soft no turns into a yes you resent, or a favor you chase for months. Friendships sour that way.',
+   k:'“I love you guys, and I don’t do free. For friends I do a friend rate, and I’ll make it special. Or I can point you to someone cheaper.”',
+   principle:'A soft no costs more than a firm one.',
+   then:'If they push, say it again, the same way. If you choose to gift it, say so out loud and set the limit: “This one’s my gift, one round of changes.”',
    story:null,tech:'two-good-options',
    practice:{scen:'sayno',who:'A friend · over dinner',moment:'They’re getting married in two months.',role:'You are the speaker’s friend, getting married soon, asking them to design your invitations for free. You think it is a small favor.',line:'“You’re a designer, right? Could you do our wedding invitations? Should be quick.”'}},
   // ── Money & clients ──
@@ -2085,9 +2098,9 @@ const CASES=[
    feel:'And part of you agrees with them.',moment:'You brought people in to help on a big job. Now one of them says: [[“For what we’re paid, this many revisions is too much.”]]',
    most:'Pulling rank: “That’s the job.” Or promising money you don’t have.',
    fails:'Pulling rank loses their goodwill when you need it most. Promising money you can’t pay loses their trust later.',
-   k:'“You’re right, this is more than we planned. The budget is fixed, so here’s what I can do: two more rounds at most, and I’ll handle the client so it stops there.”',
-   principle:'Say the limit. Then say what you can do.',
-   then:'Agree what “done” means before the next round, and protect your team from the client, not the other way around.',
+   k:'“You’re right, this is more than we planned. Let me see what I can add. If the budget really can’t move, you’re first on my list for the next job, and I’ll hold the client to two more rounds.”',
+   principle:'If money fixes it, pay. If it can’t, give something real instead.',
+   then:'A bit less profit beats a war in the middle of a job. Promise only what you’ll actually deliver.',
    story:{src:'book',t:'A composer took on a big conference job: the opening films for a three-day tech event. Too much for one person, so he brought in two sound designers and two mix engineers. More people meant more problems: complaints about pay, frustration at too many revisions. Talking to the client took most of his time. The result was outstanding, and learning to manage people turned him into an audio director.'},
    tech:'warm-then-firm',
    practice:{scen:'conflict',who:'Ben · a sound designer on your team',moment:'It’s the fifth round of revisions this week.',role:'You are Ben, a sound designer on the speaker’s team; the speaker leads the team. You feel overworked and underpaid, and you are venting.',line:'“Honestly, for what we’re paid, this many revisions is too much.”'}},
@@ -2204,6 +2217,7 @@ function renderLibrary(app){
   const shelf=(title,cases,c)=>'<section class="shelf '+c+'"><div class="shelf-h"><span class="lib-dot"></span><b>'+escHtml(title)+'</b><small>'+cases.length+'</small></div><div class="shelf-row">'+cases.map(card).join('')+'</div></section>';
   let h='<main class="scr">'+gBar('Library','hub');
   h+='<p class="sub" style="margin-top:-4px">One moment, one line to say. Two minutes each.</p>';
+  h+='<button class="yc-entry" data-act="yescheck"><span>'+ic('check','s')+'</span><span><b>Should I say yes?</b><small>Five quick questions before you agree to anything</small></span>'+ic('chev','s')+'</button>';
   // For you: from what they said is hard
   const ks=(typeof _sugKeys==='function')?_sugKeys():[];let mine=[];
   ks.forEach(k=>(SUG_MAP[k].cases||[]).forEach(id=>{const c=_case(id);if(c&&!mine.includes(c))mine.push(c);}));
@@ -2213,6 +2227,7 @@ function renderLibrary(app){
   h+='</main>';
   app.innerHTML=h;wireCommon(app);
   app.querySelectorAll('[data-case]').forEach(b=>b.addEventListener('click',()=>openCase(b.dataset.case)));
+  const yc=app.querySelector('[data-act="yescheck"]');if(yc)yc.addEventListener('click',openYesCheck);
 }
 function _sting(s){s=String(s||'');const end=/(^|[.!?”]\s)\[\[[^\]]+\]\]$/.test(s.trim());return escHtml(s.trim()).replace(/\[\[(.+?)\]\]/g,'<mark class="sting'+(end?' own':'')+'">$1</mark>');}
 function _unsting(s){return String(s||'').replace(/\[\[|\]\]/g,'');}
@@ -2239,10 +2254,45 @@ function renderCase(app){
     h+='<details class="g-card tight case-why"><summary><b>Why this works</b><span class="small">'+(c.story&&c.story.t?'Plus a real story':'What most people get wrong')+'</span>'+ic('chev','s')+'</summary>'+why+'</details>';
     h+='<div class="push"></div>'+gCta(_casesDone()[c.id]?'Try it again':'Try it','case-practice');
   }
+  if(['one-more','friend-free','walk-away','free-now','big-name'].includes(c.id))h+='<button class="link case-peek" data-act="yescheck" style="margin-top:-6px">Not sure yet? Should I say yes? →</button>';
   h+='</main>';
   app.innerHTML=h;wireCommon(app);
   const b=app.querySelector('[data-act="case-practice"]');if(b)b.addEventListener('click',()=>caseToPractice(c));
+  app.querySelectorAll('[data-act="yescheck"]').forEach(b=>b.addEventListener('click',openYesCheck));
   const pk=app.querySelector('[data-act="case-peek"]');if(pk)pk.addEventListener('click',()=>{V.caseOpen=c.id;render();});
+}
+
+// ── Should I say yes? A quick check in Kian's logic ─────────────────────────
+const YES_Q=[
+  {q:'Do you believe in this, or does it really fit what you love doing?',w:1},
+  {q:'Is there something real in it for you? Repeat work, a share of the upside, a door that matters.',w:1},
+  {q:'Do you like working with them?',w:1},
+  {q:'Will it eat time you need for your own work, or for better-paid work?',w:-1},
+  {q:'Will a yes teach them you’ll take less, or have they pushed you before?',w:-1}
+];
+function openYesCheck(){
+  const a=[];
+  const draw=sh=>{
+    const i=a.length;let h='<div class="kick" style="margin:0">Should I say yes?</div>';
+    if(i<YES_Q.length){
+      h+='<div class="yc-dots">'+YES_Q.map((_,k)=>'<i'+(k<i?' class="on"':'')+'></i>').join('')+'</div>';
+      h+='<div class="g-h" style="font-size:22px;line-height:1.25">'+escHtml(YES_Q[i].q)+'</div>';
+      h+='<div class="yc-btns"><button class="g-cta sec" data-yc="1">Yes</button><button class="g-cta sec" data-yc="0">No</button></div>';
+    }else{
+      const pros=YES_Q.filter((x,k)=>x.w>0&&a[k]).length,cons=YES_Q.filter((x,k)=>x.w<0&&a[k]).length;
+      const r=pros>=2&&cons===0?{t:'Say yes, on your terms.',p:'Never belittle your own value to get it. If they know you’ll take less, why would they pay more?',l:'“I’m in. Here’s what it takes from my side, and here’s what I need from yours.”',c:'p-teal'}
+        :pros>=1&&cons<=1?{t:'Yes, if you get something back.',p:'Give only to get. A lower price buys less work, or buys you the next job.',l:'“I can do it at this price if we cut it to the essentials, and I’m first in line for the next one.”',c:'p-lav'}
+        :{t:'Say no. Firmly.',p:'A soft no costs more than a firm one. Saying no to cheap time buys time for your own work.',l:'“Thanks for thinking of me. I can’t take this one on.” If they push, say it again, the same way.',c:'p-pink'};
+      h+='<div class="g-block '+r.c+'" style="margin-top:6px"><div class="g-kick">K’s read</div><div class="g-big" style="font-size:24px">'+escHtml(r.t)+'</div><p style="margin-top:8px;font-size:15px;line-height:1.45;font-weight:500">'+escHtml(r.p)+'</p></div>';
+      h+='<div class="g-card case-k"><b style="font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)">Say it like this</b><div class="case-line">'+escHtml(r.l)+'</div></div>';
+      h+='<p class="small" style="margin:0">This is a gut check, not a rule. Read your leverage: the stakes decide.</p>';
+      h+='<div class="yc-btns"><button class="g-cta sec" data-yc="again">Start over</button><button class="g-cta" data-close>Done</button></div>';
+    }
+    sh.querySelector('.yc').innerHTML=h;
+    sh.querySelectorAll('[data-yc]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.yc==='again')a.length=0;else a.push(b.dataset.yc==='1');draw(sh);}));
+    sh.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',closeSheet));
+  };
+  openSheet('<div class="yc stack" style="gap:14px"></div>',{wire:draw});
 }
 // ═══════════════════════════════════════════════════════════════════════════
 // HUB (home): K's line, Help me reply · Practice a talk, Pitch it, the streak
