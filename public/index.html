@@ -771,6 +771,7 @@ const CHANGELOG=[
   {v:'1.4',d:'2026-10-19',items:[
     'If you’ve told K what’s hardest, the home screen suggests where to start: one pick from K while you’re new, three to choose from after that. You can always type your own situation instead.',
     'The case of the day now comes from what you told K, not at random.',
+    'The floating Hub button is gone. When back doesn’t lead home, a hub icon sits at the top right.',
     'Library is lighter: swipe one row per topic, titles only. Each case leads with the line to say; the why folds away.',
     'Home fits better: the Pitch it tile no longer gets cut off, and the case of the day card is cleaner.',
     'Spoken prices come through right: “six thousand five” is 6,500, not 6005.',
@@ -937,7 +938,9 @@ const IC={
 };
 function ic(k,cls){return '<svg class="ic'+(cls?' '+cls:'')+'" viewBox="0 0 24 24" aria-hidden="true">'+(IC[k]||'')+'</svg>';}
 function kav(cls){return '<span class="kav'+(cls?' '+cls:'')+'"><img src="'+COACH_AVATAR+'" alt="K"></span>';}
-function gBar(title,back,dots){return '<div class="g-bar"><button class="g-back" data-go="'+(back||'hub')+'" aria-label="Back">'+ic('back')+'</button><h1>'+escHtml(title)+'</h1>'+(dots?'<div class="g-dots" aria-hidden="true">'+dots.map((_,i)=>'<i'+(dots[i]?' class="on"':'')+'></i>').join('')+'</div>':'')+'</div>';}
+// Top bar. When back doesn't lead to the hub, a hub button sits at the right: one rule, one place.
+const HUB_BTN='<button class="g-back g-home" data-go="hub" aria-label="Hub"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg></button>';
+function gBar(title,back,dots){back=back||'hub';return '<div class="g-bar"><button class="g-back" data-go="'+back+'" aria-label="Back">'+ic('back')+'</button><h1>'+escHtml(title)+'</h1>'+(dots?'<div class="g-dots" aria-hidden="true">'+dots.map((_,i)=>'<i'+(dots[i]?' class="on"':'')+'></i>').join('')+'</div>':'')+(back!=='hub'?HUB_BTN:'')+'</div>';}
 function gDots(n,on){const a=[];for(let i=0;i<n;i++)a.push(i===on);return a;}
 function gCta(label,action,opts){opts=opts||{};return '<button class="g-cta'+(opts.sec?' sec':'')+'" data-act="'+action+'"'+(opts.disabled?' disabled':'')+(opts.style?' style="'+opts.style+'"':'')+'>'+escHtml(label)+'<span class="ar">'+ic(opts.icon||'arrow','s')+'</span></button>';}
 
@@ -996,7 +999,7 @@ function render(){
 function renderHubPill(){
   let b=document.getElementById('hubpill');
   const scr=document.querySelector('#app .scr');
-  const show=S.onboarded&&V.view!=='hub'&&V.view!=='owner'&&!(scr&&scr.classList.contains('g-call'));
+  const show=false; // replaced by the hub button in the top bar
   document.body.classList.toggle('has-hub',!!show);
   if(!show){if(b)b.remove();return;}
   if(!b){b=document.createElement('button');b.id='hubpill';b.setAttribute('aria-label','Hub');b.innerHTML='<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg><span>Hub</span>';
@@ -1439,7 +1442,7 @@ function renderNotebook(app){
 function renderNbEntry(app){
   const e=_nb().entries.find(x=>x.id===V.nbId);
   if(!e){go('notebook');return;}
-  let h='<main class="scr '+(NB_CAT_P[e.cat]||'')+'"><div class="g-bar"><button class="g-back" data-go="back" aria-label="Back">'+ic('back')+'</button><h1>'+escHtml(NB_CAT_NAME[e.cat]||'Session')+'</h1></div>';
+  let h='<main class="scr '+(NB_CAT_P[e.cat]||'')+'"><div class="g-bar"><button class="g-back" data-go="back" aria-label="Back">'+ic('back')+'</button><h1>'+escHtml(NB_CAT_NAME[e.cat]||'Session')+'</h1>'+(V._back&&V._back!=='hub'?HUB_BTN:'')+'</div>';
   h+='<div class="g-block"><div class="g-kick">'+escHtml(_nbRel(e.iso))+(e.sub?' · '+escHtml(e.sub):'')+'</div><div class="g-big" style="font-size:19px">'+escHtml(e.title)+'</div>'+(e.elapsed?'<div class="small" style="margin-top:8px;color:var(--pi);opacity:.7">'+fmtMs(e.elapsed*1000)+(e.words?' · '+e.words+' words':'')+(e.fol?' · '+e.fol+(e.fol===1?' follow-up':' follow-ups'):'')+'</div>':'')+'</div>';
   if(e.extra&&e.extra.html)h+=e.extra.html;
   else if(e.fb)h+=renderKNotes(e.fb);
@@ -1666,7 +1669,7 @@ function _sySv(k){return '<svg viewBox="0 0 24 24">'+SY_IC[k]+'</svg>';}
 function renderSync(app){
   const y=S.sync,st=_syStatus();
   const LOCK='<div class="device">'+ic('lock','s')+'<div><b>Encrypted on this device.</b> Only scrambled data leaves it; not even I can read your notebook. Keep the code private: anyone with it can open your notebook.</div></div>';
-  let h='<main class="scr p-lav"><div class="g-bar"><button class="g-back" data-act="sy-back" aria-label="Back">'+ic('back')+'</button><h1>Sync</h1></div>';
+  let h='<main class="scr p-lav"><div class="g-bar"><button class="g-back" data-act="sy-back" aria-label="Back">'+ic('back')+'</button><h1>Sync</h1>'+HUB_BTN+'</div>';
   if(!y){
     const join='<div class="g-card"><div class="g-kick">Already syncing on another device?</div><div class="flow" style="margin-top:6px">'+
       '<div class="fstep"><span class="fnum">1</span><div><b>Open Settings on that device</b><span>Then Notebook → Sync.</span></div></div>'+
@@ -2527,7 +2530,7 @@ function renderSettings(app){
 function renderSettingsPage(app,sp){
   const p=_P(),u=_usage();
   const T={you:'You',coaching:'Coaching',usage:'Usage & codes',look:'Appearance',data:'Your data',about:'About'}[sp]||'Settings';
-  let h='<main class="scr" style="--gap:12px"><div class="bar"><button class="ibtn r" data-act="st-back" aria-label="Back">'+ic('back')+'</button><h1 class="h1">'+escHtml(T)+'</h1></div>';
+  let h='<main class="scr" style="--gap:12px"><div class="bar"><button class="ibtn r" data-act="st-back" aria-label="Back">'+ic('back')+'</button><h1 class="h1" style="flex:1">'+escHtml(T)+'</h1>'+(V._spFromHub?'':HUB_BTN)+'</div>';
   if(sp==='you'){
     h+='<p class="sub">K reads this before every reply and every note, so the coaching fits you. It never leaves this device except inside a coaching request.</p>';
     h+='<div class="card stack" style="gap:14px">'+
