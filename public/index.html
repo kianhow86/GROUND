@@ -412,6 +412,23 @@ details.convo summary::-webkit-details-marker{display:none}
 .intro-links span{display:none}
 @media (max-height:700px){.end-brand{margin-top:4vh}.intro .end-brand .mark{width:84px;height:84px;font-size:46px;border-radius:24px}.end-brand h1{margin-top:22px;font-size:21px}.intro .big{font-size:36px}.intro .deck{height:290px}.ic-card{font-size:18px;padding:16px}.ic-card:nth-child(2){top:40px}.ic-card:nth-child(3){top:80px}.ic-card:nth-child(4){top:120px}.ic-card:nth-child(5){top:160px}.ic-card:nth-child(6){top:200px}.intro .logo{margin-top:2vh}}
 @media (prefers-reduced-motion:reduce){.intro .sc,.intro .big,.ic-card,.sk-card,.intro .logo,.end-brand{transition:none;animation:none;opacity:1;transform:none}}
+.sug-k{display:flex;gap:12px;align-items:flex-start}
+.sug-k .kav{width:44px;height:44px;flex-shrink:0}
+.sug-k small{display:block;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#C4AEFF}
+.sug-k p{margin:4px 0 0;font-size:17px;font-weight:700;line-height:1.4}
+.sug-btns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.sug-btns button{display:flex;align-items:center;justify-content:center;text-align:center}
+.sug-btns .desk-go{min-height:50px;font-size:15px}
+.sug-else{min-height:50px;border-radius:15px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:#fff;font-size:15px;font-weight:800}
+.sug-type{display:flex;align-items:center;gap:10px;min-height:46px;padding:0 14px;border-radius:14px;background:rgba(255,255,255,.05);border:1px dashed rgba(255,255,255,.18);color:rgba(255,255,255,.6);font-size:14.5px;text-align:left}
+.sug-type.link{border:0;background:none;padding:0 2px;min-height:40px;color:#C4AEFF;font-weight:800}
+.sug-h{display:block;font-size:21px;font-weight:800;letter-spacing:-.025em}
+.sug-why{display:block;font-size:13px;color:rgba(235,235,245,.62);margin-top:3px}
+.sug-row{display:flex;align-items:center;gap:12px;min-height:60px;padding:8px 12px;border-radius:16px;background:rgba(255,255,255,.06);color:#fff;text-align:left}
+.sug-row>span:first-child{width:40px;height:40px;border-radius:12px;background:var(--p);color:var(--pi);display:grid;place-items:center;flex-shrink:0}
+.sug-row b{display:block;font-size:15px;font-weight:800;line-height:1.25}
+.sug-row small{display:block;font-size:12.5px;color:rgba(235,235,245,.62);margin-top:2px}
+.desk.sug-a{gap:10px}
 .desk-k{display:flex;gap:10px;align-items:flex-start;flex-shrink:0}
 .desk-k .kav{width:44px;height:44px;flex-shrink:0}
 .desk-bubble{flex:1;min-width:0;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:6px 22px 22px 22px;padding:12px 14px}
@@ -650,6 +667,32 @@ html[data-theme="dark"] .g-alert{background:#1B1E24;border:1px solid rgba(255,25
   .scr{box-shadow:0 0 0 1px var(--line),0 10px 40px rgba(0,0,0,.08)}
   .intro{box-shadow:0 0 0 1px rgba(255,255,255,.06)}
 }
+
+/* Hub fits one screen, no scrolling: the top box takes what it needs, the tiles share the rest */
+.scr.hub{height:100dvh;min-height:0;overflow:hidden}
+.scr.hub>*{flex-shrink:0}
+.hub-tiles{flex:1 1 0 !important;min-height:0;display:grid;grid-template-rows:minmax(0,1.65fr) minmax(0,1fr);gap:12px}
+.hub-tiles .v3-two{min-height:0;height:100%}
+.hub-tiles .v3-blk,.scr.hub .hub-tiles .v3-blk{min-height:0;height:100%;overflow:hidden}
+.hub-tiles .v3-wide,.scr.hub .hub-tiles .v3-wide{min-height:0;height:100%;overflow:hidden;justify-content:space-between}
+.scr.hub .hub-usage{margin-top:-4px}
+@media (max-height:760px){
+  .scr.hub{--gap:10px}
+  .sug-row{min-height:48px;padding:6px 10px}.sug-row small{display:none}.sug-row>span:first-child{width:34px;height:34px}
+  .desk.sug-a{gap:8px}.sug-why{display:none}
+  .sug-k p{font-size:15.5px}
+  .hub-tiles{gap:10px}
+  .hub-tiles .v3-wide .stages{display:none}
+}
+@media (max-height:700px){
+  .hub-tiles .v3-blk .bi,.hub-tiles .v3-wide .wtop{display:none}
+  .hub-tiles .v3-blk b,.hub-tiles .v3-wide b{font-size:21px}
+  .desk label{font-size:18px}.desk textarea{min-height:64px}
+}
+
+/* When the top box is tall (three suggestions), the tiles drop their top rows so titles never clip */
+.scr.hub.dense .hub-tiles .v3-wide .wtop,.scr.hub.dense .hub-tiles .v3-blk .bi{display:none}
+.scr.hub.dense .hub-tiles .v3-wide{justify-content:flex-end}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -678,7 +721,7 @@ html[data-theme="dark"] .g-alert{background:#1B1E24;border:1px solid rgba(255,25
 // hub, Help me reply, Pitch it and Quick answer are new, built to the handoff.
 // ═══════════════════════════════════════════════════════════════════════════
 'use strict';
-const APP_VERSION='1.3';
+const APP_VERSION='1.4';
 // Feature switches. Flip in code, ship, done.
 const PAYWALL_ON=false;   // free for now: the top-up screen and balance stay hidden
 const LIVE_ON=false;      // Live voice (real-time call) needs the relay server first
@@ -686,6 +729,11 @@ const TOPUP={price:'¥39',sessions:30};
 const FREE_LIMITS={sessions:40,replies:8}; // monthly sessions · daily replies (abuse stop while the paywall is off)
 
 const CHANGELOG=[
+  {v:'1.4',d:'2026-10-19',items:[
+    'If you’ve told K what’s hardest, the home screen suggests where to start: one pick from K while you’re new, three to choose from after that. You can always type your own situation instead.',
+    'The case of the day now comes from what you told K, not at random.',
+    'Once a month K checks in: is it still the same hard part, or has something new come up? K remembers how it changes.'
+  ]},
   {v:'1.3',d:'2026-10-18',items:[
     'New on the home screen: tell K what’s coming up, or paste what just happened. K reads it and takes you to the right tool, already filled in: a drafted reply, a practice scene, your pitch, or a quick answer.',
     'You see what K understood, and can switch to a different tool with one tap.',
@@ -2054,6 +2102,7 @@ function _casesSeen(){if(!S.casesSeen||typeof S.casesSeen!=='object')S.casesSeen
 function _casesDone(){if(!S.casesDone||typeof S.casesDone!=='object')S.casesDone={};return S.casesDone;}
 // Case of the day: weighted toward the families this person picked, and away from ones they've opened
 function _caseOfDay(){
+  {const me=typeof _caseForMe==='function'?_caseForMe():null;if(me)return me.c;}
   const seen=_casesSeen(),goals=S.goals||[];
   let pool=CASES.filter(c=>!seen[c.id]);
   const mine=pool.filter(c=>goals.includes(c.cat));
@@ -2144,17 +2193,16 @@ function _wireLastTile(app,back){
 }
 function renderHub(app){
   const k=_hubFocus(),first=!_nbEntries().length,st=_streak(),u=_usage();
-  let h='<main class="scr hub">';
+  let h='<main class="scr hub'+(typeof _sugMode==='function'&&_sugMode()==='A'&&!_checkinDue()?' dense':'')+'">';
   h+='<div class="top"><div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div><div class="ibtns"><button class="ibtn" data-go="notebook" aria-label="K’s notebook">'+ic('book')+'</button><button class="ibtn" data-act="you" aria-label="About you">'+ic('user')+(typeof _profileDone==='function'&&!_profileDone()?'<i class="ibtn-dot"></i>':'')+'</button><button class="ibtn" data-go="settings" aria-label="Settings">'+ic('settings')+'</button></div></div>';
-  // The open box: describe the situation, K routes it to the right tool
-  h+='<div class="desk"><label for="desk-text">What’s coming up, or what just happened?</label><textarea id="desk-text" rows="3" placeholder="Paste their message, or describe the conversation…">'+escHtml(V.deskText||'')+'</textarea>'+
-     '<button class="desk-go" data-act="desk-go"'+(V.deskBusy?' disabled':'')+'>'+(V.deskBusy?'<span class="think"><i></i><i></i><i></i></span>K is reading it…':'Help me with this'+ic('arrow','s'))+'</button></div>';
-  h+='<div class="v3-two">'+
+  // The open box: suggestions from their details (A/B), or type the situation and K routes it
+  h+=deskBoxHtml();
+  h+='<div class="hub-tiles"><div class="v3-two">'+
      '<button class="v3-blk '+(first?'first':'cmp')+' p-lav" data-go="reply"><span class="bi">'+ic('reply')+'</span><span class="ba">'+ic('arrowne','s')+'</span><b>Help me<br>reply</b><span class="s"><span class="lg-only">Paste it. K writes back.</span><span class="sm-only">Paste. K replies.</span></span></button>'+
      '<button class="v3-blk '+(first?'first':'cmp')+' p-teal" data-go="real"><span class="bi">'+ic('talk')+'</span><span class="ba">'+ic('arrowne','s')+'</span><b>Practice<br>a talk</b><span class="s">They push. You hold.</span></button></div>';
-  h+='<button class="v3-wide p-org" data-go="pitch"><span class="wtop"><span class="bi">'+ic('pitch')+'</span><span class="stages" aria-hidden="true"><i>Build</i><i>Run</i><i>Face the room</i></span></span><span class="wbot"><span class="wt"><b>Pitch it</b><span class="s">Present it. Then take the questions.</span></span><span class="ba">'+ic('arrowne','s')+'</span></span></button>';
-  {const cs=_caseOfDay(),cc=_caseCat(cs.cat);
-   h+='<div class="v3-lib '+cc.c+'"><button class="lib-main" data-act="lib-case"><small>Case of the day · '+escHtml(cc.t)+'</small><b>'+escHtml(cs.title)+'</b></button><button class="lib-all" data-go="library">'+ic('book','s')+'Library<span>'+CASES.length+'</span></button></div>';}
+  h+='<button class="v3-wide p-org" data-go="pitch"><span class="wtop"><span class="bi">'+ic('pitch')+'</span><span class="stages" aria-hidden="true"><i>Build</i><i>Run</i><i>Face the room</i></span></span><span class="wbot"><span class="wt"><b>Pitch it</b><span class="s">Present it. Then take the questions.</span></span><span class="ba">'+ic('arrowne','s')+'</span></span></button></div>';
+  {const me=_caseForMe(),cs=_caseOfDay(),cc=_caseCat(cs.cat);
+   h+='<div class="v3-lib '+cc.c+'"><button class="lib-main" data-act="lib-case"><small>Case of the day · '+escHtml(me?me.why:cc.t)+'</small><b>'+escHtml(cs.title)+'</b></button><button class="lib-all" data-go="library">'+ic('book','s')+'Library<span>'+CASES.length+'</span></button></div>';}
   h+='<p class="quiet push hub-usage">'+(PAYWALL_ON?escHtml(S.credits+' sessions left'):'This month: '+u.sessions+(u.sessions===1?' practice session':' practice sessions'))+'</p>';
   h+='</main>';
   app.innerHTML=h;
@@ -2167,8 +2215,7 @@ function renderHub(app){
     if(a==='practice'){RW.scenario=scen;RW.goal=_rwGoalOf(scen).k;RW.tougher=false;RW.fromReply=null;RW._keepCase={title:'Today’s focus',principle:k.h,label:'Today’s focus · use it here'};go('real');rwFetchScene();return;}
     if(a==='settings'){go('settings',{setPage:'you',_spFromHub:true});return;}
     go(a);}));
-  {const ta=app.querySelector('#desk-text');if(ta)ta.addEventListener('input',()=>{V.deskText=ta.value;});
-   const dg=app.querySelector('[data-act="desk-go"]');if(dg)dg.addEventListener('click',deskRead);}
+  wireDeskBox(app);
   {const lc=app.querySelector('[data-act="lib-case"]');if(lc)lc.addEventListener('click',()=>openCase(_caseOfDay().id));}
   _kTakeRefresh();
 }
@@ -2261,8 +2308,20 @@ function renderOwner(app){
   else if(!list.length)h+='<div class="empty"><p>No codes '+(tab==='all'?'yet':'here')+'. Make some above.</p></div>';
   else h+='<div class="list">'+list.map(c=>{const d=x=>x?new Date(x).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';const sub=c.status==='used'?'Used '+d(c.usedAt)+' · one phone':c.status==='expired'?'Ended '+d(c.expires)+' · never used':c.sessions+' sessions'+(c.expires?' · ends '+d(c.expires):'');
      return '<div class="row"><span class="rt"><b class="code">'+escHtml(c.code)+'</b><span>'+escHtml(sub)+'</span></span><span class="st '+(c.status==='unused'?'un':c.status==='used'?'us':'ex')+'">'+(c.status==='unused'?'Unused':c.status==='used'?'Used':'Ended')+'</span><button class="ocopy" data-copy="'+escHtml(c.code)+'" aria-label="Copy code">'+ic('copy','s')+'</button></div>';}).join('')+'</div>';
+  // Home suggestions: which version gets people started (anonymous counts)
+  {const sx=V._sugStats;const n=(o,k)=>(o&&o[k])||0;const rate=(o,v)=>{const s=n(o,v+'_shown'),tp=n(o,v+'_tap');return s?Math.round(tp/s*100)+'%':'–';};
+   h+='<div class="card stack" style="gap:10px"><div class="between"><span class="h2" style="font-size:15px">Home suggestions</span><span class="tag k">'+(sx?escHtml(sx.month):'Loading')+'</span></div>';
+   if(sx){const o=sx.now;h+='<div class="list">'+
+     '<div class="row"><span class="rt"><b>B · K’s note</b><span>Shown '+n(o,'sugB_shown')+' days · tapped '+n(o,'sugB_tap')+' · “Something else” '+n(o,'sugB_else')+'</span></span><span class="st un">'+rate(o,'sugB')+'</span></div>'+
+     '<div class="row"><span class="rt"><b>A · Where to start</b><span>Shown '+n(o,'sugA_shown')+' days · tapped '+n(o,'sugA_tap')+'</span></span><span class="st un">'+rate(o,'sugA')+'</span></div>'+
+     '<div class="row"><span class="rt"><b>Typed their own</b><span>Switched to typing '+n(o,'sug_type')+' times</span></span></div>'+
+     '<div class="row"><span class="rt"><b>Monthly check-in</b><span>Still the same '+n(o,'checkin_same')+' · something changed '+n(o,'checkin_update')+'</span></span></div></div>'+
+     '<p class="small">Percent = taps per day shown. Counts have no names and no text. Trust them after a few hundred users.</p>';}
+   h+='</div>';}
   h+='<button class="g-ghost" data-act="stats">Usage and cost this month</button></main>';
   app.innerHTML=h;
+  if(!V._sugStats&&!V._sugStatsLoading){V._sugStatsLoading=true;const cfg=S.aiConfig||{};
+    fetch((cfg.endpoint||'/.netlify/functions/ai').replace(/\/ai$/,'/stats'),{headers:{'x-owner-key':cfg.ownerKey||''}}).then(r=>r.ok?r.json():null).then(j=>{V._sugStats=j||{month:'Not available',now:{}};if(V.view==='owner')render();}).catch(()=>{V._sugStats={month:'Not available',now:{}};if(V.view==='owner')render();});}
   app.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{V.ownTab=b.dataset.tab;render();}));
   app.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',async()=>{await copyText(b.dataset.copy);showToast('Copied '+b.dataset.copy,'check');}));
   app.querySelector('[data-act="make"]').addEventListener('click',async()=>{
@@ -2300,6 +2359,7 @@ function _profileCtx(){
   if(S.rwField||p.role)L.push('Work: '+[p.role,S.rwField?'field: '+S.rwField:''].filter(Boolean).join(', ')+'.');
   if(p.english)L.push('English: '+_label(ENGLISH,p.english)+(p.firstLang?'; first language '+p.firstLang:'')+'. '+(p.english==='learning'||p.english==='working'?'Keep every sentence especially short and simple.':''));
   if((p.struggles||[]).length)L.push('What they find hardest: '+p.struggles.map(k=>_label(STRUGGLES,k)).join(', ')+'.');
+  {const hs=(p.history||[]).filter(x=>(x.struggles||[]).length);if(hs.length>1){const prev=hs[hs.length-2];L.push('Earlier ('+new Date(prev.at).toLocaleDateString('en-US',{month:'short',year:'numeric'})+') they said the hardest was: '+prev.struggles.map(k=>_label(STRUGGLES,k)).join(', ')+'. Notice progress if it fits.');}}
   if(p.problem)L.push('In their own words, their biggest problem: "'+String(p.problem).slice(0,300)+'"');
   if((S.goals||[]).length)L.push('What’s coming up for them: '+_goalNames()+'.');
   if(S.rwPrice||S.rwLowest)L.push('Their price: '+(S.rwPrice||'not set')+'; the lowest they will accept: '+(S.rwLowest||'not set')+'.');
@@ -2394,9 +2454,9 @@ function renderOnboarding(app){
   on('[data-act="done"]',finish);
   app.querySelectorAll('[data-goal]').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.goal;S.goals=S.goals||[];const i=S.goals.indexOf(k);if(i>=0)S.goals.splice(i,1);else S.goals.push(k);save();b.classList.toggle('on');}));
   app.querySelectorAll('[data-field]').forEach(b=>b.addEventListener('click',()=>{S.rwField=S.rwField===b.dataset.field?'':b.dataset.field;save();app.querySelectorAll('[data-field]').forEach(x=>x.classList.toggle('on',x.dataset.field===S.rwField));}));
-  wireChips(app,'stage',()=>p.stage,v=>p.stage=v);
+  wireChips(app,'stage',()=>p.stage,v=>p.stage=v,false,_profTouch);
   wireChips(app,'age',()=>p.age,v=>p.age=v);
-  wireChips(app,'str',()=>p.struggles,v=>p.struggles=v,true);
+  wireChips(app,'str',()=>p.struggles,v=>p.struggles=v,true,_profTouch);
 }
 
 // ── Settings home: card rows, like TM Companion ───────────────────────────
@@ -2475,10 +2535,10 @@ function renderSettingsPage(app,sp){
   inp('pf-price',v=>S.rwPrice=v);inp('pf-low',v=>S.rwLowest=v);
   inp('pf-field',v=>{S.rwField=v;app.querySelectorAll('[data-field]').forEach(x=>x.classList.remove('on'));});
   app.querySelectorAll('[data-field]').forEach(b=>b.addEventListener('click',()=>{S.rwField=S.rwField===b.dataset.field?'':b.dataset.field;const o=app.querySelector('#pf-field');if(o)o.value='';save();app.querySelectorAll('[data-field]').forEach(x=>x.classList.toggle('on',x.dataset.field===S.rwField));}));
-  wireChips(app,'stage',()=>p.stage,v=>p.stage=v);
+  wireChips(app,'stage',()=>p.stage,v=>p.stage=v,false,_profTouch);
   wireChips(app,'age',()=>p.age,v=>p.age=v);
   wireChips(app,'eng',()=>p.english,v=>p.english=v);
-  wireChips(app,'str',()=>p.struggles,v=>p.struggles=v,true);
+  wireChips(app,'str',()=>p.struggles,v=>p.struggles=v,true,_profTouch);
   wireChips(app,'goal',()=>S.goals,v=>S.goals=v,true);
   // Coaching
   app.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>{S.coachLang=b.dataset.lang;save();render();}));
@@ -2651,6 +2711,151 @@ function renderAdvice(app){
   on('[data-act="adv-retry"]',()=>{A.loading=true;A.err=null;render();deskAdvice();});
   on('[data-act="adv-reply"]',()=>{V.deskRoute=Object.assign({},V.deskRoute||{},{rwant:'fix',reply_text:''});deskGo('reply');});
   on('[data-act="adv-practice"]',()=>{V.deskRoute=Object.assign({},V.deskRoute||{},{scenario:A.scen});deskGo('practice');});
+}
+// ═══════════════════════════════════════════════════════════════════════════
+// SUGGESTIONS FROM THEIR DETAILS
+// When someone has told K what's hardest (or their career stage), the home box
+// suggests where to start instead of an empty text box:
+//   B · K's note (one pick in K's voice) while they're new (< 3 sessions)
+//   A · Where to start (three picks) once they know the app
+// "Something else" switches the box back to typing for the rest of the day.
+// Case of the day is picked from the same details. Anonymous counts (no names,
+// no text) go to /stats so the owner page can show which version works.
+// Every 30 days K checks in: is it still the same, or has something new come up?
+// ═══════════════════════════════════════════════════════════════════════════
+const SUG_MAP={
+  money:{t:'money talks',practice:'discount',read:'market-rate',quick:'Can you do better on the price?',cases:['discount','market-rate','too-expensive','big-name','free-now']},
+  no:{t:'saying no',practice:'one-more',read:'friend-free',quick:'Can you take this on as well? It needs to be done by Monday.',cases:['one-more','friend-free','walk-away']},
+  interview:{t:'interviews',practice:'stand-out',read:'one-project',quick:'Why should we hire you?',cases:['stand-out','career-change','all-over','one-project']},
+  intro:{t:'introducing yourself',practice:'what-you-do',read:'known-for-one',quick:'So, what do you do?',cases:['what-you-do','known-for-one','stand-out']},
+  smalltalk:{t:'small talk',practice:'introvert',read:'follow-up',quick:'So how do you know the host?',cases:['introvert','follow-up']},
+  meetings:{t:'speaking up in meetings',practice:'nervous',read:'boss-plan',quick:'Any thoughts before we move on?',cases:['nervous','too-long','boss-plan']},
+  difficult:{t:'difficult people',practice:'own-mistake',read:'credit',quick:'Why wasn’t this caught earlier?',cases:['credit','approved-rejected','walk-away','own-mistake','deadlines','team-pay']},
+  nerves:{t:'nerves',practice:'nervous',read:'introvert',quick:'Can you give us a quick update on your project?',cases:['nervous','introvert']},
+  present:{t:'presenting',practice:'too-long',read:'too-technical',quick:'So, in plain English, what does this do for us?',cases:['too-long','too-technical']}
+};
+const SUG_STAGE={freelance:'money',jobhunt:'interview',student:'interview',switch:'interview',early:'meetings',mid:'difficult',senior:'no'};
+function _today(){return new Date().toDateString();}
+function _sugKeys(){const p=_P();const s=(p.struggles||[]).filter(k=>SUG_MAP[k]);if(s.length)return s;const g=SUG_STAGE[p.stage];return g?[g]:[];}
+function _sessionsDone(){return _nbEntries().filter(e=>e.cat!=='reply').length;}
+// Which box to show: 'type' (as before), 'A' or 'B'
+function _sugMode(){
+  if(!_sugKeys().length)return 'type';
+  if(S.deskTypeDay===_today())return 'type';
+  if(_sessionsDone()<3&&S.deskBMissDay!==_today())return 'B';
+  return 'A';
+}
+// Rotate through their struggles day by day, skipping what they just did
+function _sugPick(offset){
+  const ks=_sugKeys();const d=new Date();const n=d.getFullYear()*400+d.getMonth()*31+d.getDate()+(offset||0)+_sessionsDone();
+  return ks[n%ks.length];
+}
+function _sugItems(){
+  const k=_sugPick(0),k2=_sugKeys().length>1?_sugPick(1):k,m=SUG_MAP[k],m2=SUG_MAP[k2];
+  const pc=_case(m.practice),rc=_case(m2.read);
+  return [
+    {kind:'practice',key:k,t:'Practice: '+_sugLower(pc?pc.title:'a real conversation'),s:(pc&&TT_REAL[pc.practice.scen]?TT_REAL[pc.practice.scen].name:'Practice')+' · about 2 minutes',ic:'mic',p:'p-teal',caseId:m.practice},
+    {kind:'read',key:k2,t:'Read: '+_sugLower(rc?rc.title:'a case'),s:_cap(m2.t)+' · 1-minute case',ic:'book',p:'p-lav',caseId:m2.read},
+    {kind:'quick',key:k,t:'Quick answer: “'+_kShort(m.quick,40)+'”',s:'Ten seconds to think, then answer',ic:'quick',p:'p-pink',q:m.quick}
+  ];
+}
+function _sugLower(t){t=String(t||'');return /^[“"]/.test(t)?t:t.charAt(0).toLowerCase()+t.slice(1);}
+function _sugReason(){const ks=(_P().struggles||[]).filter(k=>SUG_MAP[k]);
+  if(!ks.length){const st=_label(STAGES,_P().stage);return st?'You told K: '+st.toLowerCase():'';}
+  const names=ks.slice(0,2).map(k=>SUG_MAP[k].t);return 'You told K: '+names.join(' and ')+(ks.length>1?' are':' is')+' hard';}
+// ── The home box ──────────────────────────────────────────────────────────
+function deskBoxHtml(){
+  const ci=_checkinDue();
+  if(ci)return _checkinHtml();
+  const mode=_sugMode(),nm=_P().name||'';
+  if(mode==='type')return '<div class="desk"><label for="desk-text">What’s coming up, or what just happened?</label><textarea id="desk-text" rows="3" placeholder="Paste their message, or describe the conversation…">'+escHtml(V.deskText||'')+'</textarea>'+
+     '<button class="desk-go" data-act="desk-go"'+(V.deskBusy?' disabled':'')+'>'+(V.deskBusy?'<span class="think"><i></i><i></i><i></i></span>K is reading it…':'Help me with this'+ic('arrow','s'))+'</button></div>';
+  _track(mode==='B'?'sugB_shown':'sugA_shown',true);
+  const items=_sugItems();
+  if(mode==='B'){
+    const m=SUG_MAP[items[0].key],pc=_case(items[0].caseId);
+    const line='Hi'+(nm?' '+nm:'')+'. You said '+m.t+(/s$/.test(m.t)&&m.t!=='nerves'?' are':' is')+' hard, so let’s start there'+(pc?': '+_sugLower(pc.title).replace(/[.]$/,'')+'.':'.')+' Want to try it?';
+    return '<div class="desk sug-b"><div class="sug-k">'+kav()+'<div><small>K · picked for you</small><p>'+escHtml(line)+'</p></div></div>'+
+      '<div class="sug-btns"><button class="desk-go" data-sug="0" data-v="B">Try it now</button><button class="sug-else" data-act="sug-else" data-v="B">Something else</button></div>'+
+      '<button class="sug-type" data-act="sug-type">'+ic('edit','s')+'Or tell K what’s coming up…</button></div>';
+  }
+  return '<div class="desk sug-a"><div><b class="sug-h">Where to start'+(nm?', '+escHtml(nm):'')+'</b><small class="sug-why">'+escHtml(_sugReason())+'</small></div>'+
+    items.map((it,i)=>'<button class="sug-row" data-sug="'+i+'" data-v="A"><span class="'+it.p+'">'+ic(it.ic,'s')+'</span><span><b>'+escHtml(it.t)+'</b><small>'+escHtml(it.s)+'</small></span></button>').join('')+
+    '<button class="sug-type link" data-act="sug-type">Something else on your mind? Type it →</button></div>';
+}
+function _sugMoment(c){const m=String(c.moment||'');const s=m.split(/(?<=[.!?])\s/)[0];return s.length<120?s:_kShort(m,110);}
+function wireDeskBox(app){
+  const ta=app.querySelector('#desk-text');if(ta)ta.addEventListener('input',()=>{V.deskText=ta.value;});
+  const dg=app.querySelector('[data-act="desk-go"]');if(dg)dg.addEventListener('click',deskRead);
+  app.querySelectorAll('[data-sug]').forEach(b=>b.addEventListener('click',()=>{
+    const it=_sugItems()[+b.dataset.sug];if(!it)return;_track((b.dataset.v==='B'?'sugB':'sugA')+'_tap');
+    if(it.kind==='practice'){const c=_case(it.caseId);if(c){caseToPractice(c);return;}go('real');return;}
+    if(it.kind==='read'){openCase(it.caseId);return;}
+    if(it.kind==='quick'){QA.q=it.q;QA.goal=null;QA.phase='q';QA.take=null;QA.notes=null;QA.strong=null;go('quick');}
+  }));
+  const se=app.querySelector('[data-act="sug-else"]');if(se)se.addEventListener('click',()=>{_track('sugB_else');S.deskBMissDay=_today();save();render();}); // B didn't fit: three picks (A) for today
+  const st=app.querySelector('[data-act="sug-type"]');if(st)st.addEventListener('click',()=>{_track('sug_type');S.deskTypeDay=_today();save();render();setTimeout(()=>{const t=document.getElementById('desk-text');if(t)t.focus();},60);});
+  _wireCheckin(app);
+}
+// ── Case of the day from their details ───────────────────────────────────
+function _caseForMe(){
+  const ks=_sugKeys();if(!ks.length)return null;
+  const seen=_casesSeen(),st=_P().stage;
+  // What they said is hard comes first; their career stage fills in once those are read
+  let ids=[];ks.forEach(k=>SUG_MAP[k].cases.forEach(id=>{if(!ids.includes(id))ids.push(id);}));
+  const extra=st==='freelance'?{cat:'client',why:'for freelancers'}:(st==='student'||st==='jobhunt'||st==='switch')?{cat:'job',why:'for getting in'}:null;
+  const d=new Date();const n=d.getFullYear()*400+d.getMonth()*31+d.getDate();
+  let pool=ids.map(_case).filter(c=>c&&!seen[c.id]);
+  if(!pool.length&&extra){const ex=CASES.filter(c=>c.cat===extra.cat&&!seen[c.id]);if(ex.length){const c=ex[n%ex.length];return {c,why:extra.why};}}
+  if(!pool.length)pool=ids.map(_case).filter(Boolean);
+  const c=pool[n%pool.length];
+  const k=ks.find(k=>SUG_MAP[k].cases.includes(c.id))||ks[0];
+  return {c,why:'for '+SUG_MAP[k].t};
+}
+// ── Anonymous counts for the owner page ──────────────────────────────────
+function _track(e,oncePerDay){
+  try{
+    if(oncePerDay){const k='grd-tr-'+e;if(localStorage.getItem(k)===_today())return;localStorage.setItem(k,_today());}
+    const cfg=S.aiConfig||{};const ep=(cfg.endpoint||'/.netlify/functions/ai').replace(/\/ai$/,'/stats');
+    fetch(ep,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({e}),keepalive:true}).catch(()=>{});
+  }catch(err){}
+}
+// ── Monthly check-in: "still the same, or something new?" ────────────────
+function _profTouch(){
+  const p=_P();const now=new Date().toISOString();
+  p.history=Array.isArray(p.history)?p.history:[];
+  const snap={at:now,struggles:(p.struggles||[]).slice(),stage:p.stage||''};
+  const last=p.history[p.history.length-1];
+  if(!last||JSON.stringify(last.struggles)!==JSON.stringify(snap.struggles)||last.stage!==snap.stage){p.history.push(snap);p.history=p.history.slice(-12);}
+  p.updated=now;save();
+}
+function _checkinDue(){
+  const p=_P();if(!_sugKeys().length)return false;
+  if(!p.updated){p.updated=new Date().toISOString();save();return false;}
+  if(S.checkinSnooze===_today())return false;
+  return Date.now()-new Date(p.updated).getTime()>30*864e5;
+}
+function _checkinHtml(){
+  const p=_P(),nm=p.name||'';const ks=(p.struggles||[]).filter(k=>SUG_MAP[k]).map(k=>SUG_MAP[k].t);
+  const was=ks.length?ks.slice(0,2).join(' and '):_label(STAGES,p.stage).toLowerCase();
+  return '<div class="desk sug-b"><div class="sug-k">'+kav()+'<div><small>K · checking in</small><p>It’s been a month'+(nm?', '+escHtml(nm):'')+'. Last time it was '+escHtml(was)+'. Is that still the hard part, or has something new come up?</p></div></div>'+
+    '<div class="sug-btns"><button class="desk-go" data-act="ci-update">Update it</button><button class="sug-else" data-act="ci-same">Still the same</button></div></div>';
+}
+function _wireCheckin(app){
+  const s=app.querySelector('[data-act="ci-same"]');if(s)s.addEventListener('click',()=>{_track('checkin_same');_profTouch();render();});
+  const u=app.querySelector('[data-act="ci-update"]');if(u)u.addEventListener('click',()=>{_track('checkin_update');openCheckinSheet();});
+}
+function openCheckinSheet(){
+  const p=_P();
+  const h='<div class="kick">Where you are now</div><div class="g-h" style="font-size:22px">What’s hardest right now?</div>'+
+    chipsHtml(STRUGGLES,p.struggles||[],'str',true)+
+    '<div class="lab" style="margin-top:6px">Where are you now?</div>'+chipsHtml(STAGES,p.stage,'stage')+
+    '<button class="g-cta" data-act="ci-save" style="margin-top:6px">Save<span class="ar">'+ic('check','s')+'</span></button>';
+  openSheet(h,{wire:sh=>{
+    wireChips(sh,'str',()=>p.struggles,v=>p.struggles=v,true);
+    wireChips(sh,'stage',()=>p.stage,v=>p.stage=v);
+    sh.querySelector('[data-act="ci-save"]').addEventListener('click',()=>{_profTouch();closeSheet();showToast('Thanks. K will work on this with you now.');render();});
+  }});
 }
 // ═══════════════════════════════════════════════════════════════════════════
 // HELP ME REPLY: paste their message, K drafts what to say, shows why line by
