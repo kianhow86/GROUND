@@ -711,6 +711,27 @@ html[data-theme="dark"] .g-alert{background:#1B1E24;border:1px solid rgba(255,25
 @container (max-height:136px){
   .v3-blk .bi{display:none}
 }
+
+/* Library shelves: titles only, one row per topic, swipe sideways */
+.shelf{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.shelf-h{display:flex;align-items:center;gap:8px}
+.shelf-h .lib-dot{margin:0;align-self:center}
+.shelf-h b{font-size:17px;font-weight:800;letter-spacing:-.01em}
+.shelf-h small{font-size:13px;font-weight:700;color:var(--ink-3)}
+.shelf-row{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:var(--pad);margin:0 calc(-1*var(--pad));padding:0 var(--pad) 4px;scrollbar-width:none}
+.shelf-row::-webkit-scrollbar{display:none}
+.shelf-card{flex:0 0 156px;height:132px;scroll-snap-align:start;border-radius:20px;padding:14px;text-align:left;display:flex;flex-direction:column;justify-content:flex-end;gap:6px;background:var(--p);color:var(--pi);position:relative}
+.shelf-card b{font-size:16px;font-weight:800;line-height:1.22;letter-spacing:-.01em;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.shelf-st{position:absolute;top:12px;left:14px;display:flex;align-items:center;gap:4px;font-style:normal;font-size:11px;font-weight:800;opacity:.65}
+.shelf-st .ic{width:13px;height:13px}
+/* Case: the why folds away */
+.case-why summary{list-style:none;display:flex;align-items:center;gap:10px;cursor:pointer;min-height:44px}
+.case-why summary::-webkit-details-marker{display:none}
+.case-why summary b{font-size:15px}
+.case-why summary .small{flex:1;color:var(--ink-3)}
+.case-why summary .ic{transform:rotate(90deg);transition:transform .2s;color:var(--ink-3)}
+.case-why[open] summary .ic{transform:rotate(-90deg)}
+.case-why[open] summary{margin-bottom:6px}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -750,6 +771,7 @@ const CHANGELOG=[
   {v:'1.4',d:'2026-10-19',items:[
     'If you’ve told K what’s hardest, the home screen suggests where to start: one pick from K while you’re new, three to choose from after that. You can always type your own situation instead.',
     'The case of the day now comes from what you told K, not at random.',
+    'Library is lighter: swipe one row per topic, titles only. Each case leads with the line to say; the why folds away.',
     'Home fits better: the Pitch it tile no longer gets cut off, and the case of the day card is cleaner.',
     'Spoken prices come through right: “six thousand five” is 6,500, not 6005.',
     'Feedback after practice no longer shows internal labels like “fu2”; it says “your third answer”.',
@@ -2143,18 +2165,20 @@ function caseToPractice(c){
 }
 // ── Screens ───────────────────────────────────────────────────────────────
 function renderLibrary(app){
-  const cat=V.libCat||'all',seen=_casesSeen(),done=_casesDone();
-  const ord=k=>CASE_CATS.findIndex(x=>x.k===k);
-  const list=CASES.filter(c=>cat==='all'||c.cat===cat).slice().sort((a,b)=>ord(a.cat)-ord(b.cat));
+  const seen=_casesSeen(),done=_casesDone();
+  const card=c=>{const cc=_caseCat(c.cat);const st=done[c.id]?'Practiced':seen[c.id]?'Read':'';
+    return '<button class="shelf-card '+cc.p+'" data-case="'+c.id+'">'+(st?'<i class="shelf-st">'+ic('check','s')+st+'</i>':'')+'<b>'+escHtml(c.title)+'</b></button>';};
+  const shelf=(title,cases,c)=>'<section class="shelf '+c+'"><div class="shelf-h"><span class="lib-dot"></span><b>'+escHtml(title)+'</b><small>'+cases.length+'</small></div><div class="shelf-row">'+cases.map(card).join('')+'</div></section>';
   let h='<main class="scr">'+gBar('Library','hub');
-  h+='<p class="sub" style="margin-top:-4px">The conversations every career runs into. Sooner or later, in some version. Read how to handle one, then practice it.</p>';
-  h+='<div class="g-chips lib-chips"><button class="g-chip'+(cat==='all'?' on':'')+'" data-libcat="all">All</button>'+CASE_CATS.map(x=>'<button class="g-chip'+(cat===x.k?' on':'')+'" data-libcat="'+x.k+'">'+x.t+'</button>').join('')+'</div>';
-  h+='<div class="stack" style="gap:10px">'+list.map(c=>{const cc=_caseCat(c.cat);const st=done[c.id]?'Practiced':seen[c.id]?'Read':'';
-    return '<button class="lib-row '+cc.c+'" data-case="'+c.id+'"><span class="lib-dot"></span><span class="lib-t"><small>'+escHtml(cc.t)+(st?' · '+st:'')+'</small><b>'+escHtml(c.title)+'</b><span>'+escHtml(c.principle)+'</span></span>'+ic('chev','s')+'</button>';}).join('')+'</div>';
+  h+='<p class="sub" style="margin-top:-4px">One moment, one line to say. Two minutes each.</p>';
+  // For you: from what they said is hard
+  const ks=(typeof _sugKeys==='function')?_sugKeys():[];let mine=[];
+  ks.forEach(k=>(SUG_MAP[k].cases||[]).forEach(id=>{const c=_case(id);if(c&&!mine.includes(c))mine.push(c);}));
+  if(mine.length)h+=shelf('For you',mine.slice(0,6),'c-job');
+  CASE_CATS.forEach(x=>{const cs=CASES.filter(c=>c.cat===x.k);if(cs.length)h+=shelf(x.t,cs,x.c);});
   h+='<div class="g-kick" style="margin-top:8px">The toolkit</div><div class="g-chips">'+Object.keys(TECHNIQUES).map(k=>'<button class="g-chip" data-tech="'+k+'">'+escHtml(TECHNIQUES[k].title)+'</button>').join('')+'</div>';
   h+='</main>';
   app.innerHTML=h;wireCommon(app);
-  app.querySelectorAll('[data-libcat]').forEach(b=>b.addEventListener('click',()=>{V.libCat=b.dataset.libcat;render();}));
   app.querySelectorAll('[data-case]').forEach(b=>b.addEventListener('click',()=>openCase(b.dataset.case)));
 }
 function renderCase(app){
@@ -2162,12 +2186,14 @@ function renderCase(app){
   const cc=_caseCat(c.cat);
   let h='<main class="scr '+cc.p+'">'+gBar(cc.t,'library');
   h+='<div class="g-block"><div class="g-kick">The moment</div><div class="g-big" style="font-size:24px">'+escHtml(c.title)+'</div><p style="margin-top:8px;font-size:15px;line-height:1.45;font-weight:500">'+escHtml(c.moment)+'</p></div>';
-  h+='<div class="g-card tight"><div class="g-row top"><span class="t"><b>What most people say</b><span>'+escHtml(c.most)+'</span></span></div><div class="g-row top"><span class="t"><b>Why it backfires</b><span>'+escHtml(c.fails)+'</span></span></div></div>';
-  h+='<div class="g-card case-k"><div class="g-k">'+kav()+'<b style="font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)">What K would say</b></div><div class="case-line">'+escHtml(c.k)+'</div></div>';
-  h+='<div class="case-pr"><small>The principle</small><b>'+escHtml(c.principle)+'</b>'+(c.then?'<span>'+escHtml(c.then)+'</span>':'')+'</div>';
-  if(c.story&&c.story.t)h+='<div class="g-card case-story"><div class="g-k"><div><b style="font-size:15px">A real story</b></div></div><p>'+escHtml(c.story.t)+'</p></div>';
+  h+='<div class="g-card case-k"><div class="g-k">'+kav()+'<b style="font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)">Say this</b></div><div class="case-line">'+escHtml(c.k)+'</div></div>';
+  h+='<div class="case-pr"><small>The principle</small><b>'+escHtml(c.principle)+'</b></div>';
+  let why='<div class="g-row top"><span class="t"><b>What most people say</b><span>'+escHtml(c.most)+'</span></span></div><div class="g-row top"><span class="t"><b>Why it backfires</b><span>'+escHtml(c.fails)+'</span></span></div>';
+  if(c.then)why+='<div class="g-row top"><span class="t"><b>Then</b><span>'+escHtml(c.then)+'</span></span></div>';
+  if(c.story&&c.story.t)why+='<div class="g-row top"><span class="t"><b>A real story</b><span>'+escHtml(c.story.t)+'</span></span></div>';
   const tags=[];if(c.tech&&TECHNIQUES[c.tech])tags.push('<button class="g-chip" data-tech="'+c.tech+'">'+escHtml(TECHNIQUES[c.tech].title)+'</button>');
-  if(tags.length||c.aka)h+='<div class="g-chips" style="align-items:center">'+tags.join('')+(c.aka?'<span class="small">'+escHtml(c.aka)+'</span>':'')+'</div>';
+  if(tags.length||c.aka)why+='<div class="g-chips" style="align-items:center;padding:10px 0 4px">'+tags.join('')+(c.aka?'<span class="small">'+escHtml(c.aka)+'</span>':'')+'</div>';
+  h+='<details class="g-card tight case-why"><summary><b>Why this works</b><span class="small">'+(c.story&&c.story.t?'Plus a real story':'What most people get wrong')+'</span>'+ic('chev','s')+'</summary>'+why+'</details>';
   h+='<div class="push"></div>'+gCta('Practice this one','case-practice');
   h+='</main>';
   app.innerHTML=h;wireCommon(app);
