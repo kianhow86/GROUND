@@ -20,7 +20,7 @@
   --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","PingFang SC","HarmonyOS Sans SC","Microsoft YaHei",Inter,system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
   --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
-  --pad:18px;--gap:14px;
+  --pad:18px;--gap:14px;--app-w:440px;
 }
 html[data-theme="light"]{color-scheme:light;
   --bg:#EEF1F4; --ink:#141A21; --ink-2:#4E5866; --ink-3:#5F6876;
@@ -91,7 +91,7 @@ a{color:inherit}
 .hide{display:none!important}
 /* screen root: what the designer's .phone becomes in the app */
 #app{min-height:100dvh}
-.scr{position:relative;min-height:100dvh;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:var(--gap);padding:calc(var(--sat) + 14px) var(--pad) calc(var(--sab) + 18px);background:var(--bg);color:var(--ink)}
+.scr{position:relative;min-height:100dvh;max-width:var(--app-w);margin:0 auto;display:flex;flex-direction:column;gap:var(--gap);padding:calc(var(--sat) + 14px) var(--pad) calc(var(--sab) + 18px);background:var(--bg);color:var(--ink)}
 .scr.tall{min-height:100dvh}
 @media (max-width:380px){:root{--pad:16px;--gap:10px}}
 
@@ -280,7 +280,7 @@ html[data-theme="dark"] .v3-lib .lib-all{background:#24272E;border:1px solid rgb
 
 /* sheet */
 .scrim{position:fixed;inset:0;background:var(--scrim);z-index:40;animation:gr-fade .18s}
-.sheet{position:fixed;left:0;right:0;bottom:0;margin:0 auto;max-width:560px;background:var(--card);border-radius:28px 28px 0 0;padding:10px 20px calc(var(--sab) + 24px);display:flex;flex-direction:column;gap:12px;z-index:41;max-height:88dvh;overflow:auto;animation:gr-up .22s}
+.sheet{position:fixed;left:0;right:0;bottom:0;margin:0 auto;max-width:var(--app-w);background:var(--card);border-radius:28px 28px 0 0;padding:10px 20px calc(var(--sab) + 24px);display:flex;flex-direction:column;gap:12px;z-index:41;max-height:88dvh;overflow:auto;animation:gr-up .22s}
 .grab{width:40px;height:5px;border-radius:3px;background:var(--seg-bg);align-self:center;margin-bottom:6px;flex-shrink:0}
 @keyframes gr-fade{from{opacity:0}}
 @keyframes gr-up{from{transform:translateY(24px);opacity:0}}
@@ -370,7 +370,7 @@ details.convo summary::-webkit-details-marker{display:none}
 .v3-wide .s{font-size:12.5px;font-weight:600;line-height:1.35;margin-top:6px;opacity:.72}
 .v3-wide .stages{display:flex;gap:6px}
 .v3-wide .stages i{font-style:normal;font-size:11px;font-weight:800;padding:5px 9px;border-radius:999px;background:rgba(0,0,0,.08);white-space:nowrap}
-.intro{position:fixed;inset:0;background:#0B0C10;color:#fff;overflow:hidden;font-family:var(--sans);z-index:5}
+.intro{position:fixed;top:0;bottom:0;left:0;right:0;margin:0 auto;max-width:var(--app-w);background:#0B0C10;color:#fff;overflow:hidden;font-family:var(--sans);z-index:5}
 .intro-skip{position:absolute;top:calc(var(--sat) + 14px);right:16px;z-index:3;min-height:40px;padding:0 16px;border-radius:999px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);font-size:14px;font-weight:700}
 .intro.at-end .intro-skip{display:none}
 .intro .sc{position:absolute;inset:0;padding:calc(var(--sat) + 80px) 24px calc(var(--sab) + 32px);display:flex;flex-direction:column;justify-content:center;gap:22px;opacity:0;visibility:hidden;transition:opacity .5s,visibility .5s}
@@ -389,7 +389,14 @@ details.convo summary::-webkit-details-marker{display:none}
 .sk-card{align-self:flex-start;padding:14px 20px;border-radius:999px;background:var(--p);color:var(--pi);font-size:20px;font-weight:800;letter-spacing:-.02em;opacity:0;transform:translateX(-30px)}
 .sc.on .sk-card{animation:skIn .55s cubic-bezier(.2,.8,.2,1) var(--d) forwards}
 @keyframes skIn{to{opacity:1;transform:none}}
-.intro .end{justify-content:flex-end}
+.intro .end{justify-content:flex-end;background:#C4AEFF;color:#120C24}
+.end-brand{margin-bottom:auto;margin-top:12vh;display:flex;flex-direction:column;align-items:center;text-align:center;opacity:0;transform:scale(.94)}
+.intro .sc.end.on .end-brand{animation:lgIn .8s cubic-bezier(.2,.8,.2,1) .1s forwards}
+.intro .end-brand .mark{width:104px;height:104px;border-radius:30px;background:#120C24;color:#fff;display:grid;place-items:center;font-size:56px;font-weight:800;position:relative;box-shadow:0 18px 40px rgba(18,12,36,.25)}
+.intro .end-brand .mark::after{content:"";position:absolute;width:18px;height:18px;border-radius:50%;background:#C4AEFF;right:16px;bottom:18px}
+.end-brand b{margin-top:22px;font-size:40px;font-weight:800;letter-spacing:-.045em}
+.end-brand small{font-size:12px;font-weight:800;letter-spacing:.18em;opacity:.6;margin-top:2px}
+.end-brand h1{margin:34px 0 0;font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.25}
 .intro .logo{display:flex;align-items:center;gap:14px;margin-bottom:auto;margin-top:8vh;opacity:0;transform:scale(.9)}
 .intro .sc.end.on .logo{animation:lgIn .8s cubic-bezier(.2,.8,.2,1) .1s forwards}
 @keyframes lgIn{to{opacity:1;transform:none}}
@@ -398,11 +405,13 @@ details.convo summary::-webkit-details-marker{display:none}
 .intro .logo .wm b{font-size:30px;letter-spacing:-.03em;color:#fff}
 .intro .logo .wm small{color:rgba(255,255,255,.6)}
 .intro-cta{display:flex;flex-direction:column;gap:10px}
-.intro-cta .btn-pri{background:#C4AEFF;color:#120C24;min-height:56px;font-size:17px}
-.intro-cta p{margin:0;font-size:14px;line-height:1.4;color:rgba(255,255,255,.6);text-align:center}
-.intro-cta .btn-text{color:rgba(255,255,255,.75);min-height:44px}
-@media (max-height:700px){.intro .big{font-size:36px}.intro .deck{height:290px}.ic-card{font-size:18px;padding:16px}.ic-card:nth-child(2){top:40px}.ic-card:nth-child(3){top:80px}.ic-card:nth-child(4){top:120px}.ic-card:nth-child(5){top:160px}.ic-card:nth-child(6){top:200px}.intro .logo{margin-top:2vh}}
-@media (prefers-reduced-motion:reduce){.intro .sc,.intro .big,.ic-card,.sk-card,.intro .logo{transition:none;animation:none;opacity:1;transform:none}}
+.intro-cta .btn-pri{background:#120C24;color:#fff;min-height:58px;font-size:17px}
+.intro-cta p{margin:0;font-size:14px;line-height:1.4;color:rgba(18,12,36,.7);text-align:center}
+.intro-cta .btn-text{color:rgba(18,12,36,.8);font-weight:800;min-height:44px}
+.intro-links{display:flex;justify-content:space-between;align-items:center;color:rgba(18,12,36,.35)}
+.intro-links span{display:none}
+@media (max-height:700px){.end-brand{margin-top:4vh}.intro .end-brand .mark{width:84px;height:84px;font-size:46px;border-radius:24px}.end-brand h1{margin-top:22px;font-size:21px}.intro .big{font-size:36px}.intro .deck{height:290px}.ic-card{font-size:18px;padding:16px}.ic-card:nth-child(2){top:40px}.ic-card:nth-child(3){top:80px}.ic-card:nth-child(4){top:120px}.ic-card:nth-child(5){top:160px}.ic-card:nth-child(6){top:200px}.intro .logo{margin-top:2vh}}
+@media (prefers-reduced-motion:reduce){.intro .sc,.intro .big,.ic-card,.sk-card,.intro .logo,.end-brand{transition:none;animation:none;opacity:1;transform:none}}
 .desk-k{display:flex;gap:10px;align-items:flex-start;flex-shrink:0}
 .desk-k .kav{width:44px;height:44px;flex-shrink:0}
 .desk-bubble{flex:1;min-width:0;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:6px 22px 22px 22px;padding:12px 14px}
@@ -632,6 +641,15 @@ html[data-theme="dark"] .g-alert{background:#1B1E24;border:1px solid rgba(255,25
 .kn-card .kn-h{display:flex;align-items:center;gap:8px;font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px}
 .kn-card p{font-size:14px;line-height:1.5;color:var(--ink)}
 .kn-card p+p{margin-top:6px}
+
+/* Desktop and tablets: the app keeps its phone width, centered, like on a phone */
+@media (min-width:600px){
+  html[data-theme="light"]{--desk:#DDE2E8}
+  html[data-theme="dark"]{--desk:#050608}
+  html,body{background:var(--desk)}
+  .scr{box-shadow:0 0 0 1px var(--line),0 10px 40px rgba(0,0,0,.08)}
+  .intro{box-shadow:0 0 0 1px rgba(255,255,255,.06)}
+}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -675,6 +693,8 @@ const CHANGELOG=[
     'The Library has 14 new cases: owning a missed deadline, approved work rejected, “the market rate is lower”, big names with small budgets, walking away, team pushback, handing off work, nerves before speaking up, “what do you do?”, career changes and more.',
     'Practice modes are clearer: Speak, Type, and Call (a live call, coming soon).',
     'A new first-run intro, and What’s new no longer pops up after updates. You’ll find it in Settings › About.',
+    'After the intro, Tell K about you goes straight to your details. Who is K? explains who K is modeled on.',
+    'On a computer, Ground now keeps its phone width, centered.',
     'Home is simpler: the focus card and streak bar are gone. The case of the day stays.'
   ]},
   {v:'1.2',d:'2026-10-17',items:[
@@ -1043,7 +1063,7 @@ function _ownerLink(){try{const m=(location.hash||'').match(/owner=([^&]+)/);if(
 // technique library (tap to learn), and K's line for today on the hub.
 // Sources: Kian's book draft, TM Companion's K prompts, the positioning doc.
 // ═══════════════════════════════════════════════════════════════════════════
-const K_VOICE=`You are K, Kian How's voice as a communication coach. Kian is a composer and audio director with twenty years of client work (Dishonored, Genshin Impact, Wolf Warrior) and years of coaching speakers. K coaches the way Kian does: firm with the diagnosis, warm with the delivery, direct, a little playful, never preachy. Always make them want to go again. Find what genuinely worked before coaching anything. Teach the idea, not a formula: one principle plus one line to say, never a script to memorize.`;
+const K_VOICE=`You are K, Kian How's voice as a communication coach. Kian is a creative entrepreneur with more than twenty years across music, creative work, coaching and business, in-house and freelance (his projects include Dishonored, Genshin Impact, Wolf Warrior), and years of coaching speakers. K coaches the way Kian does: firm with the diagnosis, warm with the delivery, direct, a little playful, never preachy. Always make them want to go again. Find what genuinely worked before coaching anything. Teach the idea, not a formula: one principle plus one line to say, never a script to memorize.`;
 const K_PLAIN=`PLAIN ENGLISH: many users are not native English speakers. Short sentences, everyday words. No business jargon or idioms (never 'floor', 'anchor', 'leverage', 'concession', 'scope creep', 'bottom line', 'move the needle', 'ballpark'). Say 'lowest price', 'first price', 'give something', 'extra work' instead. American English.`;
 const K_JUDGE=`How K judges communication: the question is a door, not a destination. A textbook answer to the literal question is robotic. The best communicators reframe, bridge or redirect so that their answer becomes the point, and still leave the listener satisfied. Judge the quality and skill of the communication, not obedience to a template. Judge the shape the speaker actually used before comparing it with an ideal one. One idea fully committed to beats five half-explored; most of the time the fix is to cut. The line is honesty: a bridge or reframe must stay truthful; never coach inventing facts or misleading anyone, and say so plainly if an answer crosses that line. Small habits worth one line if they recur: opening with "That's a great question", "to be honest" (it implies the rest wasn't), long thank-you warm-ups.`;
 const K_CLIENT_VIEW=`How K sees client work (the coach's own view; let it shape the diagnosis without lecturing):
@@ -2299,6 +2319,14 @@ const INTRO_PROBLEMS=['“Can you do it cheaper?”','“Why should we hire you?
 const INTRO_SKILLS=[['Hold your price','p-teal'],['Disagree without a fight','p-pink'],['Say no, keep the goodwill','p-lav'],['Answer under pressure','p-org'],['Make your point in a minute','p-blue']];
 let _introT=[];
 function _introClear(){_introT.forEach(clearTimeout);_introT=[];}
+// Who is K? Shown from the intro and from Settings › About
+function openWhoIsK(){
+  openSheet('<div class="g-k" style="align-items:center">'+kav('l')+'<div><div class="kick" style="margin:0">Who is K?</div><div class="g-h" style="font-size:24px;margin-top:2px">Your coach in Ground</div></div></div>'+
+    '<p class="sub" style="font-size:15.5px;line-height:1.55;color:var(--ink)">K is modeled on <b>Kian How</b>, a creative entrepreneur with more than twenty years across music, creative work, coaching and business: in-house, freelance and his own ventures.</p>'+
+    '<p class="sub" style="font-size:15.5px;line-height:1.55;color:var(--ink)">That means a lot of the conversations most people dread: pricing his work, being pushed for discounts, pitching, managing clients and teams, and coaching others through the same.</p>'+
+    '<p class="sub" style="font-size:15.5px;line-height:1.55;color:var(--ink)">K coaches the way Kian does: honest about what isn’t working, warm about how to fix it, and always with one thing you can say next time.</p>'+
+    '<button class="g-cta" data-close>Got it<span class="ar">'+ic('check','s')+'</span></button>');
+}
 function renderIntro(app){
   _introClear();
   const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -2309,9 +2337,8 @@ function renderIntro(app){
   h+='<section class="sc" data-sc="1"><div class="kick">Sooner or later, you’ll hear</div><div class="deck">'+INTRO_PROBLEMS.map((q,i)=>'<div class="ic-card" style="--r:'+tilt[i]+'deg;--d:'+(i*0.55)+'s">'+escHtml(q)+'</div>').join('')+'</div></section>';
   h+='<section class="sc" data-sc="2"><h1 class="big">It’s not if.<br><em>It’s when.</em></h1></section>';
   h+='<section class="sc" data-sc="3"><div class="kick">The skills that decide how it goes</div><div class="skills">'+INTRO_SKILLS.map((s,i)=>'<div class="sk-card '+s[1]+'" style="--d:'+(i*0.45)+'s">'+escHtml(s[0])+'</div>').join('')+'</div></section>';
-  h+='<section class="sc end" data-sc="4"><div class="logo"><span class="mark" aria-hidden="true">G</span><div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div></div>'+
-     '<h1 class="big sm">Know what to say. Practice it before it’s real.</h1>'+
-     '<div class="intro-cta"><button class="btn btn-pri" data-act="intro-key">Tell K about you</button><p>Two minutes. K uses it to fit every reply, scene and note to your life.</p><button class="btn-text" data-act="intro-later">Skip for now</button></div></section>';
+  h+='<section class="sc end" data-sc="4"><div class="end-brand"><span class="mark" aria-hidden="true">G</span><b>Ground</b><small>BY KIAN HOW</small><h1>Know what to say.<br>Practice it before it’s real.</h1></div>'+
+     '<div class="intro-cta"><button class="btn btn-pri" data-act="intro-key">Tell K about you</button><p>Two minutes. K uses it to fit every reply, scene and note to your life.</p><div class="intro-links"><button class="btn-text" data-act="who-k">Who is K?</button><span aria-hidden="true">·</span><button class="btn-text" data-act="intro-later">Skip for now</button></div></div></section>';
   h+='</main>';
   app.innerHTML=h;
   const root=app.querySelector('.intro');
@@ -2321,23 +2348,25 @@ function renderIntro(app){
   const on=(s,f)=>{const el=app.querySelector(s);if(el)el.addEventListener('click',f);};
   on('[data-act="intro-skip"]',()=>{_introClear();V.introEnd=true;root.classList.add('at-end');show(4);});
   on('[data-act="intro-key"]',()=>{_introClear();V.obStep=1;render();});
+  on('[data-act="who-k"]',openWhoIsK);
   on('[data-act="intro-later"]',()=>{_introClear();S.onboarded=true;S.whatsNew=APP_VERSION;save();V.obStep=0;go('hub');});
 }
 function renderOnboarding(app){
-  const step=V.obStep||0,N=3,p=_P();
+  const step=V.obStep||0,N=2,p=_P();
   if(step===0)return renderIntro(app);
   const steps='<div class="steps" style="width:110px">'+Array.from({length:N},(_,i)=>'<i'+(i<=step-1?' class="on"':'')+'></i>').join('')+'</div>';
   const top=(back)=>'<div class="top">'+(back?'<button class="ibtn r" data-act="prev" aria-label="Back">'+ic('back')+'</button>':'')+steps+'<button class="skip" data-act="skip">Skip</button></div>';
   let h='<main class="scr">';
   if(false){
-  }else if(step===1){
+  }else if(step===-1){
     h+=top(true);
     h+='<div class="stack t" style="margin-top:6px"><h1 class="h1">What’s coming up?</h1><p class="sub">Pick one or more. I’ll start your practice there.</p></div>';
     h+='<div class="stack" style="gap:10px;margin-top:4px">'+GOALS.map(g=>{const on=(S.goals||[]).includes(g.k);return '<button class="'+g.c+' opt'+(on?' on':'')+'" data-goal="'+g.k+'" aria-pressed="'+on+'"><span class="oi">'+ic(g.ic)+'</span><span class="ot"><b>'+escHtml(g.t)+'</b><span>'+escHtml(g.sub)+'</span></span><span class="tick">'+ic('check','s')+'</span></button>';}).join('')+'</div>';
     h+='<p class="small push center-t">You can change this any time in Settings.</p><button class="btn btn-pri" data-act="next">Continue</button>';
-  }else if(step===2){
+  }else if(step===1){
     h+=top(true);
     h+='<div class="stack t" style="margin-top:6px"><h1 class="h1">About you</h1><p class="sub">So K’s examples sound like your life, not a textbook.</p></div>';
+    h+='<div class="fieldset"><label class="lab" for="ob-name">First name</label><input class="inp" id="ob-name" placeholder="What should K call you?" value="'+escHtml(p.name||'')+'"></div>';
     h+='<div class="lab">Where are you now?</div>'+chipsHtml(STAGES,p.stage,'stage');
     h+='<div class="lab">Your field</div><div class="grid2">'+FIELDS.map(f=>'<button class="tile'+(S.rwField===f[0]?' on':'')+'" data-field="'+escHtml(f[0])+'">'+ic(f[1])+escHtml(f[0])+'</button>').join('')+'</div>';
     h+='<div class="lab">Age</div>'+chipsHtml(AGES.map(a=>[a,a]),p.age,'age');
@@ -2357,7 +2386,7 @@ function renderOnboarding(app){
   h+='</main>';
   app.innerHTML=h;
   const on=(s,f)=>{const el=app.querySelector(s);if(el)el.addEventListener('click',f);};
-  const keep=()=>{const pr=app.querySelector('#ob-prob'),pc=app.querySelector('#ob-price'),lw=app.querySelector('#ob-low');if(pr)p.problem=pr.value.trim();if(pc)S.rwPrice=pc.value.trim();if(lw)S.rwLowest=lw.value.trim();save();};
+  const keep=()=>{const nm=app.querySelector('#ob-name');if(nm)p.name=nm.value.trim().slice(0,40);const pr=app.querySelector('#ob-prob'),pc=app.querySelector('#ob-price'),lw=app.querySelector('#ob-low');if(pr)p.problem=pr.value.trim();if(pc)S.rwPrice=pc.value.trim();if(lw)S.rwLowest=lw.value.trim();save();};
   const finish=()=>{keep();S.onboarded=true;S.whatsNew=APP_VERSION;save();V.obStep=0;go('hub');};
   on('[data-act="skip"]',finish);
   on('[data-act="next"]',()=>{keep();V.obStep=step+1;render();});
@@ -2431,7 +2460,7 @@ function renderSettingsPage(app,sp){
        '<button class="row" data-act="reset"><span class="rt"><b style="color:var(--err)">Start over</b><span>Clears everything on this device</span></span></button></div>';
   }else if(sp==='about'){
     h+='<div class="card stack" style="gap:12px;align-items:flex-start">'+kav('l')+'<div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div><h2 class="h2" style="font-size:20px">Talk like you’ve done this for twenty years.</h2>'+
-       '<p class="sub">I’m Kian How, a composer and audio director (Dishonored, Genshin Impact, Wolf Warrior) and a communication coach. Ground coaches with my logic: know your lowest price, give only to get something back, stay warm and firm, and know when to walk away.</p>'+
+       '<p class="sub">I’m Kian How, a creative entrepreneur with more than twenty years across music, creative work, coaching and business. Ground coaches with my logic: know your lowest price, give only to get something back, stay warm and firm, and know when to walk away.</p>'+
        '<p class="sub">K is the coach inside the app. K speaks the way I do.</p></div>';
     h+='<div class="list"><button class="row" data-whatsnew><span class="rt"><b>What’s new</b></span><span class="rv">v'+APP_VERSION+'</span>'+ic('chev','s chev')+'</button></div>';
     h+='<p class="small" style="line-height:1.6">Your recordings and messages go to the AI services that transcribe and coach them. Your notebook and profile stay on your device unless you turn on sync, which stores an encrypted copy only your devices can read. For users 18 and older. Practice is practice: use your own judgment in the real conversation.</p>';
