@@ -639,6 +639,8 @@ const CHANGELOG=[
     'New on the home screen: tell K what’s coming up, or paste what just happened. K reads it and takes you to the right tool, already filled in: a drafted reply, a practice scene, your pitch, or a quick answer.',
     'You see what K understood, and can switch to a different tool with one tap.',
     'K’s advice: when you ask what to do, or something has gone wrong, K first tells you what’s really going on, what to do, what to say first and the principle behind it. Then you can write the message or rehearse it.',
+    'The Library has 14 new cases: owning a missed deadline, approved work rejected, “the market rate is lower”, big names with small budgets, walking away, team pushback, handing off work, nerves before speaking up, “what do you do?”, career changes and more.',
+    'Practice modes are clearer: Speak, Type, and Call (a live call, coming soon).',
     'Home is simpler: the focus card and streak bar are gone. The case of the day stays.'
   ]},
   {v:'1.2',d:'2026-10-17',items:[
@@ -1853,7 +1855,143 @@ const CASES=[
    then:'Keep a short list of people worth staying in touch with, and give before you ask.',
    story:{src:'book',t:'A composer got a message on LinkedIn from a music producer. They met, got on well, and parted with vague promises of working together someday. A year passed, then two, with nothing. Then the producer called out of the blue: was he interested in scoring a film? It became a blockbuster, and it changed his career. Most of the relationships that mattered most were made years before they were needed.'},
    tech:null,
-   practice:{scen:'smalltalk',who:'A producer you just met at a conference',moment:'The session is ending and people are leaving.',line:'“This was great. We should definitely work together sometime.”'}}
+   practice:{scen:'smalltalk',who:'A producer you just met at a conference',moment:'The session is ending and people are leaving.',line:'“This was great. We should definitely work together sometime.”'}},
+  // ── More cases (book chapters and K's client logic) ──
+  {id:'own-mistake',cat:'client',title:'You missed the deadline, and the client is angry',
+   moment:'You got the timeline wrong. The client calls, and he is not calm: “This is going to wreck our launch.”',
+   most:'Explaining why it happened. Or hiding behind a long, careful email.',
+   fails:'Reasons sound like excuses until they have heard you own it. An email feels like you are hiding.',
+   k:'“I got the timeline wrong, and that’s on me. Here’s the new date I can guarantee, and here’s what I’m doing so it holds.”',
+   principle:'Own it first. Then show the plan.',
+   then:'Call, don’t email. One sentence of ownership, no excuses, then the new date and what protects it. Offer one thing that makes up for it.',
+   story:null,tech:'warm-then-firm',
+   practice:{scen:'difficult',who:'Mr Zhang · producer, under pressure',moment:'You missed the delivery date you promised.',job:'Music for his product launch film',pos:'',line:'“This is the second time. Do you understand what this does to our launch?”'}},
+  {id:'approved-rejected',cat:'client',title:'They reject work they already approved',
+   moment:'The client signed off on the draft last week. Now: “Actually, this isn’t working. Can you start again?”',
+   most:'Getting defensive: “But you approved it!” Or quietly redoing everything for free.',
+   fails:'Arguing makes it about who is right. Redoing it for free teaches them that approval means nothing.',
+   k:'“I hear it’s not working for you now. When we signed off on Tuesday, we agreed on X. Let’s look at what’s changed, and I’ll tell you what a new round would take.”',
+   principle:'Separate the feeling from the facts. Then agree the next step.',
+   then:'Acknowledge the feeling, state the agreed facts calmly, then make the new work a new decision, with its own time and price.',
+   story:null,tech:'labeling',
+   practice:{scen:'difficult',who:'Aisha · marketing lead',moment:'She approved the draft last week.',job:'A brand video, approved last week',pos:'',line:'“Honestly, now that I see it again, it’s not working. Can you start over?”'}},
+  {id:'market-rate',cat:'client',title:'“The market rate is lower than that”',
+   moment:'You quoted your price. The client has done some research: “Others charge much less for this.”',
+   most:'Defending your price line by line. Or matching the lower number to keep them.',
+   fails:'Market rate is only what other people agreed to. Argue about it, and you make it the rule.',
+   k:'“That may be true for some. My price is for it being right the first time, on the date we agree. If budget is the main thing, here’s what I can do for less.”',
+   principle:'Market rate is a reference, not a rule.',
+   then:'Talk about what they get from you, then offer a smaller version at a lower number. Never just drop the price.',
+   story:null,tech:'give-to-get',
+   practice:{scen:'ground',who:'Lena · runs a small tea brand',moment:'She has compared quotes online.',job:'Packaging design for three teas',pos:'¥8,000. Lowest you’ll accept: ¥7,000',line:'“I checked around. The market rate for this is about ¥5,000.”'}},
+  {id:'big-name',cat:'client',title:'A big name offers you very little money',
+   moment:'A famous studio wants you on their project. The pay is a fraction of your rate. “It’ll look great on your CV.”',
+   most:'Saying yes at once because of the name. Or saying no without thinking it through.',
+   fails:'Big projects have big teams to feed. Unless you are at the top, the name pays in reputation, not money, and the low rate tends to stick.',
+   k:'“I’d love to be part of it. At this budget I can do the main pieces; for the full scope, my rate is X. Which works better for you?”',
+   principle:'Weigh the name against the pay, out loud.',
+   then:'Decide what the name is worth to you before the call. If you take less, get something back: credit, a reference, a smaller scope.',
+   story:{src:'book',t:'Early in his career, a sound designer worked on a game that went on to win a BAFTA. He was paid ten dollars an hour. Twelve years later, people still say “wow” when they hear he worked on it. It was fun, and it opened doors. It was also ten dollars an hour.'},
+   tech:'give-to-get',
+   practice:{scen:'bargain',who:'Sam · producer at a famous game studio',moment:'They know their name is worth a lot to you.',job:'Sound design for a big-name game',pos:'¥800 a day. Lowest you’ll accept: ¥600',line:'“Our budget is ¥300 a day. But honestly, imagine this on your CV.”'}},
+  {id:'walk-away',cat:'client',title:'A client you should walk away from',
+   moment:'Third round of “small changes”, a lower budget than agreed, and now they want it by Monday.',
+   most:'Saying yes again and resenting every hour. Or going quiet and hoping they disappear.',
+   fails:'Every yes teaches them the line keeps moving. Ghosting damages your name more than a clear no.',
+   k:'“I don’t think I’m the right fit for this version of the project. Here’s everything I’ve done so far, and I’m happy to hand it over cleanly.”',
+   principle:'Not every client is your client.',
+   then:'Know your walk-away point before the conversation. Leave politely and finish clean: it protects your reputation.',
+   story:null,tech:'walk-away',
+   practice:{scen:'difficult',who:'Kevin · founder of a small startup',moment:'This is the third round of changes, and the budget just dropped.',job:'A logo that has been through three rounds',pos:'',line:'“Just a few more small changes. And we need it Monday. Oh, and the budget got cut.”'}},
+  {id:'team-pay',cat:'disagree',title:'Your team pushes back on pay and revisions',
+   moment:'You brought people in to help on a big job. Now one of them says: “For what we’re paid, this many revisions is too much.”',
+   most:'Pulling rank: “That’s the job.” Or promising money you don’t have.',
+   fails:'Pulling rank loses their goodwill when you need it most. Promising money you can’t pay loses their trust later.',
+   k:'“You’re right, this is more than we planned. The budget is fixed, so here’s what I can do: two more rounds at most, and I’ll handle the client so it stops there.”',
+   principle:'Say the limit. Then say what you can do.',
+   then:'Agree what “done” means before the next round, and protect your team from the client, not the other way around.',
+   story:{src:'book',t:'A composer took on a big conference job: the opening films for a three-day tech event. Too much for one person, so he brought in two sound designers and two mix engineers. More people meant more problems: complaints about pay, frustration at too many revisions. Talking to the client took most of his time. The result was outstanding, and learning to manage people turned him into an audio director.'},
+   tech:'warm-then-firm',
+   practice:{scen:'conflict',who:'Ben · a sound designer on your team',moment:'It’s the fifth round of revisions this week.',line:'“Honestly, for what we’re paid, this many revisions is too much.”'}},
+  {id:'delegate',cat:'work',title:'You need to hand off work, but you don’t trust it to be done right',
+   moment:'The job is too big for you alone. You need help, but you worry it won’t meet your standard or your deadline.',
+   most:'Doing it all yourself, late into the night. Or handing it off with “just do your best.”',
+   fails:'Doing it all burns you out and caps how much you can take on. A vague handoff gets vague work back.',
+   k:'“Here’s the part I need from you, here’s what great looks like, and I need it by Thursday at noon. Ask me anything before you start.”',
+   principle:'Hand off the work. Keep the standard by saying what good looks like.',
+   then:'Give one clear piece, an example of “good”, and a deadline with a check-in halfway.',
+   story:{src:'book',t:'Early on, one composer did nearly everything himself. He didn’t trust others to meet his standard or his deadlines, and keeping all the money was appealing. Late nights, every time. The first time a job was simply too big, he reluctantly brought in four people. It turned out to be the best decision he could have made: he could focus on the music and the client, and it led to bigger work.'},
+   tech:'bottom-line-first',
+   practice:{scen:'feedback',who:'Leo · a freelancer you just hired',moment:'You are briefing him on his first piece of the project.',line:'“So, what exactly do you need from me?”'}},
+  {id:'nervous',cat:'work',title:'You’re scared of looking stupid if you speak up',
+   moment:'The meeting goes quiet. You have a view, and your heart is racing.',
+   most:'Waiting until you are completely sure. Then the moment passes.',
+   fails:'The moment rarely comes back. And every time you stay quiet, it gets harder the next time.',
+   k:'“Can I add one thing? I think we’re missing the customer’s side of this.” One sentence is enough to start.',
+   principle:'Fear means you’re trying something new. Do it anyway, small.',
+   then:'Prepare one sentence before the meeting. Say it in the first ten minutes, before the nerves build.',
+   story:{src:'book',t:'Years into a successful career, one composer started making videos about his work. He was scared of being laughed at and of making mistakes on camera. That was the point. The older we get, the more comfortable we become, and the less we try. Each video made the next one easier.'},
+   tech:'bottom-line-first',
+   practice:{scen:'meeting',who:'Your manager · weekly team meeting',moment:'The room has gone quiet. You have a view, and your heart is racing.',line:'“Anyone else? Any thoughts before we move on?”'}},
+  {id:'what-you-do',cat:'job',title:'“So, what do you do?”',
+   moment:'Someone useful asks the simplest question, and you answer with your job title and a list of skills.',
+   most:'“I’m a designer. I do branding, web, some motion…”',
+   fails:'A title and a list are forgettable. People remember what you do for someone, not what you call yourself.',
+   k:'“I help small brands look bigger than they are. Mostly packaging and their first website.”',
+   principle:'Say what they get, not what you do.',
+   then:'Then stop, and let them ask the next question.',
+   story:null,tech:'their-problem',
+   practice:{scen:'intro',who:'A marketing director at an industry mixer',moment:'You have just been introduced.',line:'“So what is it you do, exactly?”'}},
+  {id:'known-for-one',cat:'job',title:'People only know you for one thing',
+   moment:'Someone recognizes you from one big project, and the whole conversation stays there.',
+   most:'Talking about that project for ten minutes. Or brushing it off.',
+   fails:'Staying there keeps you stuck as “the person who did that”. Brushing it off wastes the door it opens.',
+   k:'“Yes, that was me. These days I spend most of my time on X, which is why I wanted to meet you.”',
+   principle:'Use the label to open the door. Then say what’s next.',
+   then:'Give the old project one sentence, then bridge to what you want them to remember now.',
+   story:{src:'book',t:'One composer scored a blockbuster action film. For years, all he had to say was “I did the music for that film”, and doors opened. But the label never quite peeled off, even when he wanted to be known for other work. Big projects define you, for better and for worse.'},
+   tech:'pivot',
+   practice:{scen:'intro',who:'A producer at an industry dinner',moment:'She has just realized you worked on a famous project.',line:'“Wait, you did the music for that film? What are you working on now?”'}},
+  {id:'career-change',cat:'job',title:'Explaining a career change',
+   moment:'An interviewer looks at your background: “This is quite a jump. Why should we take the risk?”',
+   most:'Apologizing for your past, or listing every course you took to catch up.',
+   fails:'Apologizing makes your past a weakness. A list of courses doesn’t show why you would be good.',
+   k:'“Music taught me to tell a story in thirty seconds. That’s most of what this job is, so it’s less of a jump than it looks.”',
+   principle:'Your past is the seed. Connect the dots for them.',
+   then:'Pick the one skill that carries over, and give one example of it.',
+   story:{src:'book',t:'Three people who started out in music: one became a full-time tattoo artist, one manages real estate, one is a creative director at Google. None of them planned it. Each grew a new career out of an interest they kept alive alongside music.'},
+   tech:'star',
+   practice:{scen:'interview',who:'The hiring manager · second round',moment:'Your background is in a different field.',line:'“Your background is in music. Why should we hire you for this?”'}},
+  {id:'all-over',cat:'job',title:'“Your CV is all over the place”',
+   moment:'The interviewer sees five different kinds of work and asks what your real specialty is.',
+   most:'Picking one skill and hiding the rest. Or listing everything.',
+   fails:'Hiding skills throws away what makes you different. A list makes you look unfocused.',
+   k:'“They all serve one thing: I can take an idea from sketch to finished product on my own. Most teams need three people for that.”',
+   principle:'Stack your skills into one story.',
+   then:'Name the one outcome your skills add up to, then give one example.',
+   story:{src:'book',t:'When one composer was employed, he used maybe 20% of what he could do. When he went freelance, he built his own website, pitched his own clients and wrote his own copy. Ordinary skills, stacked together, became a brand no one else had.'},
+   tech:'rule-of-3',
+   practice:{scen:'interview',who:'The interviewer · first round',moment:'They are looking at your CV.',line:'“Your CV is all over the place. What is your actual specialty?”'}},
+  {id:'one-project',cat:'job',title:'“Apart from that one project, what else?”',
+   moment:'You led with your one impressive project. The interviewer wants to know what’s behind it.',
+   most:'Talking about the big project again, in more detail.',
+   fails:'One big project can look like luck. They want to know you can do it again.',
+   k:'“That’s the one people know. Behind it are about twenty smaller projects in two years, which is why I can adapt fast.”',
+   principle:'Show the pattern, not just the peak.',
+   then:'Name the range in one sentence, then one quick example that is different from the big one.',
+   story:{src:'book',t:'One sound designer’s first job was at a small outsourcing studio that survived by taking every project it could. In two years he worked on almost two dozen titles, from mobile games to award winners. The volume proved he was adaptable and reliable, which is hard to show with one big project and nothing to compare it to.'},
+   tech:'star',
+   practice:{scen:'interview',who:'The interviewer · final round',moment:'You just talked about your best-known project.',line:'“Great. Apart from that one, what else have you done?”'}},
+  {id:'teaching',cat:'people',title:'Teaching someone new',
+   moment:'You have to train a new colleague or a student. You know the material. They look lost.',
+   most:'Starting with everything you know, in the order you learned it.',
+   fails:'Content without connection doesn’t land. People learn from someone they feel understands them.',
+   k:'“Before we start: what do you already know, and what would make today worth it for you?”',
+   principle:'Connection before content.',
+   then:'Ask first, teach one thing, check it landed. Then the next.',
+   story:{src:'book',t:'At sixteen, an assistant at a guitar shop was asked to start teaching, with no experience at all. It took trial and error and watching his co-workers. The biggest lesson: connecting with his students mattered as much as the teaching itself.'},
+   tech:null,
+   practice:{scen:'intro',who:'Mia · your new intern, first day',moment:'You are her first point of contact.',line:'“Hi! I’m Mia. So… where do I even start?”'}}
 ];
 // ── Library state, helpers ────────────────────────────────────────────────
 function _case(id){return CASES.find(c=>c.id===id)||null;}
@@ -1874,7 +2012,7 @@ function caseToPractice(c){
   const p=c.practice||{};const k=TT_REAL[p.scen]?p.scen:'conflict';
   RW.scenario=k;RW.goal=_rwGoalOf(k).k;RW.tougher=false;_rwResetConvo();
   RW.question=p.line||'';RW.source='case';RW.prevFix='';RW.fromReply=null;RW.fromCase={id:c.id,title:c.title,principle:c.principle,k:c.k};
-  _rwCast(_rwIsClient(k)?{c:p.who,job:p.job||p.moment,pos:p.pos||(S.rwPrice?S.rwPrice+(S.rwLowest?'. Lowest you’ll accept: '+S.rwLowest:''):'Your usual price')}:{who:p.who,moment:p.moment});
+  _rwCast(_rwIsClient(k)?{c:p.who,job:p.job||p.moment,pos:('pos' in p)?p.pos:(S.rwPrice?S.rwPrice+(S.rwLowest?'. Lowest you’ll accept: '+S.rwLowest:''):'Your usual price')}:{who:p.who,moment:p.moment});
   RW.phase=RW.question?'brief':'setup';
   _casesDone()[c.id]=new Date().toISOString();save();
   go('real');
@@ -1882,7 +2020,8 @@ function caseToPractice(c){
 // ── Screens ───────────────────────────────────────────────────────────────
 function renderLibrary(app){
   const cat=V.libCat||'all',seen=_casesSeen(),done=_casesDone();
-  const list=CASES.filter(c=>cat==='all'||c.cat===cat);
+  const ord=k=>CASE_CATS.findIndex(x=>x.k===k);
+  const list=CASES.filter(c=>cat==='all'||c.cat===cat).slice().sort((a,b)=>ord(a.cat)-ord(b.cat));
   let h='<main class="scr">'+gBar('Library','hub');
   h+='<p class="sub" style="margin-top:-4px">The conversations every career runs into. Sooner or later, in some version. Read how to handle one, then practice it.</p>';
   h+='<div class="g-chips lib-chips"><button class="g-chip'+(cat==='all'?' on':'')+'" data-libcat="all">All</button>'+CASE_CATS.map(x=>'<button class="g-chip'+(cat===x.k?' on':'')+'" data-libcat="'+x.k+'">'+x.t+'</button>').join('')+'</div>';
@@ -2216,7 +2355,7 @@ function renderSettingsPage(app,sp){
   }else if(sp==='coaching'){
     h+='<div class="sect">K speaks</div><div class="list">'+COACH_LANGS.map(l=>'<button class="row" data-lang="'+l.id+'"><span class="rt"><b>'+escHtml(l.label)+'</b></span>'+((S.coachLang||'auto')===l.id?ic('check','s'):'')+'</button>').join('')+'</div>';
     h+='<div class="sect">Memory</div><div class="list"><button class="row" data-act="mem"><span class="rt"><b>K remembers my sessions</b><span>K reads your last notes before coaching you again.</span></span><span class="rv">'+(_nbOn()?'On':'Off')+'</span></button>'+
-       '<button class="row" data-act="tts"><span class="rt"><b>The other side speaks out loud</b><span>In Take turns, you hear their lines.</span></span><span class="rv">'+(S.ttsOff?'Off':'On')+'</span></button></div>';
+       '<button class="row" data-act="tts"><span class="rt"><b>The other side speaks out loud</b><span>When you practice by speaking, you hear their lines.</span></span><span class="rv">'+(S.ttsOff?'Off':'On')+'</span></button></div>';
   }else if(sp==='usage'){
     h+='<div class="list">';
     if(PAYWALL_ON)h+='<button class="row" data-act="bal"><span class="rt"><b>Sessions left</b><span>Top up any time</span></span><span class="rv">'+S.credits+'</span>'+ic('chev','s chev')+'</button>';
@@ -3017,7 +3156,7 @@ function renderReal(app){
     const b=_rwBriefOk()?RW.brief:null,cl=_rwIsClient();
     h+=gBar(sc.name,'rw-setup',_rwDots());
     {const cap=s=>String(s||'').replace(/^./,c=>c.toUpperCase());
-     const big=b?(b.c?b.c.replace(' · ',' ')+'. '+cap(RW.persona)+'.':b.who.replace(' · ',', ')):(RW_ROLE[RW.scenario]||'The other person')+(RW.persona?'. '+cap(RW.persona)+'.':'');
+     const big=b?(b.c?b.c.replace(' · ',', ')+'. '+cap(RW.persona)+'.':b.who.replace(' · ',', ')):(RW_ROLE[RW.scenario]||'The other person')+(RW.persona?'. '+cap(RW.persona)+'.':'');
      h+='<div class="g-block"><div class="g-kick">Who you’re talking to</div><div class="g-big">'+escHtml(big)+'</div>'+(b&&b.who&&b.moment?'<p style="margin-top:8px;font-size:16px;line-height:1.45;font-weight:600">'+escHtml(b.moment)+'</p>':'')+'</div>';
      if(RW_AIM[RW.scenario]&&!(b&&b.c))h+='<div class="g-card tight"><div class="g-row top"><span class="t"><b>Your goal</b><span>'+escHtml(RW_AIM[RW.scenario])+'</span></span></div></div>';}
     if(b&&b.c)h+='<div class="g-card tight"><div class="g-row"><span class="t"><b>'+(RW.source==='desk'?'The situation':'The job')+'</b><span>'+escHtml(b.job)+'</span></span></div>'+(b.pos?'<div class="g-row"><span class="t"><b>'+escHtml(RW_POS_LBL[RW.scenario]||'Your position')+'</b><span>'+escHtml(b.pos)+'</span></span></div>':'')+'</div>';
@@ -3075,7 +3214,7 @@ function renderReal(app){
   const on=(s,f)=>{const el=app.querySelector(s);if(el)el.addEventListener('click',f);};
   app.querySelectorAll('[data-goal]').forEach(b=>b.addEventListener('click',()=>{RW.goal=b.dataset.goal;const g=RW_GOALS.find(x=>x.k===RW.goal);if(!g.items.includes(RW.scenario))RW.scenario=g.items[0];render();}));
   app.querySelectorAll('[data-scen]').forEach(b=>b.addEventListener('click',()=>{RW.scenario=b.dataset.scen;render();}));
-  app.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.mode;if(m==='live'&&!LIVE_ON){showToast('Live calls are coming. Take turns works today.','info');return;}if(RW.rec)return;RW.mode=m;render();if(ph==='turn'&&m!=='type')rwSpeakLine();}));
+  app.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.mode;if(m==='live'&&!LIVE_ON){showToast('Live calls are coming. Speak works today.','info');return;}if(RW.rec)return;RW.mode=m;render();if(ph==='turn'&&m!=='type')rwSpeakLine();}));
   on('[data-act="get"]',()=>{RW.tougher=false;RW.fromReply=null;rwFetchScene();});
   on('[data-act="shuffle"]',()=>{const g=RW_GOALS.find(x=>x.k===RW.goal);RW.scenario=_pick(g.items);RW.tougher=false;RW.fromReply=null;rwFetchScene();});
   app.querySelectorAll('[data-go="rw-setup"],[data-go="rw-restart"]').forEach(b=>{b.removeAttribute('data-go');b.addEventListener('click',async()=>{if(RW.rec)await recStop();speakStop();RW.rec=false;_rwResetConvo();RW.phase='setup';RW.question='';RW.fromReply=null;render();});});
@@ -3095,7 +3234,7 @@ function renderReal(app){
   on('[data-act="rw-retry"]',()=>{RW.loading=true;RW.notes=null;render();rwAnalyze();});
   if(ph==='turn'&&RW.rec)recLevelLoop(app.querySelector('#rw-wave'));
 }
-function _rwModeSwitch(){return '<div class="g-mode" role="radiogroup" aria-label="How you answer"><button data-mode="live"'+(RW.mode==='live'?' class="on"':'')+(LIVE_ON?'':' style="opacity:.55"')+'>Live<em>'+(LIVE_ON?'NEW':'SOON')+'</em></button><button data-mode="turns"'+(RW.mode==='turns'?' class="on"':'')+'>Take turns</button><button data-mode="type"'+(RW.mode==='type'?' class="on"':'')+'>Type</button></div>';}
+function _rwModeSwitch(){return '<div class="g-mode" role="radiogroup" aria-label="How you answer"><button data-mode="live"'+(RW.mode==='live'?' class="on"':'')+(LIVE_ON?'':' style="opacity:.55"')+'>Call<em>'+(LIVE_ON?'NEW':'SOON')+'</em></button><button data-mode="turns"'+(RW.mode==='turns'?' class="on"':'')+'>Speak</button><button data-mode="type"'+(RW.mode==='type'?' class="on"':'')+'>Type</button></div>';}
 function _rwHint(){const k=RW.scenario;const H={bargain:'Trade something, not your price.',ground:'Same position, same reason, warm every time.',difficult:'Calm first. Then the professional route.',proposal:'Their problem first. Then your plan.',interview:'One real example beats three claims.',pitch:'Hook, problem, proof, ask.',intro:'What you do for them, not your title.',meeting:'Point first. Then one reason.',tough:'Acknowledge, answer, then bridge.',smalltalk:'Answer, add a hook, hand it back.'};return 'Hint from K: '+(H[k]||'Say it the way you would.');}
 // ═══════════════════════════════════════════════════════════════════════════
 // PITCH IT: Build (a structure with timed parts) → Run (cue cards against the
