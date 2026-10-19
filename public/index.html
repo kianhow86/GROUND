@@ -693,6 +693,14 @@ html[data-theme="dark"] .g-alert{background:#1B1E24;border:1px solid rgba(255,25
 /* When the top box is tall (three suggestions), the tiles drop their top rows so titles never clip */
 .scr.hub.dense .hub-tiles .v3-wide .wtop,.scr.hub.dense .hub-tiles .v3-blk .bi{display:none}
 .scr.hub.dense .hub-tiles .v3-wide{justify-content:flex-end}
+
+/* Scene context on the speaking card */
+.rw-ctx{margin-top:auto;display:flex;flex-direction:column;gap:7px;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.38);color:var(--pi)}
+.rw-ctx>div{display:grid;grid-template-columns:78px minmax(0,1fr);gap:8px;align-items:baseline}
+.rw-ctx small{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.65}
+.rw-ctx span{font-size:13.5px;font-weight:600;line-height:1.35}
+.rw-ctx+.g-wave{margin-top:12px !important}
+@media (max-height:700px){.rw-ctx{gap:5px;padding:10px 12px}.rw-ctx span{font-size:12.5px}}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -732,6 +740,7 @@ const CHANGELOG=[
   {v:'1.4',d:'2026-10-19',items:[
     'If you’ve told K what’s hardest, the home screen suggests where to start: one pick from K while you’re new, three to choose from after that. You can always type your own situation instead.',
     'The case of the day now comes from what you told K, not at random.',
+    'Feedback after practice no longer shows internal labels like “fu2”; it says “your third answer”.',
     'Once a month K checks in: is it still the same hard part, or has something new come up? K remembers how it changes.'
   ]},
   {v:'1.3',d:'2026-10-18',items:[
@@ -3343,7 +3352,7 @@ async function _rwDecide(){
   const conv=_rwxTurns();const tag=i=>i?'fu'+i:'answer';
   let m='Situation: '+sc.name+_rwBriefText()+'\nOpening: '+RW.question+(RW.context?'\nThe speaker’s own situation: '+RW.context:'')+(RW.fromReply&&RW.fromReply.reply?'\nThe speaker’s written reply before this conversation: '+RW.fromReply.reply:'')+'\n\nTHE CONVERSATION (each of the speaker’s turns is tagged):\n';
   conv.forEach((t,i)=>{m+=(i?(cl?'The client':'The other person')+' said: ':'Opening: ')+t.q+'\n['+tag(i)+'] The speaker said: '+(t.a||'(nothing)')+'\n';});
-  const voice='WHO IS WHO: in every "reason" and "why", call the speaker "you" and the client or other person "they" (never "I" or "me"). '+K_PLAIN;
+  const voice='The turn tags (answer, fu1, fu2, fu3) are only for the "turn" fields: never write them in any sentence; say “your first answer”, “your second answer” and so on instead. WHO IS WHO: in every "reason" and "why", call the speaker "you" and the client or other person "they" (never "I" or "me"). '+K_PLAIN;
   const grounding='GROUNDING RULES (strict): every "quote" and "said" must be the speaker’s EXACT words, copied character for character from the tagged turn you name, 3 to 15 words, the shortest phrase that makes the point. Never paraphrase, never fix their grammar, never combine words from two turns. If you cannot find exact words for a point, leave that point out.';
   const improveRule='"improve": up to 2 moments that cost them most, each {"turn":"answer|fu1|fu2|fu3","said":"exact words","try":"a better line they could actually say, spoken, under 30 words","why":"one sentence on why it would help'+(cl?', tied to the outcome or your hidden brief':'')+', naming the principle (e.g. give to get, warm then firm, know your lowest, two good options, bottom line first, STAR)"}.';
   const sys=cl
@@ -3353,6 +3362,10 @@ async function _rwDecide(){
   for(let a=0;a<2&&!j;a++){try{const raw=await callCoach(sys,m+(a?'\n\nYour last reply was not valid JSON. Reply again with compact valid JSON only, nothing else.':''),{maxTokens:cl?1100:700,noLang:true,featureId:'rw-turn',grace:true});j=_jsonFrom(raw);}catch(e){j=null;}}
   try{
     if(!j)return null;
+    // Never let the internal turn tags reach the screen
+    const human=s=>String(s||'').replace(/\b(fu|FU)\s?([1-3])\b/g,(m,x,n)=>['your second answer','your third answer','your fourth answer'][+n-1]).replace(/\[?\banswer\b\]?(?=\s*(,|\.|:|\)|$))/g,'your first answer');
+    const deep=o=>{if(typeof o==='string')return human(o);if(Array.isArray(o))return o.map(deep);if(o&&typeof o==='object'){const r={};for(const k in o)r[k]=k==='turn'||k==='quote'||k==='said'?o[k]:deep(o[k]);return r;}return o;};
+    j=deep(j);
     const clean=a=>(Array.isArray(a)?a:[]).slice(0,3);
     const could=j.could&&j.could.from&&j.could.to?{from:String(j.could.from).slice(0,80),to:String(j.could.to).slice(0,80)}:null;
     if(!cl)return {verdict:['yes','maybe','no'].includes(j.verdict)?j.verdict:'maybe',say:String(j.say||'').slice(0,200),why:clean(j.why),improve:clean(j.improve),could};
@@ -3471,8 +3484,9 @@ function renderReal(app){
       h+=gBar(sc.name,'rw-restart',_rwDots());
       h+=_rwModeSwitch();
       h+='<div class="g-block" style="flex:1;display:flex;flex-direction:column"><div class="rowx"><span class="g-kick">'+escHtml(name)+(inFu?' says':' says')+(n?' · '+(inFu?RW.convo.length+1:1)+' of '+(n+1):'')+'</span>'+(ttsOk()&&!wait?'<button class="g-chip soft" style="margin-left:auto;min-height:36px" data-act="play">'+ic('play','s')+'Play again</button>':'')+'</div>'+
-         (wait?'<div class="think" style="margin-top:14px"><i style="background:var(--pi)"></i><i style="background:var(--pi)"></i><i style="background:var(--pi)"></i></div>':'<div class="g-big" style="font-size:23px">'+escHtml(line)+'</div>'+(!inFu&&_rwBriefOk()&&RW.brief.moment&&RW.brief.moment!==RW.question?'<p style="margin-top:10px;font-size:14px;line-height:1.4;font-weight:600;opacity:.7">'+escHtml(RW.brief.moment)+'</p>':''))+
+         (wait?'<div class="think" style="margin-top:14px"><i style="background:var(--pi)"></i><i style="background:var(--pi)"></i><i style="background:var(--pi)"></i></div>':'<div class="g-big" style="font-size:23px">'+escHtml(line)+'</div>')+
          (RW.rec?'<div id="rw-live" class="sub" style="margin-top:14px;color:var(--pi);opacity:.8;min-height:40px">Listening…</div>':'')+
+         _rwCtxPanel()+
          '<div class="g-wave" id="rw-wave" style="justify-content:flex-start;margin-top:auto;opacity:.5;--ink:var(--pi)">'+'<i></i>'.repeat(14)+'</div></div>';
       if(RW.mode==='type'){
         h+='<textarea class="g-answer" id="rw-typed" placeholder="Type what you’d say…"'+(wait?' disabled':'')+'>'+escHtml(RW.typed||'')+'</textarea>';
@@ -3525,6 +3539,20 @@ function renderReal(app){
   on('[data-act="new"]',()=>{RW.phase='setup';RW.question='';RW.fromReply=null;render();});
   on('[data-act="rw-retry"]',()=>{RW.loading=true;RW.notes=null;render();rwAnalyze();});
   if(ph==='turn'&&RW.rec)recLevelLoop(app.querySelector('#rw-wave'));
+}
+// The scene, kept on the speaking card: who, the job or the moment, your numbers, your goal
+const RW_CTX_ON=false; // scene panel on the speaking card: waiting for approval
+function _rwCtxPanel(){
+  if(!RW_CTX_ON)return '';
+  const b=_rwBriefOk()?RW.brief:null,rows=[];
+  const short=s=>_kShort(String(s||'').replace(/\s+/g,' ').trim(),90);
+  if(b&&b.c){rows.push(['Who',b.c.replace(' · ',', ')]);if(b.job)rows.push([RW.source==='desk'?'Situation':'The job',b.job]);if(b.pos)rows.push([RW_POS_LBL[RW.scenario]||'Your position',b.pos]);}
+  else if(b&&b.who){rows.push(['Who',b.who.replace(' · ',', ')]);if(b.moment&&b.moment!==RW.question)rows.push(['The moment',b.moment]);}
+  else rows.push(['Who',(RW_ROLE[RW.scenario]||'The other person')+(RW.persona?', '+RW.persona:'')]);
+  if(RW.fromCase&&RW.fromCase.principle)rows.push(['Try',RW.fromCase.principle]);
+  else if(RW.prevFix)rows.push(['Last time',RW.prevFix]);
+  else if(RW_AIM[RW.scenario])rows.push(['Your goal',RW_AIM[RW.scenario]]);
+  return '<div class="rw-ctx">'+rows.map(r=>'<div><small>'+escHtml(r[0])+'</small><span>'+escHtml(short(r[1]))+'</span></div>').join('')+'</div>';
 }
 function _rwModeSwitch(){return '<div class="g-mode" role="radiogroup" aria-label="How you answer"><button data-mode="live"'+(RW.mode==='live'?' class="on"':'')+(LIVE_ON?'':' style="opacity:.55"')+'>Call<em>'+(LIVE_ON?'NEW':'SOON')+'</em></button><button data-mode="turns"'+(RW.mode==='turns'?' class="on"':'')+'>Speak</button><button data-mode="type"'+(RW.mode==='type'?' class="on"':'')+'>Type</button></div>';}
 function _rwHint(){const k=RW.scenario;const H={bargain:'Trade something, not your price.',ground:'Same position, same reason, warm every time.',difficult:'Calm first. Then the professional route.',proposal:'Their problem first. Then your plan.',interview:'One real example beats three claims.',pitch:'Hook, problem, proof, ask.',intro:'What you do for them, not your title.',meeting:'Point first. Then one reason.',tough:'Acknowledge, answer, then bridge.',smalltalk:'Answer, add a hook, hand it back.'};return 'Hint from K: '+(H[k]||'Say it the way you would.');}
