@@ -701,6 +701,16 @@ html[data-theme="dark"] .g-alert{background:#1B1E24;border:1px solid rgba(255,25
 .rw-ctx span{font-size:13.5px;font-weight:600;line-height:1.35}
 .rw-ctx+.g-wave{margin-top:12px !important}
 @media (max-height:700px){.rw-ctx{gap:5px;padding:10px 12px}.rw-ctx span{font-size:12.5px}}
+
+/* Tiles size themselves to the space they get: when a tile is short, it drops its top row so the title never clips */
+.hub-tiles .v3-blk,.hub-tiles .v3-wide{container-type:size}
+@container (max-height:104px){
+  .v3-wide .wtop{display:none}
+  .v3-wide .wbot{margin-top:auto}
+}
+@container (max-height:136px){
+  .v3-blk .bi{display:none}
+}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -740,6 +750,7 @@ const CHANGELOG=[
   {v:'1.4',d:'2026-10-19',items:[
     'If you’ve told K what’s hardest, the home screen suggests where to start: one pick from K while you’re new, three to choose from after that. You can always type your own situation instead.',
     'The case of the day now comes from what you told K, not at random.',
+    'Home fits better: the Pitch it tile no longer gets cut off, and the case of the day card is cleaner.',
     'Spoken prices come through right: “six thousand five” is 6,500, not 6005.',
     'Feedback after practice no longer shows internal labels like “fu2”; it says “your third answer”.',
     'Once a month K checks in: is it still the same hard part, or has something new come up? K remembers how it changes.'
@@ -2212,7 +2223,7 @@ function renderHub(app){
      '<button class="v3-blk '+(first?'first':'cmp')+' p-teal" data-go="real"><span class="bi">'+ic('talk')+'</span><span class="ba">'+ic('arrowne','s')+'</span><b>Practice<br>a talk</b><span class="s">They push. You hold.</span></button></div>';
   h+='<button class="v3-wide p-org" data-go="pitch"><span class="wtop"><span class="bi">'+ic('pitch')+'</span><span class="stages" aria-hidden="true"><i>Build</i><i>Run</i><i>Face the room</i></span></span><span class="wbot"><span class="wt"><b>Pitch it</b><span class="s">Present it. Then take the questions.</span></span><span class="ba">'+ic('arrowne','s')+'</span></span></button></div>';
   {const me=_caseForMe(),cs=_caseOfDay(),cc=_caseCat(cs.cat);
-   h+='<div class="v3-lib '+cc.c+'"><button class="lib-main" data-act="lib-case"><small>Case of the day · '+escHtml(me?me.why:cc.t)+'</small><b>'+escHtml(cs.title)+'</b></button><button class="lib-all" data-go="library">'+ic('book','s')+'Library<span>'+CASES.length+'</span></button></div>';}
+   h+='<div class="v3-lib '+cc.c+'"><button class="lib-main" data-act="lib-case"><small>Case of the day</small><b>'+escHtml(cs.title)+'</b></button><button class="lib-all" data-go="library">'+ic('book','s')+'Library<span>'+CASES.length+'</span></button></div>';}
   h+='<p class="quiet push hub-usage">'+(PAYWALL_ON?escHtml(S.credits+' sessions left'):'This month: '+u.sessions+(u.sessions===1?' practice session':' practice sessions'))+'</p>';
   h+='</main>';
   app.innerHTML=h;
