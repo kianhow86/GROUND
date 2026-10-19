@@ -732,6 +732,34 @@ html[data-theme="dark"] .g-alert{background:#1B1E24;border:1px solid rgba(255,25
 .case-why summary .ic{transform:rotate(90deg);transition:transform .2s;color:var(--ink-3)}
 .case-why[open] summary .ic{transform:rotate(-90deg)}
 .case-why[open] summary{margin-bottom:6px}
+
+/* Home fit steps (set by _hubFit when the tiles are squeezed) */
+.scr.hub.fit1 .sug-row small,.scr.hub.fit1 .sug-why,.scr.hub.fit1 .hub-usage{display:none}
+.scr.hub.fit1 .sug-row{min-height:48px;padding:6px 10px}
+.scr.hub.fit1 .sug-row>span:first-child{width:34px;height:34px}
+.scr.hub.fit1 .desk.sug-a{gap:8px}
+.scr.hub.fit2 .sug-row b{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.scr.hub.fit2 .sug-row{min-height:44px}
+.scr.hub.fit3 .sug-row:nth-of-type(3){display:none}
+/* Pitch it: when short, title and arrow on one line, no subtitle */
+@container (max-height:64px){
+  .v3-wide .s{display:none}
+  .v3-wide .wbot{align-items:center;margin-top:auto;margin-bottom:auto}
+}
+@container (max-height:118px){
+  .v3-blk .s{display:none}
+}
+
+/* Hierarchy: the main card's label (The moment, Who you're talking to) reads first; the smaller labels further down stay quiet */
+.g-block .g-kick{font-size:12.5px;letter-spacing:.1em;opacity:.85}
+.g-block{padding:20px}
+.rw-tip{border-left:4px solid var(--c)}
+.rw-tip .g-kick{color:var(--c)}
+.case-peek{align-self:center;font-size:14px;font-weight:700;color:var(--ink-2);padding:6px 10px;min-height:44px}
+/* The sting: the line that should make you feel the problem */
+mark.sting{background:none;color:inherit;font-weight:800;box-shadow:inset 0 -.5em 0 rgba(0,0,0,.16);padding:0 .1em;border-radius:2px}
+mark.sting.own{display:table;margin-top:8px;font-size:1.25em;letter-spacing:-.01em;line-height:1.25}
+.case-feel{margin-top:8px;font-size:15px;font-style:italic;font-weight:600;opacity:.72;line-height:1.4}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -771,6 +799,8 @@ const CHANGELOG=[
   {v:'1.4',d:'2026-10-19',items:[
     'If you’ve told K what’s hardest, the home screen suggests where to start: one pick from K while you’re new, three to choose from after that. You can always type your own situation instead.',
     'The case of the day now comes from what you told K, not at random.',
+    'Cases: try it first, then see how K would say it. Each moment now shows the sting and how it feels.',
+    'Practice partners keep their roles straight (no more teammate accusing you of their own move).',
     'The floating Hub button is gone. When back doesn’t lead home, a hub icon sits at the top right.',
     'Library is lighter: swipe one row per topic, titles only. Each case leads with the line to say; the why folds away.',
     'Home fits better: the Pitch it tile no longer gets cut off, and the case of the day card is cleaner.',
@@ -1866,25 +1896,25 @@ const CASE_CATS=[
 const CASES=[
   // ── Disagreement ──
   {id:'credit',cat:'disagree',title:'A teammate takes credit for your idea',
-   moment:'In the team meeting, your colleague presents the idea you shared with them last week, as their own. Your manager loves it.',
-   most:'Saying nothing, then complaining about it to everyone else. Or, on the spot: “That was my idea.”',
-   fails:'Silence teaches them it works. A public accusation makes you look petty, even when you’re right.',
-   k:'“Glad that one landed. When I first sketched it out last week, I was thinking we could take it a step further, with X. Happy to own that part.”',
+   feel:'And you’re sitting there, fuming.',moment:'Last week you told a teammate your idea. Today, in the team meeting, they present it as their own. [[Your boss loves it.]]',
+   most:'Staying quiet, then complaining to everyone else later. Or snapping in the meeting: “That was my idea!”',
+   fails:'Staying quiet tells them they can do it again. Snapping in front of everyone makes you look petty, even if you’re right.',
+   kWhen:'in the meeting',k:'“Glad you like it. When I came up with this last week, I also had an idea for the next step. Can I take that part?”',
    principle:'Correct the record, not the person.',
-   then:'Talk to them privately afterward, once, calmly: what happened, how it landed for you, what you’d like next time.',
+   then:'After the meeting, talk to them alone, once, calmly: “That was my idea in there. Next time, let’s present it together.”',
    story:null,tech:'warm-then-firm',
-   practice:{scen:'conflict',who:'Your teammate · after the meeting',moment:'They just presented your idea as theirs, and it went down well.',line:'“Great meeting, right? I think they really liked the idea.”'}},
+   practice:{scen:'conflict',who:'Your teammate · in the team meeting, your boss listening',moment:'They just presented your idea as their own. [[Your boss loves it.]]',role:'You are the teammate who just presented the speaker’s idea in the team meeting as if it were yours, with the boss listening. It did start with the speaker, but you tell yourself it was a team idea. You are friendly and a little defensive, and you don’t want to look bad in front of the boss. You never accuse the speaker of taking credit: you are the one who took it.',line:'“…so that’s the idea. Pretty happy with how it came together.”'}},
   {id:'boss-plan',cat:'disagree',title:'Your boss’s plan has a gap',
-   moment:'Your manager wants to cut the testing week to hit a launch date. You’re fairly sure it will blow up after launch.',
+   feel:'And you can already see the mess coming.',moment:'Your manager wants to cut the testing week to hit a launch date. You’re fairly sure [[it will blow up after launch]].',
    most:'“Okay.” Then hoping you’re wrong. Or: “That’s a bad idea.”',
    fails:'Agreeing and worrying helps nobody. Calling it a bad idea makes it about who’s right, and the boss has to win that one.',
    k:'“I’m with you on the date. The one risk I see is the payment flow: last time we skipped testing there, we lost two days fixing it live. Could we test just that part and still make Friday?”',
    principle:'Agree on the goal. Disagree on the path.',
    then:'Bring one fact, not five. Offer a smaller version of your idea they can say yes to. Then let them decide, and back the decision.',
    story:null,tech:'two-good-options',
-   practice:{scen:'disagree',who:'Your manager · one-on-one',moment:'They’ve decided to cut testing to launch a week early.',line:'“Let’s cut the testing phase. We need that week back.”'}},
+   practice:{scen:'disagree',who:'Your manager · one-on-one',moment:'They’ve decided to cut testing to launch a week early.',role:'You are the manager. You decided to cut testing because the launch date matters to your own boss. You listen to a clear, specific risk, but you push back on vague worries.',line:'“Let’s cut the testing phase. We need that week back.”'}},
   {id:'gatekeeper',cat:'disagree',title:'One person picks apart everything you do',
-   moment:'Every idea has to go through the person at the top. Approvals take forever, and they question every detail.',
+   feel:'You’re worn out, and starting to wonder why you bother.',moment:'Every idea has to go through the person at the top. Approvals take forever, and [[they question every detail]].',
    most:'Sending more versions, faster, and hoping the next one sticks. Or quietly checking out.',
    fails:'You’re guessing at a standard only they know. Every round you guess wrong costs you time and confidence.',
    k:'“To save us both a few rounds: what are the two or three things that matter most to you on this? I’ll make sure those are right before I send anything.”',
@@ -1892,37 +1922,37 @@ const CASES=[
    then:'Write their answer down and repeat it back when you deliver: “You said A, B and C. Here’s how this does each.”',
    story:{src:'book',t:'On one big project, every idea and creative decision had to go through one man at the top. Approvals took forever, and he picked apart every detail until the composer on the job started asking himself what he was even doing there. It paid well, but it was no fun at all. What he took from it: there is no perfect project. Walk in knowing that, and you’ll be fine.'},
    tech:'their-problem',
-   practice:{scen:'disagree',who:'The project lead · reviewing your work',moment:'This is the fourth round of changes on the same piece.',line:'“It’s close, but it’s still not quite there. Can you have another go?”'}},
+   practice:{scen:'disagree',who:'The project lead · reviewing your work',moment:'This is the fourth round of changes on the same piece.',role:'You lead the project and keep asking for changes. You can’t say exactly what’s wrong; it just doesn’t feel right yet.',line:'“It’s close, but it’s still not quite there. Can you have another go?”'}},
   {id:'deadlines',cat:'disagree',title:'A teammate keeps missing deadlines',
-   moment:'Their part arrives late again, and you’re the one staying late to cover it.',
+   feel:'You’re tired of being the safety net.',moment:'Their part arrives late again, and [[you’re the one staying late to cover it]].',
    most:'Covering for them and saying nothing. Or: “You’re always late.”',
    fails:'Covering trains them to keep doing it. “Always” is a label, and people defend themselves against labels instead of listening.',
    k:'“Can I raise something? The last two handoffs came in after the deadline, and I stayed late both times to make ours. What’s getting in the way?”',
    principle:'The fact and its effect. Then a question.',
    then:'Agree one small thing together: an earlier check-in, a warning a day ahead. Then thank them the first time it works.',
    story:null,tech:'labeling',aka:'Close to the Situation–Behavior–Impact model',
-   practice:{scen:'feedback',who:'Your teammate · over coffee',moment:'Their part has been late twice this month, and you’ve covered both times.',line:'“Hey, you wanted to talk?”'}},
+   practice:{scen:'feedback',who:'Your teammate · over coffee',moment:'Their part has been late twice this month, and you’ve covered both times.',role:'You are the teammate whose work was late twice; the speaker covered for you both times. You know it, you feel a bit awkward, and at first you make excuses (too much on your plate).',line:'“Hey, you wanted to talk?”'}},
   {id:'one-more',cat:'disagree',title:'Your boss hands you one more project',
-   moment:'It’s 5 pm. Your week is already full. “Can you take this on as well? It needs to be done by Monday.”',
+   feel:'Your stomach drops.',moment:'It’s 5 pm. Your week is already full. “Can you take this on as well? [[It needs to be done by Monday.]]”',
    most:'“Sure!” and a ruined weekend. Or: “I can’t, I’m too busy.”',
    fails:'A yes you can’t deliver is worse than a no. “Too busy” sounds like an excuse, because it hides the real trade.',
    k:'“I want to do it properly. If I take it, the client deck slips to Wednesday. Which matters more this week?”',
    principle:'Don’t just say no. Show the trade, and let them choose.',
    then:'Whatever they choose, confirm it in one line in writing, so the slip is their decision and not your failure.',
    story:null,tech:'two-good-options',
-   practice:{scen:'sayno',who:'Your manager · end of the day',moment:'Your week is already full.',line:'“Can you take this on as well? It needs to be done by Monday.”'}},
+   practice:{scen:'sayno',who:'Your manager · end of the day',moment:'Your week is already full.',role:'You are the manager handing the speaker one more task. You assume they can fit it in.',line:'“Can you take this on as well? It needs to be done by Monday.”'}},
   {id:'friend-free',cat:'disagree',title:'A friend wants your work for free',
-   moment:'“You’re a designer, right? Could you do my wedding invitations? Should be quick.”',
+   feel:'You love them. You don’t want to work for free.',moment:'“You’re a designer, right? Could you do my wedding invitations? [[Should be quick.]]”',
    most:'Yes, then resenting every revision. Or an awkward excuse that hurts more than a clear answer.',
    fails:'Free work for friends is where friendships go to get strained. A vague excuse makes them guess, and they guess the worst.',
    k:'“I’d love to help. For friends I do a friend rate, and I’ll make it something special. Or if the budget’s tight, I know someone great who’s cheaper.”',
    principle:'Protect the friendship by not working for free and resenting it.',
    then:'If you do decide to gift it, say so out loud and set the limit: “This one’s my gift, one round of changes.”',
    story:null,tech:'two-good-options',
-   practice:{scen:'sayno',who:'A friend · over dinner',moment:'They’re getting married in two months.',line:'“You’re a designer, right? Could you do our wedding invitations? Should be quick.”'}},
+   practice:{scen:'sayno',who:'A friend · over dinner',moment:'They’re getting married in two months.',role:'You are the speaker’s friend, getting married soon, asking them to design your invitations for free. You think it is a small favor.',line:'“You’re a designer, right? Could you do our wedding invitations? Should be quick.”'}},
   // ── Money & clients ──
   {id:'discount',cat:'client',title:'They ask for a discount',
-   moment:'You’ve sent your quote. The client replies: “Can you do better on the price?”',
+   feel:'And the doubt kicks in: was I too high?',moment:'You’ve sent your quote. The client replies: [[“Can you do better on the price?”]]',
    most:'“Sure, 30% off.” Or a flat “No.”',
    fails:'A big cut tells them your first number was a joke. A flat no lets the conversation, and the deal, go cold.',
    k:'“I’ve kept it tight, but I can do 10% if we lock the dates this week. Or I keep the price and add a second round of revisions. Which is better for you?”',
@@ -1932,7 +1962,7 @@ const CASES=[
    tech:'give-to-get',
    practice:{scen:'bargain',who:'Lena · runs a small tea brand',moment:'You quoted ¥8,000 for a label design.',job:'Label design for a new tea',pos:'¥8,000. Lowest you’ll accept: ¥7,000',line:'“Can you do better on the price? ¥8,000 is a lot for us.”'}},
   {id:'free-now',cat:'client',title:'“Do this one free, and the next ten are paid”',
-   moment:'A new client promises a stream of paid work if you do the first project for nothing.',
+   feel:'It’s tempting. It also feels off.',moment:'A new client promises a stream of paid work if you [[do the first project for nothing]].',
    most:'Saying yes because of the ten. Or getting offended and saying something you regret.',
    fails:'The ten projects are a promise; the free one is real work. If they don’t keep their word, you’ve taught them your price is zero.',
    k:'“I appreciate you thinking long-term. Let’s start the way we’d continue: the first one at a launch rate, and if it works for you, the rest at the standard rate.”',
@@ -1942,7 +1972,7 @@ const CASES=[
    tech:'walk-away',
    practice:{scen:'ground',who:'Marco · founder of a new app',moment:'Your position: paid from the first project.',job:'Launch video for the app',pos:'¥6,000 a video, paid from the first one',line:'“Do this first one for free, and I promise you the next ten projects, paid. Deal?”'}},
   {id:'too-expensive',cat:'client',title:'“Why are you so expensive?”',
-   moment:'A client compares your quote to someone cheaper and asks you to justify the difference.',
+   feel:'Suddenly you feel like you’re on trial.',moment:'A client compares your quote to someone cheaper and [[asks you to justify the difference]].',
    most:'Apologizing, then listing your hours, your software and your degree.',
    fails:'They don’t buy hours or tools. Defending the price that way invites them to count your hours and haggle over them.',
    k:'“You’re not paying for the hours. You’re paying for it to be right the first time, delivered on the day we agreed. That’s what my clients come back for.”',
@@ -1953,7 +1983,7 @@ const CASES=[
    practice:{scen:'bargain',who:'Daniel · marketing manager',moment:'He has a cheaper quote from another studio.',job:'A 60-second product video',pos:'¥12,000. Lowest you’ll accept: ¥10,500',line:'“Another studio quoted half of what you did. Why are you so expensive?”'}},
   // ── Being heard ──
   {id:'too-technical',cat:'work',title:'You explain your work and they glaze over',
-   moment:'You walk a client or your boss through what you did, and you can see you’ve lost them.',
+   feel:'And you start talking faster.',moment:'You walk a client or your boss through what you did, and [[you can see you’ve lost them]].',
    most:'More detail. Explaining the technique, the tools, how hard it was.',
    fails:'Most people don’t care about your technical ability. They care whether it solves their problem.',
    k:'“Short version: this makes the checkout feel faster, so fewer people drop off. Want the details on how?”',
@@ -1963,7 +1993,7 @@ const CASES=[
    tech:'their-problem',
    practice:{scen:'pitch',who:'Your client · a busy CEO',moment:'You have one minute to explain what your work does for them.',line:'“So, in plain English: what does this actually do for us?”'}},
   {id:'too-long',cat:'work',title:'Your update runs long',
-   moment:'You get two minutes in the weekly meeting and you use six. People start checking their phones.',
+   feel:'You can feel the room slipping away.',moment:'You get two minutes in the weekly meeting and you use six. [[People start checking their phones.]]',
    most:'Telling the whole story in order, so they understand the context.',
    fails:'By the time you reach the point, nobody is listening. Context first means the point comes last.',
    k:'“Bottom line: we’re on track for the 20th, with one risk, the supplier. I need a decision on the backup by Thursday.”',
@@ -1974,7 +2004,7 @@ const CASES=[
    practice:{scen:'meeting',who:'Your manager · weekly team meeting',moment:'Everyone gets two minutes for their update.',line:'“Okay, you’re up. Quick update on your project?”'}},
   // ── Getting in ──
   {id:'stand-out',cat:'job',title:'“Why should we pick you over the others?”',
-   moment:'The interviewer has seen ten people with your qualifications this week.',
+   feel:'You feel like just another face in the pile.',moment:'The interviewer has seen [[ten people with your qualifications]] this week.',
    most:'Listing degrees, grades and skills, the same list everyone else gave.',
    fails:'When everyone has the same qualifications, the list is invisible. They remember what you did that nobody asked you to.',
    k:'“Because I don’t wait to be asked. At school I co-produced a show nobody had done before, and it sold out. I’ll bring that to your team.”',
@@ -1985,7 +2015,7 @@ const CASES=[
    practice:{scen:'interview',who:'The hiring manager · final round',moment:'They’ve seen a lot of strong candidates this week.',line:'“We’ve met a lot of people with your qualifications. Why should we pick you?”'}},
   // ── People ──
   {id:'introvert',cat:'people',title:'You have to talk to strangers, and you’re an introvert',
-   moment:'A networking event, a client dinner, a new team. Everyone else seems to find it easy.',
+   feel:'You’d rather be anywhere else.',moment:'A networking event, a client dinner, a new team. [[Everyone else seems to find it easy.]]',
    most:'Hanging back, waiting for someone to come to you. Or forcing a big performance that doesn’t feel like you.',
    fails:'Nobody comes. And the performance shows.',
    k:'Ask one question about them, add one small detail about you, and hand it back. “How do you know the host? … Oh nice, I met her through work too. What do you do?”',
@@ -1995,7 +2025,7 @@ const CASES=[
    tech:null,
    practice:{scen:'smalltalk',who:'Someone at an industry mixer',moment:'You’re both standing by the drinks table.',line:'“Big crowd tonight. So how do you know the host?”'}},
   {id:'follow-up',cat:'people',title:'You meet someone useful, and it ends with “let’s keep in touch”',
-   moment:'A good conversation with someone in your industry. You both say you should work together sometime.',
+   feel:'And you both know it probably won’t happen.',moment:'A good conversation with someone in your industry. You both say [[you should work together sometime]].',
    most:'Nothing. Or a needy follow-up a week later: “Any projects for me?”',
    fails:'Vague promises fade. Asking for work straight away turns a connection into a transaction.',
    k:'“Really enjoyed this. I’ll send you that article we talked about by Friday.” Then stay in touch, lightly, for as long as it takes.',
@@ -2006,7 +2036,7 @@ const CASES=[
    practice:{scen:'smalltalk',who:'A producer you just met at a conference',moment:'The session is ending and people are leaving.',line:'“This was great. We should definitely work together sometime.”'}},
   // ── More cases (book chapters and K's client logic) ──
   {id:'own-mistake',cat:'client',title:'You missed the deadline, and the client is angry',
-   moment:'You got the timeline wrong. The client calls, and he is not calm: “This is going to wreck our launch.”',
+   feel:'Your face goes hot. It’s on you, and you know it.',moment:'You got the timeline wrong. The client calls, and he is not calm: [[“This is going to wreck our launch.”]]',
    most:'Explaining why it happened. Or hiding behind a long, careful email.',
    fails:'Reasons sound like excuses until they have heard you own it. An email feels like you are hiding.',
    k:'“I got the timeline wrong, and that’s on me. Here’s the new date I can guarantee, and here’s what I’m doing so it holds.”',
@@ -2015,7 +2045,7 @@ const CASES=[
    story:null,tech:'warm-then-firm',
    practice:{scen:'difficult',who:'Mr Zhang · producer, under pressure',moment:'You missed the delivery date you promised.',job:'Music for his product launch film',pos:'',line:'“This is the second time. Do you understand what this does to our launch?”'}},
   {id:'approved-rejected',cat:'client',title:'They reject work they already approved',
-   moment:'The client signed off on the draft last week. Now: “Actually, this isn’t working. Can you start again?”',
+   feel:'You can’t believe what you’re reading.',moment:'The client signed off on the draft last week. Now: “Actually, this isn’t working. [[Can you start again?]]”',
    most:'Getting defensive: “But you approved it!” Or quietly redoing everything for free.',
    fails:'Arguing makes it about who is right. Redoing it for free teaches them that approval means nothing.',
    k:'“I hear it’s not working for you now. When we signed off on Tuesday, we agreed on X. Let’s look at what’s changed, and I’ll tell you what a new round would take.”',
@@ -2024,7 +2054,7 @@ const CASES=[
    story:null,tech:'labeling',
    practice:{scen:'difficult',who:'Aisha · marketing lead',moment:'She approved the draft last week.',job:'A brand video, approved last week',pos:'',line:'“Honestly, now that I see it again, it’s not working. Can you start over?”'}},
   {id:'market-rate',cat:'client',title:'“The market rate is lower than that”',
-   moment:'You quoted your price. The client has done some research: “Others charge much less for this.”',
+   feel:'And now you feel like you have to defend your worth.',moment:'You quoted your price. The client has done some research: [[“Others charge much less for this.”]]',
    most:'Defending your price line by line. Or matching the lower number to keep them.',
    fails:'Market rate is only what other people agreed to. Argue about it, and you make it the rule.',
    k:'“That may be true for some. My price is for it being right the first time, on the date we agree. If budget is the main thing, here’s what I can do for less.”',
@@ -2033,7 +2063,7 @@ const CASES=[
    story:null,tech:'give-to-get',
    practice:{scen:'ground',who:'Lena · runs a small tea brand',moment:'She has compared quotes online.',job:'Packaging design for three teas',pos:'¥8,000. Lowest you’ll accept: ¥7,000',line:'“I checked around. The market rate for this is about ¥5,000.”'}},
   {id:'big-name',cat:'client',title:'A big name offers you very little money',
-   moment:'A famous studio wants you on their project. The pay is a fraction of your rate. “It’ll look great on your CV.”',
+   feel:'You’re flattered. And a little insulted.',moment:'A famous studio wants you on their project. [[The pay is a fraction of your rate.]] “It’ll look great on your CV.”',
    most:'Saying yes at once because of the name. Or saying no without thinking it through.',
    fails:'Big projects have big teams to feed. Unless you are at the top, the name pays in reputation, not money, and the low rate tends to stick.',
    k:'“I’d love to be part of it. At this budget I can do the main pieces; for the full scope, my rate is X. Which works better for you?”',
@@ -2043,7 +2073,7 @@ const CASES=[
    tech:'give-to-get',
    practice:{scen:'bargain',who:'Sam · producer at a famous game studio',moment:'They know their name is worth a lot to you.',job:'Sound design for a big-name game',pos:'¥800 a day. Lowest you’ll accept: ¥600',line:'“Our budget is ¥300 a day. But honestly, imagine this on your CV.”'}},
   {id:'walk-away',cat:'client',title:'A client you should walk away from',
-   moment:'Third round of “small changes”, a lower budget than agreed, and now they want it by Monday.',
+   feel:'You’re fed up, and not sure you’re allowed to be.',moment:'Third round of “small changes”, a lower budget than agreed, and [[now they want it by Monday]].',
    most:'Saying yes again and resenting every hour. Or going quiet and hoping they disappear.',
    fails:'Every yes teaches them the line keeps moving. Ghosting damages your name more than a clear no.',
    k:'“I don’t think I’m the right fit for this version of the project. Here’s everything I’ve done so far, and I’m happy to hand it over cleanly.”',
@@ -2052,7 +2082,7 @@ const CASES=[
    story:null,tech:'walk-away',
    practice:{scen:'difficult',who:'Kevin · founder of a small startup',moment:'This is the third round of changes, and the budget just dropped.',job:'A logo that has been through three rounds',pos:'',line:'“Just a few more small changes. And we need it Monday. Oh, and the budget got cut.”'}},
   {id:'team-pay',cat:'disagree',title:'Your team pushes back on pay and revisions',
-   moment:'You brought people in to help on a big job. Now one of them says: “For what we’re paid, this many revisions is too much.”',
+   feel:'And part of you agrees with them.',moment:'You brought people in to help on a big job. Now one of them says: [[“For what we’re paid, this many revisions is too much.”]]',
    most:'Pulling rank: “That’s the job.” Or promising money you don’t have.',
    fails:'Pulling rank loses their goodwill when you need it most. Promising money you can’t pay loses their trust later.',
    k:'“You’re right, this is more than we planned. The budget is fixed, so here’s what I can do: two more rounds at most, and I’ll handle the client so it stops there.”',
@@ -2060,9 +2090,9 @@ const CASES=[
    then:'Agree what “done” means before the next round, and protect your team from the client, not the other way around.',
    story:{src:'book',t:'A composer took on a big conference job: the opening films for a three-day tech event. Too much for one person, so he brought in two sound designers and two mix engineers. More people meant more problems: complaints about pay, frustration at too many revisions. Talking to the client took most of his time. The result was outstanding, and learning to manage people turned him into an audio director.'},
    tech:'warm-then-firm',
-   practice:{scen:'conflict',who:'Ben · a sound designer on your team',moment:'It’s the fifth round of revisions this week.',line:'“Honestly, for what we’re paid, this many revisions is too much.”'}},
+   practice:{scen:'conflict',who:'Ben · a sound designer on your team',moment:'It’s the fifth round of revisions this week.',role:'You are Ben, a sound designer on the speaker’s team; the speaker leads the team. You feel overworked and underpaid, and you are venting.',line:'“Honestly, for what we’re paid, this many revisions is too much.”'}},
   {id:'delegate',cat:'work',title:'You need to hand off work, but you don’t trust it to be done right',
-   moment:'The job is too big for you alone. You need help, but you worry it won’t meet your standard or your deadline.',
+   feel:'So you keep doing it all yourself, and you’re exhausted.',moment:'The job is too big for you alone. You need help, but [[you worry it won’t meet your standard or your deadline]].',
    most:'Doing it all yourself, late into the night. Or handing it off with “just do your best.”',
    fails:'Doing it all burns you out and caps how much you can take on. A vague handoff gets vague work back.',
    k:'“Here’s the part I need from you, here’s what great looks like, and I need it by Thursday at noon. Ask me anything before you start.”',
@@ -2070,9 +2100,9 @@ const CASES=[
    then:'Give one clear piece, an example of “good”, and a deadline with a check-in halfway.',
    story:{src:'book',t:'Early on, one composer did nearly everything himself. He didn’t trust others to meet his standard or his deadlines, and keeping all the money was appealing. Late nights, every time. The first time a job was simply too big, he reluctantly brought in four people. It turned out to be the best decision he could have made: he could focus on the music and the client, and it led to bigger work.'},
    tech:'bottom-line-first',
-   practice:{scen:'feedback',who:'Leo · a freelancer you just hired',moment:'You are briefing him on his first piece of the project.',line:'“So, what exactly do you need from me?”'}},
+   practice:{scen:'feedback',who:'Leo · a freelancer you just hired',moment:'You are briefing him on his first piece of the project.',role:'You are Leo, a freelancer the speaker just hired. You are keen but unsure what they want.',line:'“So, what exactly do you need from me?”'}},
   {id:'nervous',cat:'work',title:'You’re scared of looking stupid if you speak up',
-   moment:'The meeting goes quiet. You have a view, and your heart is racing.',
+   feel:'And the longer you wait, the harder it gets.',moment:'The meeting goes quiet. You have a view, and [[your heart is racing]].',
    most:'Waiting until you are completely sure. Then the moment passes.',
    fails:'The moment rarely comes back. And every time you stay quiet, it gets harder the next time.',
    k:'“Can I add one thing? I think we’re missing the customer’s side of this.” One sentence is enough to start.',
@@ -2082,7 +2112,7 @@ const CASES=[
    tech:'bottom-line-first',
    practice:{scen:'meeting',who:'Your manager · weekly team meeting',moment:'The room has gone quiet. You have a view, and your heart is racing.',line:'“Anyone else? Any thoughts before we move on?”'}},
   {id:'what-you-do',cat:'job',title:'“So, what do you do?”',
-   moment:'Someone useful asks the simplest question, and you answer with your job title and a list of skills.',
+   feel:'And you watch their eyes glaze over.',moment:'Someone useful asks the simplest question, and [[you answer with your job title and a list of skills]].',
    most:'“I’m a designer. I do branding, web, some motion…”',
    fails:'A title and a list are forgettable. People remember what you do for someone, not what you call yourself.',
    k:'“I help small brands look bigger than they are. Mostly packaging and their first website.”',
@@ -2091,7 +2121,7 @@ const CASES=[
    story:null,tech:'their-problem',
    practice:{scen:'intro',who:'A marketing director at an industry mixer',moment:'You have just been introduced.',line:'“So what is it you do, exactly?”'}},
   {id:'known-for-one',cat:'job',title:'People only know you for one thing',
-   moment:'Someone recognizes you from one big project, and the whole conversation stays there.',
+   feel:'You’re proud of it. You’re also so much more than that.',moment:'Someone recognizes you from one big project, and [[the whole conversation stays there]].',
    most:'Talking about that project for ten minutes. Or brushing it off.',
    fails:'Staying there keeps you stuck as “the person who did that”. Brushing it off wastes the door it opens.',
    k:'“Yes, that was me. These days I spend most of my time on X, which is why I wanted to meet you.”',
@@ -2101,7 +2131,7 @@ const CASES=[
    tech:'pivot',
    practice:{scen:'intro',who:'A producer at an industry dinner',moment:'She has just realized you worked on a famous project.',line:'“Wait, you did the music for that film? What are you working on now?”'}},
   {id:'career-change',cat:'job',title:'Explaining a career change',
-   moment:'An interviewer looks at your background: “This is quite a jump. Why should we take the risk?”',
+   feel:'You can feel the doubt in the room.',moment:'An interviewer looks at your background: “This is quite a jump. [[Why should we take the risk?]]”',
    most:'Apologizing for your past, or listing every course you took to catch up.',
    fails:'Apologizing makes your past a weakness. A list of courses doesn’t show why you would be good.',
    k:'“Music taught me to tell a story in thirty seconds. That’s most of what this job is, so it’s less of a jump than it looks.”',
@@ -2111,7 +2141,7 @@ const CASES=[
    tech:'star',
    practice:{scen:'interview',who:'The hiring manager · second round',moment:'Your background is in a different field.',line:'“Your background is in music. Why should we hire you for this?”'}},
   {id:'all-over',cat:'job',title:'“Your CV is all over the place”',
-   moment:'The interviewer sees five different kinds of work and asks what your real specialty is.',
+   feel:'And suddenly you’re not sure yourself.',moment:'The interviewer sees five different kinds of work and asks [[what your real specialty is]].',
    most:'Picking one skill and hiding the rest. Or listing everything.',
    fails:'Hiding skills throws away what makes you different. A list makes you look unfocused.',
    k:'“They all serve one thing: I can take an idea from sketch to finished product on my own. Most teams need three people for that.”',
@@ -2121,7 +2151,7 @@ const CASES=[
    tech:'rule-of-3',
    practice:{scen:'interview',who:'The interviewer · first round',moment:'They are looking at your CV.',line:'“Your CV is all over the place. What is your actual specialty?”'}},
   {id:'one-project',cat:'job',title:'“Apart from that one project, what else?”',
-   moment:'You led with your one impressive project. The interviewer wants to know what’s behind it.',
+   feel:'And you worry there isn’t enough behind it.',moment:'You led with your one impressive project. The interviewer wants to know [[what’s behind it]].',
    most:'Talking about the big project again, in more detail.',
    fails:'One big project can look like luck. They want to know you can do it again.',
    k:'“That’s the one people know. Behind it are about twenty smaller projects in two years, which is why I can adapt fast.”',
@@ -2131,7 +2161,7 @@ const CASES=[
    tech:'star',
    practice:{scen:'interview',who:'The interviewer · final round',moment:'You just talked about your best-known project.',line:'“Great. Apart from that one, what else have you done?”'}},
   {id:'teaching',cat:'people',title:'Teaching someone new',
-   moment:'You have to train a new colleague or a student. You know the material. They look lost.',
+   feel:'And you feel your patience slipping.',moment:'You have to train a new colleague or a student. You know the material. [[They look lost.]]',
    most:'Starting with everything you know, in the order you learned it.',
    fails:'Content without connection doesn’t land. People learn from someone they feel understands them.',
    k:'“Before we start: what do you already know, and what would make today worth it for you?”',
@@ -2160,8 +2190,8 @@ function openCase(id){const c=_case(id);if(!c)return;_casesSeen()[c.id]=new Date
 function caseToPractice(c){
   const p=c.practice||{};const k=TT_REAL[p.scen]?p.scen:'conflict';
   RW.scenario=k;RW.goal=_rwGoalOf(k).k;RW.tougher=false;_rwResetConvo();
-  RW.question=p.line||'';RW.source='case';RW.prevFix='';RW.fromReply=null;RW.fromCase={id:c.id,title:c.title,principle:c.principle,k:c.k};
-  _rwCast(_rwIsClient(k)?{c:p.who,job:p.job||p.moment,pos:('pos' in p)?p.pos:(S.rwPrice?S.rwPrice+(S.rwLowest?'. Lowest you’ll accept: '+S.rwLowest:''):'Your usual price')}:{who:p.who,moment:p.moment});
+  RW.question=p.line||'';RW.source='case';RW.prevFix='';RW.fromReply=null;RW.fromCase={id:c.id,title:c.title,principle:c.principle,k:c.k,kWhen:c.kWhen||'',feel:c.feel||''};
+  _rwCast(_rwIsClient(k)?{c:p.who,job:p.job||p.moment,pos:('pos' in p)?p.pos:(S.rwPrice?S.rwPrice+(S.rwLowest?'. Lowest you’ll accept: '+S.rwLowest:''):'Your usual price')}:{who:p.who,moment:p.moment,role:p.role||''});
   RW.phase=RW.question?'brief':'setup';
   _casesDone()[c.id]=new Date().toISOString();save();
   go('real');
@@ -2184,23 +2214,35 @@ function renderLibrary(app){
   app.innerHTML=h;wireCommon(app);
   app.querySelectorAll('[data-case]').forEach(b=>b.addEventListener('click',()=>openCase(b.dataset.case)));
 }
+function _sting(s){s=String(s||'');const end=/(^|[.!?”]\s)\[\[[^\]]+\]\]$/.test(s.trim());return escHtml(s.trim()).replace(/\[\[(.+?)\]\]/g,'<mark class="sting'+(end?' own':'')+'">$1</mark>');}
+function _unsting(s){return String(s||'').replace(/\[\[|\]\]/g,'');}
 function renderCase(app){
   const c=_case(V.caseId);if(!c){go('library');return;}
-  const cc=_caseCat(c.cat);
+  const cc=_caseCat(c.cat),p=c.practice||{};
+  // Try first, learn after: the answer stays folded until they've practiced (or ask to see it)
+  const open=!!(V.caseOpen===c.id||_casesDone()[c.id]);
   let h='<main class="scr '+cc.p+'">'+gBar(cc.t,'library');
-  h+='<div class="g-block"><div class="g-kick">The moment</div><div class="g-big" style="font-size:24px">'+escHtml(c.title)+'</div><p style="margin-top:8px;font-size:15px;line-height:1.45;font-weight:500">'+escHtml(c.moment)+'</p></div>';
-  h+='<div class="g-card case-k"><div class="g-k">'+kav()+'<b style="font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)">Say this</b></div><div class="case-line">'+escHtml(c.k)+'</div></div>';
-  h+='<div class="case-pr"><small>The principle</small><b>'+escHtml(c.principle)+'</b></div>';
-  let why='<div class="g-row top"><span class="t"><b>What most people say</b><span>'+escHtml(c.most)+'</span></span></div><div class="g-row top"><span class="t"><b>Why it backfires</b><span>'+escHtml(c.fails)+'</span></span></div>';
-  if(c.then)why+='<div class="g-row top"><span class="t"><b>Then</b><span>'+escHtml(c.then)+'</span></span></div>';
-  if(c.story&&c.story.t)why+='<div class="g-row top"><span class="t"><b>A real story</b><span>'+escHtml(c.story.t)+'</span></span></div>';
-  const tags=[];if(c.tech&&TECHNIQUES[c.tech])tags.push('<button class="g-chip" data-tech="'+c.tech+'">'+escHtml(TECHNIQUES[c.tech].title)+'</button>');
-  if(tags.length||c.aka)why+='<div class="g-chips" style="align-items:center;padding:10px 0 4px">'+tags.join('')+(c.aka?'<span class="small">'+escHtml(c.aka)+'</span>':'')+'</div>';
-  h+='<details class="g-card tight case-why"><summary><b>Why this works</b><span class="small">'+(c.story&&c.story.t?'Plus a real story':'What most people get wrong')+'</span>'+ic('chev','s')+'</summary>'+why+'</details>';
-  h+='<div class="push"></div>'+gCta('Practice this one','case-practice');
+  h+='<div class="g-block"><div class="g-kick">The moment</div><div class="g-big" style="font-size:24px">'+escHtml(c.title)+'</div><p style="margin-top:8px;font-size:15px;line-height:1.45;font-weight:500">'+_sting(c.moment)+'</p>'+(c.feel?'<p class="case-feel">'+escHtml(c.feel)+'</p>':'')+'</div>';
+  if(!open){
+    h+='<div class="g-card tight case-turn">'+(p.who?'<div class="g-row top"><span class="t"><b>You’ll talk to</b><span>'+escHtml(p.who.replace(' · ',', '))+'</span></span></div>':'')+
+      '<div class="g-row top"><span class="t"><b>A hint</b><span>'+escHtml(c.principle)+'</span></span></div></div>';
+    h+='<div class="push"></div>'+gCta('Try it','case-practice');
+    h+='<button class="link case-peek" data-act="case-peek">Just show me how K would say it</button>';
+  }else{
+    h+='<div class="g-card case-k"><div class="g-k">'+kav()+'<b style="font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)">How K would say it'+(c.kWhen?' · '+escHtml(c.kWhen):'')+'</b></div><div class="case-line">'+escHtml(c.k)+'</div></div>';
+    h+='<div class="case-pr"><small>The principle</small><b>'+escHtml(c.principle)+'</b></div>';
+    let why='<div class="g-row top"><span class="t"><b>What most people say</b><span>'+escHtml(c.most)+'</span></span></div><div class="g-row top"><span class="t"><b>Why it backfires</b><span>'+escHtml(c.fails)+'</span></span></div>';
+    if(c.then)why+='<div class="g-row top"><span class="t"><b>Then</b><span>'+escHtml(c.then)+'</span></span></div>';
+    if(c.story&&c.story.t)why+='<div class="g-row top"><span class="t"><b>A real story</b><span>'+escHtml(c.story.t)+'</span></span></div>';
+    const tags=[];if(c.tech&&TECHNIQUES[c.tech])tags.push('<button class="g-chip" data-tech="'+c.tech+'">'+escHtml(TECHNIQUES[c.tech].title)+'</button>');
+    if(tags.length||c.aka)why+='<div class="g-chips" style="align-items:center;padding:10px 0 4px">'+tags.join('')+(c.aka?'<span class="small">'+escHtml(c.aka)+'</span>':'')+'</div>';
+    h+='<details class="g-card tight case-why"><summary><b>Why this works</b><span class="small">'+(c.story&&c.story.t?'Plus a real story':'What most people get wrong')+'</span>'+ic('chev','s')+'</summary>'+why+'</details>';
+    h+='<div class="push"></div>'+gCta(_casesDone()[c.id]?'Try it again':'Try it','case-practice');
+  }
   h+='</main>';
   app.innerHTML=h;wireCommon(app);
   const b=app.querySelector('[data-act="case-practice"]');if(b)b.addEventListener('click',()=>caseToPractice(c));
+  const pk=app.querySelector('[data-act="case-peek"]');if(pk)pk.addEventListener('click',()=>{V.caseOpen=c.id;render();});
 }
 // ═══════════════════════════════════════════════════════════════════════════
 // HUB (home): K's line, Help me reply · Practice a talk, Pitch it, the streak
@@ -2255,7 +2297,7 @@ function renderHub(app){
    h+='<div class="v3-lib '+cc.c+'"><button class="lib-main" data-act="lib-case"><small>Case of the day</small><b>'+escHtml(cs.title)+'</b></button><button class="lib-all" data-go="library">'+ic('book','s')+'Library<span>'+CASES.length+'</span></button></div>';}
   h+='<p class="quiet push hub-usage">'+(PAYWALL_ON?escHtml(S.credits+' sessions left'):'This month: '+u.sessions+(u.sessions===1?' practice session':' practice sessions'))+'</p>';
   h+='</main>';
-  app.innerHTML=h;
+  app.innerHTML=h;_hubFit();
   app.querySelector('[data-act="you"]').addEventListener('click',()=>{go('settings',{setPage:'you',_spFromHub:true});});
   app.querySelectorAll('[data-act="k"]').forEach(el=>el.addEventListener('click',()=>{if(k.a==='notebook'){go('notebook');}else go(k.a);}));
   app.querySelectorAll('[data-focus]').forEach(b=>b.addEventListener('click',()=>{const a=b.dataset.focus;
@@ -2269,6 +2311,16 @@ function renderHub(app){
   {const lc=app.querySelector('[data-act="lib-case"]');if(lc)lc.addEventListener('click',()=>openCase(_caseOfDay().id));}
   _kTakeRefresh();
 }
+
+// Make the home fit any phone: if the tiles get squeezed, trim the top box step by step until they have room
+function _hubFit(){
+  const m=document.querySelector('main.scr.hub');if(!m)return;
+  m.classList.remove('fit1','fit2','fit3');
+  const tiles=m.querySelector('.hub-tiles');if(!tiles)return;
+  const need=232; // two tiles + Pitch it, each readable
+  for(const c of ['fit1','fit2','fit3']){if(tiles.getBoundingClientRect().height>=need)break;m.classList.add(c);}
+}
+try{let _hf;window.addEventListener('resize',()=>{clearTimeout(_hf);_hf=setTimeout(()=>{if(V.view==='hub')_hubFit();},120);});}catch(e){}
 // ═══════════════════════════════════════════════════════════════════════════
 // Onboarding (3 steps, skippable) · Settings · codes · monthly limit sheet ·
 // paywall (balance + pay, shipped off) · owner codes page
@@ -2833,7 +2885,7 @@ function deskBoxHtml(){
     items.map((it,i)=>'<button class="sug-row" data-sug="'+i+'" data-v="A"><span class="'+it.p+'">'+ic(it.ic,'s')+'</span><span><b>'+escHtml(it.t)+'</b><small>'+escHtml(it.s)+'</small></span></button>').join('')+
     '<button class="sug-type link" data-act="sug-type">Something else on your mind? Type it →</button></div>';
 }
-function _sugMoment(c){const m=String(c.moment||'');const s=m.split(/(?<=[.!?])\s/)[0];return s.length<120?s:_kShort(m,110);}
+function _sugMoment(c){const m=_unsting(c.moment);const s=m.split(/(?<=[.!?])\s/)[0];return s.length<120?s:_kShort(m,110);}
 function wireDeskBox(app){
   const ta=app.querySelector('#desk-text');if(ta)ta.addEventListener('input',()=>{V.deskText=ta.value;});
   const dg=app.querySelector('[data-act="desk-go"]');if(dg)dg.addEventListener('click',deskRead);
@@ -3234,7 +3286,7 @@ const RW_SETTING={interview:'A first-round interview for a job you really want. 
 function _cap(s){return String(s||'').replace(/^./,c=>c.toUpperCase());}
 function _rwCast(item){
   const k=RW.scenario,cl=_rwIsClient(k);
-  RW.brief=cl&&item&&item.c?{q:RW.question,c:item.c,job:item.job,pos:String(item.pos).replace(/^(You|Your offer|Your price|Your quote|Your position|The agreement)\s*:\s*/,'')}:(!cl&&item&&item.who?{q:RW.question,who:item.who,moment:item.moment}:null);
+  RW.brief=cl&&item&&item.c?{q:RW.question,c:item.c,job:item.job,pos:String(item.pos).replace(/^(You|Your offer|Your price|Your quote|Your position|The agreement)\s*:\s*/,'')}:(!cl&&item&&item.who?{q:RW.question,who:item.who,moment:item.moment,role:item.role||''}:null);
   RW.persona=cl?_pick(RW_PEOPLE.client):(item&&item.who&&(k==='intro'||k==='smalltalk'))?_pick(['friendly and curious','relaxed and chatty','polite, a little reserved','warm, a bit distracted','dry sense of humor, easy to talk to']):_pick(RW_PEOPLE[k]||RW_PEOPLE.intro);
   RW.who=cl?((item&&item.c?item.c.replace(' · ',', ')+', ':'')+RW.persona):((item&&item.who?item.who.replace(' · ',', ')+'; ':'')+RW.persona);
   // A built-in scene with no brief: build one, so the speaker always knows who, where and why
@@ -3247,7 +3299,7 @@ function _rwCast(item){
   RW.secret=cl?(RW.tougher?_pick(RW_SECRETS.filter(s=>s.k==='tight'||s.k==='bluff')):_pick(RW_SECRETS)):null;
 }
 function _rwBriefOk(){return !!(RW.brief&&RW.brief.q===RW.question);}
-function _rwBriefText(){if(!_rwBriefOk())return '';const b=RW.brief;if(b.who)return '\nWho is talking to the speaker: '+b.who+'\nThe moment: '+b.moment;return '\nThe client: '+b.c+'\nThe job: '+b.job+'\n'+(RW_POS_LBL[RW.scenario]||'Speaker’s position')+' (the speaker’s side): '+b.pos;}
+function _rwBriefText(){if(!_rwBriefOk())return '';const b=RW.brief;if(b.who)return '\nWho is talking to the speaker: '+b.who+'\nThe moment (as the speaker sees it; “you” means the speaker): '+_unsting(b.moment)+(b.role?'\nThe character YOU play (here “you” means you, the AI; keep the roles straight): '+b.role:'');return '\nThe client: '+b.c+'\nThe job: '+b.job+'\n'+(RW_POS_LBL[RW.scenario]||'Speaker’s position')+' (the speaker’s side): '+b.pos;}
 function _rwBankFu(){
   if(RW.scenario==='ground'){const g=RW_FU_BANK.ground,i=Math.max(0,(RW.convo||[]).length-1);return g[Math.min(i,g.length-1)];}
   const b=RW_FU_BANK[RW.scenario]||RW_FU_BANK.interview,used=new Set((RW.convo||[]).map(t=>t.q));
@@ -3511,10 +3563,10 @@ function renderReal(app){
     h+=gBar(sc.name,'rw-setup',_rwDots());
     {const cap=s=>String(s||'').replace(/^./,c=>c.toUpperCase());
      const big=b?(b.c?b.c.replace(' · ',', ')+'. '+cap(RW.persona)+'.':b.who.replace(' · ',', ')):(RW_ROLE[RW.scenario]||'The other person')+(RW.persona?'. '+cap(RW.persona)+'.':'');
-     h+='<div class="g-block"><div class="g-kick">Who you’re talking to</div><div class="g-big">'+escHtml(big)+'</div>'+(b&&b.who&&b.moment?'<p style="margin-top:8px;font-size:16px;line-height:1.45;font-weight:600">'+escHtml(b.moment)+'</p>':'')+'</div>';
+     h+='<div class="g-block"><div class="g-kick">Who you’re talking to</div><div class="g-big">'+escHtml(big)+'</div>'+(b&&b.who&&b.moment?'<p style="margin-top:8px;font-size:16px;line-height:1.45;font-weight:600">'+_sting(b.moment)+'</p>'+(RW.fromCase&&RW.fromCase.feel?'<p class="case-feel">'+escHtml(RW.fromCase.feel)+'</p>':''):'')+'</div>';
      if(RW_AIM[RW.scenario]&&!(b&&b.c))h+='<div class="g-card tight"><div class="g-row top"><span class="t"><b>Your goal</b><span>'+escHtml(RW_AIM[RW.scenario])+'</span></span></div></div>';}
     if(b&&b.c)h+='<div class="g-card tight"><div class="g-row"><span class="t"><b>'+(RW.source==='desk'?'The situation':'The job')+'</b><span>'+escHtml(b.job)+'</span></span></div>'+(b.pos?'<div class="g-row"><span class="t"><b>'+escHtml(RW_POS_LBL[RW.scenario]||'Your position')+'</b><span>'+escHtml(b.pos)+'</span></span></div>':'')+'</div>';
-    if(RW.fromCase)h+='<div class="g-block p-lav"><div class="g-kick">'+escHtml(RW.fromCase.label||'From the library · try the principle')+'</div><div style="font-size:16px;font-weight:700;line-height:1.35">'+escHtml(RW.fromCase.principle)+'</div></div>';
+    if(RW.fromCase)h+='<div class="g-card tight rw-tip c-job"><div class="g-kick">'+escHtml(RW.fromCase.label||'Try the principle')+'</div><div style="font-size:15px;font-weight:700;line-height:1.35;margin-top:4px">'+escHtml(RW.fromCase.principle)+'</div></div>';
     if(RW.prevFix)h+='<div class="g-block p-lav"><div class="g-kick">Last time, K said</div><div style="font-size:16px;font-weight:700;line-height:1.35">'+escHtml(_kShort(RW.prevFix,200))+'</div></div>';
     if(RW.fromReply)h+='<div class="g-card tight"><div class="g-row"><span class="t"><b>Their message</b><span>'+escHtml(_kShort(RW.question,160))+'</span></span></div>'+(RW.fromReply.reply?'<div class="g-row"><span class="t"><b>You replied</b><span>'+escHtml(_kShort(RW.fromReply.reply,160))+'</span></span></div>':'')+'</div>';
     if(cl&&RW.secret)h+='<div class="g-alert" style="display:flex;gap:12px;align-items:flex-start"><span style="color:#C4AEFF;margin-top:1px;display:flex">'+ic('lock','s')+'</span><div><b style="font-size:14.5px">'+escHtml(name)+' has a secret.</b><div class="sub" style="margin-top:3px">You’ll find out at the end. Ask good questions and you might find out sooner.</div></div></div>';
@@ -3551,6 +3603,7 @@ function renderReal(app){
     if(busy)h+='<div class="g-card" style="display:flex;flex-direction:column;gap:14px"><div class="g-k">'+kav()+'<div><b style="font-size:15px">K is listening back</b><div class="small" style="margin-top:2px">'+(_rwIsClient()?'And '+escHtml(name)+' is deciding.':'Working out how it landed.')+'</div></div></div><div class="stack" style="gap:9px"><div class="sk w9"></div><div class="sk w7"></div><div class="sk w8"></div></div></div>';
     else{
       h+=_rwDoneCardsHtml();
+      if(RW.fromCase&&RW.fromCase.k&&!RW.loading)h+='<div class="g-card case-k"><div class="g-k">'+kav()+'<b style="font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)">How K would say it'+(RW.fromCase.kWhen?' · '+escHtml(RW.fromCase.kWhen):'')+'</b></div><div class="case-line">'+escHtml(RW.fromCase.k)+'</div>'+(RW.fromCase.id?'<button class="link" style="margin-top:10px" data-act="rw-case">Why it works →</button>':'')+'</div>';
       if(!RW.decision&&!RW.review&&!RW.loading){h+=RW.notes&&/ai-err/.test(RW.notes)?RW.notes:'<div class="g-card"><div class="g-q">'+(RW.words<12?'I didn’t catch enough to judge that one.':'No verdict this time.')+'</div><p class="sub">'+(RW.words<12?'Say a few full sentences and I’ll tell you how it landed.':'But K’s notes are below.')+'</p></div>';}
       if(RW.notes&&!/ai-err/.test(RW.notes)&&typeof RW.notes==='string'&&!_nbRetry(RW.notes))h+='<details class="convo"><summary>'+ic('book','s')+'K’s full notes</summary>'+renderKNotes(RW.notes)+'</details>';
       else if(RW.loading)h+='<p class="quiet">K’s notes are on their way…</p>';
@@ -3583,6 +3636,7 @@ function renderReal(app){
   on('[data-act="end"]',async()=>{speakStop();if(RW.rec){await rwStopRec();return;}if(RW.convo.length)_rwFinish();else{RW.phase='brief';render();}});
   on('[data-act="mode-type"]',async()=>{if(RW.rec)await recStop();RW.rec=false;speakStop();RW.mode='type';render();});
   on('[data-act="better"]',()=>{RW.phase='better';render();});
+  on('[data-act="rw-case"]',()=>{if(RW.fromCase&&RW.fromCase.id){V.caseOpen=RW.fromCase.id;openCase(RW.fromCase.id);}});
   on('[data-act="again"]',()=>{_rwResetConvo();RW.phase='brief';render();});
   on('[data-act="tougher"]',()=>{RW.tougher=true;RW.fromReply=null;rwFetchScene();});
   on('[data-act="new"]',()=>{RW.phase='setup';RW.question='';RW.fromReply=null;render();});
@@ -3596,7 +3650,7 @@ function _rwCtxPanel(){
   const b=_rwBriefOk()?RW.brief:null,rows=[];
   const short=s=>_kShort(String(s||'').replace(/\s+/g,' ').trim(),90);
   if(b&&b.c){rows.push(['Who',b.c.replace(' · ',', ')]);if(b.job)rows.push([RW.source==='desk'?'Situation':'The job',b.job]);if(b.pos)rows.push([RW_POS_LBL[RW.scenario]||'Your position',b.pos]);}
-  else if(b&&b.who){rows.push(['Who',b.who.replace(' · ',', ')]);if(b.moment&&b.moment!==RW.question)rows.push(['The moment',b.moment]);}
+  else if(b&&b.who){rows.push(['Who',b.who.replace(' · ',', ')]);if(b.moment&&b.moment!==RW.question)rows.push(['The moment',_unsting(b.moment)]);}
   else rows.push(['Who',(RW_ROLE[RW.scenario]||'The other person')+(RW.persona?', '+RW.persona:'')]);
   if(RW.fromCase&&RW.fromCase.principle)rows.push(['Try',RW.fromCase.principle]);
   else if(RW.prevFix)rows.push(['Last time',RW.prevFix]);
