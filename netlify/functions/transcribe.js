@@ -23,6 +23,8 @@ exports.handler = async (event) => {
     fd.append("file", new Blob([buf], { type: mime }), "answer." + ext);
     fd.append("model", "whisper-1");
     fd.append("response_format", "json");
+    // Steer numbers: "six thousand five" means 6,500, not 6005
+    fd.append("prompt", "Prices are written in figures: 6,500, 8,000, 12,500, 3.5k. Six thousand five means 6,500.");
     if (lang && lang !== "auto") fd.append("language", lang.split("-")[0] === "yue" ? "zh" : lang.split("-")[0]);
     const r = await fetch("https://api.openai.com/v1/audio/transcriptions", { method: "POST", headers: { Authorization: "Bearer " + key }, body: fd });
     const text = await r.text();
