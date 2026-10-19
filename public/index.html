@@ -380,11 +380,10 @@ details.convo summary::-webkit-details-marker{display:none}
 .intro .big em{font-style:normal;color:#C4AEFF}
 .intro .big.sm{font-size:30px;line-height:1.08}
 .intro .kick{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.55)}
-.intro .deck{position:relative;height:200px}
-.ic-card{position:absolute;left:0;right:0;top:20px;margin:0 auto;max-width:340px;padding:24px 22px;border-radius:24px;background:#fff;color:#141A21;font-size:26px;font-weight:800;letter-spacing:-.025em;line-height:1.15;box-shadow:0 14px 40px rgba(0,0,0,.45);opacity:0;transform:translateY(30px) rotate(var(--r)) scale(.92)}
-.sc.on .ic-card{animation:icFlash .78s cubic-bezier(.2,.8,.2,1) var(--d) forwards}
-.sc.on .ic-card:last-child{animation:icIn .5s cubic-bezier(.2,.9,.25,1.2) var(--d) forwards}
-@keyframes icFlash{0%{opacity:0;transform:translateY(30px) rotate(var(--r)) scale(.92)}22%{opacity:1;transform:translateY(0) rotate(var(--r)) scale(1)}78%{opacity:1;transform:translateY(0) rotate(var(--r)) scale(1)}100%{opacity:0;transform:translateY(-24px) rotate(var(--r)) scale(.96)}}
+.intro .deck{position:relative;height:330px}
+.ic-card{position:absolute;left:0;right:0;margin:0 auto;max-width:330px;padding:20px 20px;border-radius:22px;background:#fff;color:#141A21;font-size:21px;font-weight:800;letter-spacing:-.02em;line-height:1.2;box-shadow:0 14px 40px rgba(0,0,0,.45);opacity:0;transform:translateY(40px) rotate(var(--r)) scale(.92)}
+.ic-card:nth-child(1){top:0}.ic-card:nth-child(2){top:46px}.ic-card:nth-child(3){top:96px}.ic-card:nth-child(4){top:146px}.ic-card:nth-child(5){top:196px}.ic-card:nth-child(6){top:246px}
+.sc.on .ic-card{animation:icIn .5s cubic-bezier(.2,.9,.25,1.2) var(--d) forwards}
 @keyframes icIn{to{opacity:1;transform:translateY(0) rotate(var(--r)) scale(1)}}
 .intro .skills{display:flex;flex-direction:column;gap:10px}
 .sk-card{align-self:flex-start;padding:14px 20px;border-radius:999px;background:var(--p);color:var(--pi);font-size:20px;font-weight:800;letter-spacing:-.02em;opacity:0;transform:translateX(-30px)}
@@ -402,7 +401,7 @@ details.convo summary::-webkit-details-marker{display:none}
 .intro-cta .btn-pri{background:#C4AEFF;color:#120C24;min-height:56px;font-size:17px}
 .intro-cta p{margin:0;font-size:14px;line-height:1.4;color:rgba(255,255,255,.6);text-align:center}
 .intro-cta .btn-text{color:rgba(255,255,255,.75);min-height:44px}
-@media (max-height:700px){.intro .big{font-size:36px}.ic-card{font-size:23px}.intro .logo{margin-top:2vh}}
+@media (max-height:700px){.intro .big{font-size:36px}.intro .deck{height:290px}.ic-card{font-size:18px;padding:16px}.ic-card:nth-child(2){top:40px}.ic-card:nth-child(3){top:80px}.ic-card:nth-child(4){top:120px}.ic-card:nth-child(5){top:160px}.ic-card:nth-child(6){top:200px}.intro .logo{margin-top:2vh}}
 @media (prefers-reduced-motion:reduce){.intro .sc,.intro .big,.ic-card,.sk-card,.intro .logo{transition:none;animation:none;opacity:1;transform:none}}
 .desk-k{display:flex;gap:10px;align-items:flex-start;flex-shrink:0}
 .desk-k .kav{width:44px;height:44px;flex-shrink:0}
@@ -2307,7 +2306,7 @@ function renderIntro(app){
   const tilt=[-4,3,-2,5,-3,2];
   let h='<main class="intro'+(end?' at-end':'')+'"><button class="intro-skip" data-act="intro-skip">Skip intro</button>';
   h+='<section class="sc" data-sc="0"><h1 class="big">Every career runs on <em>conversations</em>.</h1></section>';
-  h+='<section class="sc" data-sc="1"><div class="kick">Sooner or later, you’ll hear</div><div class="deck">'+INTRO_PROBLEMS.map((q,i)=>'<div class="ic-card" style="--r:'+tilt[i]+'deg;--d:'+(i*0.72)+'s">'+escHtml(q)+'</div>').join('')+'</div></section>';
+  h+='<section class="sc" data-sc="1"><div class="kick">Sooner or later, you’ll hear</div><div class="deck">'+INTRO_PROBLEMS.map((q,i)=>'<div class="ic-card" style="--r:'+tilt[i]+'deg;--d:'+(i*0.55)+'s">'+escHtml(q)+'</div>').join('')+'</div></section>';
   h+='<section class="sc" data-sc="2"><h1 class="big">It’s not if.<br><em>It’s when.</em></h1></section>';
   h+='<section class="sc" data-sc="3"><div class="kick">The skills that decide how it goes</div><div class="skills">'+INTRO_SKILLS.map((s,i)=>'<div class="sk-card '+s[1]+'" style="--d:'+(i*0.45)+'s">'+escHtml(s[0])+'</div>').join('')+'</div></section>';
   h+='<section class="sc end" data-sc="4"><div class="logo"><span class="mark" aria-hidden="true">G</span><div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div></div>'+
@@ -2318,7 +2317,7 @@ function renderIntro(app){
   const root=app.querySelector('.intro');
   const show=n=>{root.querySelectorAll('.sc').forEach(s=>s.classList.toggle('on',+s.dataset.sc===n));};
   if(end){show(4);}
-  else{const at=[0,2600,7700,10300,13900];at.forEach((ms,n)=>_introT.push(setTimeout(()=>{show(n);if(n===4){V.introEnd=true;root.classList.add('at-end');}},ms)));}
+  else{const at=[0,2600,7200,9800,13400];at.forEach((ms,n)=>_introT.push(setTimeout(()=>{show(n);if(n===4){V.introEnd=true;root.classList.add('at-end');}},ms)));}
   const on=(s,f)=>{const el=app.querySelector(s);if(el)el.addEventListener('click',f);};
   on('[data-act="intro-skip"]',()=>{_introClear();V.introEnd=true;root.classList.add('at-end');show(4);});
   on('[data-act="intro-key"]',()=>{_introClear();V.obStep=1;render();});
