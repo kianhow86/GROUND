@@ -882,6 +882,75 @@ html[data-theme="dark"] .c-start{--c:#A9D98E}html[data-theme="dark"] .c-career{-
   .rw-donescr .rw-end{padding-top:6px}
   .rw-donescr .work-card{padding:9px 12px}
 }
+/* Library on one page: tools, For you, topic grid. Topics open a simple list. */
+.lib-tools{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lib-tool{display:flex;align-items:center;gap:10px;padding:12px;border-radius:18px;background:var(--card);border:1px solid var(--line);text-align:left;min-height:56px}
+.lib-tool b{font-size:14px;line-height:1.25}
+.lt-ic{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;flex-shrink:0;font-weight:900}
+.lt-ic.yc{background:#A9D98E;color:#0E2408}.lt-ic.ask{background:#8FD3F0;color:#06202B}
+.lib-all{margin-left:auto;font-size:13.5px;font-weight:700;color:var(--ink-2);min-height:36px}
+.lib-scr .shelf-card{height:112px}
+.lib-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lib-topic{display:flex;flex-direction:column;justify-content:flex-end;gap:2px;min-height:64px;padding:12px 14px;border-radius:18px;background:var(--p);color:var(--pi);text-align:left}
+.lib-topic b{font-size:16px;font-weight:800;letter-spacing:-.01em}
+.lib-topic span{font-size:12.5px;font-weight:700;opacity:.7}
+.lib-topic.lib-tk{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.lib-list{display:flex;flex-direction:column;gap:8px}
+.lib-li{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:14px;border-radius:18px;background:var(--card);border:1px solid var(--line)}
+.lib-li .lib-dot{margin:0;align-self:center}
+.lib-lt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.lib-lt b{font-size:16px;line-height:1.3}
+.lib-lt>span{font-size:13px;color:var(--ink-2)}
+.lib-lt .shelf-st{position:static;opacity:1;color:var(--ink-3)}
+.lib-li>.ic{color:var(--ink-3);flex-shrink:0}
+@media (max-height:740px){.lib-scr .shelf-card{height:92px}.lib-scr .shelf-card b{font-size:14.5px;-webkit-line-clamp:3}.lib-topic{min-height:54px;padding:10px 12px}.lib-topic b{font-size:15px}}
+.case-whybtn{display:flex;align-items:center;gap:10px;width:100%;text-align:left;min-height:52px}
+.case-whybtn b{font-size:15px}.case-whybtn .small{flex:1}
+.case-whybtn .ic{color:var(--ink-3)}
+.adv-read{font-size:19px;font-weight:700;line-height:1.4;margin-top:4px}
+.adv-step{font-size:16.5px;line-height:1.45;color:var(--ink);font-weight:600}
+@media (max-height:740px){.adv-read{font-size:16.5px}.adv-step{font-size:15px}}
+.rw-pos{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;padding:12px 16px}
+.rw-pos b{font-size:14px}.rw-pos span{font-size:14px;color:var(--ink-2)}
+@media (max-height:740px){
+  .rw-scene{font-size:16.5px;margin-top:6px}
+  .case-feel{font-size:14px;margin-top:6px}
+  .rw-who{margin-top:8px;font-size:13px}
+  .g-block{padding:16px}
+  .rw-tip{padding:10px 14px}
+}
+/* Suggestion rows: the type (Practice, Read, Quick answer) is a quiet label, the situation carries the weight */
+.sug-row b .sug-pre{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(235,235,245,.55);margin-bottom:2px}
+/* Short phones: a little less air everywhere so screens fit without scrolling */
+@media (max-height:700px){
+  .scr{--gap:10px;padding-top:calc(var(--sat) + 8px);padding-bottom:calc(var(--sab) + 12px)}
+  .g-bar{min-height:40px}
+  .about-k{display:none}
+  .case-line{font-size:17px}
+  .g-draft{font-size:15px}
+  .g-grid3 .g-chip{min-height:38px}
+  .g-gg .g-card{padding:10px 12px}
+}
+.rp-read{margin-top:10px;font-size:16px;line-height:1.45;font-weight:600}
+@media (max-height:700px){
+  .rp-call{display:none}
+  .rp-read{font-size:14.5px;margin-top:6px}
+  .case-pr b{font-size:21px}
+  .case-whybtn .small{display:none}
+  .card .av-l,.card .k-av.l{width:48px;height:48px}
+  .h2{font-size:17px!important}
+}
+@media (max-height:700px){
+  .scr{--gap:8px}
+  .card.stack{gap:8px!important;padding:14px}
+  .case-k .case-line{margin-top:6px}
+  .g-block .g-big{font-size:20px!important}
+}
+.qa-ctx{font-size:16px;font-weight:600;line-height:1.4;opacity:.75;margin-bottom:10px}
+.qa-tip{margin-top:18px;font-size:15px;font-weight:600;line-height:1.4;opacity:.8}
+.qa-tip b{display:block;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
+@media (max-height:700px){.about-wm{display:none}.g-block .g-draft{margin-top:6px}.qa-tip{margin-top:12px;font-size:14px}}
+@media (max-height:700px){.work-card small{display:none}.work-card{padding:10px 12px}}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -921,6 +990,8 @@ const CHANGELOG=[
   {v:'1.4',d:'2026-10-19',items:[
     'If you’ve told K what’s hardest, the home screen suggests where to start: one pick from K while you’re new, three to choose from after that. You can always type your own situation instead.',
     'The case of the day now comes from what you told K, not at random.',
+    'Everything fits on one screen: the Library, K’s advice, your profile and more. Details open in pop-ups.',
+    'No time limits: Quick answer has no countdown, and practice has no target length. Each question now says who’s asking and where.',
     'Practice results fit on one screen: swipe through, and “Do it better” is on the last step.',
     'K’s notebook is now one simple read: your one thing right now, what’s getting better, and what keeps coming up. History folds away below.',
     'Before you reply: just paste and go. K works out who it is and what you need; details are optional.',
@@ -1144,6 +1215,7 @@ function go(view,extra){
   closeSheet();
   if(view!==V.view)_stopAll();
   if(view==='settings'&&V.view!=='settings'){V.setPage='';V._spFromHub=false;}
+  if(view==='library'&&V.view!=='case'&&V.view!=='library')V.libTopic='';
   if(extra)Object.assign(V,extra);
   V.view=view;render();
   const h=HASH_FOR_VIEW[view];
@@ -1170,6 +1242,14 @@ function renderHubPill(){
   if(!show){if(b)b.remove();return;}
   if(!b){b=document.createElement('button');b.id='hubpill';b.setAttribute('aria-label','Hub');b.innerHTML='<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg><span>Hub</span>';
     b.addEventListener('click',()=>{V.setPage='';go('hub');});document.body.appendChild(b);}
+}
+function _wireSlides(root){
+  const sl=root.querySelector('#rw-slides');if(!sl)return;
+  const dots=[...root.querySelectorAll('.rw-sdots i')],nx=root.querySelector('[data-act="rw-next"]');
+  const cur=()=>Math.round(sl.scrollLeft/sl.clientWidth);
+  const upd=()=>{const c=cur();dots.forEach((d,k)=>d.classList.toggle('on',k===c));if(nx)nx.style.visibility=c>=dots.length-1?'hidden':'visible';};
+  sl.addEventListener('scroll',()=>{clearTimeout(sl._t);sl._t=setTimeout(upd,60);});
+  if(nx)nx.addEventListener('click',()=>sl.scrollTo({left:(cur()+1)*sl.clientWidth,behavior:'smooth'}));
 }
 function wireCommon(root){
   root.querySelectorAll('[data-go]').forEach(b=>{if(b.__wired)return;b.__wired=true;b.addEventListener('click',()=>{const v=b.dataset.go;if(v==='back'){goBack();}else go(v);});});
@@ -2480,26 +2560,36 @@ function caseToPractice(c){
 }
 // ── Screens ───────────────────────────────────────────────────────────────
 function renderLibrary(app){
-  const seen=_casesSeen(),done=_casesDone();
-  const card=c=>{const cc=_caseCat(c.cat);const st=done[c.id]?'Practiced':seen[c.id]?'Read':'';
-    return '<button class="shelf-card '+cc.p+'" data-case="'+c.id+'">'+(st?'<i class="shelf-st">'+ic('check','s')+st+'</i>':'')+'<b>'+escHtml(c.title)+'</b></button>';};
-  const shelf=(title,cases,c)=>'<section class="shelf '+c+'"><div class="shelf-h"><span class="lib-dot"></span><b>'+escHtml(title)+'</b><small>'+cases.length+'</small></div><div class="shelf-row">'+cases.map(card).join('')+'</div></section>';
-  let h='<main class="scr">'+gBar('Library','hub');
-  h+='<p class="sub" style="margin-top:-4px">One moment, one line to say. Two minutes each.</p>';
-  h+='<button class="yc-entry" data-act="yescheck"><span>'+ic('check','s')+'</span><span><b>Should I say yes?</b><small>Five quick questions before you agree to anything</small></span>'+ic('chev','s')+'</button>';
-  h+='<button class="yc-entry ask-entry" data-act="askdrill"><span>?</span><span><b>Ask a good question</b><small>A quick drill: one moment, one question, K’s read</small></span>'+ic('chev','s')+'</button>';
-  // For you: from what they said is hard
-  const ks=(typeof _sugKeys==='function')?_sugKeys():[];let mine=[];
-  ks.forEach(k=>(SUG_MAP[k].cases||[]).forEach(id=>{const c=_case(id);if(c&&!mine.includes(c))mine.push(c);}));
-  if(mine.length)h+=shelf('For you',mine.slice(0,6),'c-job');
-  CASE_CATS.forEach(x=>{const cs=CASES.filter(c=>c.cat===x.k);if(cs.length)h+=shelf(x.t,cs,x.c);});
-  h+='<div class="g-kick" style="margin-top:8px">The toolkit</div><div class="g-chips">'+Object.keys(TECHNIQUES).map(k=>'<button class="g-chip" data-tech="'+k+'">'+escHtml(TECHNIQUES[k].title)+'</button>').join('')+'</div>';
+  const seen=_casesSeen(),done=_casesDone(),topic=V.libTopic||'';
+  const stTag=c=>done[c.id]?'<i class="shelf-st">'+ic('check','s')+'Practiced</i>':seen[c.id]?'<i class="shelf-st">'+ic('check','s')+'Read</i>':'';
+  let h='<main class="scr lib-scr">';
+  if(topic){
+    // One topic: its cases as a simple list
+    const isTool=topic==='toolkit',x=CASE_CATS.find(c=>c.k===topic)||{t:'For you',c:'c-job',p:'p-lav'};
+    h+='<div class="g-bar"><button class="g-back" data-act="lib-root" aria-label="Back">'+ic('back')+'</button><h1>'+escHtml(isTool?'The toolkit':x.t)+'</h1></div>';
+    if(isTool){
+      h+='<p class="sub" style="margin-top:-4px">Techniques K uses in feedback. Tap one to learn it.</p><div class="lib-list">'+Object.keys(TECHNIQUES).map(k=>'<button class="lib-li c-job" data-tech="'+k+'"><span class="lib-dot"></span><span class="lib-lt"><b>'+escHtml(TECHNIQUES[k].title)+'</b><span>'+escHtml(TECHNIQUES[k].sum)+'</span></span>'+ic('chev','s')+'</button>').join('')+'</div>';
+    }else{
+      const cs=topic==='mine'?_libMine():CASES.filter(c=>c.cat===topic);
+      h+='<div class="lib-list">'+cs.map(c=>{const cc=_caseCat(c.cat);return '<button class="lib-li '+cc.c+'" data-case="'+c.id+'"><span class="lib-dot"></span><span class="lib-lt"><b>'+escHtml(c.title)+'</b>'+(stTag(c)?'<span>'+stTag(c)+'</span>':'')+'</span>'+ic('chev','s')+'</button>';}).join('')+'</div>';
+    }
+  }else{
+    h+=gBar('Library','hub');
+    h+='<div class="lib-tools"><button class="lib-tool" data-act="yescheck"><span class="lt-ic yc">'+ic('check','s')+'</span><b>Should I say yes?</b></button><button class="lib-tool" data-act="askdrill"><span class="lt-ic ask">?</span><b>Ask a good question</b></button></div>';
+    const mine=_libMine();
+    if(mine.length)h+='<section class="shelf c-job"><div class="shelf-h"><span class="lib-dot"></span><b>For you</b><button class="link lib-all" data-topic="mine">See all '+mine.length+'</button></div><div class="shelf-row">'+mine.slice(0,6).map(c=>'<button class="shelf-card '+_caseCat(c.cat).p+'" data-case="'+c.id+'">'+stTag(c)+'<b>'+escHtml(c.title)+'</b></button>').join('')+'</div></section>';
+    h+='<div class="lib-grid">'+CASE_CATS.map(x=>{const n=CASES.filter(c=>c.cat===x.k).length;return '<button class="lib-topic '+x.p+'" data-topic="'+x.k+'"><b>'+escHtml(x.t)+'</b><span>'+n+' cases</span></button>';}).join('')+
+      '<button class="lib-topic lib-tk" data-topic="toolkit"><b>The toolkit</b><span>'+Object.keys(TECHNIQUES).length+' techniques</span></button></div>';
+  }
   h+='</main>';
   app.innerHTML=h;wireCommon(app);
   app.querySelectorAll('[data-case]').forEach(b=>b.addEventListener('click',()=>openCase(b.dataset.case)));
+  app.querySelectorAll('[data-topic]').forEach(b=>b.addEventListener('click',()=>{V.libTopic=b.dataset.topic;render();}));
+  const rt=app.querySelector('[data-act="lib-root"]');if(rt)rt.addEventListener('click',()=>{V.libTopic='';render();});
   const yc=app.querySelector('[data-act="yescheck"]');if(yc)yc.addEventListener('click',openYesCheck);
   const ad=app.querySelector('[data-act="askdrill"]');if(ad)ad.addEventListener('click',openAsk);
 }
+function _libMine(){const ks=(typeof _sugKeys==='function')?_sugKeys():[];const mine=[];ks.forEach(k=>(SUG_MAP[k].cases||[]).forEach(id=>{const c=_case(id);if(c&&!mine.includes(c))mine.push(c);}));return mine;}
 function _sting(s){s=String(s||'');const end=/(^|[.!?”]\s)\[\[[^\]]+\]\]$/.test(s.trim());return escHtml(s.trim()).replace(/\[\[(.+?)\]\]/g,'<mark class="sting'+(end?' own':'')+'">$1</mark>');}
 function _unsting(s){return String(s||'').replace(/\[\[|\]\]/g,'');}
 function renderCase(app){
@@ -2522,7 +2612,8 @@ function renderCase(app){
     if(c.story&&c.story.t)why+='<div class="g-row top"><span class="t"><b>A real story</b><span>'+escHtml(c.story.t)+'</span></span></div>';
     const tags=[];if(c.tech&&TECHNIQUES[c.tech])tags.push('<button class="g-chip" data-tech="'+c.tech+'">'+escHtml(TECHNIQUES[c.tech].title)+'</button>');
     if(tags.length||c.aka)why+='<div class="g-chips" style="align-items:center;padding:10px 0 4px">'+tags.join('')+(c.aka?'<span class="small">'+escHtml(c.aka)+'</span>':'')+'</div>';
-    h+='<details class="g-card tight case-why"><summary><b>Why this works</b><span class="small">'+(c.story&&c.story.t?'Plus a real story':'What most people get wrong')+'</span>'+ic('chev','s')+'</summary>'+why+'</details>';
+    V._caseWhy=why;
+    h+='<button class="g-card tight case-whybtn" data-act="case-why"><b>Why this works</b><span class="small">'+(c.story&&c.story.t?'Plus a real story':'What most people get wrong')+'</span>'+ic('chev','s')+'</button>';
     h+='<div class="push"></div>'+gCta(_casesDone()[c.id]?'Try it again':'Try it','case-practice');
   }
   if(['one-more','friend-free','walk-away','free-now','big-name'].includes(c.id))h+='<button class="link case-peek" data-act="yescheck" style="margin-top:-6px">Not sure yet? Should I say yes? →</button>';
@@ -2530,6 +2621,7 @@ function renderCase(app){
   app.innerHTML=h;wireCommon(app);
   const b=app.querySelector('[data-act="case-practice"]');if(b)b.addEventListener('click',()=>caseToPractice(c));
   app.querySelectorAll('[data-act="yescheck"]').forEach(b=>b.addEventListener('click',openYesCheck));
+  const cw=app.querySelector('[data-act="case-why"]');if(cw)cw.addEventListener('click',()=>openSheet('<div class="kick" style="margin:0">Why this works</div><div class="g-card tight case-whysheet">'+V._caseWhy+'</div><button class="g-cta" data-close>Got it<span class="ar">'+ic('check','s')+'</span></button>',{wire:sh=>sh.querySelectorAll('[data-tech]').forEach(b=>b.addEventListener('click',()=>{closeSheet();openTechnique(b.dataset.tech);}))}));
   const pk=app.querySelector('[data-act="case-peek"]');if(pk)pk.addEventListener('click',()=>{V.caseOpen=c.id;render();});
 }
 
@@ -2909,30 +3001,47 @@ function renderSettings(app){
   app.innerHTML=h;
   app.querySelectorAll('[data-sp]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.sp==='sync'){go('sync');return;}V.setPage=b.dataset.sp;V._spFromHub=false;render();}));
 }
+function _wireYou(app,p){
+  const inp=(id,fn)=>{const el=app.querySelector('#'+id);if(el)el.addEventListener('input',()=>{fn(el.value.trim());save();});};
+  inp('pf-name',v=>p.name=v.slice(0,40));inp('pf-role',v=>p.role=v.slice(0,80));inp('pf-prob',v=>p.problem=v.slice(0,400));inp('pf-lang',v=>p.firstLang=v.slice(0,40));
+  inp('pf-price',v=>S.rwPrice=v);inp('pf-low',v=>S.rwLowest=v);
+  inp('pf-field',v=>{S.rwField=v;app.querySelectorAll('[data-field]').forEach(x=>x.classList.remove('on'));});
+  app.querySelectorAll('[data-field]').forEach(b=>b.addEventListener('click',()=>{S.rwField=S.rwField===b.dataset.field?'':b.dataset.field;const o=app.querySelector('#pf-field');if(o)o.value='';save();app.querySelectorAll('[data-field]').forEach(x=>x.classList.toggle('on',x.dataset.field===S.rwField));}));
+  wireChips(app,'stage',()=>p.stage,v=>p.stage=v,false,_profTouch);
+  wireChips(app,'age',()=>p.age,v=>p.age=v);
+  wireChips(app,'eng',()=>p.english,v=>p.english=v);
+  wireChips(app,'str',()=>p.struggles,v=>p.struggles=v,true,_profTouch);
+  wireChips(app,'goal',()=>S.goals,v=>S.goals=v,true);
+}
 function renderSettingsPage(app,sp){
   const p=_P(),u=_usage();
   const T={you:'You',coaching:'Coaching',usage:'Usage & codes',look:'Appearance',data:'Your data',about:'About'}[sp]||'Settings';
   let h='<main class="scr" style="--gap:12px"><div class="bar"><button class="ibtn r" data-act="st-back" aria-label="Back">'+ic('back')+'</button><h1 class="h1" style="flex:1">'+escHtml(T)+'</h1>'+(V._spFromHub?'':HUB_BTN)+'</div>';
   if(sp==='you'){
-    h+='<p class="sub">K reads this before every reply and every note, so the coaching fits you. It never leaves this device except inside a coaching request.</p>';
-    h+='<div class="card stack" style="gap:14px">'+
+    // One page: a summary row per section; tap to edit that section in a pop-up
+    const YS={about:()=>'<div class="card stack" style="gap:14px">'+
        '<div class="fieldset"><label class="lab" for="pf-name">First name</label><input class="inp" id="pf-name" placeholder="What should K call you?" value="'+escHtml(p.name||'')+'"></div>'+
-       '<div class="fieldset"><span class="lab">Age</span>'+chipsHtml(AGES.map(a=>[a,a]),p.age,'age')+'</div></div>';
-    h+='<div class="sect">Work</div><div class="card stack" style="gap:14px">'+
+       '<div class="fieldset"><span class="lab">Age</span>'+chipsHtml(AGES.map(a=>[a,a]),p.age,'age')+'</div></div>',work:()=>'<div class="card stack" style="gap:14px">'+
        '<div class="fieldset"><span class="lab">Where are you now?</span>'+chipsHtml(STAGES,p.stage,'stage')+'</div>'+
        '<div class="fieldset"><span class="lab">Your field</span><div class="grid2">'+FIELDS.map(f=>'<button class="tile'+(S.rwField===f[0]?' on':'')+'" data-field="'+escHtml(f[0])+'">'+ic(f[1])+escHtml(f[0])+'</button>').join('')+'</div><input class="inp" id="pf-field" placeholder="Or type yours: Architecture, Law…" value="'+escHtml(FIELDS.some(f=>f[0]===S.rwField)?'':(S.rwField||''))+'"></div>'+
-       '<div class="fieldset"><label class="lab" for="pf-role">What you do</label><input class="inp" id="pf-role" placeholder="e.g. Brand designer at a small studio" value="'+escHtml(p.role||'')+'"></div></div>';
-    h+='<div class="sect">What’s hard</div><div class="card stack" style="gap:14px">'+
+       '<div class="fieldset"><label class="lab" for="pf-role">What you do</label><input class="inp" id="pf-role" placeholder="e.g. Brand designer at a small studio" value="'+escHtml(p.role||'')+'"></div></div>',hard:()=>'<div class="card stack" style="gap:14px">'+
        '<div class="fieldset"><span class="lab">Pick any</span>'+chipsHtml(STRUGGLES,p.struggles||[],'str',true)+'</div>'+
        '<div class="fieldset"><label class="lab" for="pf-prob">Your biggest problem, in your words</label><textarea class="g-answer" id="pf-prob" style="min-height:96px" placeholder="e.g. Clients always ask for a discount and I say yes too fast.">'+escHtml(p.problem||'')+'</textarea></div>'+
-       '<div class="fieldset"><span class="lab">What’s coming up</span>'+chipsHtml(GOALS.map(g=>[g.k,g.t]),S.goals||[],'goal',true)+'</div></div>';
-    h+='<div class="sect">Language</div><div class="card stack" style="gap:14px">'+
+       '<div class="fieldset"><span class="lab">What’s coming up</span>'+chipsHtml(GOALS.map(g=>[g.k,g.t]),S.goals||[],'goal',true)+'</div></div>',lang:()=>'<div class="card stack" style="gap:14px">'+
        '<div class="fieldset"><span class="lab">Your English</span>'+chipsHtml(ENGLISH,p.english,'eng')+'</div>'+
-       '<div class="fieldset"><label class="lab" for="pf-lang">First language</label><input class="inp" id="pf-lang" placeholder="e.g. Mandarin" value="'+escHtml(p.firstLang||'')+'"></div></div>';
-    h+='<div class="sect">Your numbers</div><div class="card stack" style="gap:12px"><div class="grid2"><div class="fieldset"><label class="lab" for="pf-price">Your price</label><input class="inp" id="pf-price" placeholder="¥8,000 for a logo" value="'+escHtml(S.rwPrice||'')+'"></div><div class="fieldset"><label class="lab" for="pf-low">Lowest you’ll take</label><input class="inp" id="pf-low" placeholder="¥6,500" value="'+escHtml(S.rwLowest||'')+'"></div></div><div class="device">'+ic('phone','s')+'<span>K uses these to coach you on price, and Before you reply won’t write a yes below your lowest.</span></div></div>';
-    h+='<button class="btn btn-sec" data-act="st-back" style="margin-top:4px">Done</button>';
+       '<div class="fieldset"><label class="lab" for="pf-lang">First language</label><input class="inp" id="pf-lang" placeholder="e.g. Mandarin" value="'+escHtml(p.firstLang||'')+'"></div></div>',nums:()=>'<div class="card stack" style="gap:12px"><div class="grid2"><div class="fieldset"><label class="lab" for="pf-price">Your price</label><input class="inp" id="pf-price" placeholder="¥8,000 for a logo" value="'+escHtml(S.rwPrice||'')+'"></div><div class="fieldset"><label class="lab" for="pf-low">Lowest you’ll take</label><input class="inp" id="pf-low" placeholder="¥6,500" value="'+escHtml(S.rwLowest||'')+'"></div></div><div class="device">'+ic('phone','s')+'<span>K uses these to coach you on price, and Before you reply won’t write a yes below your lowest.</span></div></div>'};
+    V._youSect=YS;
+    const lab=(L,v)=>{const f=L.find(x=>x[0]===v);return f?f[1]:'';};
+    const rows=[
+      ['about','About you',[p.name,p.age].filter(Boolean).join(' · ')],
+      ['work','Work',[_label(STAGES,p.stage),S.rwField,p.role].filter(Boolean).join(' · ')],
+      ['hard','What’s hard',(p.struggles||[]).map(k=>lab(STRUGGLES,k)).filter(Boolean).join(', ')||(p.problem?_kShort(p.problem,60):'')],
+      ['lang','Language',[lab(ENGLISH,p.english),p.firstLang].filter(Boolean).join(' · ')],
+      ['nums','Your numbers',[S.rwPrice?'Price '+S.rwPrice:'',S.rwLowest?'lowest '+S.rwLowest:''].filter(Boolean).join(' · ')]];
+    h+='<p class="sub">K reads this before coaching you, so the advice fits. It stays on this device.</p>';
+    h+='<div class="list">'+rows.map(r=>'<button class="row" data-yous="'+r[0]+'"><span class="rt"><b>'+escHtml(r[1])+'</b><span>'+escHtml(r[2]||'Not set yet')+'</span></span>'+ic('chev','s chev')+'</button>').join('')+'</div>';
   }else if(sp==='coaching'){
-    h+='<div class="sect">K speaks</div><div class="list">'+COACH_LANGS.map(l=>'<button class="row" data-lang="'+l.id+'"><span class="rt"><b>'+escHtml(l.label)+'</b></span>'+((S.coachLang||'auto')===l.id?ic('check','s'):'')+'</button>').join('')+'</div>';
+    h+='<div class="sect">K speaks</div><div class="g-grid2">'+COACH_LANGS.map(l=>'<button class="g-chip'+((S.coachLang||'auto')===l.id?' on':'')+'" data-lang="'+l.id+'">'+escHtml(l.label)+'</button>').join('')+'</div>';
     h+='<div class="sect">Memory</div><div class="list"><button class="row" data-act="mem"><span class="rt"><b>K remembers my sessions</b><span>K reads your last notes before coaching you again.</span></span><span class="rv">'+(_nbOn()?'On':'Off')+'</span></button>'+
        (VOICE_ON?'<button class="row" data-act="tts"><span class="rt"><b>The other side speaks out loud</b><span>When you practice by speaking, you hear their lines.</span></span><span class="rv">'+(S.ttsOff?'Off':'On')+'</span></button>':'')+'</div>';
   }else if(sp==='usage'){
@@ -2951,9 +3060,9 @@ function renderSettingsPage(app,sp){
     h+='<div class="list"><button class="row" data-act="clr"><span class="rt"><b style="color:var(--err)">Clear notebook</b><span>Your profile stays</span></span></button>'+
        '<button class="row" data-act="reset"><span class="rt"><b style="color:var(--err)">Start over</b><span>Clears everything on this device</span></span></button></div>';
   }else if(sp==='about'){
-    h+='<div class="card stack" style="gap:12px;align-items:flex-start">'+kav('l')+'<div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div><h2 class="h2" style="font-size:20px">Talk like you’ve done this for twenty years.</h2>'+
+    h+='<div class="card stack" style="gap:12px;align-items:flex-start">'+kav('l')+'<div class="wm about-wm"><b>Ground</b><i></i><small>by Kian How</small></div><h2 class="h2" style="font-size:20px">Talk like you’ve done this for twenty years.</h2>'+
        '<p class="sub">I’m Kian How, a creative entrepreneur with more than twenty years across music, creative work, coaching and business. Ground coaches with my logic: know your lowest price, give only to get something back, stay warm and firm, and know when to walk away.</p>'+
-       '<p class="sub">K is the coach inside the app. K speaks the way I do.</p></div>';
+       '<p class="sub about-k">K is the coach inside the app. K speaks the way I do.</p></div>';
     h+=workCardHtml('');
     h+='<div class="list"><button class="row" data-whatsnew><span class="rt"><b>What’s new</b></span><span class="rv">v'+APP_VERSION+'</span>'+ic('chev','s chev')+'</button></div>';
     h+='<p class="small" style="line-height:1.6">Your recordings and messages go to the AI services that transcribe and coach them. Your notebook and profile stay on your device unless you turn on sync, which stores an encrypted copy only your devices can read. For users 18 and older. Practice is practice: use your own judgment in the real conversation.</p>';
@@ -2962,17 +3071,7 @@ function renderSettingsPage(app,sp){
   app.innerHTML=h;
   const on=(s,f)=>app.querySelectorAll(s).forEach(el=>el.addEventListener('click',f));
   on('[data-act="st-back"]',()=>{V.setPage='';if(V._spFromHub){V._spFromHub=false;go('hub');}else render();});
-  // You
-  const inp=(id,fn)=>{const el=app.querySelector('#'+id);if(el)el.addEventListener('input',()=>{fn(el.value.trim());save();});};
-  inp('pf-name',v=>p.name=v.slice(0,40));inp('pf-role',v=>p.role=v.slice(0,80));inp('pf-prob',v=>p.problem=v.slice(0,400));inp('pf-lang',v=>p.firstLang=v.slice(0,40));
-  inp('pf-price',v=>S.rwPrice=v);inp('pf-low',v=>S.rwLowest=v);
-  inp('pf-field',v=>{S.rwField=v;app.querySelectorAll('[data-field]').forEach(x=>x.classList.remove('on'));});
-  app.querySelectorAll('[data-field]').forEach(b=>b.addEventListener('click',()=>{S.rwField=S.rwField===b.dataset.field?'':b.dataset.field;const o=app.querySelector('#pf-field');if(o)o.value='';save();app.querySelectorAll('[data-field]').forEach(x=>x.classList.toggle('on',x.dataset.field===S.rwField));}));
-  wireChips(app,'stage',()=>p.stage,v=>p.stage=v,false,_profTouch);
-  wireChips(app,'age',()=>p.age,v=>p.age=v);
-  wireChips(app,'eng',()=>p.english,v=>p.english=v);
-  wireChips(app,'str',()=>p.struggles,v=>p.struggles=v,true,_profTouch);
-  wireChips(app,'goal',()=>S.goals,v=>S.goals=v,true);
+  app.querySelectorAll('[data-yous]').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.yous;openSheet('<div class="kick" style="margin:0">'+escHtml(b.querySelector('b').textContent)+'</div>'+V._youSect[k]()+'<button class="g-cta" data-close>Done<span class="ar">'+ic('check','s')+'</span></button>',{cls:'you-sheet',wire:sh=>_wireYou(sh,p),onClose:()=>render()});}));
   // Coaching
   app.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>{S.coachLang=b.dataset.lang;save();render();}));
   on('[data-act="mem"]',()=>{S.kMemory=!_nbOn();save();render();});
@@ -3114,22 +3213,20 @@ function _adviceCases(scen){
 }
 function renderAdvice(app){
   const A=V.adv;if(!A){go('hub');return;}
-  let h='<main class="scr p-lav">'+gBar('K’s advice','hub');
-  h+='<div class="g-card tight"><div class="g-row top"><span class="t"><b>What you told K</b><span>'+escHtml(_kShort(A.text,220))+'</span></span></div></div>';
+  let h='<main class="scr p-lav'+(A.data&&!A.loading?' rw-donescr':'')+'">'+gBar('K’s advice','hub');
+  if(!(A.data&&!A.loading))h+='<div class="g-card tight"><div class="g-row top"><span class="t"><b>What you told K</b><span>'+escHtml(_kShort(A.text,220))+'</span></span></div></div>';
   if(A.loading){
     h+='<div class="g-card" style="display:flex;flex-direction:column;gap:14px"><div class="g-k">'+kav()+'<div><b style="font-size:15px">K is thinking it through</b><div class="small" style="margin-top:2px">What matters most, what to do, and what to say first.</div></div></div><div class="stack" style="gap:9px"><div class="sk w9"></div><div class="sk w8"></div><div class="sk w9"></div><div class="sk w5"></div></div></div>';
   }else if(A.data){
-    const d=A.data;
-    h+='<div class="g-block"><div class="g-k" style="align-items:flex-start">'+kav()+'<div><div class="g-kick">What’s really going on</div><div style="font-size:18px;font-weight:700;line-height:1.4;margin-top:4px">'+escHtml(d.read)+'</div></div></div></div>';
-    h+='<div class="g-card tight"><div class="g-kick" style="margin-bottom:4px">What to do</div>'+d.steps.map((s,i)=>'<div class="g-row top"><span class="g-num">'+(i+1)+'</span><span class="t"><span style="font-size:15.5px;line-height:1.45;color:var(--ink)">'+escHtml(s)+'</span></span></div>').join('')+'</div>';
-    if(d.say)h+='<div class="g-card case-k"><div class="g-kick">Say this first</div><div class="case-line">“'+escHtml(d.say.replace(/^[“"]|[”"]$/g,''))+'”</div><div style="display:flex;justify-content:flex-end;margin-top:8px"><button class="g-chip" data-act="adv-copy">'+ic('copy','s')+'Copy</button></div></div>';
-    if(d.avoid)h+='<div class="g-card tight"><div class="g-row top"><span class="t"><b>Avoid</b><span>'+escHtml(d.avoid)+'</span></span></div></div>';
-    if(d.principle)h+='<div class="case-pr"><small>The principle</small><b>'+escHtml(d.principle)+'</b></div>';
-    const c=d.case?_case(d.case):null;
-    if(c){const cc=_caseCat(c.cat);h+='<button class="lib-row '+cc.c+'" data-case="'+c.id+'"><span class="lib-dot"></span><span class="lib-t"><small>Related case · '+escHtml(cc.t)+'</small><b>'+escHtml(c.title)+'</b><span>'+escHtml(c.principle)+'</span></span>'+ic('chev','s')+'</button>';}
-    h+='<div class="push"></div><div class="g-kick">Then, when you’re ready</div><div class="g-row2" style="flex-direction:column">'+
-      gCta(d.next==='reply'?'Write the message with K':'Rehearse the conversation',d.next==='reply'?'adv-reply':'adv-practice')+
-      gCta(d.next==='reply'?'Rehearse the conversation':'Write the message with K',d.next==='reply'?'adv-practice':'adv-reply',{sec:true})+'</div>';
+    const d=A.data,c=d.case?_case(d.case):null;
+    const s1='<div class="g-card tight"><div class="g-row top"><span class="t"><b>You told K</b><span>'+escHtml(_kShort(A.text,140))+'</span></span></div></div><div class="g-block"><div class="g-k" style="align-items:flex-start">'+kav()+'<div><div class="g-kick">What’s really going on</div><div class="adv-read">'+escHtml(d.read)+'</div></div></div></div>'+(d.avoid?'<div class="g-card tight"><div class="g-row top"><span class="g-minus">−</span><span class="t"><b>Avoid</b><span>'+escHtml(d.avoid)+'</span></span></div></div>':'');
+    const s2='<div class="g-card tight">'+d.steps.map((s,i)=>'<div class="g-row top"><span class="g-num">'+(i+1)+'</span><span class="t"><span class="adv-step">'+escHtml(s)+'</span></span></div>').join('')+'</div>'+(d.principle?'<div class="case-pr"><small>The principle</small><b>'+escHtml(d.principle)+'</b></div>':'');
+    const s3=(d.say?'<div class="g-card case-k"><div class="between"><span class="g-kick">Say this first</span><button class="g-chip" data-act="adv-copy">'+ic('copy','s')+'Copy</button></div><div class="case-line">“'+escHtml(d.say.replace(/^[“"]|[”"]$/g,''))+'”</div></div>':'')+
+      (c?'<button class="lib-li '+_caseCat(c.cat).c+'" data-case="'+c.id+'"><span class="lib-dot"></span><span class="lib-lt"><span>Related case</span><b>'+escHtml(c.title)+'</b></span>'+ic('chev','s')+'</button>':'');
+    const end=gCta(d.next==='reply'?'Write the message with K':'Rehearse the conversation',d.next==='reply'?'adv-reply':'adv-practice')+'<div class="rw-endlinks"><button class="link" data-act="'+(d.next==='reply'?'adv-practice':'adv-reply')+'">'+(d.next==='reply'?'Rehearse it instead':'Write the message instead')+'</button></div>';
+    const sl=[['What’s going on',s1],['What to do',s2],['Say this',s3]];
+    h+='<div class="rw-slides" id="rw-slides">'+sl.map((x,i)=>'<section class="rw-slide"><div class="rw-step">'+(i+1)+' of 3 · '+x[0]+'</div><div class="rw-sbody">'+x[1]+'</div>'+(i===2?'<div class="rw-end">'+end+'</div>':'')+'</section>').join('')+'</div>';
+    h+='<div class="rw-nav"><div class="rw-sdots"><i class="on"></i><i></i><i></i></div><button class="rw-next" data-act="rw-next">Next'+ic('arrow','s')+'</button></div>';
   }else{
     const cs=_adviceCases(A.scen);
     h+='<div class="g-card"><div class="g-k">'+kav()+'<div><b style="font-size:15px">'+(A.err==='offline'?'K needs a connection to read this':'K couldn’t finish that one')+'</b><div class="small" style="margin-top:2px">'+(A.err==='offline'?'In the meantime, these cases are close to your situation.':'Try again in a moment. These cases are close to your situation.')+'</div></div></div>'+(A.err&&A.err!=='offline'?_errDetail(A.err):'')+'</div>';
@@ -3140,6 +3237,7 @@ function renderAdvice(app){
   app.innerHTML=h;wireCommon(app);
   app.querySelectorAll('[data-case]').forEach(b=>b.addEventListener('click',()=>openCase(b.dataset.case)));
   const on=(s,f)=>{const el=app.querySelector(s);if(el)el.addEventListener('click',f);};
+  _wireSlides(app);
   on('[data-act="adv-copy"]',()=>copyText(A.data.say.replace(/^[“"]|[”"]$/g,'')));
   on('[data-act="adv-retry"]',()=>{A.loading=true;A.err=null;render();deskAdvice();});
   on('[data-act="adv-reply"]',()=>{V.deskRoute=Object.assign({},V.deskRoute||{},{rwant:'fix',reply_text:''});deskGo('reply');});
@@ -3187,9 +3285,9 @@ function _sugItems(){
   const k=_sugPick(0),k2=_sugKeys().length>1?_sugPick(1):k,m=SUG_MAP[k],m2=SUG_MAP[k2];
   const pc=_case(m.practice),rc=_case(m2.read);
   return [
-    {kind:'practice',key:k,t:'Practice: '+_sugLower(pc?pc.title:'a real conversation'),s:(pc&&TT_REAL[pc.practice.scen]?TT_REAL[pc.practice.scen].name:'Practice')+' · about 2 minutes',ic:'mic',p:'p-teal',caseId:m.practice},
-    {kind:'read',key:k2,t:'Read: '+_sugLower(rc?rc.title:'a case'),s:_cap(m2.t)+' · 1-minute case',ic:'book',p:'p-lav',caseId:m2.read},
-    {kind:'quick',key:k,t:'Quick answer: “'+_kShort(m.quick,40)+'”',s:'Ten seconds to think, then answer',ic:'quick',p:'p-pink',q:m.quick}
+    {kind:'practice',key:k,t:'Practice: '+_sugLower(pc?pc.title:'a real conversation'),s:(pc&&TT_REAL[pc.practice.scen]?TT_REAL[pc.practice.scen].name:'Practice'),ic:'mic',p:'p-teal',caseId:m.practice},
+    {kind:'read',key:k2,t:'Read: '+_sugLower(rc?rc.title:'a case'),s:_cap(m2.t),ic:'book',p:'p-lav',caseId:m2.read},
+    {kind:'quick',key:k,t:'Quick answer: “'+_kShort(m.quick,40)+'”',s:'Answer it on the spot',ic:'quick',p:'p-pink',q:m.quick}
   ];
 }
 function _sugLower(t){t=String(t||'');return /^[“"]/.test(t)?t:t.charAt(0).toLowerCase()+t.slice(1);}
@@ -3213,7 +3311,7 @@ function deskBoxHtml(){
       '<button class="sug-type" data-act="sug-type">'+ic('edit','s')+'Or tell K what’s coming up…</button></div>';
   }
   return '<div class="desk sug-a"><div><b class="sug-h">Where to start'+(nm?', '+escHtml(nm):'')+'</b><small class="sug-why">'+escHtml(_sugReason())+'</small></div>'+
-    items.map((it,i)=>'<button class="sug-row" data-sug="'+i+'" data-v="A"><span class="'+it.p+'">'+ic(it.ic,'s')+'</span><span><b>'+escHtml(it.t)+'</b><small>'+escHtml(it.s)+'</small></span></button>').join('')+
+    items.map((it,i)=>'<button class="sug-row" data-sug="'+i+'" data-v="A"><span class="'+it.p+'">'+ic(it.ic,'s')+'</span><span><b>'+(()=>{const m=String(it.t).match(/^([^:“]{2,16}):\s*(.*)$/);return m?'<span class="sug-pre">'+escHtml(m[1])+'</span>'+escHtml(m[2].replace(/^[a-z]/,c=>c.toUpperCase())):escHtml(it.t);})()+'</b><small>'+escHtml(it.s)+'</small></span></button>').join('')+
     '<button class="sug-type link" data-act="sug-type">Something else on your mind? Type it →</button></div>';
 }
 function _sugMoment(c){const m=_unsting(c.moment);const s=m.split(/(?<=[.!?])\s/)[0];return s.length<120?s:_kShort(m,110);}
@@ -3364,13 +3462,13 @@ function renderReply(app){
   }else if(st==='reply'){
     const d=RP.draft;
     h+=gBar('K’s read','rp-back',gDots(3,2));
-    if(d.read)h+='<div class="g-card case-k"><div class="g-k">'+kav()+'<b style="font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)">What’s going on</b></div><p style="margin-top:10px;font-size:16px;line-height:1.45;font-weight:600">'+escHtml(d.read)+'</p></div>';
+    if(d.read)h+='<div class="g-card case-k"><div class="g-k">'+kav()+'<b style="font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)">What’s going on</b></div><p class="rp-read">'+escHtml(d.read)+'</p></div>';
     if(RP.guard)h+='<div class="g-alert"><div class="rowx" style="gap:8px"><span style="color:#F5C27A;display:flex">'+ic('warn','s')+'</span><span class="g-kick">Under your lowest</span></div><div style="font-size:18px;font-weight:800;letter-spacing:-.02em;line-height:1.3;margin-top:8px">They’re asking for '+escHtml(_fmtMoney(RP.guard.asked))+'. Your lowest is '+escHtml(_fmtMoney(RP.guard.lowest))+'.</div><div class="sub" style="margin-top:6px">I won’t write a yes. Here’s a reply that keeps your price and gives them a smaller option.</div></div>';
     h+='<div class="g-block"><div class="between"><span class="g-kick">One way to say it</span><button class="g-copy" data-act="copy">'+ic('copy','s')+'Copy</button></div><div class="g-draft">'+escHtml(d.draft)+'</div>'+(d.why.length?'<button class="g-why-btn" data-act="why">Why this works<span style="display:flex">'+ic('arrow','s')+'</span></button>':'')+'</div>';
     if(RP.guard)h+='<button class="g-ghost" data-act="yes-anyway">Write a yes anyway</button>';
     h+='<div class="g-grid3"><button class="g-chip" data-tone="warmer">Warmer</button><button class="g-chip" data-tone="firmer">Firmer</button><button class="g-chip" data-tone="shorter">Shorter</button></div>';
     if(d.give||d.get)h+='<div class="g-gg"><div class="g-card"><span class="g-kick">You give</span><div class="v">'+escHtml(d.give||'Nothing')+'</div></div><div class="g-card teal"><span class="g-kick">You get back</span><div class="v">'+escHtml(d.get||'The relationship')+'</div></div></div>';
-    h+='<p class="small center-t">It’s your call. Send it as is, change it, or ask me why.</p><div class="push"></div>'+gCta('Practice what they say next','to-practice',{style:'--p:#7FE0E0;--pi:#06201F'});
+    h+='<p class="small center-t rp-call">It’s your call. Send it as is, change it, or ask me why.</p><div class="push"></div>'+gCta('Practice what they say next','to-practice',{style:'--p:#7FE0E0;--pi:#06201F'});
   }else if(st==='why'){
     const d=RP.draft;
     h+=gBar('Why it works','rp-reply');
@@ -3818,7 +3916,7 @@ async function _rwDecide(){
 async function rwAnalyze(){
   const _rw=TT_REAL[RW.scenario];
   const sysUsed=K_VOICE+'\nYou are helping someone practice a real-world speaking situation.\n\n'+RW_STANDARD[RW.scenario]+'\n\n'+(_rw.grp==='client'?K_CLIENT_VIEW:RW.scenario==='interview'||RW.scenario==='intro'||RW.scenario==='pitch'?K_INTERVIEW_VIEW:RW.scenario==='smalltalk'?K_PEOPLE_VIEW:_rw.grp==='conflict'?K_CONFLICT_VIEW:'')+'\n'+K_PLAIN+'\n\n'+
-    (_rw.free?'No time limit in this conversation. Only mention length if it hurt: rambling, over-explaining, or so short it came across as cold.':'Time target: '+_ttRealTime(_rw)+' for the first answer. Say briefly whether they kept to it.')+'\n\n'+K_JUDGE+'\n\n'+K_RULES+'\n\n'+
+    'No time limit. Only mention length if it hurt: rambling, over-explaining, or so short it came across as cold.\n\n'+K_JUDGE+'\n\n'+K_RULES+'\n\n'+
     (RW.convo.length>1?'This was a conversation, not a single answer: after the first answer, the other person asked '+(RW.convo.length-1)+' follow-up question'+(RW.convo.length>2?'s':'')+' based on what the speaker said. Judge the whole exchange. A strong speaker answers what was actually asked, stays consistent with what they said before, keeps their thread, gets sharper rather than longer, and stays calm when pressed.\n\nReply in EXACTLY these five sections, use these exact labels, no others:':'Reply in EXACTLY these four sections, use these exact labels, no others:')+'\n\n'+
     '✅ WHAT WORKED: One specific thing that would work in the real room: a phrase, a detail, an instinct. Quote it.\n🎯 THE THREAD: Did the answer do the job this situation demands (see the standard above)? Name what a listener would take away.\n🏗 STRUCTURE: One observation about shape and timing against the standard above.\n'+
     (RW.convo.length>1?(RW.scenario==='ground'?'↪ UNDER FOLLOW-UP: Did they hold their ground? Compare their position in the first answer with the last: same, softened or given away. If it moved, quote the exact line where the drift started and name which push caused it (logic, personal appeal or sweetener). Then one sentence on whether they stayed warm.\n':'↪ UNDER FOLLOW-UP: How they handled the follow-ups: did they answer what was actually asked, stay consistent, keep their thread, stay calm? One or two sentences; quote them if it helps.\n'):'')+
@@ -3908,7 +4006,7 @@ function renderReal(app){
     h+=gBar('Practice a talk','hub',_rwDots());
     h+='<h2 class="g-h">What’s coming up?</h2>';
     h+='<div class="g-chips">'+RW_GOALS.map(x=>'<button class="g-chip'+(x.k===RW.goal?' on':'')+'" data-goal="'+x.k+'">'+x.t+'</button>').join('')+'</div>';
-    h+='<div class="stack" style="gap:8px">'+g.items.map(k=>{const s=TT_REAL[k];return '<button class="g-card g-sit'+(k===RW.scenario?' on':'')+'" data-scen="'+k+'"><span class="rad"></span><span class="t"><b>'+escHtml(RW_PLAIN[k]||s.name)+'</b><span>'+escHtml(RW_PLAIN[k]?s.name:s.sub)+'</span></span><span class="g-time">'+(s.free?'1–2 min':escHtml(_ttRealTime(s)))+'</span></button>';}).join('')+'</div>';
+    h+='<div class="stack" style="gap:8px">'+g.items.map(k=>{const s=TT_REAL[k];return '<button class="g-card g-sit'+(k===RW.scenario?' on':'')+'" data-scen="'+k+'"><span class="rad"></span><span class="t"><b>'+escHtml(RW_PLAIN[k]||s.name)+'</b><span>'+escHtml(RW_PLAIN[k]?s.name:s.sub)+'</span></span></button>';}).join('')+'</div>';
     if(!_aiOn())h+='<p class="small center-t">AI is off or you’re offline, so scenes come from the built-in set, with no follow-ups or notes.</p>';
     h+='<div class="push"></div><div class="g-row2"><button class="g-back" style="width:56px;height:56px" data-act="shuffle" aria-label="Random scenario"'+(RW.loadingScene?' disabled':'')+'>'+ic('shuffle','s')+'</button>'+gCta(RW.loadingScene?'Setting the scene…':'Get a scenario','get',{disabled:RW.loadingScene})+'</div>';
   }else if(ph==='brief'){
@@ -3919,12 +4017,13 @@ function renderReal(app){
      if(b&&b.scene)h+='<div class="g-block"><div class="g-kick">The scene</div><p class="rw-scene">'+_sting(b.scene)+'</p>'+(RW.fromCase&&RW.fromCase.feel?'<p class="case-feel">'+escHtml(RW.fromCase.feel)+'</p>':'')+'<div class="rw-who">You’re talking to: <b>'+escHtml(String(b.who||b.c).split(' · ')[0])+'</b></div></div>';
      else h+='<div class="g-block"><div class="g-kick">Who you’re talking to</div><div class="g-big">'+escHtml(big)+'</div>'+(b&&b.who&&b.moment?'<p style="margin-top:8px;font-size:16px;line-height:1.45;font-weight:600">'+_sting(b.moment)+'</p>'+(RW.fromCase&&RW.fromCase.feel?'<p class="case-feel">'+escHtml(RW.fromCase.feel)+'</p>':''):'')+'</div>';
      if(RW_AIM[RW.scenario]&&!(b&&b.c)&&!RW.fromCase)h+='<div class="g-card tight"><div class="g-row top"><span class="t"><b>Your goal</b><span>'+escHtml(RW_AIM[RW.scenario])+'</span></span></div></div>';}
-    if(b&&b.c)h+='<div class="g-card tight"><div class="g-row"><span class="t"><b>'+(RW.source==='desk'?'The situation':'The job')+'</b><span>'+escHtml(b.job)+'</span></span></div>'+(b.pos?'<div class="g-row"><span class="t"><b>'+escHtml(RW_POS_LBL[RW.scenario]||'Your position')+'</b><span>'+escHtml(b.pos)+'</span></span></div>':'')+'</div>';
+    if(b&&b.c&&b.scene){if(b.pos)h+='<div class="g-card tight rw-pos"><b>'+escHtml(RW_POS_LBL[RW.scenario]||'Your position')+'</b><span>'+escHtml(b.pos)+'</span></div>';}
+    else if(b&&b.c)h+='<div class="g-card tight"><div class="g-row"><span class="t"><b>'+(RW.source==='desk'?'The situation':'The job')+'</b><span>'+escHtml(b.job)+'</span></span></div>'+(b.pos?'<div class="g-row"><span class="t"><b>'+escHtml(RW_POS_LBL[RW.scenario]||'Your position')+'</b><span>'+escHtml(b.pos)+'</span></span></div>':'')+'</div>';
     if(RW.fromCase)h+='<div class="g-card tight rw-tip c-job"><div class="g-kick">'+escHtml(RW.fromCase.label||'Try the principle')+'</div><div style="font-size:15px;font-weight:700;line-height:1.35;margin-top:4px">'+escHtml(RW.fromCase.principle)+'</div></div>';
     if(RW.prevFix)h+='<div class="g-block p-lav"><div class="g-kick">Last time, K said</div><div style="font-size:16px;font-weight:700;line-height:1.35">'+escHtml(_kShort(RW.prevFix,200))+'</div></div>';
     if(RW.fromReply)h+='<div class="g-card tight"><div class="g-row"><span class="t"><b>Their message</b><span>'+escHtml(_kShort(RW.question,160))+'</span></span></div>'+(RW.fromReply.reply?'<div class="g-row"><span class="t"><b>You replied</b><span>'+escHtml(_kShort(RW.fromReply.reply,160))+'</span></span></div>':'')+'</div>';
     if(cl&&RW.secret)h+='<div class="g-alert" style="display:flex;gap:12px;align-items:flex-start"><span style="color:#C4AEFF;margin-top:1px;display:flex">'+ic('lock','s')+'</span><div><b style="font-size:14.5px">'+escHtml(name)+' has a secret.</b><div class="sub" style="margin-top:3px">You’ll find out at the end. Ask good questions and you might find out sooner.</div></div></div>';
-    h+='<div class="push"></div><div class="g-kick">How do you want to answer?</div>'+_rwModeSwitch()+gCta('Start','start');
+    h+='<div class="push"></div>'+_rwModeSwitch()+gCta('Start','start');
   }else if(ph==='turn'){
     const line=RW.fuQ||RW.question,wait=RW.fuLoading||!line,inFu=RW.convo.length>0,n=_rwFuN();
     if(RW.mode==='live'){
@@ -3946,7 +4045,7 @@ function renderReal(app){
         h+='<textarea class="g-answer" id="rw-typed" placeholder="Type what you’d say…"'+(wait?' disabled':'')+'>'+escHtml(RW.typed||'')+'</textarea>';
         h+=gCta('Send','send',{disabled:wait});
       }else{
-        h+='<div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:6px 0 4px"><button class="g-mic'+(RW.rec?' rec':'')+'" data-act="'+(RW.rec?'stop':'rec')+'" aria-label="'+(RW.rec?'Stop':'Tap to answer')+'"'+(wait?' disabled':'')+'>'+ic('mic')+'</button><span class="small" style="font-weight:700">'+(RW.rec?'<span id="rw-timer">'+fmtMs(RW.elapsed*1000)+'</span> · tap to finish':'Tap to answer · aim for '+(_rwFree()?'1 minute':_ttRealTime(sc)))+'</span></div>';
+        h+='<div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:6px 0 4px"><button class="g-mic'+(RW.rec?' rec':'')+'" data-act="'+(RW.rec?'stop':'rec')+'" aria-label="'+(RW.rec?'Stop':'Tap to answer')+'"'+(wait?' disabled':'')+'>'+ic('mic')+'</button><span class="small" style="font-weight:700">'+(RW.rec?'Listening… tap when you’re done':'Tap to answer')+'</span></div>';
       }
       if(inFu&&!RW.rec)h+='<button class="g-ghost" data-act="end">End here · get K’s notes</button>';
     }
@@ -4274,35 +4373,58 @@ function renderPitch(app){
   if(ph==='room'&&PI.rec)recLevelLoop(app.querySelector('#pi-wave'));
 }
 // ═══════════════════════════════════════════════════════════════════════════
-// QUICK ANSWER: one question, ten seconds to think (PREP), one minute to
+// QUICK ANSWER: one question with its context, answered on the spot, no timer;
 // answer, then what worked and one fix. Keeps the streak.
 // ═══════════════════════════════════════════════════════════════════════════
+// Each question comes with who is asking and where, in plain words
 const QA_BANK={
-  job:['Why should we hire you instead of someone with more experience?','What’s your biggest weakness?','Tell me about a time you failed. What did you learn?','Where do you see yourself in three years?','Why do you want this role?','Tell me about a project you’re proud of and your part in it.','What would your last manager say about you?','Tell me about a time you had to learn something fast.'],
-  work:['Your manager asks: “You’ve been quiet. What do you think?”','Your project is two weeks late. What happened?','Give a 30-second update on your project.','A colleague says: “That won’t work here.” Respond.','Why should your project get the budget?','The room is stuck. Sum it up and suggest a next step.'],
-  client:['A client asks: “Why are you more expensive than the others?”','A client asks: “Can you do it for half?” What do you say?','“We’ve talked to three agencies already. What makes you different?”','A client asks: “What exactly do I get for that price?”','“Can you start before the contract is signed?”','A client says: “We hate it. Start over.” Respond.','“If we sign today, can you knock off 20%?”'],
-  people:['Someone at a party asks: “So, what do you do?”','“How do you know the host?”','“Any plans for the weekend?”','On a first date: “What’s something you’re looking forward to this year?”','“Why are you learning English? Yours is already good.”','A neighbor says: “Haven’t seen you around much lately!”']
+  job:[['A job interview. The interviewer looks up from your CV and asks:','Why should we hire you instead of someone with more experience?'],
+    ['A job interview. Near the end, the interviewer asks:','What’s your biggest weakness?'],
+    ['A job interview. The interviewer leans back and asks:','Tell me about a time you failed. What did you learn?'],
+    ['A job interview for a role you really want. They ask:','Where do you see yourself in three years?'],
+    ['A first-round interview. The hiring manager starts with:','Why do you want this role?'],
+    ['A portfolio interview. They point at your work and ask:','Tell me about a project you’re proud of, and what your part was.'],
+    ['A final interview. The director asks:','What would your last manager say about you?'],
+    ['An interview for a fast-moving team. They ask:','Tell me about a time you had to learn something fast.']],
+  work:[['A team meeting. You haven’t spoken yet. Your manager turns to you:','You’ve been quiet. What do you think?'],
+    ['A meeting with your boss. Your project is two weeks late. They ask:','Why is this two weeks late?'],
+    ['The weekly meeting. It’s your turn. Your manager says:','Quick update on your project?'],
+    ['You just shared an idea in a meeting. A senior colleague says:','That won’t work here.'],
+    ['A budget meeting. The director asks you:','Why should your project get the budget instead of the others?'],
+    ['A long meeting that’s going nowhere. Your boss looks at you:','Can you sum up where we are and what we do next?'],
+    ['A client found a mistake in your work. Your boss asks:','Why wasn’t this caught earlier?']],
+  client:[['A call with a new client. They’ve seen your quote and ask:','Why are you more expensive than the others?'],
+    ['A client likes your proposal, then asks:','Can you do it for half the price?'],
+    ['A first meeting with a client. They say:','We’ve talked to three agencies already. What makes you different?'],
+    ['A client is looking at your quote. They ask:','What exactly do I get for that price?'],
+    ['A client is in a hurry. Before anything is signed, they ask:','Can you start before the contract is signed?'],
+    ['You just showed your first draft. The client says:','We hate it. Can you start over?'],
+    ['A client is ready to sign, but first:','If we sign today, can you knock off 20%?']],
+  people:[['At a party, someone you just met asks:','So, what do you do?'],
+    ['At a friend’s dinner, the person next to you asks:','How do you know the host?'],
+    ['Friday afternoon, a colleague you don’t know well asks:','Any plans for the weekend?'],
+    ['On a first date, they ask:','What’s something you’re looking forward to this year?'],
+    ['At a language exchange, someone asks:','Why are you learning English? Yours is already good.'],
+    ['In the lift, a neighbor says:','Haven’t seen you around much lately!']]
 };
 const QA_GOAL_LABEL={job:'Job hunting · Interview',work:'At work · Tough question',client:'Clients · Price talk',people:'Meeting people · Conversation'};
-let QA={phase:'q',goal:null,q:'',n:0,think:10,_iv:null,rec:false,elapsed:0,take:null,notes:null,loading:false,strong:null,strongLoading:false};
+let QA={phase:'q',goal:null,q:'',ctx:'',n:0,think:10,_iv:null,rec:false,elapsed:0,take:null,notes:null,loading:false,strong:null,strongLoading:false};
 function _qaQuote(q){return /[“”]/.test(q)?escHtml(q):'“'+escHtml(_stripQ(q))+'”';}
 function _qaGoals(){const g=(S.goals||[]).filter(k=>QA_BANK[k]);return g.length?g:Object.keys(QA_BANK);}
 function _qaPick(shuffle){
-  const goals=_qaGoals();const all=[];goals.forEach(g=>QA_BANK[g].forEach(q=>all.push({g,q})));
+  const goals=_qaGoals();const all=[];goals.forEach(g=>QA_BANK[g].forEach(x=>all.push({g,q:x[1],ctx:x[0]})));
   const seen=new Set(_ttSeenList());
   let pool=all.filter(x=>!seen.has(x.q));if(!pool.length)pool=all;
   const it=shuffle?_pick(pool):pool[_kDayIdx(pool.length)];
-  QA.goal=it.g;QA.q=it.q;
+  QA.goal=it.g;QA.q=it.q;QA.ctx=it.ctx||'';
 }
 async function qaStart(){
   if(!_canStartSession()){openLimitSheet('month');return;}
-  QA.phase='think';QA.think=10;render();
-  clearInterval(QA._iv);
-  QA._iv=setInterval(()=>{QA.think--;const r=document.getElementById('qa-ring');if(r){r.style.setProperty('--pct',Math.round((10-QA.think)/10*100)+'%');const d=r.querySelector('div');if(d)d.textContent=QA.think;}if(QA.think<=0){clearInterval(QA._iv);qaRecord();}},1000);
+  qaRecord();
 }
 async function qaRecord(){
   clearInterval(QA._iv);QA.phase='rec';QA.rec=true;QA.elapsed=0;render();
-  const ok=await recStart({onTick:r=>{QA.elapsed=r.elapsed;const t=document.getElementById('qa-timer');if(t)t.textContent=fmtMs(r.elapsed*1000);},maxSecs:60,onMax:()=>qaStop()});
+  const ok=await recStart({onTick:r=>{QA.elapsed=r.elapsed;const t=document.getElementById('qa-timer');if(t)t.textContent=fmtMs(r.elapsed*1000);},maxSecs:180,onMax:()=>qaStop()});
   if(!ok){QA.rec=false;QA.phase='q';render();showToast('I can’t reach your microphone. Check the browser’s mic permission.','warn');return;}
   recLevelLoop(document.getElementById('qa-wave'));
 }
@@ -4318,8 +4440,8 @@ async function qaNotes(){
   if(tk.words<8){QA.notes={short:true};QA.loading=false;render();return;}
   if(!_aiOn()){QA.notes={off:true};QA.loading=false;render();return;}
   const view=QA.goal==='client'?K_CLIENT_VIEW:QA.goal==='people'?K_PEOPLE_VIEW:K_INTERVIEW_VIEW;
-  const sys=K_VOICE+'\n'+K_PLAIN+'\n'+K_JUDGE+'\n'+view+'\nThe speaker had ten seconds to think and one minute to answer one question out loud. They were told to try PREP: Point, Reason, Example, Point. Judge the answer by whether a listener would be convinced, not by obedience to PREP; but when a PREP step is missing and it cost them, name the step.\nGROUNDING: every "quote" and "said" must be the speaker’s EXACT words from the transcript, copied character for character, 3 to 15 words. Never paraphrase.\nReply with JSON only: {"worked":{"quote":"exact words","why":"one short sentence on why it worked"},"fix":{"said":"exact words of the weakest moment","try":"a better line they could say, spoken, under 25 words","why":"one or two sentences; if a PREP step was missing, end with: That’s the <letter> in PREP."}}';
-  const msg='Question: "'+QA.q+'"\nTranscript ('+fmtMs(tk.elapsed*1000)+', '+tk.words+' words):\n'+tk.transcript+nbContext('quick');
+  const sys=K_VOICE+'\n'+K_PLAIN+'\n'+K_JUDGE+'\n'+view+'\nThe speaker answered one question out loud, on the spot. There is no time limit. Judge the answer by whether the person asking would be satisfied: is the answer clear early, is there one reason or real example, does it end cleanly. Never mention PREP, frameworks, acronyms or timing.\nGROUNDING: every "quote" and "said" must be the speaker’s EXACT words from the transcript, copied character for character, 3 to 15 words. Never paraphrase.\nReply with JSON only: {"worked":{"quote":"exact words","why":"one short sentence on why it worked"},"fix":{"said":"exact words of the weakest moment","try":"a better line they could say, spoken, under 25 words","why":"one or two sentences; plain words only, no acronyms"}}';
+  const msg=(QA.ctx?'Situation: '+QA.ctx+'\n':'')+'Question: "'+QA.q+'"\nTranscript ('+fmtMs(tk.elapsed*1000)+', '+tk.words+' words):\n'+tk.transcript+nbContext('quick');
   try{
     const j=_jsonFrom(await callCoach(sys,msg,{maxTokens:380,featureId:'quick-eval'}));
     const ok=s=>s&&_rwxNorm(tk.transcript).includes(_rwxNorm(s));
@@ -4335,8 +4457,8 @@ async function qaStrong(){
   QA.strongLoading=true;render();
   try{
     const view=QA.goal==='client'?K_CLIENT_VIEW:QA.goal==='people'?K_PEOPLE_VIEW:K_INTERVIEW_VIEW;
-    const sys=K_VOICE+'\n'+K_PLAIN+'\n'+view+'\nWrite a strong spoken answer to the question, first person, the way a confident person would say it out loud in about 40 seconds (80–110 words). Use PREP without naming it: point, one reason, one concrete example with a number or a detail, point again. No greeting, no labels. Reply with the answer only.'+(S.rwField?' The speaker works in '+S.rwField+'; pick an example that fits.':'');
-    QA.strong=String(await callCoach(sys,'Question: "'+QA.q+'"',{maxTokens:260,featureId:'quick-eval'})).trim();
+    const sys=K_VOICE+'\n'+K_PLAIN+'\n'+view+'\nWrite a strong spoken answer to the question, first person, the way a confident person would say it out loud, short and natural (60–100 words): the answer first, one reason, one concrete example with a detail, then a clean ending. No greeting, no labels. Reply with the answer only.'+(S.rwField?' The speaker works in '+S.rwField+'; pick an example that fits.':'');
+    QA.strong=String(await callCoach(sys,(QA.ctx?'Situation: '+QA.ctx+'\n':'')+'Question: "'+QA.q+'"',{maxTokens:260,featureId:'quick-eval'})).trim();
   }catch(e){showToast('K couldn’t write one just now');}
   QA.strongLoading=false;render();
   if(QA.strong)speak(QA.strong,{voice:'ash',style:'You are K, a warm, confident communication coach, showing how a strong answer sounds out loud.'});
@@ -4355,17 +4477,17 @@ function renderQuick(app){
   if(ph==='q'){
     h+=gBar('Quick answer','hub');
     /* no streak card: it was noise */
-    h+='<div class="g-block" style="flex:1;display:flex;flex-direction:column;min-height:300px"><div class="g-kick">'+(QA.n?'Another question':'Today’s question')+'</div><div class="rw-mid"><div class="rw-line qa-line">'+_qaQuote(QA.q)+'</div></div><div style="font-size:13.5px;font-weight:700;opacity:.75">'+escHtml(QA_GOAL_LABEL[QA.goal]||'')+'</div></div>';
-    h+='<div class="g-row2"><button class="g-chip" style="min-height:56px;padding:0 18px" data-act="another">'+ic('shuffle','s')+'Another</button>'+gCta('I’m ready','ready')+'</div>';
+    h+='<div class="g-block" style="flex:1;display:flex;flex-direction:column;min-height:300px"><div class="g-kick">'+(QA.n?'Another question':'Today’s question')+'</div><div class="rw-mid">'+(QA.ctx?'<p class="qa-ctx">'+escHtml(QA.ctx)+'</p>':'')+'<div class="rw-line qa-line">'+_qaQuote(QA.q)+'</div><p class="qa-tip"><b>K’s tip</b>Answer first. Then give one real example.</p></div><div style="font-size:13.5px;font-weight:700;opacity:.75">'+escHtml(QA_GOAL_LABEL[QA.goal]||'')+'</div></div>';
+    h+='<div class="g-row2"><button class="g-chip" style="min-height:56px;padding:0 18px" data-act="another">'+ic('shuffle','s')+'Another</button>'+gCta('Answer it','ready')+'</div>';
   }else if(ph==='think'){
     h+=gBar('Quick answer','qa-back');
-    h+='<div class="g-block"><div class="g-big" style="font-size:19px;margin-top:0">'+_qaQuote(QA.q)+'</div></div>';
+    h+='<div class="g-block">'+(QA.ctx?'<p class="qa-ctx" style="margin-bottom:6px">'+escHtml(QA.ctx)+'</p>':'')+'<div class="g-big" style="font-size:21px;margin-top:0">'+_qaQuote(QA.q)+'</div></div>';
     h+='<div class="center" style="gap:16px"><div class="g-kick">Think first</div><div class="g-ring" id="qa-ring" style="--pct:'+Math.round((10-QA.think)/10*100)+'%"><div>'+QA.think+'</div></div><p class="sub" style="font-weight:700;color:var(--ink)">Try PREP: Point, Reason, Example, Point.</p>'+techTag('prep')+'</div>';
     h+='<button class="g-ghost" data-act="skip">Skip · start now</button>';
   }else if(ph==='rec'){
     h+=gBar('Quick answer','qa-back');
-    h+='<div class="g-block"><div class="g-big" style="font-size:19px;margin-top:0">'+_qaQuote(QA.q)+'</div></div>';
-    h+='<div class="center" style="gap:14px"><div class="g-rec"><i></i>Recording</div><div class="g-timer" id="qa-timer">'+fmtMs(QA.elapsed*1000)+'</div><div class="sub" style="font-weight:700">of 1:00</div><div class="g-wave" id="qa-wave">'+'<i></i>'.repeat(19)+'</div></div>';
+    h+='<div class="g-block">'+(QA.ctx?'<p class="qa-ctx" style="margin-bottom:6px">'+escHtml(QA.ctx)+'</p>':'')+'<div class="g-big" style="font-size:21px;margin-top:0">'+_qaQuote(QA.q)+'</div></div>';
+    h+='<div class="center" style="gap:14px"><div class="g-rec"><i></i>Listening…</div><div class="sub" style="font-weight:700">Take your time. Tap stop when you’re done.</div><div class="g-wave" id="qa-wave">'+'<i></i>'.repeat(19)+'</div></div>';
     h+='<button class="g-stop" data-act="stop" aria-label="Stop"></button><div style="height:4px"></div>';
   }else{
     h+=gBar('K’s notes','qa-back');
