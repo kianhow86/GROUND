@@ -774,6 +774,15 @@ mark.sting.own{display:table;margin-top:8px;font-size:1.25em;letter-spacing:-.01
 html[data-theme="dark"] .c-start{--c:#A9D98E}html[data-theme="dark"] .c-career{--c:#8FD3F0}
 .ask-entry>span:first-child{background:#8FD3F0;color:#06202B;font-weight:900;font-size:18px}
 .ask-in{width:100%;box-sizing:border-box;border-radius:18px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:14px 16px;font:inherit;font-size:16px;line-height:1.45;resize:vertical;min-height:96px}
+/* Work with Kian */
+.work-card{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;background:var(--card);border:1px solid var(--line);color:var(--ink);text-decoration:none}
+.work-card>span:nth-child(2){flex:1;display:flex;flex-direction:column;gap:2px}
+.work-card b{font-size:15px}.work-card small{font-size:12.5px;color:var(--ink-2)}
+.work-card>.ic{color:var(--ink-3)}
+.wk-av{flex-shrink:0;display:flex}
+/* Hub button in the top bar: a labeled lavender pill */
+.g-back.g-home{width:auto;flex-shrink:0;display:flex;align-items:center;gap:6px;padding:0 14px 0 12px;border-radius:999px;background:#C4AEFF;color:#120C24;border-color:#C4AEFF;font-weight:800;font-size:14px}
+.g-back.g-home .ic{width:16px;height:16px}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -813,6 +822,8 @@ const CHANGELOG=[
   {v:'1.4',d:'2026-10-19',items:[
     'If you’ve told K what’s hardest, the home screen suggests where to start: one pick from K while you’re new, three to choose from after that. You can always type your own situation instead.',
     'The case of the day now comes from what you told K, not at random.',
+    'The Hub button in the top bar is now a clear lavender “Hub” pill.',
+    'Work with Kian: one tap to email him, from “Who is K?”, About, and after practice.',
     'New: 14 cases for starting out and moving up, plus “Ask a good question”, a quick drill in the Library.',
     'New: “Should I say yes?”, five quick questions before you agree to anything (in the Library).',
     'Disagreement cases and K’s coaching now follow Kian’s own approach: read the leverage, pick your moment, never let it happen twice.',
@@ -986,7 +997,7 @@ const IC={
 function ic(k,cls){return '<svg class="ic'+(cls?' '+cls:'')+'" viewBox="0 0 24 24" aria-hidden="true">'+(IC[k]||'')+'</svg>';}
 function kav(cls){return '<span class="kav'+(cls?' '+cls:'')+'"><img src="'+COACH_AVATAR+'" alt="K"></span>';}
 // Top bar. When back doesn't lead to the hub, a hub button sits at the right: one rule, one place.
-const HUB_BTN='<button class="g-back g-home" data-go="hub" aria-label="Hub"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg></button>';
+const HUB_BTN='<button class="g-back g-home" data-go="hub" aria-label="Hub"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg><span>Hub</span></button>';
 function gBar(title,back,dots){back=back||'hub';return '<div class="g-bar"><button class="g-back" data-go="'+back+'" aria-label="Back">'+ic('back')+'</button><h1>'+escHtml(title)+'</h1>'+(dots?'<div class="g-dots" aria-hidden="true">'+dots.map((_,i)=>'<i'+(dots[i]?' class="on"':'')+'></i>').join('')+'</div>':'')+(back!=='hub'?HUB_BTN:'')+'</div>';}
 function gDots(n,on){const a=[];for(let i=0;i<n;i++)a.push(i===on);return a;}
 function gCta(label,action,opts){opts=opts||{};return '<button class="g-cta'+(opts.sec?' sec':'')+'" data-act="'+action+'"'+(opts.disabled?' disabled':'')+(opts.style?' style="'+opts.style+'"':'')+'>'+escHtml(label)+'<span class="ar">'+ic(opts.icon||'arrow','s')+'</span></button>';}
@@ -2673,11 +2684,20 @@ const INTRO_SKILLS=[['Hold your price','p-teal'],['Disagree without a fight','p-
 let _introT=[];
 function _introClear(){_introT.forEach(clearTimeout);_introT=[];}
 // Who is K? Shown from the intro and from Settings › About
+// Work with Kian: email for now
+const KIAN_EMAIL='kian@kianhow.com';
+function workMailto(topic){
+  const p=_P(),bits=[_label(STAGES,p.stage),S.rwField].filter(Boolean).join(', ');
+  const body='Hi Kian,\n\nI’ve been using Ground and I’d like to work with you'+(topic?' on '+topic:'')+'.\n\nA bit about me: '+(bits||'')+'\n\nWhat I’d like help with:\n\n'+(p.name?'Thanks,\n'+p.name:'Thanks');
+  return 'mailto:'+KIAN_EMAIL+'?subject='+encodeURIComponent('Working with Kian (via Ground)')+'&body='+encodeURIComponent(body);
+}
+function workCardHtml(topic){return '<a class="work-card" href="'+escHtml(workMailto(topic))+'"><span class="wk-av">'+kav()+'</span><span><b>'+(topic?'Work on this with Kian':'Work with Kian')+'</b><small>Coaching and workshops. Send him an email.</small></span>'+ic('arrowne','s')+'</a>';}
 function openWhoIsK(){
   openSheet('<div class="g-k" style="align-items:center">'+kav('l')+'<div><div class="kick" style="margin:0">Who is K?</div><div class="g-h" style="font-size:24px;margin-top:2px">Your coach in Ground</div></div></div>'+
     '<p class="sub" style="font-size:15.5px;line-height:1.55;color:var(--ink)">K is modeled on <b>Kian How</b>, a creative entrepreneur with more than twenty years across music, creative work, coaching and business: in-house, freelance and his own ventures.</p>'+
     '<p class="sub" style="font-size:15.5px;line-height:1.55;color:var(--ink)">That means a lot of the conversations most people dread: pricing his work, being pushed for discounts, pitching, managing clients and teams, and coaching others through the same.</p>'+
     '<p class="sub" style="font-size:15.5px;line-height:1.55;color:var(--ink)">K coaches the way Kian does: honest about what isn’t working, warm about how to fix it, and always with one thing you can say next time.</p>'+
+    workCardHtml('')+
     '<button class="g-cta" data-close>Got it<span class="ar">'+ic('check','s')+'</span></button>');
 }
 function renderIntro(app){
@@ -2815,6 +2835,7 @@ function renderSettingsPage(app,sp){
     h+='<div class="card stack" style="gap:12px;align-items:flex-start">'+kav('l')+'<div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div><h2 class="h2" style="font-size:20px">Talk like you’ve done this for twenty years.</h2>'+
        '<p class="sub">I’m Kian How, a creative entrepreneur with more than twenty years across music, creative work, coaching and business. Ground coaches with my logic: know your lowest price, give only to get something back, stay warm and firm, and know when to walk away.</p>'+
        '<p class="sub">K is the coach inside the app. K speaks the way I do.</p></div>';
+    h+=workCardHtml('');
     h+='<div class="list"><button class="row" data-whatsnew><span class="rt"><b>What’s new</b></span><span class="rv">v'+APP_VERSION+'</span>'+ic('chev','s chev')+'</button></div>';
     h+='<p class="small" style="line-height:1.6">Your recordings and messages go to the AI services that transcribe and coach them. Your notebook and profile stay on your device unless you turn on sync, which stores an encrypted copy only your devices can read. For users 18 and older. Practice is practice: use your own judgment in the real conversation.</p>';
   }
@@ -3799,6 +3820,7 @@ function renderReal(app){
       if(RW.notes&&!/ai-err/.test(RW.notes)&&typeof RW.notes==='string'&&!_nbRetry(RW.notes))h+='<details class="convo"><summary>'+ic('book','s')+'K’s full notes</summary>'+renderKNotes(RW.notes)+'</details>';
       else if(RW.loading)h+='<p class="quiet">K’s notes are on their way…</p>';
     }
+    if(!RW.loading&&_nbEntries().length>=3)h+=workCardHtml((TT_REAL[RW.scenario]||{}).name?String(TT_REAL[RW.scenario].name).toLowerCase():'');
     h+='<details class="convo"><summary>'+ic('list','s')+'Show the conversation · '+RW.words+' words</summary><div class="thread">'+_rwxTurns().map(t=>'<div class="b-them">'+escHtml(t.q)+'</div><div class="b-me"><p>'+escHtml((t.a||'').trim()||'(no words caught)')+'</p><small>You · '+fmtMs((t.elapsed||0)*1000)+'</small></div>').join('')+'</div></details>';
     h+='<div class="push"></div>'+(_rwBetterHtml()?gCta('Do it better','better'):gCta('Run it again','again',{icon:'again'}));
   }else if(ph==='better'){
