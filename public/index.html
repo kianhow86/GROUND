@@ -861,6 +861,27 @@ html[data-theme="dark"] .c-start{--c:#A9D98E}html[data-theme="dark"] .c-career{-
 .nbk-hist summary .ic{margin-left:auto;transform:rotate(90deg);color:var(--ink-3);transition:transform .2s}
 .nbk-hist[open] summary .ic{transform:rotate(-90deg)}
 .nbk-hist[open]>*+*{margin-top:10px}
+/* Results: one screen, no page scroll. Each step scrolls inside itself only if it must. */
+.scr.rw-donescr{height:100dvh;min-height:0;overflow:hidden}
+.rw-donescr>*{flex-shrink:0}
+.rw-donescr .rw-slides{flex:1 1 0;min-height:0}
+.rw-donescr .rw-slide{overflow-y:auto;justify-content:flex-start;padding-top:4px}
+.rw-sbody{display:flex;flex-direction:column;gap:12px;margin:auto 0}
+.rw-end{display:flex;flex-direction:column;gap:6px;padding-top:12px}
+.rw-endlinks{display:flex;justify-content:center;gap:18px}
+.rw-endlinks .link{display:flex;align-items:center;gap:6px;min-height:44px;font-size:14px;font-weight:700;color:var(--ink-2)}
+.rw-donescr .rw-slide .g-card.tight .q{font-size:17px}
+.rw-donescr .rw-slide .g-card.tight .w{font-size:14.5px}
+.rw-donescr .rw-slide .g-card.tight .g-row{padding:11px 0}
+@media (max-height:740px){
+  .rw-donescr .rw-slide .g-card.tight .q{font-size:15px;line-height:1.3}
+  .rw-donescr .rw-slide .g-card.tight .w{font-size:13px;line-height:1.4}
+  .rw-donescr .rw-slide .g-card.tight .g-row{padding:8px 0}
+  .rw-donescr .rw-slide .case-line{font-size:19px}
+  .rw-verdict .rv-main{font-size:32px}.rw-verdict .rv-sub{font-size:19px}.rw-verdict .rv-say{font-size:15px;margin-top:12px}
+  .rw-donescr .rw-end{padding-top:6px}
+  .rw-donescr .work-card{padding:9px 12px}
+}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -900,6 +921,7 @@ const CHANGELOG=[
   {v:'1.4',d:'2026-10-19',items:[
     'If you’ve told K what’s hardest, the home screen suggests where to start: one pick from K while you’re new, three to choose from after that. You can always type your own situation instead.',
     'The case of the day now comes from what you told K, not at random.',
+    'Practice results fit on one screen: swipe through, and “Do it better” is on the last step.',
     'K’s notebook is now one simple read: your one thing right now, what’s getting better, and what keeps coming up. History folds away below.',
     'Before you reply: just paste and go. K works out who it is and what you need; details are optional.',
     'Practice types now say what happens in plain words, like “They want it cheaper”.',
@@ -3879,7 +3901,7 @@ function renderReal(app){
   const sc=TT_REAL[RW.scenario]||TT_REAL.bargain;
   if(!RW.goal){const g=(S.goals||[])[0];RW.goal=g&&RW_GOALS.find(x=>x.k===g)?g:'client';const gg=RW_GOALS.find(x=>x.k===RW.goal);if(!gg.items.includes(RW.scenario))RW.scenario=gg.items[0];}
   const ph=RW.phase;
-  let h='<main class="scr p-teal'+(ph==='turn'&&RW.mode==='live'?' g-call':'')+'">';
+  let h='<main class="scr p-teal'+(ph==='turn'&&RW.mode==='live'?' g-call':'')+(ph==='done'?' rw-donescr':'')+'">';
   const name=_rwName();
   if(ph==='setup'){
     const g=RW_GOALS.find(x=>x.k===RW.goal);
@@ -3939,19 +3961,23 @@ function renderReal(app){
         if(RW.fromCase&&RW.fromCase.k)slides.push({k:'How K would say it',h:'<div class="g-card case-k"><div class="g-k">'+kav()+'<b style="font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)">How K would say it'+(RW.fromCase.kWhen?' · '+escHtml(RW.fromCase.kWhen):'')+'</b></div><div class="case-line">'+escHtml(RW.fromCase.k)+'</div>'+(RW.fromCase.id?'<button class="link" style="margin-top:10px" data-act="rw-case">Why it works →</button>':'')+'</div>'+workCardHtml(topic)});
         else if(_rwBetterHtml())slides.push({k:'Try it this way',h:_rwBetterHtml()+workCardHtml(topic)});
       }
-      if(slides.length>1)h+='<div class="rw-slides" id="rw-slides">'+slides.map((s,i)=>'<section class="rw-slide"><div class="rw-step">'+(i+1)+' of '+slides.length+' · '+escHtml(s.k)+'</div>'+s.h+'</section>').join('')+'</div><div class="rw-nav"><div class="rw-sdots">'+slides.map((_,i)=>'<i'+(i?'':' class="on"')+'></i>').join('')+'</div><button class="rw-next" data-act="rw-next">Next'+ic('arrow','s')+'</button></div>';
-      else if(slides.length)h+=slides[0].h;
-      if(!RW.decision&&!RW.review&&!RW.loading){h+=RW.notes&&/ai-err/.test(RW.notes)?RW.notes:'<div class="g-card"><div class="g-q">'+(RW.words<12?'I didn’t catch enough to judge that one.':'No verdict this time.')+'</div><p class="sub">'+(RW.words<12?'Say a few full sentences and I’ll tell you how it landed.':'But K’s notes are below.')+'</p></div>';}
-      if(RW.notes&&!/ai-err/.test(RW.notes)&&typeof RW.notes==='string'&&!_nbRetry(RW.notes))h+='<details class="convo"><summary>'+ic('book','s')+'K’s full notes</summary>'+renderKNotes(RW.notes)+'</details>';
-      else if(RW.loading)h+='<p class="quiet">K’s notes are on their way…</p>';
+      const lastIsBetter=slides.length&&slides[slides.length-1].k==='Try it this way';
+      const notesOk=RW.notes&&!/ai-err/.test(RW.notes)&&typeof RW.notes==='string'&&!_nbRetry(RW.notes);
+      const endCta=(!lastIsBetter&&_rwBetterHtml()?gCta('Do it better','better'):gCta('Run it again','again',{icon:'again'}))+
+        '<div class="rw-endlinks">'+(notesOk||_rwxTurns().length?'<button class="link" data-act="rw-notes">'+ic('book','s')+'K’s full notes</button>':'')+(!lastIsBetter&&_rwBetterHtml()?'<button class="link" data-act="again">Run it again</button>':'')+'</div>';
+      if(slides.length>1){
+        h+='<div class="rw-slides" id="rw-slides">'+slides.map((s,i)=>'<section class="rw-slide"><div class="rw-step">'+(i+1)+' of '+slides.length+' · '+escHtml(s.k)+'</div><div class="rw-sbody">'+s.h+'</div>'+(i===slides.length-1?'<div class="rw-end">'+endCta+'</div>':'')+'</section>').join('')+'</div>';
+        h+='<div class="rw-nav"><div class="rw-sdots">'+slides.map((_,i)=>'<i'+(i?'':' class="on"')+'></i>').join('')+'</div><button class="rw-next" data-act="rw-next">Next'+ic('arrow','s')+'</button></div>';
+      }else{
+        if(slides.length)h+=slides[0].h;
+        if(!RW.decision&&!RW.review&&!RW.loading){h+=RW.notes&&/ai-err/.test(RW.notes)?RW.notes:'<div class="g-card"><div class="g-q">'+(RW.words<12?'I didn’t catch enough to judge that one.':'No verdict this time.')+'</div><p class="sub">'+(RW.words<12?'Say a few full sentences and I’ll tell you how it landed.':'Open K’s full notes for the details.')+'</p></div>';}
+        if(RW.loading)h+='<p class="quiet">K’s notes are on their way…</p>';
+        h+='<div class="push"></div>'+endCta;
+      }
     }
-    h+='<details class="convo"><summary>'+ic('list','s')+'Show the conversation · '+RW.words+' words</summary><div class="thread">'+_rwxTurns().map(t=>'<div class="b-them">'+escHtml(t.q)+'</div><div class="b-me"><p>'+escHtml((t.a||'').trim()||'(no words caught)')+'</p><small>You · '+fmtMs((t.elapsed||0)*1000)+'</small></div>').join('')+'</div></details>';
-    h+='<div class="push"></div>'+(_rwBetterHtml()?gCta('Do it better','better'):gCta('Run it again','again',{icon:'again'}));
   }else if(ph==='better'){
     h+=gBar('Do it better','rw-done',_rwDots());
     h+=_rwBetterHtml();
-    const st=_streak();
-    h+='<div class="v3-strip"><span class="n">'+st+'</span><span class="v3-st"><b>day streak</b><span>Saved to K’s notebook.</span></span></div>';
     h+='<div class="push"></div>'+gCta('Run it again','again',{icon:'again'})+(_rwIsClient()?'<button class="g-ghost" data-act="tougher">Same client, but tougher</button>':'<button class="g-ghost" data-act="new">New scenario</button>');
   }
   h+='</main>';
@@ -3973,6 +3999,8 @@ function renderReal(app){
   on('[data-act="end"]',async()=>{speakStop();if(RW.rec){await rwStopRec();return;}if(RW.convo.length)_rwFinish();else{RW.phase='brief';render();}});
   on('[data-act="mode-type"]',async()=>{if(RW.rec)await recStop();RW.rec=false;speakStop();RW.mode='type';render();});
   on('[data-act="better"]',()=>{RW.phase='better';render();});
+  on('[data-act="rw-notes"]',()=>{const notesOk=RW.notes&&!/ai-err/.test(RW.notes)&&typeof RW.notes==='string'&&!_nbRetry(RW.notes);
+    openSheet('<div class="kick" style="margin:0">K’s full notes</div>'+(notesOk?renderKNotes(RW.notes):'<p class="sub">No notes this time.</p>')+'<div class="kick" style="margin:6px 0 0">The conversation · '+RW.words+' words</div><div class="thread">'+_rwxTurns().map(t=>'<div class="b-them">'+escHtml(t.q)+'</div><div class="b-me"><p>'+escHtml((t.a||'').trim()||'(no words caught)')+'</p><small>You · '+fmtMs((t.elapsed||0)*1000)+'</small></div>').join('')+'</div><button class="g-cta" data-close>Close<span class="ar">'+ic('check','s')+'</span></button>');});
   const sl=document.getElementById('rw-slides');
   if(sl){const dots=[...document.querySelectorAll('.rw-sdots i')],nx=document.querySelector('[data-act="rw-next"]');
     const cur=()=>Math.round(sl.scrollLeft/sl.clientWidth);
