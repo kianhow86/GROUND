@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════════════
 // /.netlify/functions/transcribe — audio in (webm/mp4), transcript out.
-// Used when the browser's own captions caught little. OpenAI Whisper by default;
+// The main transcript for every recording (handles street noise far better than live captions). gpt-4o-mini-transcribe, falling back to whisper-1;
 // set TRANSCRIBE_PROVIDER=none to turn it off (the app then keeps the captions).
 // Headers: X-Client-Token (device), X-Lang (auto|en|zh|…) as a hint.
 // ═══════════════════════════════════════════════════════════════════════════
@@ -21,12 +21,14 @@ exports.handler = async (event) => {
     const lang = (event.headers["x-lang"] || "auto").toLowerCase();
     const fd = new FormData();
     fd.append("file", new Blob([buf], { type: mime }), "answer." + ext);
-    fd.append("model", "whisper-1");
+    const model = process.env.TRANSCRIBE_MODEL || "gpt-4o-mini-transcribe"; // better than whisper-1 in noisy places
+    fd.append("model", model);
     fd.append("response_format", "json");
     // Steer numbers: "six thousand five" means 6,500, not 6005
     fd.append("prompt", "Prices are written in figures: 6,500, 8,000, 12,500, 3.5k. Six thousand five means 6,500.");
     if (lang && lang !== "auto") fd.append("language", lang.split("-")[0] === "yue" ? "zh" : lang.split("-")[0]);
-    const r = await fetch("https://api.openai.com/v1/audio/transcriptions", { method: "POST", headers: { Authorization: "Bearer " + key }, body: fd });
+    let r = await fetch("https://api.openai.com/v1/audio/transcriptions", { method: "POST", headers: { Authorization: "Bearer " + key }, body: fd });
+    if (!r.ok && model !== "whisper-1") { fd.set("model", "whisper-1"); r = await fetch("https://api.openai.com/v1/audio/transcriptions", { method: "POST", headers: { Authorization: "Bearer " + key }, body: fd }); }
     const text = await r.text();
     if (!r.ok) return { statusCode: 502, headers: h, body: JSON.stringify({ error: "whisper_" + r.status, detail: text.slice(0, 200) }) };
     const j = JSON.parse(text);

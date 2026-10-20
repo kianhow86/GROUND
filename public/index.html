@@ -990,6 +990,8 @@ const CHANGELOG=[
   {v:'1.4',d:'2026-10-19',items:[
     'If you’ve told K what’s hardest, the home screen suggests where to start: one pick from K while you’re new, three to choose from after that. You can always type your own situation instead.',
     'The case of the day now comes from what you told K, not at random.',
+    'Home suggestions change every day and after every session, so you don’t see the same one twice.',
+    'Speaking works better outdoors: every answer is transcribed on the server, with noise suppression on the mic.',
     'Everything fits on one screen: the Library, K’s advice, your profile and more. Details open in pop-ups.',
     'No time limits: Quick answer has no countdown, and practice has no target length. Each question now says who’s asking and where.',
     'Practice results fit on one screen: swipe through, and “Do it better” is on the last step.',
@@ -1994,7 +1996,7 @@ async function recStart(opts){
   let stream=null;
   if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){
     try{
-      stream=await navigator.mediaDevices.getUserMedia({audio:true});
+      try{stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true,channelCount:1}});}catch(_){stream=await navigator.mediaDevices.getUserMedia({audio:true});}
       REC.stream=stream;REC.micOk=true;
       try{const mime=MediaRecorder.isTypeSupported('audio/webm')?'audio/webm':'audio/mp4';const mr=new MediaRecorder(stream,{mimeType:mime});mr.ondataavailable=e=>{if(e.data&&e.data.size>0)REC.chunks.push(e.data);};mr.start(1000);REC.mr=mr;REC.mime=mr.mimeType||mime;}
       catch(e){try{const mr=new MediaRecorder(stream);mr.ondataavailable=e=>{if(e.data&&e.data.size>0)REC.chunks.push(e.data);};mr.start(1000);REC.mr=mr;REC.mime=mr.mimeType||'audio/webm';}catch(e2){}}
@@ -2042,7 +2044,8 @@ function recStop(){
 }
 // If live captions caught little, send the recording to the server (Whisper)
 async function recWhisper(r){
-  if(!r||!r.blob||r.blob.size<5000||(r.transcript&&r.transcript.length>=20)||!_aiOn())return r;
+  // Always prefer the server transcript when we have the recording: it copes far better with street noise than the phone's live captions
+  if(!r||!r.blob||r.blob.size<5000||!_aiOn())return r;
   const cfg=S.aiConfig||{};
   const endpoint=(cfg.endpoint||'/.netlify/functions/ai').replace(/\/ai$/,'/transcribe');
   try{const res=await fetch(endpoint,{method:'POST',headers:_aiHeaders({'content-type':r.blob.type||'audio/webm','x-lang':_coachLang().id}),body:r.blob});
@@ -3281,13 +3284,22 @@ function _sugPick(offset){
   const ks=_sugKeys();const d=new Date();const n=d.getFullYear()*400+d.getMonth()*31+d.getDate()+(offset||0)+_sessionsDone();
   return ks[n%ks.length];
 }
+const SUG_QA={money:'client',no:'work',interview:'job',intro:'people',smalltalk:'people',meetings:'work',difficult:'work',nerves:'work',present:'work'};
+function _sugRot(list,n,skip){const l=list.filter(Boolean);if(!l.length)return null;const fresh=l.filter(x=>!skip(x));const pool=fresh.length?fresh:l;return pool[n%pool.length];}
 function _sugItems(){
+  // Rotate: a different practice, case and question each day and after each session, skipping what's already done
   const k=_sugPick(0),k2=_sugKeys().length>1?_sugPick(1):k,m=SUG_MAP[k],m2=SUG_MAP[k2];
-  const pc=_case(m.practice),rc=_case(m2.read);
+  const d=new Date(),n=d.getFullYear()*400+d.getMonth()*31+d.getDate()+_sessionsDone();
+  const done=_casesDone(),seen=_casesSeen();
+  const pc=_sugRot([m.practice].concat(m.cases).filter((x,i,a)=>a.indexOf(x)===i).map(_case).filter(c=>c&&c.practice),n,c=>done[c.id]);
+  const rc=_sugRot([m2.read].concat(m2.cases).filter((x,i,a)=>a.indexOf(x)===i).map(_case).filter(c=>c&&(!pc||c.id!==pc.id)),n+1,c=>seen[c.id]||done[c.id]);
+  const seenQ=new Set(typeof _ttSeenList==='function'?_ttSeenList():[]);
+  const qg=(typeof QA_BANK!=='undefined'&&QA_BANK[SUG_QA[k]])?QA_BANK[SUG_QA[k]].map(x=>x[1]):[];
+  const qq=_sugRot([m.quick].concat(qg),n,q=>seenQ.has(q))||m.quick;
   return [
-    {kind:'practice',key:k,t:'Practice: '+_sugLower(pc?pc.title:'a real conversation'),s:(pc&&TT_REAL[pc.practice.scen]?TT_REAL[pc.practice.scen].name:'Practice'),ic:'mic',p:'p-teal',caseId:m.practice},
-    {kind:'read',key:k2,t:'Read: '+_sugLower(rc?rc.title:'a case'),s:_cap(m2.t),ic:'book',p:'p-lav',caseId:m2.read},
-    {kind:'quick',key:k,t:'Quick answer: “'+_kShort(m.quick,40)+'”',s:'Answer it on the spot',ic:'quick',p:'p-pink',q:m.quick}
+    {kind:'practice',key:k,t:'Practice: '+_sugLower(pc?pc.title:'a real conversation'),s:(pc&&TT_REAL[pc.practice.scen]?TT_REAL[pc.practice.scen].name:'Practice'),ic:'mic',p:'p-teal',caseId:pc?pc.id:m.practice},
+    {kind:'read',key:k2,t:'Read: '+_sugLower(rc?rc.title:'a case'),s:_cap(m2.t),ic:'book',p:'p-lav',caseId:rc?rc.id:m2.read},
+    {kind:'quick',key:k,t:'Quick answer: “'+_kShort(qq,40)+'”',s:'Answer it on the spot',ic:'quick',p:'p-pink',q:qq}
   ];
 }
 function _sugLower(t){t=String(t||'');return /^[“"]/.test(t)?t:t.charAt(0).toLowerCase()+t.slice(1);}
@@ -3322,7 +3334,7 @@ function wireDeskBox(app){
     const it=_sugItems()[+b.dataset.sug];if(!it)return;_track((b.dataset.v==='B'?'sugB':'sugA')+'_tap');
     if(it.kind==='practice'){const c=_case(it.caseId);if(c){caseToPractice(c);return;}go('real');return;}
     if(it.kind==='read'){openCase(it.caseId);return;}
-    if(it.kind==='quick'){QA.q=it.q;QA.goal=null;QA.phase='q';QA.take=null;QA.notes=null;QA.strong=null;go('quick');}
+    if(it.kind==='quick'){QA.q=it.q;let cx='',gk=null;Object.keys(QA_BANK).forEach(g=>QA_BANK[g].forEach(x=>{if(x[1]===it.q){cx=x[0];gk=g;}}));QA.ctx=cx;QA.goal=gk;QA.phase='q';QA.take=null;QA.notes=null;QA.strong=null;go('quick');}
   }));
   const se=app.querySelector('[data-act="sug-else"]');if(se)se.addEventListener('click',()=>{_track('sugB_else');S.deskBMissDay=_today();save();render();}); // B didn't fit: three picks (A) for today
   const st=app.querySelector('[data-act="sug-type"]');if(st)st.addEventListener('click',()=>{_track('sug_type');S.deskTypeDay=_today();save();render();setTimeout(()=>{const t=document.getElementById('desk-text');if(t)t.focus();},60);});
