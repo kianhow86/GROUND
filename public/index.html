@@ -840,6 +840,27 @@ html[data-theme="dark"] .c-start{--c:#A9D98E}html[data-theme="dark"] .c-career{-
 .sug-row small,.yc-entry small,.work-card small{font-size:13px}
 .lib-t>span,.nb-rt>span{font-size:13.5px}
 .qa-line{font-size:clamp(28px,min(9vw,4.8vh),42px);line-height:1.15}
+/* K's notebook: one living read, history folded */
+.nbk-meta{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--ink-2)}
+.nbk-hero{display:flex;flex-direction:column;gap:10px;padding:22px 20px}
+.nbk-name{font-size:28px;font-weight:900;letter-spacing:-.025em;line-height:1.12}
+.nbk-why{font-size:15.5px;line-height:1.45;font-weight:500;opacity:.85}
+.nbk-next{font-size:16px;line-height:1.45;font-weight:600;background:rgba(0,0,0,.08);border-radius:14px;padding:12px 14px}
+.nbk-next b{display:block;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;opacity:.7;margin-bottom:4px}
+.nbk-go{align-self:flex-start;display:flex;align-items:center;gap:8px;margin-top:4px;padding:12px 18px;border-radius:999px;background:#141A21;color:#fff;font-weight:800;font-size:15px;min-height:44px}
+.nbk-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.nbk-pair>.nbk-mini:only-child{grid-column:1/-1}
+.nbk-mini{display:flex;flex-direction:column;gap:6px;padding:14px}
+.nbk-mini b{font-size:15px;line-height:1.3}
+.nbk-tag{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.nbk-tag.up{color:#3D8B3D}html[data-theme="dark"] .nbk-tag.up{color:#A9D98E}
+.nbk-hist{display:flex;flex-direction:column;gap:12px}
+.nbk-hist summary{list-style:none;display:flex;align-items:center;gap:8px;min-height:48px;padding:0 4px;cursor:pointer;border-top:1px solid var(--line)}
+.nbk-hist summary::-webkit-details-marker{display:none}
+.nbk-hist summary b{font-size:16px}.nbk-hist summary span{font-size:14px;color:var(--ink-3);font-weight:700}
+.nbk-hist summary .ic{margin-left:auto;transform:rotate(90deg);color:var(--ink-3);transition:transform .2s}
+.nbk-hist[open] summary .ic{transform:rotate(-90deg)}
+.nbk-hist[open]>*+*{margin-top:10px}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -879,6 +900,7 @@ const CHANGELOG=[
   {v:'1.4',d:'2026-10-19',items:[
     'If you’ve told K what’s hardest, the home screen suggests where to start: one pick from K while you’re new, three to choose from after that. You can always type your own situation instead.',
     'The case of the day now comes from what you told K, not at random.',
+    'K’s notebook is now one simple read: your one thing right now, what’s getting better, and what keeps coming up. History folds away below.',
     'Before you reply: just paste and go. K works out who it is and what you need; details are optional.',
     'Practice types now say what happens in plain words, like “They want it cheaper”.',
     'Practice is clearer: every scene is explained in plain words, and the other person’s first line says what they actually want.',
@@ -1397,7 +1419,7 @@ const NB_CAT_NAME={reply:'Before you reply',real:'Practice a talk',pitch:'Pitch 
 const NB_CAT_ONE={reply:'reply',real:'practice',pitch:'pitch',quick:'quick answer'};
 const NB_CAT_P={reply:'p-lav',real:'p-teal',pitch:'p-org',quick:'p-pink'};
 const NB_CAT_IC={reply:'reply',real:'talk',pitch:'pitch',quick:'quick'};
-const NB_MAX=150,NB_FIRST_NOTE=3,NB_NOTE_EVERY=5;
+const NB_MAX=150,NB_FIRST_NOTE=2,NB_NOTE_EVERY=2;
 const NB_TAGS=[
   ['question','Drifting off the question',/\b(the question|on the question|literal|what (?:was|they) asked|asked about)\b|wander|tangent|drift/i],
   ['thread','One clear point',/\b(one (?:idea|point|message|thread)|too many|commit to|focus on one|main point|key message)\b/i],
@@ -1477,12 +1499,12 @@ async function _nbMaybeNote(force){
   try{
     const list=all.slice(0,10).map(e=>{const ot=_nbOnTime(e);return '- '+_nbAgo(e.iso)+' · '+NB_CAT_NAME[e.cat]+(e.sub?' ('+e.sub+')':'')+(e.elapsed?' · '+fmtMs(e.elapsed*1000)+(ot===null?'':ot?' on time':' off target'):'')+(e.cat==='reply'?'\n  asked you to draft a reply to: "'+_kShort(e.title,120)+'"':(e.worked?'\n  worked: '+_kShort(e.worked,150):'')+(e.fix?'\n  one thing: '+_kShort(e.fix,170):''));}).join('\n');
     const prev=last&&last.habits?'\nHabits you named last time: '+last.habits.map(h=>h.name).join('; '):'';
-    const sys=K_VOICE+"\nYou keep a notebook on one person. Read their recent sessions (newest first) and write a short, organized note.\n"+K_PLAIN+"\nHelp me reply entries are messages they needed help answering, not their own performance: use them only to see which situations keep coming up (being pushed on price, saying no, a difficult boss) and connect that to what they practice.\nPick at most two habits that keep coming up and matter most now. For each habit give:\n- name: an instruction that starts with a verb, 3–6 plain words, e.g. \"Say your price, then stop\", \"Start with your example\", \"Ask before you agree\". Never a vague label.\n- trend: \"up\" if clearly getting better, \"flat\" if it keeps coming back, \"new\" if it only just appeared. Keep a habit from last time if it still applies, so progress is visible.\n- why: one sentence on what you saw, with one specific detail from their sessions.\n- next: one sentence with a concrete action for the next session. If useful, give the exact words they could say.\nReply with JSON only: {\"habits\":[{\"name\":\"…\",\"trend\":\"up|flat|new\",\"why\":\"…\",\"next\":\"…\"}]}";
+    const sys=K_VOICE+"\nYou keep a notebook on one person. Read their recent sessions (newest first) and write a short, organized note.\n"+K_PLAIN+"\nHelp me reply entries are messages they needed help answering, not their own performance: use them only to see which situations keep coming up (being pushed on price, saying no, a difficult boss) and connect that to what they practice.\nPick at most two habits that keep coming up and matter most now. For each habit give:\n- name: an instruction that starts with a verb, 3–6 plain words, e.g. \"Say your price, then stop\", \"Start with your example\", \"Ask before you agree\". Never a vague label.\n- trend: \"up\" if clearly getting better, \"flat\" if it keeps coming back, \"new\" if it only just appeared. Keep a habit from last time if it still applies, so progress is visible.\n- why: one sentence on what you saw, with one specific detail from their sessions.\n- next: one sentence with a concrete action for the next session. If useful, give the exact words they could say.\nKeep every field short: the reader is busy. why under 16 words, next under 22 words. Put the habit that matters most right now first.\nAlso give: practice = the one practice type that would help most with the first habit, exactly one of: interview, pitch, intro, smalltalk, meeting, tough, disagree, conflict, feedback, sayno, proposal, bargain, difficult, ground; pattern = the situation that keeps coming up in their sessions and messages, under 10 words (empty if nothing repeats).\nReply with JSON only: {\"habits\":[{\"name\":\"…\",\"trend\":\"up|flat|new\",\"why\":\"…\",\"next\":\"…\"}],\"practice\":\"…\",\"pattern\":\"…\"}";
     const raw=await callCoach(sys,'SESSIONS:\n'+list+prev,{maxTokens:520,featureId:'nb-note'});
     const j=_jsonFrom(raw);
     const habits=(j&&Array.isArray(j.habits)?j.habits:[]).filter(h=>h&&h.name&&h.next).slice(0,2).map(h=>({name:String(h.name).replace(/\.$/,'').slice(0,60),trend:/^(up|flat|new)$/.test(h.trend)?h.trend:'new',why:String(h.why||'').slice(0,240),next:String(h.next).slice(0,240)}));
     if(!habits.length)throw new Error('no habits');
-    nb.notes.unshift({iso:new Date().toISOString(),v:2,habits,note:habits.map(h=>h.next).join(' '),n:all.length});
+    nb.notes.unshift({iso:new Date().toISOString(),v:3,practice:(typeof TT_REAL!=='undefined'&&TT_REAL[j.practice])?j.practice:'',pattern:String(j.pattern||'').slice(0,80),habits,note:habits.map(h=>h.next).join(' '),n:all.length});
     nb.notes=nb.notes.slice(0,12);nb.unseen=true;save();
     if(V.view==='hub'||V.view==='notebook')render();
   }catch(err){}
@@ -1535,22 +1557,32 @@ function renderNotebook(app){
   const list=_nbEntries(tab);
   const note=_nbNote();
   let h='<main class="scr"><div class="g-bar"><button class="g-back" data-go="hub" aria-label="Back">'+ic('back')+'</button><h1>K’s notebook</h1><button class="g-back" data-act="nb-more" aria-label="More">'+ic('list')+'</button></div>';
-  /* no streak card */
-  h+=_lastTile();
+  /* K's read: one window K keeps updating. Short, actionable. History folds away below. */
+  const all=_nbEntries();
   if(note&&note.habits&&note.habits.length){
-    h+='<div class="g-card tight"><div class="g-row"><span class="t"><b>What K is watching</b><span>Written after your last '+note.n+' sessions · '+_nbRel(note.iso)+'</span></span></div>';
-    note.habits.forEach(x=>{h+='<div class="nb-habit"><span class="tr '+x.trend+'">'+(x.trend==='up'?'Improving':x.trend==='flat'?'Still here':'New')+'</span><div><b>'+escHtml(x.name)+'</b><span>'+escHtml(x.why)+'</span><span style="color:var(--ink);margin-top:4px"><b style="display:inline;font-size:12.5px">Next:</b> '+escHtml(x.next)+'</span></div></div>';});
-    h+='</div>';
+    const focus=note.habits.find(x=>x.trend!=='up')||note.habits[0],better=note.habits.find(x=>x.trend==='up'&&x!==focus);
+    h+='<div class="nbk-meta">'+kav('xs')+'<span>K’s read on you · updated '+escHtml(_nbRel(note.iso).toLowerCase())+'</span></div>';
+    h+='<div class="g-block p-lav nbk-hero"><div class="g-kick">Your one thing right now</div><div class="nbk-name">'+escHtml(focus.name)+'</div>'+(focus.why?'<p class="nbk-why">'+escHtml(focus.why)+'</p>':'')+(focus.next?'<div class="nbk-next"><b>Next time</b>'+escHtml(focus.next)+'</div>':'')+(note.practice?'<button class="nbk-go" data-act="nbk-practice">Practice it now'+ic('arrow','s')+'</button>':'')+'</div>';
+    if(better||note.pattern)h+='<div class="nbk-pair">'+(better?'<div class="g-card nbk-mini"><span class="nbk-tag up">Getting better</span><b>'+escHtml(better.name)+'</b></div>':'')+(note.pattern?'<div class="g-card nbk-mini"><span class="nbk-tag">Keeps coming up</span><b>'+escHtml(note.pattern)+'</b></div>':'')+'</div>';
+  }else if(all.length){
+    h+='<div class="nbk-meta">'+kav('xs')+'<span>K writes your full read after '+NB_FIRST_NOTE+' sessions. For now:</span></div>'+_lastTile();
+  }else{
+    h+='<div class="g-block p-lav nbk-hero"><div class="g-kick">Your notebook</div><div class="nbk-name">Nothing here yet.</div><p class="nbk-why">Do a practice. K reads every session and keeps one simple plan for you here.</p><button class="nbk-go" data-go="real">Start a practice'+ic('arrow','s')+'</button></div>';
   }
+  if(all.length){
+  h+='<details class="nbk-hist"'+(V.nbHist?' open':'')+'><summary><b>All sessions</b><span>'+all.length+'</span>'+ic('chev','s')+'</summary>';
   h+='<div class="g-chips">'+NB_CATS.map(c=>'<button class="g-chip'+(tab===c[0]?' on':'')+'" data-nbtab="'+c[0]+'">'+c[1]+'</button>').join('')+'</div>';
   if(!list.length)h+='<div class="empty">'+kav('xs')+'<p><b>Nothing here yet.</b> Every reply, practice, pitch and quick answer lands in this notebook, and I read it before I coach you next time.</p></div>';
   else{
     const groups=new Map();list.forEach(e=>{const k=_nbRel(e.iso);if(!groups.has(k))groups.set(k,[]);groups.get(k).push(e);});
     groups.forEach((arr,k)=>{h+='<div class="sect">'+escHtml(k)+'</div><div class="g-card tight">'+arr.map(e=>'<button class="nb-row" data-nbopen="'+e.id+'"><span class="nb-ic '+(NB_CAT_P[e.cat]||'')+'">'+ic(NB_CAT_IC[e.cat]||'talk','s')+'</span><span class="nb-rt"><b>'+escHtml(_kShort(e.sub&&e.sub!==e.title?e.sub+' · '+e.title:e.title,60))+'</b><span>'+escHtml(_kShort(e.fix||e.worked||'',110))+'</span></span><span class="nb-rd">'+new Date(e.iso).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})+'</span></button>').join('')+'</div>';});
   }
+  h+='</details>';}
   h+='<p class="quiet push">'+(_nbOn()?'K remembers these when coaching you.':'Memory is off. K coaches each session on its own.')+'</p></main>';
   app.innerHTML=h;_wireLastTile(app,'notebook');
-  app.querySelectorAll('[data-nbtab]').forEach(b=>b.addEventListener('click',()=>{V.nbTab=b.dataset.nbtab;render();}));
+  app.querySelectorAll('[data-nbtab]').forEach(b=>b.addEventListener('click',()=>{V.nbTab=b.dataset.nbtab;V.nbHist=true;render();}));
+  const hd=app.querySelector('.nbk-hist');if(hd)hd.addEventListener('toggle',()=>{V.nbHist=hd.open;});
+  const np=app.querySelector('[data-act="nbk-practice"]');if(np)np.addEventListener('click',()=>{const k=(_nbNote()||{}).practice;if(!k||!TT_REAL[k])return;RW.scenario=k;RW.goal=_rwGoalOf(k).k;RW.fromCase=null;_rwResetConvo();RW.question='';RW.phase='setup';go('real');});
   app.querySelectorAll('[data-nbopen]').forEach(b=>b.addEventListener('click',()=>{V.nbId=b.dataset.nbopen;V._back='notebook';go('nb-entry');}));
   app.querySelector('[data-act="nb-more"]').addEventListener('click',()=>{
     openSheet('<h2 class="h2">Notebook</h2><div class="stack">'+
