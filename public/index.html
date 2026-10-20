@@ -951,6 +951,27 @@ html[data-theme="dark"] .c-start{--c:#A9D98E}html[data-theme="dark"] .c-career{-
 .qa-tip b{display:block;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
 @media (max-height:700px){.about-wm{display:none}.g-block .g-draft{margin-top:6px}.qa-tip{margin-top:12px;font-size:14px}}
 @media (max-height:700px){.work-card small{display:none}.work-card{padding:10px 12px}}
+/* Practice setup: the principle, plus the trap most people fall into (not the answer) */
+.rw-trap{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:4px}
+.rw-trap b{font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.rw-trap span{font-size:15px;line-height:1.45;color:var(--ink)}
+.rw-trap .rw-why{font-size:14px;color:var(--ink-2)}
+@media (max-height:740px){.rw-trap .rw-why{display:none}}
+@media (max-height:600px){.rw-trap{display:none}}
+@media (max-height:740px){.rw-tip.cl .rw-trap{display:none}}
+/* Practice setup: Do / Don't */
+.rw-dodont{display:flex;flex-direction:column;gap:0;padding:4px 16px}
+.rw-dodont .dd{display:grid;grid-template-columns:64px 1fr;gap:10px;align-items:baseline;padding:12px 0}
+.rw-dodont .dd+.dd{border-top:1px solid var(--line)}
+.rw-dodont .dd b{font-size:12.5px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.rw-dodont .do b{color:#3D8B3D}html[data-theme="dark"] .rw-dodont .do b{color:#A9D98E}
+.rw-dodont .dont b{color:#C2365B}html[data-theme="dark"] .rw-dodont .dont b{color:#F6A8C8}
+.rw-dodont .dd span{font-size:15.5px;font-weight:700;line-height:1.4;color:var(--ink)}
+.rw-dodont .dont span{font-weight:600;color:var(--ink-2)}
+@media (max-height:700px){.rw-dodont .dd{padding:8px 0}.rw-dodont .dd span{font-size:14px}}
+.rw-secret{padding:12px 16px}
+.rw-who{line-height:1.5}
+@media (max-height:700px){.rw-secret .sub{display:none}.rw-secret{padding:9px 14px}.rw-scene{font-size:15.5px}}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -990,6 +1011,7 @@ const CHANGELOG=[
   {v:'1.4',d:'2026-10-19',items:[
     'If you’ve told K what’s hardest, the home screen suggests where to start: one pick from K while you’re new, three to choose from after that. You can always type your own situation instead.',
     'The case of the day now comes from what you told K, not at random.',
+    'Before you practice, a simple Do and Don’t: the principle, and the trap most people fall into.',
     'Home suggestions change every day and after every session, so you don’t see the same one twice.',
     'Speaking works better outdoors: every answer is transcribed on the server, with noise suppression on the mic.',
     'Everything fits on one screen: the Library, K’s advice, your profile and more. Details open in pop-ups.',
@@ -2555,7 +2577,7 @@ function openCase(id){const c=_case(id);if(!c)return;_casesSeen()[c.id]=new Date
 function caseToPractice(c){
   const p=c.practice||{};const k=TT_REAL[p.scen]?p.scen:'conflict';
   RW.scenario=k;RW.goal=_rwGoalOf(k).k;RW.tougher=false;_rwResetConvo();
-  RW.question=p.line||'';RW.source='case';RW.prevFix='';RW.fromReply=null;RW.fromCase={id:c.id,title:c.title,principle:c.principle,k:c.k,kWhen:c.kWhen||'',feel:c.feel||''};
+  RW.question=p.line||'';RW.source='case';RW.prevFix='';RW.fromReply=null;RW.fromCase={id:c.id,title:c.title,principle:c.principle,k:c.k,kWhen:c.kWhen||'',feel:c.feel||'',most:c.most||'',fails:c.fails||''};
   _rwCast(_rwIsClient(k)?{c:p.who,scene:p.scene||'',job:p.job||p.moment,pos:('pos' in p)?p.pos:(S.rwPrice?S.rwPrice+(S.rwLowest?'. Lowest you’ll accept: '+S.rwLowest:''):'Your usual price')}:{who:p.who,moment:p.moment,role:p.role||'',scene:p.scene||''});
   RW.phase=RW.question?'brief':'setup';
   _casesDone()[c.id]=new Date().toISOString();save();
@@ -4026,15 +4048,15 @@ function renderReal(app){
     h+=gBar(sc.name,'rw-setup',_rwDots());
     {const cap=s=>String(s||'').replace(/^./,c=>c.toUpperCase());
      const big=b?(b.c?b.c.replace(' · ',', ')+'. '+cap(RW.persona)+'.':b.who.replace(' · ',', ')):(RW_ROLE[RW.scenario]||'The other person')+(RW.persona?'. '+cap(RW.persona)+'.':'');
-     if(b&&b.scene)h+='<div class="g-block"><div class="g-kick">The scene</div><p class="rw-scene">'+_sting(b.scene)+'</p>'+(RW.fromCase&&RW.fromCase.feel?'<p class="case-feel">'+escHtml(RW.fromCase.feel)+'</p>':'')+'<div class="rw-who">You’re talking to: <b>'+escHtml(String(b.who||b.c).split(' · ')[0])+'</b></div></div>';
+     if(b&&b.scene)h+='<div class="g-block"><div class="g-kick">The scene</div><p class="rw-scene">'+_sting(b.scene)+'</p>'+(RW.fromCase&&RW.fromCase.feel?'<p class="case-feel">'+escHtml(RW.fromCase.feel)+'</p>':'')+'<div class="rw-who">You’re talking to: <b>'+escHtml(String(b.who||b.c).split(' · ')[0])+'</b>'+(b.c&&b.pos?'<br>'+escHtml(RW_POS_LBL[RW.scenario]||'Your position')+': <b>'+escHtml(b.pos)+'</b>':'')+'</div></div>';
      else h+='<div class="g-block"><div class="g-kick">Who you’re talking to</div><div class="g-big">'+escHtml(big)+'</div>'+(b&&b.who&&b.moment?'<p style="margin-top:8px;font-size:16px;line-height:1.45;font-weight:600">'+_sting(b.moment)+'</p>'+(RW.fromCase&&RW.fromCase.feel?'<p class="case-feel">'+escHtml(RW.fromCase.feel)+'</p>':''):'')+'</div>';
      if(RW_AIM[RW.scenario]&&!(b&&b.c)&&!RW.fromCase)h+='<div class="g-card tight"><div class="g-row top"><span class="t"><b>Your goal</b><span>'+escHtml(RW_AIM[RW.scenario])+'</span></span></div></div>';}
-    if(b&&b.c&&b.scene){if(b.pos)h+='<div class="g-card tight rw-pos"><b>'+escHtml(RW_POS_LBL[RW.scenario]||'Your position')+'</b><span>'+escHtml(b.pos)+'</span></div>';}
+    if(b&&b.c&&b.scene){/* price shown inside the scene card */}
     else if(b&&b.c)h+='<div class="g-card tight"><div class="g-row"><span class="t"><b>'+(RW.source==='desk'?'The situation':'The job')+'</b><span>'+escHtml(b.job)+'</span></span></div>'+(b.pos?'<div class="g-row"><span class="t"><b>'+escHtml(RW_POS_LBL[RW.scenario]||'Your position')+'</b><span>'+escHtml(b.pos)+'</span></span></div>':'')+'</div>';
-    if(RW.fromCase)h+='<div class="g-card tight rw-tip c-job"><div class="g-kick">'+escHtml(RW.fromCase.label||'Try the principle')+'</div><div style="font-size:15px;font-weight:700;line-height:1.35;margin-top:4px">'+escHtml(RW.fromCase.principle)+'</div></div>';
+    if(RW.fromCase)h+='<div class="g-card tight rw-dodont"><div class="dd do"><b>Do</b><span>'+escHtml(RW.fromCase.principle)+'</span></div>'+(RW.fromCase.most?'<div class="dd dont"><b>Don’t</b><span>'+escHtml(RW.fromCase.most)+'</span></div>':'')+'</div>';
     if(RW.prevFix)h+='<div class="g-block p-lav"><div class="g-kick">Last time, K said</div><div style="font-size:16px;font-weight:700;line-height:1.35">'+escHtml(_kShort(RW.prevFix,200))+'</div></div>';
     if(RW.fromReply)h+='<div class="g-card tight"><div class="g-row"><span class="t"><b>Their message</b><span>'+escHtml(_kShort(RW.question,160))+'</span></span></div>'+(RW.fromReply.reply?'<div class="g-row"><span class="t"><b>You replied</b><span>'+escHtml(_kShort(RW.fromReply.reply,160))+'</span></span></div>':'')+'</div>';
-    if(cl&&RW.secret)h+='<div class="g-alert" style="display:flex;gap:12px;align-items:flex-start"><span style="color:#C4AEFF;margin-top:1px;display:flex">'+ic('lock','s')+'</span><div><b style="font-size:14.5px">'+escHtml(name)+' has a secret.</b><div class="sub" style="margin-top:3px">You’ll find out at the end. Ask good questions and you might find out sooner.</div></div></div>';
+    if(cl&&RW.secret)h+='<div class="g-alert rw-secret" style="display:flex;gap:10px;align-items:flex-start"><span style="color:#C4AEFF;margin-top:1px;display:flex">'+ic('lock','s')+'</span><div><b style="font-size:14.5px">'+escHtml(name)+' has a secret.</b> <span class="sub">Ask good questions to find it.</span></div></div>';
     h+='<div class="push"></div>'+_rwModeSwitch()+gCta('Start','start');
   }else if(ph==='turn'){
     const line=RW.fuQ||RW.question,wait=RW.fuLoading||!line,inFu=RW.convo.length>0,n=_rwFuN();
