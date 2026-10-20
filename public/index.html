@@ -783,6 +783,11 @@ html[data-theme="dark"] .c-start{--c:#A9D98E}html[data-theme="dark"] .c-career{-
 /* Hub button in the top bar: a labeled lavender pill */
 .g-back.g-home{width:auto;flex-shrink:0;display:flex;align-items:center;gap:6px;padding:0 14px 0 12px;border-radius:999px;background:#C4AEFF;color:#120C24;border-color:#C4AEFF;font-weight:800;font-size:14px}
 .g-back.g-home .ic{width:16px;height:16px}
+/* Home header icons: each its own color, none shared with the tiles */
+.scr.hub .ibtn.ib-nb{background:#F5D76E;border-color:#F5D76E;color:#2A2205}
+.scr.hub .ibtn.ib-you{background:#FF9B85;border-color:#FF9B85;color:#2E0D06}
+.scr.hub .ibtn.ib-set{background:#9FB0FF;border-color:#9FB0FF;color:#0B1440}
+.scr.hub .ibtn.ib-you .ibtn-dot{background:#120C24;box-shadow:0 0 0 2px #FF9B85}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -822,6 +827,8 @@ const CHANGELOG=[
   {v:'1.4',d:'2026-10-19',items:[
     'If you’ve told K what’s hardest, the home screen suggests where to start: one pick from K while you’re new, three to choose from after that. You can always type your own situation instead.',
     'The case of the day now comes from what you told K, not at random.',
+    'The three icons on the home screen now each have their own color.',
+    '“Help me reply” is now “Before you reply”: K tells you what’s going on and the move to make, then offers one way to say it.',
     'The Hub button in the top bar is now a clear lavender “Hub” pill.',
     'Work with Kian: one tap to email him, from “Who is K?”, About, and after practice.',
     'New: 14 cases for starting out and moving up, plus “Ask a good question”, a quick drill in the Library.',
@@ -1329,7 +1336,7 @@ async function _kTakeRefresh(){
 // Categories: reply · real · pitch · quick
 // ═══════════════════════════════════════════════════════════════════════════
 const NB_CATS=[['all','All'],['reply','Replies'],['real','Practice'],['pitch','Pitches'],['quick','Quick']];
-const NB_CAT_NAME={reply:'Help me reply',real:'Practice a talk',pitch:'Pitch it',quick:'Quick answer'};
+const NB_CAT_NAME={reply:'Before you reply',real:'Practice a talk',pitch:'Pitch it',quick:'Quick answer'};
 const NB_CAT_ONE={reply:'reply',real:'practice',pitch:'pitch',quick:'quick answer'};
 const NB_CAT_P={reply:'p-lav',real:'p-teal',pitch:'p-org',quick:'p-pink'};
 const NB_CAT_IC={reply:'reply',real:'talk',pitch:'pitch',quick:'quick'};
@@ -2452,7 +2459,7 @@ function openYesCheck(){
 // ═══════════════════════════════════════════════════════════════════════════
 // The headline is today's focus, not a status: the habit K is tracking from the
 // notebook, else today's line (made personal once a day). Status lives in the streak strip.
-const _HUB_GO={reply:'Help me reply',real:'Practice a talk',pitch:'Pitch it',quick:'Quick answer',settings:'Set your lowest',notebook:'Open the notebook'};
+const _HUB_GO={reply:'Before you reply',real:'Practice a talk',pitch:'Pitch it',quick:'Quick answer',settings:'Set your lowest',notebook:'Open the notebook'};
 const _FOCUS_WHY={reply:'K sets up a scene where you’ll need it. Try it out loud before it’s real.',real:'K sets up a scene where you’ll need it. Try it out loud before it’s real.',pitch:'Build it, run it, then take the questions.',quick:'Ten seconds to think, then answer. Like real life.',settings:'Write down your price and your lowest before the next talk.'};
 // Which practice scene fits today's focus
 function _focusScen(k){
@@ -2488,11 +2495,11 @@ function _wireLastTile(app,back){
 function renderHub(app){
   const k=_hubFocus(),first=!_nbEntries().length,st=_streak(),u=_usage();
   let h='<main class="scr hub'+(typeof _sugMode==='function'&&_sugMode()==='A'&&!_checkinDue()?' dense':'')+'">';
-  h+='<div class="top"><div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div><div class="ibtns"><button class="ibtn" data-go="notebook" aria-label="K’s notebook">'+ic('book')+'</button><button class="ibtn" data-act="you" aria-label="About you">'+ic('user')+(typeof _profileDone==='function'&&!_profileDone()?'<i class="ibtn-dot"></i>':'')+'</button><button class="ibtn" data-go="settings" aria-label="Settings">'+ic('settings')+'</button></div></div>';
+  h+='<div class="top"><div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div><div class="ibtns"><button class="ibtn ib-nb" data-go="notebook" aria-label="K’s notebook">'+ic('book')+'</button><button class="ibtn ib-you" data-act="you" aria-label="About you">'+ic('user')+(typeof _profileDone==='function'&&!_profileDone()?'<i class="ibtn-dot"></i>':'')+'</button><button class="ibtn ib-set" data-go="settings" aria-label="Settings">'+ic('settings')+'</button></div></div>';
   // The open box: suggestions from their details (A/B), or type the situation and K routes it
   h+=deskBoxHtml();
   h+='<div class="hub-tiles"><div class="v3-two">'+
-     '<button class="v3-blk '+(first?'first':'cmp')+' p-lav" data-go="reply"><span class="bi">'+ic('reply')+'</span><span class="ba">'+ic('arrowne','s')+'</span><b>Help me<br>reply</b><span class="s"><span class="lg-only">Paste it. K writes back.</span><span class="sm-only">Paste. K replies.</span></span></button>'+
+     '<button class="v3-blk '+(first?'first':'cmp')+' p-lav" data-go="reply"><span class="bi">'+ic('reply')+'</span><span class="ba">'+ic('arrowne','s')+'</span><b>Before you<br>reply</b><span class="s"><span class="lg-only">K reads it with you.</span><span class="sm-only">K reads it first.</span></span></button>'+
      '<button class="v3-blk '+(first?'first':'cmp')+' p-teal" data-go="real"><span class="bi">'+ic('talk')+'</span><span class="ba">'+ic('arrowne','s')+'</span><b>Practice<br>a talk</b><span class="s">They push. You hold.</span></button></div>';
   h+='<button class="v3-wide p-org" data-go="pitch"><span class="wtop"><span class="bi">'+ic('pitch')+'</span><span class="stages" aria-hidden="true"><i>Build</i><i>Run</i><i>Face the room</i></span></span><span class="wbot"><span class="wt"><b>Pitch it</b><span class="s">Present it. Then take the questions.</span></span><span class="ba">'+ic('arrowne','s')+'</span></span></button></div>';
   {const me=_caseForMe(),cs=_caseOfDay(),cc=_caseCat(cs.cat);
@@ -2810,7 +2817,7 @@ function renderSettingsPage(app,sp){
     h+='<div class="sect">Language</div><div class="card stack" style="gap:14px">'+
        '<div class="fieldset"><span class="lab">Your English</span>'+chipsHtml(ENGLISH,p.english,'eng')+'</div>'+
        '<div class="fieldset"><label class="lab" for="pf-lang">First language</label><input class="inp" id="pf-lang" placeholder="e.g. Mandarin" value="'+escHtml(p.firstLang||'')+'"></div></div>';
-    h+='<div class="sect">Your numbers</div><div class="card stack" style="gap:12px"><div class="grid2"><div class="fieldset"><label class="lab" for="pf-price">Your price</label><input class="inp" id="pf-price" placeholder="¥8,000 for a logo" value="'+escHtml(S.rwPrice||'')+'"></div><div class="fieldset"><label class="lab" for="pf-low">Lowest you’ll take</label><input class="inp" id="pf-low" placeholder="¥6,500" value="'+escHtml(S.rwLowest||'')+'"></div></div><div class="device">'+ic('phone','s')+'<span>K uses these to coach you on price, and Help me reply won’t write a yes below your lowest.</span></div></div>';
+    h+='<div class="sect">Your numbers</div><div class="card stack" style="gap:12px"><div class="grid2"><div class="fieldset"><label class="lab" for="pf-price">Your price</label><input class="inp" id="pf-price" placeholder="¥8,000 for a logo" value="'+escHtml(S.rwPrice||'')+'"></div><div class="fieldset"><label class="lab" for="pf-low">Lowest you’ll take</label><input class="inp" id="pf-low" placeholder="¥6,500" value="'+escHtml(S.rwLowest||'')+'"></div></div><div class="device">'+ic('phone','s')+'<span>K uses these to coach you on price, and Before you reply won’t write a yes below your lowest.</span></div></div>';
     h+='<button class="btn btn-sec" data-act="st-back" style="margin-top:4px">Done</button>';
   }else if(sp==='coaching'){
     h+='<div class="sect">K speaks</div><div class="list">'+COACH_LANGS.map(l=>'<button class="row" data-lang="'+l.id+'"><span class="rt"><b>'+escHtml(l.label)+'</b></span>'+((S.coachLang||'auto')===l.id?ic('check','s'):'')+'</button>').join('')+'</div>';
@@ -2875,7 +2882,7 @@ function renderSettingsPage(app,sp){
 // ═══════════════════════════════════════════════════════════════════════════
 const DESK_ROUTES={
   advice:{t:'Get K’s advice',ic:'info',p:'p-lav',say:'You want to know what to do.'},
-  reply:{t:'Draft my reply',ic:'reply',p:'p-lav',say:'You have a message to answer.'},
+  reply:{t:'Read it with K',ic:'reply',p:'p-lav',say:'You have a message to answer.'},
   practice:{t:'Practice it',ic:'talk',p:'p-teal',say:'You have a conversation coming up.'},
   pitch:{t:'Build my pitch',ic:'pitch',p:'p-org',say:'You have something to present.'},
   quick:{t:'Quick answer',ic:'quick',p:'p-pink',say:'You need a sharp answer to one question.'}
@@ -3194,7 +3201,7 @@ function _rpSys(){
     (RP.who==='client'?K_CLIENT_VIEW+'\n':RP.who==='interviewer'?K_INTERVIEW_VIEW+'\n':RP.who==='new'?K_PEOPLE_VIEW+'\n':'')+K_JUDGE+'\n'+K_PLAIN+'\n'+(ctx?'\nWhat you know about the user:\n'+ctx+'\n':'')+
     '\nRULES FOR THE DRAFT: 40–90 words, sounds like a real person typing, no greeting line or sign-off, no bullet points, no headings. Warm first, then firm. If a price is involved, the draft keeps the user’s price unless they chose otherwise; if it gives something, it gets something back in the same breath. Never invent facts the user did not give (no made-up dates, names or numbers beyond those in the message or context). If the message asks for a price below the lowest the user will accept, the draft must hold the price and offer a smaller scope instead; never say yes to it.\n'+
     'Also explain it line by line: pick 3 to 4 key lines of the draft (each "quote" must be an EXACT substring of the draft, copied character for character), name the technique behind each from this list only: '+Object.values(TECHNIQUES).map(t=>t.title).join('; ')+', and say why in one plain sentence.\n'+
-    'Reply with JSON only, no markdown: {"draft":"…","give":"what the user gives in this reply, 2–5 words (or \\"Nothing\\")","get":"what the user gets back, 2–5 words","why":[{"quote":"exact substring of the draft","technique":"title from the list","why":"one sentence"}],"below_lowest":true|false}';
+    'Reply with JSON only, no markdown: {"read":"what is really going on in their message and the move you recommend, 1–2 short sentences said to the user, like an advisor (never just a summary)","draft":"…","give":"what the user gives in this reply, 2–5 words (or \\"Nothing\\")","get":"what the user gets back, 2–5 words","why":[{"quote":"exact substring of the draft","technique":"title from the list","why":"one sentence"}],"below_lowest":true|false}';
 }
 async function rpDraft(tone){
   if(!RP.text.trim())return;
@@ -3204,12 +3211,12 @@ async function rpDraft(tone){
   const guard=!!(lowest&&asked&&asked<lowest&&RP.who==='client')&&tone!=='yes';
   let msg='THEIR MESSAGE:\n'+RP.text.trim()+(tone?'\n\nADJUST: the previous draft was "'+RP.draft.draft+'". Write it again '+({warmer:'warmer: more human, more acknowledgement, same position',firmer:'firmer: fewer softeners, the position stated plainly, still polite',shorter:'shorter: cut it to about half, keep the position and the ask',yes:'as a yes: the user has decided to accept their number. Write the best version of saying yes that still gets something back (a deposit, faster payment, a smaller scope), without sulking'})[tone]+'.':'')+(guard?'\n\nNOTE: they are asking for about '+_fmtMoney(asked)+', which is below the user’s lowest ('+S.rwLowest+'). Hold the price and offer a smaller scope.':'')+nbContext('reply');
   try{
-    const raw=await callCoach(_rpSys(),msg,{maxTokens:700,featureId:'reply-draft'});
+    const raw=await callCoach(_rpSys(),msg,{maxTokens:850,featureId:'reply-draft'});
     let j;try{j=_jsonFrom(raw);if(String(j.draft||'').trim().length<20)throw 0;}
-    catch(_){const raw2=await callCoach(_rpSys(),msg+'\n\nYour last answer could not be read. Reply again with valid JSON only, in the exact format asked.',{maxTokens:700,featureId:'reply-draft',grace:true});j=_jsonFrom(raw2);}
+    catch(_){const raw2=await callCoach(_rpSys(),msg+'\n\nYour last answer could not be read. Reply again with valid JSON only, in the exact format asked.',{maxTokens:850,featureId:'reply-draft',grace:true});j=_jsonFrom(raw2);}
     const draft=String(j.draft||'').trim();if(draft.length<20)throw new Error('short');
     const why=(Array.isArray(j.why)?j.why:[]).map(w=>({quote:String(w.quote||'').trim(),technique:String(w.technique||'').trim(),why:String(w.why||'').trim()})).filter(w=>w.quote&&draft.toLowerCase().includes(w.quote.toLowerCase())).slice(0,4);
-    RP.draft={draft,give:String(j.give||'').slice(0,40),get:String(j.get||'').slice(0,40),why,below:!!j.below_lowest||guard,asked,lowest};
+    RP.draft={read:_clean(j.read||'').slice(0,320),draft,give:String(j.give||'').slice(0,40),get:String(j.get||'').slice(0,40),why,below:!!j.below_lowest||guard,asked,lowest};
     RP.guard=guard?{asked,lowest}:null;
     _countReply();
     S.lastReply={text:RP.text,who:RP.who,want:RP.want,draft:RP.draft,at:new Date().toISOString()};save();
@@ -3225,26 +3232,27 @@ function renderReply(app){
   let h='<main class="scr p-lav" style="--gap:'+(st==='why'?'12px':'14px')+'">';
   const who=RP_WHO.find(w=>w[0]===RP.who)[1],want=RP_WANT.find(w=>w[0]===RP.want)[1];
   if(st==='paste'){
-    h+=gBar('Help me reply','hub',gDots(3,0));
+    h+=gBar('Before you reply','hub',gDots(3,0));
     h+='<div class="g-block"><div class="g-kick">Their message</div><textarea class="g-paste" id="rp-text" placeholder="Paste it here, or tell K what happened…">'+escHtml(RP.text)+'</textarea><div style="display:flex;justify-content:flex-end"><button class="g-chip dark" data-act="paste">'+ic('paste','s')+'Paste</button></div></div>';
     h+='<div class="g-kick">Who is it?</div><div class="g-grid2">'+RP_WHO.map(w=>'<button class="g-chip'+(RP.who===w[0]?' on':'')+'" data-who="'+w[0]+'">'+w[1]+'</button>').join('')+'</div>';
     h+='<div class="g-kick">What do you want?</div><div class="g-grid2">'+RP_WANT.map(w=>'<button class="g-chip'+(RP.want===w[0]?' on':'')+'" data-want="'+w[0]+'">'+w[1]+'</button>').join('')+'</div>';
-    h+='<div class="push"></div>'+gCta('Draft my reply','draft',{disabled:!RP.text.trim()});
+    h+='<div class="push"></div>'+gCta('Read it with K','draft',{disabled:!RP.text.trim()});
   }else if(st==='think'){
-    h+=gBar('Help me reply','rp-back',gDots(3,1));
+    h+=gBar('Before you reply','rp-back',gDots(3,1));
     h+='<div class="g-block"><div class="g-kick">'+escHtml(who)+' · '+escHtml(want)+'</div><div class="g-msg">“'+escHtml(_stripQ(RP.text))+'”</div></div>';
     h+='<div class="g-card" style="display:flex;flex-direction:column;gap:14px"><div class="g-k">'+kav()+'<div><b style="font-size:15px">K is on it</b><div class="small" style="margin-top:2px">'+(RP.tone?(RP.tone==='yes'?'Writing the yes.':'Making it '+RP.tone+'.'):'Working out what you give, and what you get back.')+'</div></div></div><div class="stack" style="gap:9px"><div class="sk w9"></div><div class="sk w8"></div><div class="sk w9"></div><div class="sk w5"></div></div></div>';
     h+='<div class="push"></div><p class="small center-t">About 10 seconds. You can leave; it’ll be here.</p>';
   }else if(st==='error'){
-    h+=gBar('Help me reply','rp-back');
+    h+=gBar('Before you reply','rp-back');
     h+='<div class="g-block"><div class="g-kick">'+escHtml(who)+' · '+escHtml(want)+'</div><div class="g-msg">“'+escHtml(_stripQ(RP.text))+'”</div></div>';
     if(_isLimitErr(RP.err)){h+='<div class="center"><span class="badge g">'+ic('clock','l')+'</span><h2 class="h2" style="font-size:19px;margin-top:4px">That’s today’s replies done.</h2><p class="sub" style="max-width:280px">You get more tomorrow, from midnight. Your message is saved, so it’ll be here.</p></div><div class="stack"><button class="btn btn-pri" data-act="to-practice">Practice this conversation instead</button><button class="btn-text" data-go="settings">Have a code? Enter it in Settings</button></div>';}
     else{h+='<div class="center"><span class="badge err">'+ic('warn','l')+'</span><h2 class="h2" style="font-size:19px;margin-top:4px">K couldn’t finish that one.</h2><p class="sub" style="max-width:280px">Something went wrong on my side, not yours. Your message is still here.</p>'+_errDetail(RP.err)+'</div><div class="stack"><button class="btn btn-pri" data-act="retry">'+ic('again','s')+'Try again</button><p class="small center-t">Still not working? Check your connection, then try once more.</p></div>';}
   }else if(st==='reply'){
     const d=RP.draft;
-    h+=gBar('Your reply','rp-back',gDots(3,2));
+    h+=gBar('K’s read','rp-back',gDots(3,2));
+    if(d.read)h+='<div class="g-card case-k"><div class="g-k">'+kav()+'<b style="font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)">What’s going on</b></div><p style="margin-top:10px;font-size:16px;line-height:1.45;font-weight:600">'+escHtml(d.read)+'</p></div>';
     if(RP.guard)h+='<div class="g-alert"><div class="rowx" style="gap:8px"><span style="color:#F5C27A;display:flex">'+ic('warn','s')+'</span><span class="g-kick">Under your lowest</span></div><div style="font-size:18px;font-weight:800;letter-spacing:-.02em;line-height:1.3;margin-top:8px">They’re asking for '+escHtml(_fmtMoney(RP.guard.asked))+'. Your lowest is '+escHtml(_fmtMoney(RP.guard.lowest))+'.</div><div class="sub" style="margin-top:6px">I won’t write a yes. Here’s a reply that keeps your price and gives them a smaller option.</div></div>';
-    h+='<div class="g-block"><div class="between"><span class="g-kick">Send this</span><button class="g-copy" data-act="copy">'+ic('copy','s')+'Copy</button></div><div class="g-draft">'+escHtml(d.draft)+'</div>'+(d.why.length?'<button class="g-why-btn" data-act="why">Why this works<span style="display:flex">'+ic('arrow','s')+'</span></button>':'')+'</div>';
+    h+='<div class="g-block"><div class="between"><span class="g-kick">One way to say it</span><button class="g-copy" data-act="copy">'+ic('copy','s')+'Copy</button></div><div class="g-draft">'+escHtml(d.draft)+'</div>'+(d.why.length?'<button class="g-why-btn" data-act="why">Why this works<span style="display:flex">'+ic('arrow','s')+'</span></button>':'')+'</div>';
     if(RP.guard)h+='<button class="g-ghost" data-act="yes-anyway">Write a yes anyway</button>';
     h+='<div class="g-grid3"><button class="g-chip" data-tone="warmer">Warmer</button><button class="g-chip" data-tone="firmer">Firmer</button><button class="g-chip" data-tone="shorter">Shorter</button></div>';
     if(d.give||d.get)h+='<div class="g-gg"><div class="g-card"><span class="g-kick">You give</span><div class="v">'+escHtml(d.give||'Nothing')+'</div></div><div class="g-card teal"><span class="g-kick">You get back</span><div class="v">'+escHtml(d.get||'The relationship')+'</div></div></div>';
