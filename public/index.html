@@ -3384,7 +3384,7 @@ function wireDeskBox(app){
   app.querySelectorAll('[data-sug]').forEach(b=>b.addEventListener('click',()=>{
     const it=_sugItems()[+b.dataset.sug];if(!it)return;_track((b.dataset.v==='B'?'sugB':'sugA')+'_tap');
     if(it.kind==='practice'){const c=_case(it.caseId);if(c){caseToPractice(c);return;}go('real');return;}
-    if(it.kind==='read'){openCase(it.caseId);return;}
+    if(it.kind==='read'){V.caseOpen=it.caseId;openCase(it.caseId);return;}
     if(it.kind==='quick'){QA.q=it.q;let cx='',gk=null;Object.keys(QA_BANK).forEach(g=>QA_BANK[g].forEach(x=>{if(x[1]===it.q){cx=x[0];gk=g;}}));QA.ctx=cx;QA.goal=gk;QA.phase='q';QA.take=null;QA.notes=null;QA.strong=null;go('quick');}
   }));
   const se=app.querySelector('[data-act="sug-else"]');if(se)se.addEventListener('click',()=>{_track('sugB_else');S.deskBMissDay=_today();save();render();}); // B didn't fit: three picks (A) for today
