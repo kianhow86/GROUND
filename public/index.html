@@ -917,7 +917,7 @@ function load(){
   if(!S.usage)S.usage={month:'',sessions:0,day:'',replies:0};
   if(!Array.isArray(S.goals))S.goals=[];
   if(!S.profile||typeof S.profile!=='object')S.profile={};
-  try{TTS.on=!S.ttsOff;}catch(e){}
+  try{TTS.on=VOICE_ON&&!S.ttsOff;}catch(e){}
 }
 function save(){
   try{localStorage.setItem(STORAGE_KEY,JSON.stringify(S));if(S.sync&&typeof _sySoon==='function')_sySoon();return true;}
@@ -1859,7 +1859,8 @@ async function recWhisper(r){
   return r;
 }
 // ── The other side's voice ─────────────────────────────────────────────────
-const TTS={on:true,voice:null};
+const VOICE_ON=false; // the other side's voice: off until a more natural voice is set up
+const TTS={on:false,voice:null};
 function ttsOk(){return TTS.on&&(('speechSynthesis' in window)||!TTS.cloudOff);}
 // Natural voices from the server (OpenAI gpt-4o-mini-tts); the phone's own voice is the fallback.
 const _TTS_VOICES=['ash','coral','sage','verse','ballad','echo','shimmer','onyx'];
@@ -2822,7 +2823,7 @@ function renderSettingsPage(app,sp){
   }else if(sp==='coaching'){
     h+='<div class="sect">K speaks</div><div class="list">'+COACH_LANGS.map(l=>'<button class="row" data-lang="'+l.id+'"><span class="rt"><b>'+escHtml(l.label)+'</b></span>'+((S.coachLang||'auto')===l.id?ic('check','s'):'')+'</button>').join('')+'</div>';
     h+='<div class="sect">Memory</div><div class="list"><button class="row" data-act="mem"><span class="rt"><b>K remembers my sessions</b><span>K reads your last notes before coaching you again.</span></span><span class="rv">'+(_nbOn()?'On':'Off')+'</span></button>'+
-       '<button class="row" data-act="tts"><span class="rt"><b>The other side speaks out loud</b><span>When you practice by speaking, you hear their lines.</span></span><span class="rv">'+(S.ttsOff?'Off':'On')+'</span></button></div>';
+       (VOICE_ON?'<button class="row" data-act="tts"><span class="rt"><b>The other side speaks out loud</b><span>When you practice by speaking, you hear their lines.</span></span><span class="rv">'+(S.ttsOff?'Off':'On')+'</span></button>':'')+'</div>';
   }else if(sp==='usage'){
     h+='<div class="list">';
     if(PAYWALL_ON)h+='<button class="row" data-act="bal"><span class="rt"><b>Sessions left</b><span>Top up any time</span></span><span class="rv">'+S.credits+'</span>'+ic('chev','s chev')+'</button>';
@@ -2864,7 +2865,7 @@ function renderSettingsPage(app,sp){
   // Coaching
   app.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>{S.coachLang=b.dataset.lang;save();render();}));
   on('[data-act="mem"]',()=>{S.kMemory=!_nbOn();save();render();});
-  on('[data-act="tts"]',()=>{S.ttsOff=!S.ttsOff;TTS.on=!S.ttsOff;save();render();});
+  on('[data-act="tts"]',()=>{S.ttsOff=!S.ttsOff;TTS.on=VOICE_ON&&!S.ttsOff;save();render();});
   // Usage
   wireCodeField(app,'set-code',()=>render());
   on('[data-act="bal"]',()=>openBalance());
