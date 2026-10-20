@@ -769,6 +769,11 @@ mark.sting.own{display:table;margin-top:8px;font-size:1.25em;letter-spacing:-.01
 .yc-dots{display:flex;gap:6px}.yc-dots i{width:22px;height:4px;border-radius:2px;background:var(--line)}.yc-dots i.on{background:var(--ink)}
 .yc-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .yc-btns .g-cta{justify-content:center}
+.p-green{--p:#A9D98E;--pi:#0E2408;--pd:#3D7A22}
+.c-start{--c:#3D8B3D}.c-career{--c:#1F7FA8}
+html[data-theme="dark"] .c-start{--c:#A9D98E}html[data-theme="dark"] .c-career{--c:#8FD3F0}
+.ask-entry>span:first-child{background:#8FD3F0;color:#06202B;font-weight:900;font-size:18px}
+.ask-in{width:100%;box-sizing:border-box;border-radius:18px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:14px 16px;font:inherit;font-size:16px;line-height:1.45;resize:vertical;min-height:96px}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -808,6 +813,7 @@ const CHANGELOG=[
   {v:'1.4',d:'2026-10-19',items:[
     'If you’ve told K what’s hardest, the home screen suggests where to start: one pick from K while you’re new, three to choose from after that. You can always type your own situation instead.',
     'The case of the day now comes from what you told K, not at random.',
+    'New: 14 cases for starting out and moving up, plus “Ask a good question”, a quick drill in the Library.',
     'New: “Should I say yes?”, five quick questions before you agree to anything (in the Library).',
     'Disagreement cases and K’s coaching now follow Kian’s own approach: read the leverage, pick your moment, never let it happen twice.',
     'Cases: try it first, then see how K would say it. Each moment now shows the sting and how it feels.',
@@ -1029,7 +1035,7 @@ function render(){
   if(!app)return;
   closeSheet();
   if(!S.onboarded&&V.view!=='owner'){return renderOnboarding(app);}
-  const R={hub:renderHub,reply:renderReply,real:renderReal,pitch:renderPitch,quick:renderQuick,settings:renderSettings,notebook:renderNotebook,advice:renderAdvice,library:renderLibrary,case:renderCase,'nb-entry':renderNbEntry,sync:renderSync,owner:renderOwner};
+  const R={hub:renderHub,reply:renderReply,real:renderReal,pitch:renderPitch,quick:renderQuick,settings:renderSettings,notebook:renderNotebook,advice:renderAdvice,library:renderLibrary,case:renderCase,'nb-entry':renderNbEntry,sync:renderSync,owner:renderOwner,ask:renderAsk};
   const fn=R[V.view]||renderHub;
   fn(app);
   renderHubPill();
@@ -1217,8 +1223,8 @@ const K_CLIENT_VIEW=`How K sees client work (the coach's own view; let it shape 
 - There is no perfect project and no perfect client. New requests, approved work rejected later, rude people, unreasonable demands: managing your own emotions is part of the job. Big names can pay little and label you for years; weigh the name against the pay.
 If the speaker's situation includes their price or the lowest they will accept, judge whether they kept to it, and say so plainly.`;
 const K_INTERVIEW_VIEW=`How K sees interviews and introductions: bring something you did, not your grades (a sold-out student show beat a 4.0 GPA in Kian's first interview). Lead with one story only you can tell. Many interviews are just a conversation: be someone they'd like to work with. Soft skills beat raw talent; the most gifted people who struggle are the ones who can't explain their value.`;
-const K_PEOPLE_VIEW=`How K sees talking to people: it's a skill, not a personality (Kian was an introvert who scared customers away and learned to act outgoing). Connection matters as much as content. Answer, add one detail they can pick up, hand it back. Listening beats jumping topics. Never coach pickup lines, tricks or pressure; coach curiosity and being comfortably yourself.`;
-const K_CONFLICT_VIEW=`How K sees disagreement (Kian’s view; let it shape the diagnosis without lecturing): Read the leverage first: what to do depends on the stakes and who holds the power. You are hired to do a job, not to win the creative argument, unless you own the outcome. Pick your moment with a boss: push back only when they are open to options; praise first, frame it as a discussion, and let them make the call. A lot of nitpicking is a show for their own boss; don’t take it personally. Never be a pushover: push back just enough. Whatever happens, don’t let it happen twice. If money fixes it and you can afford it, pay; if not, offer something real instead (like future work). Argue from the greater good, not your ego. A professional gets paid, is reliable and communicates with respect. Stay honest: never coach lying, blaming others or threatening people.`;
+const K_PEOPLE_VIEW=`How K sees talking to people: it's a skill, not a personality (Kian was an introvert who scared customers away and learned to act outgoing). Connection matters as much as content. Answer, add one detail they can pick up, hand it back. Listening beats jumping topics. When you need help, admit it, be courteous, and offer something back. Take criticism with grace: don't defend, ask how to improve; managing your emotions is often worth more than your skills. With someone senior, decide where you stand: near-peers meet as equals, real veterans get your curiosity. No question is stupid, but think it through and ask what you genuinely want to know. Starting out, enthusiasm and a willingness to take direction are your biggest assets. Never coach pickup lines, tricks or pressure; coach curiosity and being comfortably yourself.`;
+const K_CONFLICT_VIEW=`How K sees disagreement (Kian’s view; let it shape the diagnosis without lecturing): Read the leverage first: what to do depends on the stakes and who holds the power. You are hired to do a job, not to win the creative argument, unless you own the outcome. Pick your moment with a boss: push back only when they are open to options; praise first, frame it as a discussion, and let them make the call. A lot of nitpicking is a show for their own boss; don’t take it personally. Never be a pushover: push back just enough. Whatever happens, don’t let it happen twice. If money fixes it and you can afford it, pay; if not, offer something real instead (like future work). Argue from the greater good, not your ego. A professional gets paid, is reliable and communicates with respect. When instructions are vague, confirm them in writing; if you are blamed anyway, tell an honest mistake (sort it out privately) from a power play (show the record, take it higher if needed). Extra hours early in a career can be training, within reason; mid-career, protect your health and boundaries. Stay honest: never coach lying, blaming others or threatening people.`;
 const K_RULES='If the transcript is very short (under 15 words, mostly silence, or clearly incomplete) reply with exactly: "No worries, let\'s give it another go." Nothing else.';
 
 // ── Techniques (tap to learn). Each: title · summary · how · watch · from · outcome ──
@@ -1240,6 +1246,7 @@ const TECHNIQUES={
   'prep':{title:'PREP',sum:'Point, Reason, Example, Point. A clear answer in under a minute.',how:'Say your answer first. Give one reason. Prove it with a real example. Say your point again.',watch:'The example is the part people skip, and it’s what makes you believable.',from:'A common structure in public-speaking and business-communication training.',out:'A clear answer in under a minute.'},
   'pivot':{title:'The pivot',sum:'The question is a door, not a destination.',how:'Answer the core of the question in one line, then move to the ground you want to stand on: a story, a principle, a result. Make your answer the point.',watch:'It must stay true. Steering a conversation is a skill; dodging it is obvious, and inventing facts is off limits.',from:'Kian’s view: the best communicators reframe or bridge so that their answer becomes the point, and the asker still leaves satisfied.',out:'You answer what matters, not just what was asked.'},
   'subtraction':{title:'Subtraction over addition',sum:'One idea fully committed to beats five half-explored.',how:'Before you speak, pick the one thing they should remember. Cut everything that doesn’t serve it.',watch:'Adding points feels safer and lands weaker. Most of the time the fix is to cut.',from:'A lesson from Kian’s Berklee mixing professor that stuck for life.',out:'They remember the one thing.'},
+  'good-question':{title:'Ask a good question',sum:'A good question shows you listened, and can’t be answered by a search engine.',how:'Think it through first. Pick one thing you are genuinely curious about, tie it to something they said, and ask it short and open: “How did you decide…?”, “Why that over…?”',watch:'Don’t ask for the sake of asking, and don’t ask what you could look up in a minute. Everyone’s time is valuable.',from:'Kian: no question is stupid; the fear of asking is. But think it through, and ask only what you really want to know.',out:'People remember you as someone who listens.'},
   'their-problem':{title:'Talk about their problem',sum:'Clients don’t care about your technique. They care whether you solve their problem.',how:'Lead with what changes for them: more orders, a launch on time, fewer headaches. Mention your method only if they ask.',watch:'Listing skills, software and credentials sounds like every other freelancer.',from:'Kian, "Keep things simple": the people who pay us mostly don’t know our craft and prefer things simple.',out:'They hear value, not a résumé.'}
 };
 function techTag(key,cls){const t=TECHNIQUES[key];if(!t)return '';return '<button type="button" class="tag'+(cls?' '+cls:'')+'" data-tech="'+key+'">'+escHtml(t.title)+ic('info','s')+'</button>';}
@@ -1900,7 +1907,9 @@ try{if('speechSynthesis'in window)speechSynthesis.onvoiceschanged=()=>{};}catch(
 // (the section is hidden until there is one; never invent one).
 // ═══════════════════════════════════════════════════════════════════════════
 const CASE_CATS=[
+  {k:'start',t:'Starting out',c:'c-start',p:'p-green'},
   {k:'job',t:'Getting in',c:'c-job',p:'p-lav'},
+  {k:'career',t:'Moving up',c:'c-career',p:'p-blue'},
   {k:'client',t:'Money & clients',c:'c-money',p:'p-teal'},
   {k:'disagree',t:'Disagreement',c:'c-clash',p:'p-pink'},
   {k:'work',t:'Being heard',c:'c-work',p:'p-org'},
@@ -2182,7 +2191,137 @@ const CASES=[
    then:'Ask first, teach one thing, check it landed. Then the next.',
    story:{src:'book',t:'At sixteen, an assistant at a guitar shop was asked to start teaching, with no experience at all. It took trial and error and watching his co-workers. The biggest lesson: connecting with his students mattered as much as the teaching itself.'},
    tech:null,
-   practice:{scen:'intro',who:'Mia · your new intern, first day',moment:'You are her first point of contact.',line:'“Hi! I’m Mia. So… where do I even start?”'}}
+   practice:{scen:'intro',who:'Mia · your new intern, first day',moment:'You are her first point of contact.',line:'“Hi! I’m Mia. So… where do I even start?”'}},
+  // ── Starting out (from Kian’s answers, Oct 20) ──
+  {id:'teacher-favor',cat:'start',title:'Asking a teacher for a big favor',
+   feel:'You feel like you’re bothering them.',moment:'You need a recommendation letter. Your teacher is busy, and [[you’re not that close]].',
+   most:'A quick message the night before the deadline: “Can you write me a letter?”',
+   fails:'It reads like an order, not a request. Busy people say yes to people who make it easy and show they value their time.',
+   k:'“I know you’re busy, and I’d really appreciate your help with a recommendation letter. I’ll send you everything you need, and I’d love to buy you a coffee to say thanks.”',
+   principle:'Admit you need help. Offer something back.',
+   then:'Ask early, bring everything they need in one message, and thank them after, whatever the result.',
+   story:null,tech:'good-question',
+   practice:{scen:'smalltalk',who:'Your teacher · after class',moment:'You need a recommendation letter in three weeks.',role:'You are a busy teacher. You like the student but don’t know them well. You are willing to help if they make it easy and are polite; a vague or last-minute ask makes you hesitate.',line:'“Hi, did you want to ask me something?”'}},
+  {id:'group-project',cat:'start',title:'A group project member does nothing',
+   feel:'And you can feel the grade slipping.',moment:'Two weeks to the deadline. One member hasn’t said a word in the group chat, and [[hasn’t done a thing]].',
+   most:'Complaining in a side chat. Or doing their part yourself and resenting it.',
+   fails:'Complaining fixes nothing. Doing it all yourself burns you out and teaches them it works.',
+   k:'“You’d be great on the visuals, you’ve got the eye for it. Want to own that part? Tell me what you need from us.”',
+   principle:'Draw out the shy ones. Route around the lazy ones.',
+   then:'Quiet people often just need to feel seen: give them something hands-on. If they still do nothing, hand them one small task, and don’t spend more energy than it’s worth.',
+   story:null,tech:'labeling',
+   practice:{scen:'conflict',who:'Your group member · a quick call',moment:'They haven’t done anything yet, and the deadline is in two weeks.',role:'You are the quiet group member who hasn’t contributed. You are shy and unsure where to start, not lazy. If the speaker makes you feel useful and gives you a clear part, you open up; if they attack you, you go quiet.',line:'“Oh, hey. Sorry, I’ve been kind of busy.”'}},
+  {id:'parents-creative',cat:'start',title:'Telling your parents you want a creative career',
+   feel:'You love them. You also know what you want.',moment:'Dinner. Your parents ask what you plan to study. You say music. [[“Can you even make a living from that?”]]',
+   most:'Arguing that they don’t understand. Or promising you’ll be the next big star.',
+   fails:'An argument makes them dig in. Big dreams sound like a red flag to parents who want stability.',
+   k:'“I know you worry it’s not stable. Here’s my plan for the next two years, and here are people doing this for a living. Give me until graduation to show you I’m serious.”',
+   principle:'Give them stability to hold on to, not a dream to worry about.',
+   then:'Show commitment over time: the work, the research, the plan. Share real examples of ordinary people living well in creative careers. Play to their need for security instead of fighting it.',
+   story:{src:'kian',t:'One young guitarist told his parents early that music was what he wanted, and they could see it: he played more than he did anything else. When it was time to choose schools, he researched the options himself and brought them to his parents. It took time, but showing that commitment is what moved them.'},
+   tech:'their-problem',
+   practice:{scen:'tough',who:'Your parents · at dinner',moment:'They just asked what you plan to study, and you said music.',role:'You are the speaker’s parent. You love them and worry that a creative career is unstable. You respond to a calm plan and real examples; you push back hard on big dreams or on being told you don’t understand.',line:'“Music? Can you even make a living from that?”'}},
+  {id:'internship',cat:'job',title:'An internship interview with little experience',
+   feel:'And you’re sure everyone else has more to show.',moment:'The interviewer looks at your CV: [[“You don’t have much experience yet. Why should we take you?”]]',
+   most:'Apologizing for not having experience. Or overselling skills you don’t have.',
+   fails:'Training you costs them time. What they’re really asking is whether you’ll make that time worth it.',
+   k:'“I don’t have much experience yet, but here are three projects I did on my own because I couldn’t stop. I learn fast, I’m happy to take direction, and I’ll make your time training me worth it.”',
+   principle:'Show enthusiasm, and show you’ll take direction.',
+   then:'Bring your own projects, even small ones. If you can’t show enthusiasm now, they’ll wonder if you’ll enjoy the job at all.',
+   story:{src:'kian',t:'One student applying for an internship brought the projects he had done outside school alongside his application. The boss liked how he presented himself, and he got the place.'},
+   tech:'their-problem',
+   practice:{scen:'interview',who:'The interviewer · a small studio',moment:'They are looking at your CV.',role:'You run a small studio and are interviewing for an intern. Training costs you time. You want enthusiasm, a good attitude and willingness to take direction.',line:'“You don’t have much experience yet. Why should we take you?”'}},
+  {id:'first-pay',cat:'start',title:'Your first salary offer is low',
+   feel:'You’re grateful for the offer, and a little deflated.',moment:'You got the job. Then the number arrives, and [[it’s lower than you hoped]].',
+   most:'Saying yes on the spot out of relief. Or demanding more without a reason.',
+   fails:'At the start you have little leverage, so a demand can backfire. But a quick yes tells them you’ll always take less.',
+   k:'“I’m really excited about this role. Is there any flexibility on the starting pay? If not, could we review it after three months, once you’ve seen my work?”',
+   principle:'Starting out, experience is part of the pay. Just don’t sell yourself as cheap.',
+   then:'Ask once, politely, with a reason. If the answer is no, get a review date in writing, then earn it.',
+   story:null,tech:'give-to-get',
+   practice:{scen:'tough',who:'The hiring manager · on a call',moment:'They just made you an offer.',role:'You are the hiring manager making a junior offer. Your budget is tight but you can review pay after a few months if they ask well. You don’t respond to demands.',line:'“So that’s the offer. Does that work for you?”'}},
+  {id:'critique',cat:'start',title:'A review where they tear your work apart',
+   feel:'Your face burns. You want to explain everything.',moment:'Portfolio review. The panel goes through your work one piece at a time, and [[they don’t like most of it]].',
+   most:'Defending every choice: “What I was going for was…”',
+   fails:'Explaining sounds like arguing. It makes you look difficult to work with, and that sticks longer than any piece of work.',
+   k:'“Thank you, that’s really useful. If you were me, what’s the first thing you’d fix?”',
+   principle:'Take criticism with grace. Don’t defend, ask.',
+   then:'Listen, ask one question that helps you improve, and thank them. Managing your emotions is often worth more than your skills.',
+   story:null,tech:'good-question',
+   practice:{scen:'tough',who:'The review panel · your portfolio review',moment:'They have just been through your work.',role:'You are a senior reviewer. You are blunt but fair, and you respect students who take criticism well. If the speaker argues or over-explains, you get shorter with them.',line:'“Honestly, most of this feels unfinished. What were you going for here?”'}},
+  {id:'senior-event',cat:'people',title:'Talking to someone senior at an industry event',
+   feel:'And suddenly you feel very junior.',moment:'At an industry event, someone whose work you admire is standing alone. [[This is your chance.]]',
+   most:'Gushing praise. Or freezing and walking past.',
+   fails:'Praise alone ends the conversation. Walking past means nothing changes.',
+   k:'“I loved your work on that last project. How did you decide on the sound for it?”',
+   principle:'Decide where you stand. Peers meet as equals; legends get your curiosity.',
+   then:'If the gap is small, don’t put yourself beneath them: how you present yourself is how they’ll place you. If it’s big, ask one good question and really listen.',
+   story:null,tech:'good-question',
+   practice:{scen:'smalltalk',who:'A senior director in your field · by the coffee',moment:'You admire their work and they are standing alone.',role:'You are a senior, well-known person in the speaker’s field. You are friendly but have heard a lot of praise. A thoughtful, specific question gets your attention; generic praise gets a polite short answer.',line:'“Hi. Enjoying the event?”'}},
+  {id:'class-question',cat:'start',title:'You have a question, but you’re scared to ask',
+   feel:'Your heart is pounding, and you stay quiet.',moment:'The teacher asks, “Any questions?” You have one, but [[what if it sounds stupid?]]',
+   most:'Staying quiet. Or asking something you could have looked up in a minute.',
+   fails:'The fear of asking is the stupid part. But a question asked for the sake of asking wastes everyone’s time.',
+   k:'“In the example you showed, why did you choose that over the more common approach?”',
+   principle:'No question is stupid. Asking without thinking is.',
+   then:'Think it through first. Ask what you’re genuinely curious about, and keep it short. Everyone’s time is valuable.',
+   story:null,tech:'good-question',
+   practice:{scen:'meeting',who:'Your teacher · end of class',moment:'They just asked if anyone has questions.',role:'You are the teacher. You welcome real questions and answer generously; you are a little impatient with questions that weren’t thought through.',line:'“Okay, any questions before we finish?”'}},
+  // ── Moving up (from Kian’s answers, Oct 20) ──
+  {id:'raise',cat:'career',title:'Asking for a raise',
+   feel:'You know you’re worth more. Saying it feels risky.',moment:'You’ve taken on more for months. Your pay hasn’t moved, and [[nobody has mentioned it]].',
+   most:'Asking because you “deserve it”. Or asking on a bad day, in a hallway.',
+   fails:'Deserving it isn’t a case. And most of the time it isn’t the number that decides it, it’s the moment you ask.',
+   k:'“Over the last six months I’ve taken on the client reports and trained two new people. I’d like to talk about my pay. When’s a good time this week?”',
+   principle:'Pick the moment. The timing matters more than the number.',
+   then:'Be honest with yourself first: do you deserve it? Then prepare your case. Don’t ask during layoffs or when your boss is clearly having a bad day. The more you’re worth to them, the more leverage you have.',
+   story:null,tech:'know-your-lowest',
+   practice:{scen:'disagree',who:'Your boss · a planned one-on-one',moment:'You asked for time to talk about your pay.',role:'You are the speaker’s boss. Budgets are tight but they’re good at their job. You respond to a clear case and good timing; you push back on “I deserve it”.',line:'“Sure, what did you want to talk about?”'}},
+  {id:'bad-review',cat:'career',title:'Your performance review isn’t great',
+   feel:'And you want to defend yourself, right now.',moment:'Your manager goes through your review. Most of it is fine, but [[one part stings]].',
+   most:'Arguing every point. Or going silent and sulking for a week.',
+   fails:'Arguing makes you look difficult to work with. People remember how you took it longer than what the review said.',
+   k:'“Thanks for being straight with me. What would ‘good’ look like by the next review?”',
+   principle:'Take it with grace. Emotional control is worth more than skill.',
+   then:'Listen first. If something is factually wrong, raise it calmly later, with proof. Then work on the one thing they named.',
+   story:null,tech:'good-question',
+   practice:{scen:'tough',who:'Your manager · your review',moment:'They are going through your review.',role:'You are the manager giving a mixed review. You are fair. If the speaker takes it well and asks how to improve, you warm up; if they argue, you get firmer.',line:'“Overall it’s been solid, but your deadlines have been a real problem this quarter.”'}},
+  {id:'senior-push',cat:'career',title:'You think a senior colleague is wrong',
+   feel:'You’re sure you’re right. They’re sure they are.',moment:'In a meeting, a senior colleague proposes a plan. You can see the problem, and [[they don’t like being questioned]].',
+   most:'“I don’t think that will work.” Or saying nothing.',
+   fails:'Seniors have egos. A flat “that won’t work” turns it into a contest, and they have to win.',
+   k:'“I really like where this is going. One thing I wondered about: what if we tried it this way first? Your call.”',
+   principle:'Praise first, make it a discussion, let them decide.',
+   then:'Unless you’re ready to make an enemy, keeping the peace usually wins. Say it once, then back the decision.',
+   story:null,tech:'warm-then-firm',
+   practice:{scen:'disagree',who:'A senior colleague · in the team meeting',moment:'They just proposed a plan you think has a problem.',role:'You are a senior colleague with some ego. You listen to a respectful suggestion framed as a question; you resist being told you’re wrong in front of others.',line:'“So that’s the plan. Any thoughts before we go?”'}},
+  {id:'vague-blame',cat:'career',title:'Vague instructions, then you get the blame',
+   feel:'You know it wasn’t your fault, and it’s eating at you.',moment:'Your boss gave you a one-line brief. You did what they asked. Now it’s wrong, and [[it’s somehow on you]].',
+   most:'Taking the blame quietly. Or blowing up about it in front of everyone.',
+   fails:'Taking it teaches them they can do it again. Blowing up makes you the problem, even when you’re right.',
+   k:'“I followed what we agreed on Tuesday. Here’s the message. Can we make sure the next brief is clearer, so this doesn’t happen again?”',
+   principle:'Get it in writing. Then decide: honest mistake, or power play?',
+   then:'Confirm every brief in writing before you start. If it was an honest mistake, sort it out privately. If they keep doing it on purpose, show the record, and if you need to, take it to their boss.',
+   story:null,tech:'warm-then-firm',
+   practice:{scen:'disagree',who:'Your boss · after the client call',moment:'Your work missed the mark because the brief was vague, and they are blaming you.',role:'You are the boss who gave a vague brief and is now blaming the speaker. It was an honest mistake on your part, though you don’t see it yet. If the speaker calmly shows you what was agreed, you back down.',line:'“This isn’t what I asked for. What happened?”'}},
+  {id:'weekend-work',cat:'career',title:'Asked to work the weekend, again',
+   feel:'You’re tired, and you don’t know if you can say no.',moment:'Friday, 6 pm. “Can you come in tomorrow?” [[It’s the third weekend this month.]]',
+   most:'Yes every time, until you burn out. Or a flat no with no warning.',
+   fails:'Endless yeses drain your health and erase your boundaries. A flat no with no leverage behind it can cost you more than you’re ready for.',
+   k:'“I can do tomorrow this time. Going forward, can we plan these earlier, so I can keep most weekends free?”',
+   principle:'Know what the extra hours are buying you.',
+   then:'Early on, some extra hours are training, within reason. Mid-career, constant overtime is just draining you. Your leverage, your experience and your health decide where the line is.',
+   story:null,tech:'two-good-options',
+   practice:{scen:'sayno',who:'Your manager · Friday evening',moment:'It’s the third weekend this month.',role:'You are the manager asking for weekend work again. You assume they’ll say yes. You accept a reasonable, calm boundary, especially if they offer something; you push on a vague excuse.',line:'“Can you come in tomorrow? We’re behind on the launch.”'}},
+  {id:'ask-help',cat:'career',title:'You’re stuck and need help',
+   feel:'You don’t want to look like you can’t do your job.',moment:'You’ve been stuck on the same problem for two days, and [[the deadline is Friday]].',
+   most:'Struggling alone to look capable. Or “I don’t get it, can you help?” with nothing tried.',
+   fails:'Staying stuck costs everyone more than asking. An ask with nothing tried wastes their time.',
+   k:'“I’ve tried A and B, and I’m stuck on C. Could you spare ten minutes? Coffee’s on me.”',
+   principle:'Think it through first. Then ask, and offer something back.',
+   then:'Show what you tried, ask a specific question, and thank them. People help the ones who value their time.',
+   story:null,tech:'good-question',
+   practice:{scen:'meeting',who:'A senior colleague · at their desk',moment:'You’ve been stuck for two days.',role:'You are a busy senior colleague. You are happy to help someone who has tried and asks clearly; a vague request makes you impatient.',line:'“Hey, what’s up?”'}}
 ];
 // ── Library state, helpers ────────────────────────────────────────────────
 function _case(id){return CASES.find(c=>c.id===id)||null;}
@@ -2218,6 +2357,7 @@ function renderLibrary(app){
   let h='<main class="scr">'+gBar('Library','hub');
   h+='<p class="sub" style="margin-top:-4px">One moment, one line to say. Two minutes each.</p>';
   h+='<button class="yc-entry" data-act="yescheck"><span>'+ic('check','s')+'</span><span><b>Should I say yes?</b><small>Five quick questions before you agree to anything</small></span>'+ic('chev','s')+'</button>';
+  h+='<button class="yc-entry ask-entry" data-act="askdrill"><span>?</span><span><b>Ask a good question</b><small>A quick drill: one moment, one question, K’s read</small></span>'+ic('chev','s')+'</button>';
   // For you: from what they said is hard
   const ks=(typeof _sugKeys==='function')?_sugKeys():[];let mine=[];
   ks.forEach(k=>(SUG_MAP[k].cases||[]).forEach(id=>{const c=_case(id);if(c&&!mine.includes(c))mine.push(c);}));
@@ -2228,6 +2368,7 @@ function renderLibrary(app){
   app.innerHTML=h;wireCommon(app);
   app.querySelectorAll('[data-case]').forEach(b=>b.addEventListener('click',()=>openCase(b.dataset.case)));
   const yc=app.querySelector('[data-act="yescheck"]');if(yc)yc.addEventListener('click',openYesCheck);
+  const ad=app.querySelector('[data-act="askdrill"]');if(ad)ad.addEventListener('click',openAsk);
 }
 function _sting(s){s=String(s||'');const end=/(^|[.!?”]\s)\[\[[^\]]+\]\]$/.test(s.trim());return escHtml(s.trim()).replace(/\[\[(.+?)\]\]/g,'<mark class="sting'+(end?' own':'')+'">$1</mark>');}
 function _unsting(s){return String(s||'').replace(/\[\[|\]\]/g,'');}
@@ -2876,14 +3017,14 @@ function renderAdvice(app){
 // Every 30 days K checks in: is it still the same, or has something new come up?
 // ═══════════════════════════════════════════════════════════════════════════
 const SUG_MAP={
-  money:{t:'money talks',practice:'discount',read:'market-rate',quick:'Can you do better on the price?',cases:['discount','market-rate','too-expensive','big-name','free-now']},
-  no:{t:'saying no',practice:'one-more',read:'friend-free',quick:'Can you take this on as well? It needs to be done by Monday.',cases:['one-more','friend-free','walk-away']},
-  interview:{t:'interviews',practice:'stand-out',read:'one-project',quick:'Why should we hire you?',cases:['stand-out','career-change','all-over','one-project']},
+  money:{t:'money talks',practice:'discount',read:'market-rate',quick:'Can you do better on the price?',cases:['discount','market-rate','too-expensive','big-name','free-now','first-pay','raise']},
+  no:{t:'saying no',practice:'one-more',read:'friend-free',quick:'Can you take this on as well? It needs to be done by Monday.',cases:['one-more','friend-free','walk-away','weekend-work']},
+  interview:{t:'interviews',practice:'stand-out',read:'one-project',quick:'Why should we hire you?',cases:['stand-out','internship','career-change','all-over','one-project']},
   intro:{t:'introducing yourself',practice:'what-you-do',read:'known-for-one',quick:'So, what do you do?',cases:['what-you-do','known-for-one','stand-out']},
-  smalltalk:{t:'small talk',practice:'introvert',read:'follow-up',quick:'So how do you know the host?',cases:['introvert','follow-up']},
-  meetings:{t:'speaking up in meetings',practice:'nervous',read:'boss-plan',quick:'Any thoughts before we move on?',cases:['nervous','too-long','boss-plan']},
-  difficult:{t:'difficult people',practice:'own-mistake',read:'credit',quick:'Why wasn’t this caught earlier?',cases:['credit','approved-rejected','walk-away','own-mistake','deadlines','team-pay']},
-  nerves:{t:'nerves',practice:'nervous',read:'introvert',quick:'Can you give us a quick update on your project?',cases:['nervous','introvert']},
+  smalltalk:{t:'small talk',practice:'introvert',read:'follow-up',quick:'So how do you know the host?',cases:['introvert','follow-up','senior-event']},
+  meetings:{t:'speaking up in meetings',practice:'nervous',read:'boss-plan',quick:'Any thoughts before we move on?',cases:['nervous','class-question','too-long','boss-plan','senior-push']},
+  difficult:{t:'difficult people',practice:'own-mistake',read:'credit',quick:'Why wasn’t this caught earlier?',cases:['credit','vague-blame','approved-rejected','walk-away','own-mistake','deadlines','team-pay','group-project']},
+  nerves:{t:'nerves',practice:'nervous',read:'introvert',quick:'Can you give us a quick update on your project?',cases:['nervous','introvert','class-question','critique']},
   present:{t:'presenting',practice:'too-long',read:'too-technical',quick:'So, in plain English, what does this do for us?',cases:['too-long','too-technical']}
 };
 const SUG_STAGE={freelance:'money',jobhunt:'interview',student:'interview',switch:'interview',early:'meetings',mid:'difficult',senior:'no'};
@@ -4070,6 +4211,65 @@ function renderQuick(app){
   on('[data-act="strong"]',()=>qaStrong());
   on('[data-act="again"]',()=>{speakStop();_qaPick(true);QA.n++;QA.phase='q';QA.take=null;QA.notes=null;QA.strong=null;render();});
   if(ph==='rec'&&QA.rec)recLevelLoop(app.querySelector('#qa-wave'));
+}
+// ═══ Ask a good question: a short drill built on Kian's view of questions ═══
+const ASK_SCENES=[
+  {who:'A senior game composer',what:'just finished a talk on scoring her first big game. She mentioned she rewrote the main theme six times.'},
+  {who:'Your teacher',what:'just explained why some melodies sound sad even in a major key. “Any questions?”'},
+  {who:'The interviewer',what:'says: “That’s all from us. Do you have any questions for us?” The role is junior designer at a branding studio.'},
+  {who:'A new client',what:'wants a logo that feels “premium but friendly” for a tea shop opening in March.'},
+  {who:'A founder on a panel',what:'said the hardest part of their first year was letting a friend go.'},
+  {who:'Your new manager',what:'in your first one-on-one, says: “So, anything you want to ask me?”'},
+  {who:'A photographer you admire',what:'shows a series shot entirely on an old phone, and says the limits made it better.'},
+  {who:'A mentor, over coffee',what:'tells you they nearly quit their career at thirty, then changed direction.'}
+];
+let ASK={i:0,q:'',res:null,loading:false,err:null};
+function _askNew(){let i;do{i=Math.floor(Math.random()*ASK_SCENES.length);}while(ASK_SCENES.length>1&&i===ASK.i);ASK={i,q:'',res:null,loading:false,err:null};}
+function openAsk(){_askNew();go('ask');}
+async function askJudge(){
+  const q=(ASK.q||'').trim();if(!q)return;
+  const sc=ASK_SCENES[ASK.i];
+  if(!_aiOn()){ASK.res={offline:true};render();return;}
+  ASK.loading=true;ASK.err=null;render();
+  const sys=K_VOICE+'\n'+K_PLAIN+'\nYou judge ONE question someone asked, by Kian’s standard. No question is stupid; the fear of asking is. A good question: comes from genuine curiosity; ties to something the person actually said (shows they listened); can’t be answered by a quick search; is short and open (how, why, what made you); fits the moment and respects the other person’s time. Find what worked first. Be encouraging and specific.\n\nReply with JSON only: {"verdict":"strong|good|weak","worked":"one short sentence on what worked, quoting a few of their words","fix":"one short sentence on the single change that would make it better (empty if strong)","better":"a better version of their question, in their voice, under 25 words"}';
+  try{
+    const raw=await callCoach(sys,'THE MOMENT: '+sc.who+' '+sc.what+'\n\nTHEIR QUESTION: '+q,{maxTokens:300,featureId:'ask-q'});
+    const j=_jsonFrom(raw);
+    ASK.res={verdict:/strong|good|weak/.test(j.verdict)?j.verdict:'good',worked:_clean(j.worked),fix:_clean(j.fix),better:_clean(j.better)};
+  }catch(e){ASK.err=e;ASK.res={offline:true};}
+  ASK.loading=false;render();
+}
+function renderAsk(app){
+  if(ASK.i==null)_askNew();
+  const sc=ASK_SCENES[ASK.i],r=ASK.res;
+  let h='<main class="scr p-green">'+gBar('Ask a good question','library');
+  h+='<div class="g-block"><div class="g-kick">The moment</div><div class="g-big" style="font-size:22px">'+escHtml(sc.who)+'</div><p style="margin-top:8px;font-size:15px;line-height:1.45;font-weight:500">'+escHtml(sc.what)+'</p></div>';
+  if(!r){
+    h+='<div class="g-card tight"><div class="g-row top"><span class="t"><b>Your turn</b><span>Ask one question. Something you’d genuinely want to know.</span></span></div></div>';
+    h+='<textarea class="ask-in" id="ask-in" rows="3" placeholder="Type your question…">'+escHtml(ASK.q)+'</textarea>';
+    h+='<div class="push"></div>'+gCta(ASK.loading?'K is reading it…':'Ask it','ask-go',{disabled:ASK.loading});
+    h+='<button class="link case-peek" data-act="ask-new">Different moment</button>';
+  }else{
+    h+='<div class="g-card"><div class="g-kick">You asked</div><div class="case-line" style="margin-top:6px">“'+escHtml(ASK.q.trim())+'”</div></div>';
+    if(r.offline){
+      h+='<div class="g-card tight"><div class="g-k">'+kav()+'<b style="font-size:15px">Check it yourself</b></div>'+
+        ['Does it tie to something they actually said?','Is it something you genuinely want to know?','Could you answer it with a quick search? (If yes, ask something else.)','Is it short and open: how, why, what made you…?'].map(x=>'<div class="g-row top"><span class="t"><span>'+escHtml(x)+'</span></span></div>').join('')+'</div>';
+    }else{
+      const V2={strong:'Strong question.',good:'Good question.',weak:'Not there yet.'}[r.verdict];
+      h+='<div class="g-card"><div class="g-k">'+kav()+'<b style="font-size:16px">'+V2+'</b></div>'+(r.worked?'<p style="margin-top:10px;font-size:15px;line-height:1.45">'+escHtml(r.worked)+'</p>':'')+(r.fix?'<p style="margin-top:6px;font-size:15px;line-height:1.45;color:var(--ink-2)">'+escHtml(r.fix)+'</p>':'')+'</div>';
+      if(r.better&&r.verdict!=='strong')h+='<div class="g-card case-k"><b style="font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)">Try it like this</b><div class="case-line">'+escHtml(r.better)+'</div></div>';
+    }
+    h+='<div class="g-chips"><button class="g-chip" data-tech="good-question">Ask a good question</button></div>';
+    h+='<div class="push"></div>'+gCta('Next moment','ask-new',{icon:'again'});
+    h+='<button class="link case-peek" data-act="ask-retry">Ask this one again</button>';
+  }
+  h+='</main>';
+  app.innerHTML=h;wireCommon(app);
+  const ta=app.querySelector('#ask-in');if(ta)ta.addEventListener('input',()=>{ASK.q=ta.value;});
+  const on=(s,f)=>{const b=app.querySelector(s);if(b)b.addEventListener('click',f);};
+  on('[data-act="ask-go"]',askJudge);
+  on('[data-act="ask-new"]',()=>{_askNew();render();});
+  on('[data-act="ask-retry"]',()=>{ASK.res=null;ASK.q='';render();});
 }
 </script>
 </body>

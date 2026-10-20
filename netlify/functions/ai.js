@@ -43,6 +43,7 @@ const DAILY_LIMITS = {
   "nb-note":     6,
   "desk-route":  30,
   "desk-advice": 15,
+  "ask-q":       25,
   "default":     20
 };
 const GRACE = 8;
