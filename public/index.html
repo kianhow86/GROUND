@@ -1859,9 +1859,9 @@ async function recWhisper(r){
   return r;
 }
 // ── The other side's voice ─────────────────────────────────────────────────
-const VOICE_ON=false; // the other side's voice: off until a more natural voice is set up
-const TTS={on:false,voice:null};
-function ttsOk(){return TTS.on&&(('speechSynthesis' in window)||!TTS.cloudOff);}
+const VOICE_ON=true; // the other side's voice: natural cloud voice only, never the robotic phone voice
+const TTS={on:true,voice:null};
+function ttsOk(){return TTS.on&&!TTS.cloudOff;}
 // Natural voices from the server (OpenAI gpt-4o-mini-tts); the phone's own voice is the fallback.
 const _TTS_VOICES=['ash','coral','sage','verse','ballad','echo','shimmer','onyx'];
 function ttsVoiceFor(name){let h=0;const s=String(name||'');for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return _TTS_VOICES[h%_TTS_VOICES.length];}
@@ -1900,7 +1900,7 @@ async function speak(text,opts){
   if(!TTS.on||!text)return false;
   TTS._stopped=false;
   try{return await _cloudSpeak(_stripQ(text),opts);}catch(e){if(TTS._stopped){TTS._stopped=false;return false;}}
-  return _deviceSpeak(text,opts);
+  return false; // no robotic fallback: if the natural voice isn't available, stay text-only
 }
 function _deviceSpeak(text,opts){
   return new Promise(resolve=>{
