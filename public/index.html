@@ -1015,60 +1015,51 @@ html[data-theme="dark"] .c-start{--c:#A9D98E}html[data-theme="dark"] .c-career{-
 .shelf-card.sc-dark .shelf-st{left:auto;right:12px;color:var(--ink-3);opacity:1}
 html[data-theme="light"] .sc-cat{color:var(--pd)}html[data-theme="light"] .sc-cat i{background:var(--pd)}
 
-/* Choose */
-.ch-scr{gap:12px}
-.ch-scene{padding:22px 20px}
-.ch-scene p{font-size:17px;font-weight:600;line-height:1.45;margin-top:8px}
-.ch-scene .g-kick+p{margin-top:12px}
-.ch-sting{margin-top:14px;font-size:21px;font-weight:900;line-height:1.25}
+
+/* Choose: every size scales with --k; the screen picks the largest --k that fits, then cards share leftover space */
+.ch-scr{--k:1;gap:calc(12px*var(--k))}
+.ch-scene{padding:calc(20px*var(--k)) calc(19px*var(--k))}
+.ch-scene p{font-size:calc(17px*var(--k));font-weight:600;line-height:1.42;margin-top:calc(7px*var(--k))}
+.ch-scene .g-kick+p{margin-top:calc(11px*var(--k))}
+.ch-sting{margin-top:calc(12px*var(--k));font-size:calc(21px*var(--k));font-weight:900;line-height:1.25}
 .ch-sting span{background:rgba(0,0,0,.12);padding:0 4px;border-radius:4px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
-.ch-scene .ch-to{margin-top:14px;opacity:.8}
-.ch-line{font-size:21px;font-weight:900;line-height:1.3;margin-top:6px}
-.ch-q{margin-top:6px}
-.ch-opts{display:flex;flex-direction:column;gap:10px}
-.ch-opt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;border-radius:18px;padding:16px;background:var(--card);border:1px solid var(--line);color:var(--ink)}
+.ch-scene .ch-to{margin-top:calc(12px*var(--k));opacity:.8}
+.ch-line{font-size:calc(21px*var(--k));font-weight:900;line-height:1.3;margin-top:calc(5px*var(--k))}
+.ch-q{margin-top:calc(4px*var(--k))}
+.ch-opts{display:flex;flex-direction:column;gap:calc(10px*var(--k))}
+.ch-opt{display:flex;gap:12px;align-items:center;width:100%;text-align:left;border-radius:18px;padding:calc(15px*var(--k)) 16px;background:var(--card);border:1px solid var(--line);color:var(--ink)}
 .ch-opt b{width:26px;height:26px;border-radius:50%;background:var(--seg-bg);display:grid;place-items:center;flex-shrink:0;font-size:12.5px}
-.ch-opt span{font-size:16.5px;font-weight:600;line-height:1.45}
+.ch-opt span{font-size:calc(16.5px*var(--k));font-weight:600;line-height:1.42}
 .ch-opt.sel{border-color:var(--chc)}
-.ch-opt.sel span{font-size:15.5px}
+.ch-opt.sel span{font-size:calc(15.5px*var(--k))}
 .ch-foot{text-align:center}
 .ch-hint{text-align:center;margin:-2px 0 0}
-.ch-out{padding:20px}
-.ch-m{font-size:30px;font-weight:900;letter-spacing:-.02em;line-height:1.1;margin-top:6px}
-.ch-sub{font-size:19px;font-weight:800;line-height:1.25}
-.ch-re{margin-top:14px;font-size:16px;line-height:1.5;color:var(--ink-2)}
+.ch-out{padding:calc(19px*var(--k)) 20px}
+.ch-m{font-size:calc(30px*var(--k));font-weight:900;letter-spacing:-.02em;line-height:1.1;margin-top:calc(6px*var(--k))}
+.ch-sub{font-size:calc(19px*var(--k));font-weight:800;line-height:1.25}
+.ch-re{margin-top:calc(12px*var(--k));font-size:calc(16px*var(--k));line-height:1.48;color:var(--ink-2)}
 .ch-re b{color:var(--ink)}
-.ch-k{padding:18px}
+.ch-k{padding:calc(17px*var(--k)) 18px}
 .ch-kh{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
-.ch-kr{margin-top:12px}
-.ch-kr small{display:block;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
-.ch-kr p{font-size:15.5px;font-weight:600;line-height:1.45;margin-top:3px}
-.ch-allh{font-size:24px;margin-top:2px}
-.ch-all{display:flex;flex-direction:column;gap:10px}
-.ch-path{border-radius:18px;background:var(--card);border:1px solid var(--line);padding:15px 16px}
+.ch-kr{margin-top:calc(11px*var(--k))}
+.ch-kr small{display:block;font-size:calc(10.5px*var(--k));font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.ch-kr p{font-size:calc(15.5px*var(--k));font-weight:600;line-height:1.42;margin-top:3px}
+.ch-allh{font-size:calc(24px*var(--k));margin-top:2px}
+.ch-all{display:flex;flex-direction:column;gap:calc(10px*var(--k))}
+.ch-path{border-radius:18px;background:var(--card);border:1px solid var(--line);padding:calc(14px*var(--k)) 16px;display:flex;flex-direction:column;justify-content:center}
 .ch-path.on{border-color:var(--chc);box-shadow:0 0 0 1px var(--chc)}
 .ch-ph{display:flex;flex-direction:column;gap:2px}
-.ch-ph small{font-size:12.5px;font-weight:700;color:var(--ink-3)}
-.ch-ph b{font-size:16.5px;font-weight:800;color:var(--chc)}
+.ch-ph small{font-size:calc(12.5px*var(--k));font-weight:700;color:var(--ink-3)}
+.ch-psay{display:block;font-size:calc(14.5px*var(--k));font-weight:600;line-height:1.38;color:var(--ink);margin:3px 0 4px}
+.ch-ph b{font-size:calc(16.5px*var(--k));font-weight:800;color:var(--chc)}
 html[data-theme="light"] .ch-ph b,html[data-theme="light"] .ch-m{filter:brightness(.62) saturate(1.4)}
-.ch-path p{font-size:14.5px;color:var(--ink-2);line-height:1.4;margin-top:4px}
+.ch-path p{font-size:calc(14.5px*var(--k));color:var(--ink-2);line-height:1.38;margin-top:4px}
+.ch-nocost .ch-path p{display:none}
 .ch-nb b{font-size:16px}
-@media (max-height:740px){
-  .ch-scene{padding:16px}.ch-scene p{font-size:15.5px;margin-top:4px}.ch-sting{font-size:18px;margin-top:8px}.ch-scene .ch-to{margin-top:8px}.ch-line{font-size:18px}
-  .ch-opt{padding:11px 14px}.ch-opt span{font-size:15px;line-height:1.35}.ch-opts{gap:8px}
-  .ch-m{font-size:25px}.ch-sub{font-size:17px}.ch-out,.ch-k{padding:14px 16px}.ch-re{margin-top:8px;font-size:14.5px}.ch-kr{margin-top:8px}.ch-kr p{font-size:14px}
-  .ch-path{padding:11px 14px}.ch-path p{font-size:13.5px}.ch-ph b{font-size:15px}
-}
-
-.ch-t1 .ch-scene{padding:16px 18px}.ch-t1 .ch-scene p{font-size:15.5px;margin-top:4px}.ch-t1 .ch-sting{font-size:18px;margin-top:8px}.ch-t1 .ch-scene .ch-to{margin-top:8px}.ch-t1 .ch-line{font-size:18px}
-.ch-t1 .ch-opt{padding:12px 14px}.ch-t1 .ch-opt span{font-size:15px;line-height:1.38}.ch-t1 .ch-opts{gap:8px}
-.ch-t1 .ch-out,.ch-t1 .ch-k{padding:14px 16px}.ch-t1 .ch-m{font-size:25px}.ch-t1 .ch-sub{font-size:17px}.ch-t1 .ch-re{margin-top:8px;font-size:14.5px}.ch-t1 .ch-kr{margin-top:8px}.ch-t1 .ch-kr p{font-size:14px}
-.ch-t2{gap:8px}.ch-t2 .ch-scene{padding:13px 16px}.ch-t2 .ch-scene p{font-size:14px;line-height:1.35;margin-top:2px}.ch-t2 .ch-sting{font-size:16px;margin-top:6px}.ch-t2 .ch-scene .ch-to{margin-top:6px}.ch-t2 .ch-line{font-size:16px;margin-top:2px}
-.ch-t2 .ch-opt{padding:9px 12px}.ch-t2 .ch-opt span{font-size:14px;line-height:1.32}.ch-t2 .ch-opts{gap:6px}.ch-t2 .ch-q{margin-top:2px}
-.ch-t2 .ch-out,.ch-t2 .ch-k{padding:12px 14px}.ch-t2 .ch-m{font-size:22px}.ch-t2 .ch-sub{font-size:15.5px}.ch-t2 .ch-re{margin-top:6px;font-size:13.5px}.ch-t2 .ch-kr{margin-top:6px}.ch-t2 .ch-kr p{font-size:13.5px;line-height:1.35}.ch-t2 .ch-opt.sel span{font-size:14px}
-.g-cta.case-choose{background:transparent;border:1px solid var(--line);box-shadow:none;min-height:50px;height:50px;font-size:15.5px}
-.g-cta.case-choose .ar{width:34px;height:34px;background:var(--seg-bg);color:var(--ink)}
-@media (max-height:740px){.g-cta.case-choose{min-height:44px;height:44px;font-size:14.5px}.g-cta.case-choose .ar{width:30px;height:30px}.case-peek{min-height:36px}}
+.ch-fill .ch-opts,.ch-fill .ch-all{flex:1}
+.ch-fill .ch-opt,.ch-fill .ch-path{flex:1 1 auto}
+.ch-fill .ch-out,.ch-fill .ch-k{flex:1 1 auto;display:flex;flex-direction:column;justify-content:center}
+.ch-fill>.push{flex:0 0 0;margin-top:0}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -4828,24 +4819,31 @@ function renderChoose(app){
     h+='<div class="g-card ch-out"><div class="g-kick">What happens</div><div class="ch-m" style="color:'+st.c+'">'+escHtml(o.m)+'</div><div class="ch-sub">'+escHtml(o.sub)+'</div><p class="ch-re">'+(/^[“"]/.test(o.re)?'<b>'+escHtml(c.them)+':</b> ':'')+escHtml(o.re)+'</p></div>';
     h+='<div class="g-card ch-k"><div class="ch-kh">'+kav('xs')+'<span>K · if this is you</span></div>'+
       [['Why you picked it',o.why],['What it costs',o.cost],['Next time',o.next]].map(r=>'<div class="ch-kr"><small>'+r[0]+'</small><p>'+escHtml(r[1])+'</p></div>').join('')+'</div>';
-    h+='<div class="push"></div>'+gCta('Say it your way','ch-say')+'<button class="g-ghost" data-act="ch-all">See where the other choices lead</button>';
+    h+='<div class="push"></div>'+gCta('See where the others lead','ch-all')+'<button class="g-ghost" data-act="ch-done">Done</button>';
   }else{
-    h+='<div class="h1 ch-allh">Where each choice leads</div><div class="ch-all">'+c.o.map((o,i)=>{const st=CH_STYLE[o.s];return '<div class="ch-path'+(i===CH.pick?' on':'')+'" style="--chc:'+st.c+'"><div class="ch-ph"><small>'+CH_L[i]+' · '+escHtml(o.lab)+'</small><b>'+escHtml(o.m)+', '+escHtml(o.sub)+'</b></div><p>'+escHtml(o.cost)+'</p></div>';}).join('')+'</div>';
+    h+='<div class="h1 ch-allh">Where each choice leads</div><div class="ch-all">'+c.o.map((o,i)=>{const st=CH_STYLE[o.s];return '<div class="ch-path'+(i===CH.pick?' on':'')+'" style="--chc:'+st.c+'"><div class="ch-ph"><small>'+CH_L[i]+' · '+escHtml(o.lab)+(i===CH.pick?' · your pick':'')+'</small><span class="ch-psay">'+escHtml(o.say)+'</span><b>'+escHtml(o.m)+', '+escHtml(o.sub)+'</b></div><p>'+escHtml(o.cost)+'</p></div>';}).join('')+'</div>';
     const sty=chStyle();
-    h+='<div class="push"></div>'+gCta('Say it your way','ch-say')+'<p class="quiet ch-foot">'+(sty?'K’s note on you: “'+escHtml(CH_STYLE[sty].t)+'.” It’s in your notebook.':'K notes your choices in your notebook.')+'</p>';
+    h+='<div class="push"></div>'+(sty?'<p class="quiet ch-foot">K’s note on you: “'+escHtml(CH_STYLE[sty].t)+'.” It’s in your notebook.</p>':'')+gCta('Done','ch-done',{icon:'check'})+'<button class="link case-peek" data-act="ch-say">Want to say it out loud? Try it →</button>';
   }
   h+='</main>';
   app.innerHTML=h;wireCommon(app);_chFit(app);
   app.querySelectorAll('[data-pick]').forEach(b=>b.addEventListener('click',()=>{const i=+b.dataset.pick;CH.pick=i;CH.step='res';_chList().push({id:CH.id,o:i,s:c.o[i].s,iso:new Date().toISOString()});if(S.choices.length>50)S.choices=S.choices.slice(-50);save();render();}));
   const on=(s,f)=>{const el=app.querySelector(s);if(el)el.addEventListener('click',f);};
   on('[data-act="ch-all"]',()=>{CH.step='all';render();});
+  on('[data-act="ch-done"]',()=>{RW.phase='setup';RW.question='';RW.fromCase=null;go('real');});
   app.querySelectorAll('[data-act="ch-say"]').forEach(b=>b.addEventListener('click',()=>{
     if(!_canStartSession()){openLimitSheet('month');return;}
     const cs=_case(CH.id);if(cs)caseToPractice(cs,{noAdapt:true});RW.mode='turns';RW.phase='turn';RW.rec=false;go('real');rwSpeakLine();}));
 }
 // One screen: tighten step by step if the content is too tall for this phone
-function _chFit(app){const m=app.querySelector('main');if(!m)return;const over=()=>document.scrollingElement.scrollHeight>window.innerHeight+1;
-  if(over())m.classList.add('ch-t1');if(over()){m.classList.remove('ch-t1');m.classList.add('ch-t2');}}
+function _chFit(app){const m=app.querySelector('main');if(!m)return;
+  const over=()=>document.scrollingElement.scrollHeight>window.innerHeight;
+  const fit=()=>{let lo=.7,hi=1.35;m.style.setProperty('--k',hi);if(!over())return true;
+    for(let n=0;n<8;n++){const mid=(lo+hi)/2;m.style.setProperty('--k',mid);if(over())hi=mid;else lo=mid;}
+    m.style.setProperty('--k',lo);return !over();};
+  m.classList.remove('ch-nocost','ch-fill');
+  if(!fit()||parseFloat(m.style.getPropertyValue('--k'))<.86){m.classList.add('ch-nocost');fit();}
+  m.classList.add('ch-fill');if(over())m.classList.remove('ch-fill');}
 </script>
 </body>
 </html>
