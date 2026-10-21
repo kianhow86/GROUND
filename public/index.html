@@ -1074,6 +1074,7 @@ html[data-theme="light"] .ch-ph b,html[data-theme="light"] .ch-m{filter:brightne
 @media (max-height:740px){.rw-kq,.rw-kn .g-better{font-size:17px}.rw-kw,.rw-kn .g-said{font-size:14px}.rw-kn .g-why{font-size:13.5px}}
 .pi-fill>.g-card:not(.tight){flex:1 1 auto;display:flex;flex-direction:column;justify-content:center}
 .pi-fill>.push{margin-top:0}
+.g-bar h1.long{font-size:17px;letter-spacing:-.01em}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -1313,7 +1314,7 @@ function ic(k,cls){return '<svg class="ic'+(cls?' '+cls:'')+'" viewBox="0 0 24 2
 function kav(cls){return '<span class="kav'+(cls?' '+cls:'')+'"><img src="'+COACH_AVATAR+'" alt="K"></span>';}
 // Top bar. When back doesn't lead to the hub, a hub button sits at the right: one rule, one place.
 const HUB_BTN='<button class="g-back g-home" data-go="hub" aria-label="Hub"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg><span>Hub</span></button>';
-function gBar(title,back,dots){back=back||'hub';return '<div class="g-bar"><button class="g-back" data-go="'+back+'" aria-label="Back">'+ic('back')+'</button><h1>'+escHtml(title)+'</h1>'+(dots?'<div class="g-dots" aria-hidden="true">'+dots.map((_,i)=>'<i'+(dots[i]?' class="on"':'')+'></i>').join('')+'</div>':'')+(back!=='hub'?HUB_BTN:'')+'</div>';}
+function gBar(title,back,dots){back=back||'hub';return '<div class="g-bar"><button class="g-back" data-go="'+back+'" aria-label="Back">'+ic('back')+'</button><h1'+(String(title).length>18?' class="long"':'')+'>'+escHtml(title)+'</h1>'+(back!=='hub'?HUB_BTN:'')+'</div>';}
 function gDots(n,on){const a=[];for(let i=0;i<n;i++)a.push(i===on);return a;}
 function gCta(label,action,opts){opts=opts||{};return '<button class="g-cta'+(opts.sec?' sec':'')+'" data-act="'+action+'"'+(opts.disabled?' disabled':'')+(opts.style?' style="'+opts.style+'"':'')+'>'+escHtml(label)+'<span class="ar">'+ic(opts.icon||'arrow','s')+'</span></button>';}
 
