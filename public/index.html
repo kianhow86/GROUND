@@ -997,6 +997,23 @@ html[data-theme="dark"] .c-start{--c:#A9D98E}html[data-theme="dark"] .c-career{-
 .rw-topics .lib-topic.on{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--p)}
 .rw-surprise{border-style:dashed!important}
 .lib-li .think{display:flex;gap:3px}
+/* Library fills the screen: topic tiles grow into the free space */
+.lib-scr .lib-grid{flex:1;grid-auto-rows:1fr;min-height:0}
+.lib-scr .lib-topic{min-height:0;padding:16px 18px;gap:4px;border-radius:22px}
+.lib-scr .lib-topic b{font-size:clamp(16px,2.6dvh,20px);line-height:1.15}
+.lib-scr .lib-topic span{font-size:13.5px}
+.lib-scr .lib-tool{min-height:clamp(54px,8.5dvh,76px);padding:12px;border-radius:20px}
+.lib-scr .lib-tool b{font-size:14.5px}
+.lib-scr .shelf-card{height:clamp(84px,15dvh,140px)}
+@media (max-height:740px){.lib-scr .lib-topic{padding:10px 14px;gap:2px}.lib-scr .lib-topic span{font-size:12.5px}.lib-scr .lib-grid{gap:8px}}
+
+.p-yellow{--p:#F2D675;--pi:#2A2205;--pd:#8A6D0B}
+/* For you: dark cards with a category tag, so they don't blend into the topic tiles */
+.shelf-card.sc-dark{background:var(--card);color:var(--ink);border:1px solid var(--line);justify-content:space-between}
+.sc-cat{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:800;color:var(--p);letter-spacing:.01em}
+.sc-cat i{width:8px;height:8px;border-radius:50%;background:var(--p);flex-shrink:0}
+.shelf-card.sc-dark .shelf-st{left:auto;right:12px;color:var(--ink-3);opacity:1}
+html[data-theme="light"] .sc-cat{color:var(--pd)}html[data-theme="light"] .sc-cat i{background:var(--pd)}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -2180,11 +2197,11 @@ try{if('speechSynthesis'in window)speechSynthesis.onvoiceschanged=()=>{};}catch(
 const CASE_CATS=[
   {k:'start',t:'Starting out',c:'c-start',p:'p-green'},
   {k:'job',t:'Getting in',c:'c-job',p:'p-lav'},
-  {k:'career',t:'Moving up',c:'c-career',p:'p-blue'},
+  {k:'career',t:'Moving up',c:'c-career',p:'p-yellow'},
   {k:'client',t:'Money & clients',c:'c-money',p:'p-teal'},
   {k:'disagree',t:'Disagreement',c:'c-clash',p:'p-pink'},
   {k:'work',t:'Being heard',c:'c-work',p:'p-org'},
-  {k:'people',t:'People',c:'c-people',p:'p-lav'}
+  {k:'people',t:'People',c:'c-people',p:'p-blue'}
 ];
 const CASES=[
   // ── Disagreement ──
@@ -2628,7 +2645,7 @@ function renderLibrary(app){
     h+=gBar('Library','hub');
     h+='<div class="lib-tools"><button class="lib-tool" data-act="yescheck"><span class="lt-ic yc">'+ic('check','s')+'</span><b>Should I say yes?</b></button><button class="lib-tool" data-act="askdrill"><span class="lt-ic ask">?</span><b>Ask a good question</b></button></div>';
     const mine=_libMine();
-    if(mine.length)h+='<section class="shelf c-job"><div class="shelf-h"><span class="lib-dot"></span><b>For you</b><button class="link lib-all" data-topic="mine">See all '+mine.length+'</button></div><div class="shelf-row">'+mine.slice(0,6).map(c=>'<button class="shelf-card '+_caseCat(c.cat).p+'" data-case="'+c.id+'">'+stTag(c)+'<b>'+escHtml(c.title)+'</b></button>').join('')+'</div></section>';
+    if(mine.length)h+='<section class="shelf c-job"><div class="shelf-h"><span class="lib-dot"></span><b>For you</b><button class="link lib-all" data-topic="mine">See all '+mine.length+'</button></div><div class="shelf-row">'+mine.slice(0,6).map(c=>{const cc=_caseCat(c.cat);return '<button class="shelf-card sc-dark '+cc.p+'" data-case="'+c.id+'"><span class="sc-cat"><i></i>'+escHtml(cc.t)+'</span>'+stTag(c)+'<b>'+escHtml(c.title)+'</b></button>';}).join('')+'</div></section>';
     h+='<div class="lib-grid">'+CASE_CATS.map(x=>{const n=CASES.filter(c=>c.cat===x.k).length;return '<button class="lib-topic '+x.p+'" data-topic="'+x.k+'"><b>'+escHtml(x.t)+'</b><span>'+n+' cases</span></button>';}).join('')+
       '<button class="lib-topic lib-tk" data-topic="toolkit"><b>The toolkit</b><span>'+Object.keys(TECHNIQUES).length+' techniques</span></button></div>';
   }
