@@ -991,6 +991,12 @@ html[data-theme="dark"] .c-start{--c:#A9D98E}html[data-theme="dark"] .c-career{-
 @keyframes kwLine{0%{stroke-dashoffset:80;opacity:1}20%{stroke-dashoffset:0}90%{stroke-dashoffset:0;opacity:1}100%{stroke-dashoffset:0;opacity:0}}
 @keyframes kwPen{0%{transform:translate(22px,40px)}20%{transform:translate(98px,42px)}25%{transform:translate(22px,60px)}45%{transform:translate(86px,62px)}50%{transform:translate(22px,80px)}70%{transform:translate(94px,82px)}75%{transform:translate(22px,100px)}92%{transform:translate(68px,102px)}100%{transform:translate(22px,40px)}}
 @media (prefers-reduced-motion:reduce){.kw-av,.kw-pad,.kw-l,.kw-pen{animation:none}.kw-l{stroke-dashoffset:0}}
+
+.rw-topics .lib-topic{opacity:.55;transition:opacity .15s,transform .15s}
+.rw-topics .lib-topic.on,.rw-topics .rw-surprise{opacity:1}
+.rw-topics .lib-topic.on{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--p)}
+.rw-surprise{border-style:dashed!important}
+.lib-li .think{display:flex;gap:3px}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -1030,6 +1036,7 @@ const CHANGELOG=[
   {v:'1.4',d:'2026-10-19',items:[
     'If you’ve told K what’s hardest, the home screen suggests where to start: one pick from K while you’re new, three to choose from after that. You can always type your own situation instead.',
     'The case of the day now comes from what you told K, not at random.',
+    'Practice a talk: pick a topic tile, tap a situation and you’re in. Or let K surprise you.',
     'While K works, you can watch K take notes.',
     'Before you practice, a simple Do and Don’t: the principle, and the trap most people fall into.',
     'Home suggestions change every day and after every session, so you don’t see the same one twice.',
@@ -4068,10 +4075,11 @@ function renderReal(app){
     const g=RW_GOALS.find(x=>x.k===RW.goal);
     h+=gBar('Practice a talk','hub',_rwDots());
     h+='<h2 class="g-h">What’s coming up?</h2>';
-    h+='<div class="g-chips">'+RW_GOALS.map(x=>'<button class="g-chip'+(x.k===RW.goal?' on':'')+'" data-goal="'+x.k+'">'+x.t+'</button>').join('')+'</div>';
-    h+='<div class="stack" style="gap:8px">'+g.items.map(k=>{const s=TT_REAL[k];return '<button class="g-card g-sit'+(k===RW.scenario?' on':'')+'" data-scen="'+k+'"><span class="rad"></span><span class="t"><b>'+escHtml(RW_PLAIN[k]||s.name)+'</b><span>'+escHtml(RW_PLAIN[k]?s.name:s.sub)+'</span></span></button>';}).join('')+'</div>';
-    if(!_aiOn())h+='<p class="small center-t">AI is off or you’re offline, so scenes come from the built-in set, with no follow-ups or notes.</p>';
-    h+='<div class="push"></div><div class="g-row2"><button class="g-back" style="width:56px;height:56px" data-act="shuffle" aria-label="Random scenario"'+(RW.loadingScene?' disabled':'')+'>'+ic('shuffle','s')+'</button>'+gCta(RW.loadingScene?'Setting the scene…':'Get a scenario','get',{disabled:RW.loadingScene})+'</div>';
+    const GP={client:'p-teal',job:'p-lav',disagree:'p-pink',work:'p-org',people:'p-blue'};
+    h+='<div class="lib-grid rw-topics">'+RW_GOALS.map(x=>'<button class="lib-topic '+GP[x.k]+(x.k===RW.goal?' on':'')+'" data-goal="'+x.k+'"><b>'+x.t+'</b><span>'+x.items.length+(x.items.length===1?' situation':' situations')+'</span></button>').join('')+
+      '<button class="lib-topic lib-tk rw-surprise" data-act="surprise"'+(RW.loadingScene?' disabled':'')+'><b>Surprise me</b><span>K picks one</span></button></div>';
+    h+='<div class="g-kick" style="margin-top:2px">'+escHtml(g.t)+'</div><div class="lib-list">'+g.items.map(k=>'<button class="lib-li" data-scen="'+k+'"'+(RW.loadingScene?' disabled':'')+'><span class="lib-lt"><b>'+escHtml(RW_PLAIN[k]||TT_REAL[k].name)+'</b></span>'+(RW.loadingScene&&RW.scenario===k?'<span class="think"><i></i><i></i><i></i></span>':ic('chev','s'))+'</button>').join('')+'</div>';
+    if(!_aiOn())h+='<p class="small center-t">AI is off or you’re offline, so scenes come from the built-in set.</p>';
   }else if(ph==='brief'){
     const b=_rwBriefOk()?RW.brief:null,cl=_rwIsClient();
     h+=gBar(sc.name,'rw-setup',_rwDots());
@@ -4146,7 +4154,8 @@ function renderReal(app){
   app.innerHTML=h;
   const on=(s,f)=>{const el=app.querySelector(s);if(el)el.addEventListener('click',f);};
   app.querySelectorAll('[data-goal]').forEach(b=>b.addEventListener('click',()=>{RW.goal=b.dataset.goal;const g=RW_GOALS.find(x=>x.k===RW.goal);if(!g.items.includes(RW.scenario))RW.scenario=g.items[0];render();}));
-  app.querySelectorAll('[data-scen]').forEach(b=>b.addEventListener('click',()=>{RW.scenario=b.dataset.scen;render();}));
+  app.querySelectorAll('[data-scen]').forEach(b=>b.addEventListener('click',()=>{if(RW.loadingScene)return;RW.scenario=b.dataset.scen;RW.tougher=false;RW.fromReply=null;RW.fromCase=null;rwFetchScene();}));
+  on('[data-act="surprise"]',()=>{if(RW.loadingScene)return;const all=RW_GOALS.flatMap(g=>g.items);RW.scenario=_pick(all);RW.goal=_rwGoalOf(RW.scenario).k;RW.tougher=false;RW.fromReply=null;RW.fromCase=null;rwFetchScene();});
   app.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.mode;if(m==='live'&&!LIVE_ON){showToast('Live calls are coming. Speak works today.','info');return;}if(RW.rec)return;RW.mode=m;render();if(ph==='turn'&&m!=='type')rwSpeakLine();}));
   on('[data-act="get"]',()=>{RW.tougher=false;RW.fromReply=null;rwFetchScene();});
   on('[data-act="shuffle"]',()=>{const g=RW_GOALS.find(x=>x.k===RW.goal);RW.scenario=_pick(g.items);RW.tougher=false;RW.fromReply=null;rwFetchScene();});
