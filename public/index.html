@@ -3820,7 +3820,10 @@ const RW_FU_BANK={
 const RW_FU_OWN={bargain:2,smalltalk:1};
 function _rwFuMax(k){return RW_FU_OWN[k]!=null?3:2;}
 function _rwFuSetting(){const k=RW.scenario;if(RW_FU_OWN[k]!=null){const n=(S.rwFuBy||{})[k];return n>=0&&n<=3?n:RW_FU_OWN[k];}const n=S.rwFollowups;return n===0||n===1||n===2?n:1;}
-function _rwFuN(){return RW.scenario==='ground'?3:_rwFuSetting();}
+// How long a conversation runs: the other person stops when it's settled, between min and max exchanges
+const RW_LEN={bargain:[3,5],ground:[4,4],difficult:[3,5],conflict:[3,5],disagree:[3,5],sayno:[3,5],tough:[3,5],feedback:[3,5],smalltalk:[3,5],intro:[3,5],interview:[2,4],meeting:[2,4],pitch:[2,4],proposal:[2,4]};
+function _rwLen(){const l=RW_LEN[RW.scenario]||[2,4];return {min:l[0],max:l[1]};}
+function _rwFuN(){return _rwLen().max-1;}
 function _rwFuSecs(k){return k==='smalltalk'?[20,45]:[30,60];}
 function _rwFree(k){const sc=TT_REAL[k||RW.scenario];return !!(sc&&sc.free);}
 function _ttRealTime(sc){const [a,b]=sc.secs;if(a%60===0&&b%60===0)return (a/60)+'–'+(b/60)+' min';if(b<=60)return a+'–'+b+' sec';const m=x=>x%60?Math.floor(x/60)+':'+String(x%60).padStart(2,'0'):String(x/60);return (a<60?a+' sec':m(a)+' min')+'–'+m(b)+' min';}
@@ -4009,7 +4012,7 @@ function realAgain(e){
   RW.phase=RW.question?'brief':'setup';go('real');
 }
 // ── The other person's follow-up (the engine) ─────────────────────────────
-async function _rwFollowup(){
+async function _rwFollowup(allowEnd){
   const last=(RW.convo||[])[RW.convo.length-1]||{};
   if(_aiOn()&&(last.words||0)>=6){
     const l=_coachLang();
@@ -4026,11 +4029,14 @@ async function _rwFollowup(){
     let msg='Situation: '+sc.name+_rwBriefText()+'\nOpening prompt: '+RW.question+(RW.context?'\nThe speaker’s role or situation: '+RW.context:'')+'\n\nSo far:\n';
     RW.convo.forEach((t,i)=>{msg+=(i?'You asked: ':'Prompt: ')+t.q+'\nThe speaker said: '+(t.a||'(nothing caught)')+'\n';});
     if(RW.scenario==='ground'){const pi=Math.min(RW.convo.length-1,2);msg+='\nThis is your next push. '+RW_GROUND_PUSH[pi]+' React to what they just said, then push.';}
+    if(allowEnd)msg+='\nIf the conversation has reached its natural end (you have agreed, decided, refused for good, or it is wrapped up and a real person would stop here), say your short closing line and add [END] after it. Otherwise keep it going with what you would really say next. Only end when it is truly settled, never just to be polite.';
     msg+='\nYour follow-up:';
     for(let i=0;i<2;i++){
       try{
         const raw=await callCoach(sys,msg,{maxTokens:110,noLang:true,featureId:'rw-turn',grace:true});
         let t=String(raw||'').replace(/```/g,'').replace(/\*\*|__/g,'').split(/\n\s*\n/)[0].replace(/\s*\n\s*/g,' ').trim();
+        const isEnd=/\[END\]/i.test(t);t=t.replace(/\s*\[END\]\s*/ig,' ').trim();
+        if(isEnd&&allowEnd)return {end:true,t};
         t=t.replace(/^(?:interviewer|investor|colleague|chair|client|you|them|me|面试官|对方|客户)\s*[:：]\s*/i,'').replace(/^["“'「『]+|["”'」』]+$/g,'').trim();
         const ends=(t.match(/[.!?。！？]/g)||[]).length;
         if(t.length>=4&&t.length<=240&&ends<=3&&!/✅|🎯|💡|🏗|ONE THING|THE THREAD|WHAT WORKED/i.test(t))return t;
@@ -4046,10 +4052,12 @@ async function _rwAfterTurn(r){
   if(r.blob)await recWhisper(r);
   const turn={q:curQ,a:_fixSpokenNums((r.transcript||'').trim()),elapsed:r.elapsed||0,words:r.words||0};
   RW.convo.push(turn);
-  const more=RW.convo.length<=_rwFuN()&&(turn.words>=3||turn.elapsed>5);
+  const L=_rwLen(),n=RW.convo.length;
+  const more=n<L.max&&(turn.words>=3||turn.elapsed>5);
   if(!more)return _rwFinish();
   const t0=Date.now();let q=null;
-  try{q=await _rwFollowup();}catch(e){}
+  try{q=await _rwFollowup(n>=L.min);}catch(e){}
+  if(q&&q.end){RW.fuLoading=false;RW.closing=q.t||'';return _rwFinish();}
   const wait=1200-(Date.now()-t0);if(wait>0)await new Promise(res=>setTimeout(res,wait));
   RW.fuQ=q||_rwBankFu();RW.fuLoading=false;
   if(RW.phase==='turn'&&V.view==='real'){render();if(RW.mode!=='type')rwSpeakLine();}
@@ -4247,7 +4255,7 @@ function renderReal(app){
     }else{
       h+=gBar(sc.name,'rw-restart',_rwDots());
       h+=_rwModeSwitch();
-      h+='<div class="g-block" style="flex:1;display:flex;flex-direction:column"><div class="rowx"><span class="g-kick">'+escHtml(name)+(inFu?' says':' says')+(n?' · '+(inFu?RW.convo.length+1:1)+' of '+(n+1):'')+'</span>'+(ttsOk()&&!wait?'<button class="g-chip soft" style="margin-left:auto;min-height:36px" data-act="play">'+ic('play','s')+'Play again</button>':'')+'</div>'+
+      h+='<div class="g-block" style="flex:1;display:flex;flex-direction:column"><div class="rowx"><span class="g-kick">'+escHtml(name)+(inFu?' says':' says')+'</span>'+(ttsOk()&&!wait?'<button class="g-chip soft" style="margin-left:auto;min-height:36px" data-act="play">'+ic('play','s')+'Play again</button>':'')+'</div>'+
          (wait?'<div class="rw-mid"><div class="think"><i style="background:var(--pi)"></i><i style="background:var(--pi)"></i><i style="background:var(--pi)"></i></div></div>':'<div class="rw-mid"><div class="rw-line">'+escHtml(line)+'</div>'+(RW.rec?'<div id="rw-live" class="sub" style="margin-top:14px;color:var(--pi);opacity:.8;min-height:40px">Listening…</div>':'')+'</div>')+
          _rwCtxPanel()+
          '<div class="g-wave" id="rw-wave" style="justify-content:flex-start;opacity:.5;--ink:var(--pi)">'+'<i></i>'.repeat(14)+'</div></div>';
