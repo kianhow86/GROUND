@@ -1060,6 +1060,20 @@ html[data-theme="light"] .ch-ph b,html[data-theme="light"] .ch-m{filter:brightne
 .ch-fill .ch-opt,.ch-fill .ch-path{flex:1 1 auto}
 .ch-fill .ch-out,.ch-fill .ch-k{flex:1 1 auto;display:flex;flex-direction:column;justify-content:center}
 .ch-fill>.push{flex:0 0 0;margin-top:0}
+.rw-kn{padding:20px}
+.rw-kn+.rw-kn{margin-top:12px}
+.rw-knp{font-size:20px;font-weight:700;line-height:1.35;margin-top:8px}
+.rw-kn .g-said.ok{color:var(--ink);font-weight:700}
+@media (max-height:740px){.rw-kn{padding:14px 16px}.rw-knp{font-size:17px}}
+.rw-kn .g-kick .g-plus,.rw-kn .g-kick .g-minus{display:inline-grid;margin-right:6px;vertical-align:middle}
+.rw-kq{font-size:21px;font-weight:800;line-height:1.3;margin-top:10px}
+.rw-kw{font-size:16px;line-height:1.45;color:var(--ink-2);margin-top:8px}
+.rw-kn .g-said{font-size:16px}
+.rw-kn .g-better{font-size:21px;line-height:1.3}
+.rw-kn .g-why{font-size:15px;line-height:1.45;margin-top:10px}
+@media (max-height:740px){.rw-kq,.rw-kn .g-better{font-size:17px}.rw-kw,.rw-kn .g-said{font-size:14px}.rw-kn .g-why{font-size:13.5px}}
+.pi-fill>.g-card:not(.tight){flex:1 1 auto;display:flex;flex-direction:column;justify-content:center}
+.pi-fill>.push{margin-top:0}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -1101,7 +1115,9 @@ const CHANGELOG=[
     'K’s notebook notes your instinct once you’ve made a few choices.',
     'The library fills the screen, and every topic has its own color.',
     'When you practice a case, K sets the scene in your own world, from what you’ve told K about your work.',
-    'The other side no longer speaks out loud. Read their lines on screen.']},
+    'The other side no longer speaks out loud. Read their lines on screen.',
+    'Every practice ends the same way: how it landed, K’s notes (what worked and one thing to fix), and the technique. Then Done.',
+    'Pitch: Face the room is optional now, and the notes skip the timing stats.']},
   {v:'1.4',d:'2026-10-19',items:[
     'If you’ve told K what’s hardest, the home screen suggests where to start: one pick from K while you’re new, three to choose from after that. You can always type your own situation instead.',
     'The case of the day now comes from what you told K, not at random.',
@@ -1409,6 +1425,12 @@ function kWritingHtml(title,sub){
     '<g class="kw-pen"><path d="M0 0l6-22 10 4-8 21z" class="kw-pen-b"/><path d="M0 0l2-7 5 2z" class="kw-pen-t"/></g></svg></div>'+
     '<b class="kw-title">'+escHtml(title||'K is taking notes')+'</b><span class="kw-sub">'+escHtml(sub||'')+'</span></div>';
 }
+// Fill the screen: grow the given blocks (CSS zoom) to the largest size that still fits on one page
+function _fillZoom(els,fits,max){els=[...els].filter(Boolean);if(!els.length)return;max=max||1.45;
+  const set=z=>els.forEach(e=>{e.style.zoom=z;});
+  const f0=fits;fits=()=>f0()&&els.every(e=>[e,...e.querySelectorAll('*')].every(x=>x.scrollWidth<=x.clientWidth+1||!x.clientWidth));
+  set(1);let lo=1,hi=max;if(!fits()){lo=.78;hi=1;}else{set(max);if(fits())return;}
+  for(let i=0;i<7;i++){const m=(lo+hi)/2;set(m);if(fits())lo=m;else hi=m;}set(lo);}
 // K's photo (coach-k.jpg from the handoff, 256px)
 const COACH_AVATAR="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBAUEBAYFBQUGBgYHCQ4JCQgICRINDQoOFRIWFhUSFBQXGiEcFxgfGRQUHScdHyIjJSUlFhwpLCgkKyEkJST/2wBDAQYGBgkICREJCREkGBQYJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCT/wAARCAEAAQADASIAAhEBAxEB/8QAHAAAAQUBAQEAAAAAAAAAAAAAAgABAwQFBgcI/8QARBAAAQMDAgMFBQUFBgQHAAAAAQACAwQFEQYhEjFRBxNBYYEUIjJxkUJSYqGxFVNywdEjM0OCsuEWJJLwGCU0Y3OTo//EABkBAQEBAQEBAAAAAAAAAAAAAAABAgMEBf/EACIRAQEAAgICAgMBAQAAAAAAAAABAhEDIRIxIkEEUXEyE//aAAwDAQACEQMRAD8A+YgnSSXUJOUydAkgkEkCTpAFPjKBsIgE4anAV0BwnwiwnwroDwpAI8Jw3yV0BwlhScKXCroR4SxlS8CbhTQjwhIUxahLVNCPGE2FJhMQpoRFu6WEZCbCmgJCZGWoMYQMlhOmUCTJymQJCUSYoHSSCSB0sJJwgWEgE+E4CugsIgEgiAWpAgE4anARBqugwaiDUQaiAWtAOHyRBikDEQarIIxGlwKbhT8C14iHgTFqnDSmLU8RX4Uxb5KctwgI3WbBCWoSFMQhIU0ISE2FIQhws6AFDhGQmKgAt3QkIyExWdAUxTkJioGTFEUxQJLCdJAkQCYIgqFhEAkiAWggEYCYBGArAg1GGpAI2hagQajDU7WF3IbdVIGAea1IBDVI2PKNjCVYipnSHYLpMVV+7S7tbn/DVxjj72emdTRYB7ypIibvywXYz6KF1vo2Etfd6BrxuRxOcB/mDSD6Lp4UZHBhAQFqus9SWGSJgnjAzxwOEgx125eqpTU0kRxIxzSdwHDCzljYVVIQFqkeMeCjJK5VEZahIUuQeYTFvjzWRCQgIUpGUJCgiIQkKUhCRhZEZCEqQhAQoBQkYR4QlZoFMnTKBwnTJwgWEYTBEFqB8IwEwCJoWoHARgJgpYonyvbHG0ue44DQNyVpTNb4DOSrQpxD/fbu+4PD5/0UuGUHuMcHz8nPG4Z5N8/P6dVANytSIPJd4beAHJGxufBJrVPFHxFdccVX7JZqm8VjKWli7yRwLt3BoAAySSdgAATkrcuF2g0hGyhtbqOquG5qqngbNGw492OMkEZHMuHjgDYbz36pi0XbBY6Mwm51EBFyqQCSGuw4RMceQ4eHiIG5JGSF0+gewiS9UcN21JPNTQTAPjo4tpHNPIvcfhz0G/yXXfjB5BW3CqrXF1TUSzOyXZkeXbnmd+qoPeea+rrj2M6KrLd7EyzspiBhtRC9wlaevESc+uV4Xq/sa1Rp2ucyjoZrrROd/ZVFMziJHRzRu0/l5rlluo4OOolp5WywyPjkbyewkEeoWlT6jrIuGGvYK6BpJMdTu8Z58L/ib9ceS9l7Meydthpxdb/SRvub94oJAHCmb16cZ/Ja/aBoSh1bbpHGJsdwhjPs87djnnwu6g/krjx5a3KsjxGpt8NTQC5W5z5KXZsrX446d5zhrseBxs7kfmslzMFaWg6jg1JBQTZMFwzQzMPL3/daSPwuLXeihrqR9LUywyDD43Fjh0IOCs/6m0Z5GCmBIOxUrmqMhc7AsB/QH8io3NxsRgojsja5rhwv9D0UFctQkKd7C04IUZCmhEQgcFKUDlmiMhMUZQFQAeaYoihKyHTgJDknCBwEQCQCMLQQCkAQtCNq1A4YTjAytVwFqiMLd6t4xK4f4Q+4PPqfTqmomChpvb3gd44ltO09Rzf6eHn8lSJLnEkkkrUU43KkY1A0KxG1dMYg42ra01Qtrr9baV4BZNVRRuHUF4B/VZcTF1WgImu1lYg4DH7Qp8//AGNXfHHpXSUGg7zrztMuFydRtNpprs72maU8LHNZJvG37xwAMDYeK+i3t8gPksLs5Ik0dSSAYL56tzv4vaZcq1qHVmn9LMa693ejoOIZa2V/vuHUNG5+i45ZbouSMVSaPKybF2kaT1VXCgs15hq6otLxEGPaSBzIyAtyQYBP6KyjJniWdPF4Lmrnfu0i5F7rRpW32umyQ2W6VIdI4deFp2/NNpy6ambPNBqqXTwjDcxzUdSA7iz8JaTyx4rrjmu2LrzR1qZYKi5UNvp6autwFVDLCwMdlhDiDjmMA81512h0jItVXJ0IAinl9pjxy4JAJB+Tl7nd4mVdprIwWvjlp5G5ByCC0heL6wjM9Lp+s5mpslG8nqWs7s/6FrKTZXEvYoXNV+SPCrvYuGWLKo4ISpnNwVG4YXKwOxwcO7eQPuuPh/sgewtJDhgjmEipAe+jIPxsH1H+ygrEIHBTOCjIUoiKAqVwUZWABQoyhcs0OiAQhGFYHARAJmjKlaFqQO0K5b6I1tUyHPC05LnfcaNyfQZVVoWtEPYbQ+TlLVnu29RG3c/U4H+Urciq1xqxU1GY28ELAGRs+60ch/345VdoymAyVK1q1AbArMbMqKJqtxM3C7YYieCLJC6LTmaK6UdYB/6eeOX/AKXA/wAlk0keSNl6f2b0LILdd7s3hbWQCmpqeQtDu4M8wjMoB24mgnHmQvXJMcblVenabudHpO0VVBdnyUzxeK1lBAInPmrY3y94wxMG7ge8Izy2Xl+uNY6d09qGsr39n7Ku61MnG+a9VIe5uNgBEOIMG3LIWVM6ttWvI6mjo7tFcxTtuNNHcajv5nuiPEQH5344w4Y8C3HReea1vzr5eqmtMhkEruIE9FwnFhMLlfZ1p2v/AIkNQUsoFNYrBBCP8KKF7dumQ7+S3b1286lrtMSXG0aUdQwOHAbhJL3rYnZwS1vCM7+J2Xg7Y5KiZkUTHSSSODWsaMlxPIBfYWk9CwUnZXSWK4wtIlidDUbcyWgnHqSvPiy+TbzqO8XqUyXK7VtY48+9mcR6DkPRY5AznAXeat7ItTaeuMsNPQTV1JxHuZoRxEt8OIcwVRtfZVq26TNYLVJTMJ3knIaGjrjn+Szlhlb6NVu6V0tc67Qrr3SXqsoDRiokayN2GvaNyNiOfCV1mjZqS5Wuz2XUgs1fB7LBAWwQmOtt8EjhwSiUHDy0yAljhyK6eewR6S7MbjQRHiNPbpuJx+07gOT6klc52eWyMW6KzsnbUMrLlSU8NRgcRcRHJOM+IYGuGfLHgvR4zHX8XTgtS2OSw3y4WqYh0lFUSQOcB8Ra4jPrhYskWF2Ota9t91TeLmzHBVVksrPNpccflhc1NFhdcsLrsZMjFA8K/LGqr2bry5Yis4Jg4scHNO4UjgoyudQUrRs5vwu3ChcFO08THM6e8P5qEhSqhdsgKleFE4LFQBQkIyhKzQ4CMBCAjCoNoUgCFvgpWhbgkhjL3ta0ZJOAOq0L44Cr9mYcspmiEY8SOZ9XZPqmsrGivjlcMthzMR/CC79QFTeS95cTkk5yt66UICma1C1qnY3K3jAcYV2BgOFBExX6ePkvTx4i7Sx4IXpnZvPRumqrVcHmOjukDqSWQc4iSCyQebXhrvRed0ke4XSWh7oZGuHgvdjxzLG437ajptcwXaiuw1NJbWT3ezPp3V8bHASRCIu4pGD7cE0b3HbkQOhXR3TsQ0VqeZt4p4ZI4qxoqGGCQta9rhxA4G24KZlZS6pt0FLcJ5qatpWGOkuMADpYmnnG9p2kjPi0+mFu9mhqrVbqjR9xqGT1ljDTTzNBDamik3ikaD4AksI8MAL53Lhlx3VSzSrp3sk0ppidtRRW2M1DeU0hL3D5E5x6LsJJHmlbTg4Y13EB5o5Dgrj9RaXvd7r5ZI9YXG3W9wHDSUUUcbhtvmXBccndcu6i7qC/2fTlKam83Cmoo/AyvwXfJvM+gTskiqIY54jmORoe04xkEZGyxLP2b6eslT7caEVtfnPtdbK6olz14n8j8gFvTHJXTHaxyPabIYtBXtrWuc+eFtMxrebnSSNYAPP3lzFT3+nKRxqooKK5NpnUNDbadzXC2QuGJZJHN279493A+EE53K6rUk0dwv8AZbOcPho5P25XjOzYoM9yw/8AySkADyXE3CF800k0m75HF7j1JOSvX+Lwf9crlfUWTbkpqbGdlnVEHPZdHUwYJ2WXUxANPVerl40sYVRSPbCJi33C4tBz481mytWxUx5ys2aPdfM5MUUHhQuCtSNUD2rzZREbDwPB8PFKRvC4jokQik3DT1H+ywK7lG5TOChcFmiMhC4IygO6yCajahCNqCVo5KZgUTFMxdING3nu6Wtk8e6DB6uH8sqkBurMTuGgqPN8Y/1Ku3ddFSMCnjChYN1ZjbldMYLMLclaFOzcKvGIzGwMa4PGeIk7HphaNKwL2ceKxfpI8kbLdomhuOqzKOLcYXQUETuHgwMOIJ23+q+jxYNyNe0ve17cZXoFBb6u5UsFwpZI6W42hrn09XLtE6N3xwTH9278juFzmlrBLcqhkMTeJx3JJwABzJPgF6bcaMUOn/ZqeKOTgbwRl7fddIRkvwefgASvN+dnjJMPutZa1pzVh19YtVvMFLVR0lwZtJQVEgEjXDnwHlI3oW+oC1Zi5pwQR8xhfL3aY19xvUTYAZaqNskcrG7va5nvEHzAyVyNNrPU1EwQUeoLtDHybGyqfj0GV83lxnHlqenG9PsOaTAJJw0eJXBar7UrZZJDQ2prb1dnZDKandxMYesjhsAOnP5c141a9Oaz1hwuu91uUVC7cuqpnuLh+FhP64XqmktFWvTVHIYYmxwtbxTTykcTwPFx6eXJbwxyym71FjK7P9RVVVbquoudHbauW8zirqKqWolikdw5ayP3GkBjRnDcYXdV2kIbjSh9FBNS1L2GRkD5WzRzgDLu6kaBlwG/C4A4XnHZXp6uucPtE4ZHp+jllZHKfirncZwI/wAA8Xeg35ezW2ob3ElL3UzmFzJGvgfwOp3NORI04IBG432wd124+Xwxl47/AH9LK8dudC+FxBaVgVMYaTlvFsRhe7apsNvvdufPRPgnq2wmpbPAGhlTGHcL8hpLQ9hxnh2IPILxy50Jie4Y5L6GPJjzYeUark6lmPDZZdS0ZOAcLerISCVk1Ee68PNgwyZGqu8K9KxVXt3XhyjKuRsncMwtPRxCJzU/D/YO8nD9CuWhVeoXKd4ULwudERQIyhKzQTVIFECpGqwTMKmYoGqZhW4LbD/ycw/Gw/6v6qJu6kh3gnb+EO+hH9VGxdf0Jmc1ZhVVitwYzvyXTBV+nGSFs0URJGFk0zQXANOQvTOz/Qr73A6510wo7VC7hfO4ZL3fcYPtH8gvdx2YzeSxQtVsllI4WE+i7uy6Nq5Y+/lYKamYOJ9RP7kbB1LitJuprbYG+z2C3wwBu3tEzRJM7zydh6BY9fqm4XnVOmqSsrZpYPbHVksb3ksLYY3SbjlzAXbL8nKY7xmv66b066pqotH6fuFXbnGtqI4Wyl7oTHCI2vaXZLsEg4xloPNcdS9tNuvtU8yXF1srJn5dT3D36c+TZBu31+i8osmunUmrm3K5PfPR1Tnw1rXOJ44JMh49Acj5Bc5q20y6dv1Za5XiQQv/ALKQcpYzux48i0grx8mU3be7+2Lk9y1NZ7dfbhSXaHFk1DC5r6W4ACWmmcPhDnD3XA8t8H58lWtTLGLo213SyUOm9RyHbu2AUlb+KGTwJ+4fReeaOu1NRaVqqqhrLtQ3G3vBqhRyCRkkDjtKYX+67hOzsEcwV1dt1TFrK00NtuQo7tS1N19hll9lML3NNO57S3JJje145tO/yXG56u57TbsblHQ6do5bhdZ2UtPD8TnbknwAHiT0C4+9XeG5xQVWqPaKK1PIdQachyau4n7LpgNww/c28/PD05qm2XC6U7qutuN7qaCnnlooq6MNZRNjjc/ik5iWXIDQ7lgZ57DF1dqOrtGp7TfY4ac3iaz081RMW44ppGkueQMDPCQFnPluXtLXrltfe6uKG43uCC307AG0tlgeI2xsHw9+8D3W/wDtsHzWLqTXWn6IdxeLh+1XtPELfSjhp2u/gB94+byfReMXbWN/vhd7bc53MdzjYeFv0Cy4yGBJySdQ29y0t220sFyabnbZobbFxdxHSSNDmcTSx3E0jhILTyGNwN1v3Vml7xp+XUVDdBS0If3YbWxOie9/3Gcw8/wkrxXRVlhvlfNPcZnU1ntsJq6+cc2xDkxv4nnDR8/Jei0Dpb1URX2vpm0rY2d3bbc3+7oIPsgD755l3Neji5MvL4NS1BctH3P9mR3VtBUihmHEyZ0ZAI8+nquNraN0ZILSvU6HU1xs05ko6l8Yds+P4o3jo5p2I+aO92K2a0tlRcbPTso7nTsMlTRM+CRvjJF8vFvh4L05Xy6yWx4nPHhUpGBbdwpjC8tI3CyZm7rx8mGqwpPanIxTE9Xj9CpHN3SqG8FHF+N7j9AP6rzWCg/moXqZ/NQP5rhURFCURQLIII2qMIwUErTsFK0qBpUjStwX6LDphGT/AHgLPqMD81E04Ucby1wc04IOQrFUAJ3OaMNf77fkd/8AZdZ6BMdurUJVJhViJ2CumNV1uirJLqXUFDaoTwuqZQ0v8GN5ucfkAT6L13Vd/gaYrVbG9zbqJvcwRj7o+0fM8yfNcB2MPEV5u1YN5KW1Tvj8ieFmfo4qzVVZfI4k8yvZx93d+mo0Pa+rlRluPcX6eozj2OxV8oPRzmhgP5qoanfmsa71T43X2UhwH7HETT4Himbn9FrnvwLXAPmJC6WsqDqrSUNQTx3OxMEMvWWkJ9x3nwE4+RC5HjV2x3mWyXOKsY0SNGWSxHlLGdnMPkQvneffbCXT9+m09doq+FrZGtBZLC74ZonDD2HyIXo2n6CCy/sh1FL3lvq79HV0shO/dmBw4T5tOWn5LzW/26K3VgfSOL6Cpb31M8+LD4HzHIrZ0ZqB8LTbJO5Lw8zUD588MFRggehzj54KY35eNIg0lN3NdephzbbKzHq3H81L2iTcepeDOe5o6WEeXDCxYtBcZ7HXVAlpmSlzH088E2QHNPxA43HLwUd2us15uM1dO1jZJSPdYMNaAAAB8gAsbmhCHJcai4kULDPNHEOcjg0epws7R6bbKFtJYLHp/k65kXq59TG0ltPGfLm7H4l1s1XgBo5/ouKde42amr3saXvfKygp2MGeGOJobnyAwt/vgDucu6r6P48kxbxaBlBCs2W6zWe6U9dTnD4Xh2PBw8QfIjIWQJs+KlheOML0NK/alaae2ajqBStxTzhtRCOjHgOA9M49F5/MOa9H7V5x+0qGEnL47fTtd8+DP6ELziQ5JXDl+marublPdW90YIfFkQJ+bve/QhWrfSGsrIoeQc7c9B4n6KhdakVVbPM0Ya9xLR0b4D6YXlz6xRnyKB5U0hVdxXlqAcgRFCdlihIwox4IgkEjeeVICogjBW4JmlXCe+owftQnH+U/0P6qg0qxTTiKTLt2EcLh1B5reNBNdhTRv3UErTDIWE5xyI5EeBSa5bl0PTex4kXW7TSyCKhZbJmVMpBPCHYa3l48XD9ClLPkndNowii7O7nVDaSvuMdMT1ZGwvx9XD6KhLOvZxX47aiWoeJmOjcTwuGDusV89QyiqdPzPMsU8bvYpHbuDgQ7uyfEHAwrj51k3ufgp2ztOJIZGyNPQgqcl62lclkg4PgmzlbzrVR19TNOySrcyR5c0RQbDJ6khQVVgbHn2eqa5w/w5m9279cH6rxXjyQ9pqY6+ldZquQMY93HTSu/wpen8LuRWTLFLSzvila5kkbuFzTzBCuwWd0kgY6ph7w8o4syvJ6YbldLW6Jvl0gglfbp6aRrcPq7iWUrJG+GzyCSOoTVs79oxq1wv1F7c3eup2gVA/esGwf8xyP1WHldvbdHw2yds9Tqe2xyN3DKeCWo9Ds1p+q342WXu+577Tk7DzFXY3xZ/wA8Ty4LVwt7+108pytOxQt9r9tnJbT0eJnkfaIPutHmTt9V1N60zapY31FPbnUjGjJmtlV7XD8zG/EjB88rFt8MBdTUUUzZ4WONTM5owHO5MBz06eamOFl7NN+w0Yo2S19Q0Csq3GR4/dgnPCP5rVbUZPNZrqrPik2o3Xuxsxmo02Wz48VpWKEXO8UlEXtYJpWsLicbZ39VzIqfNaml5XTajtkbfGpj/JwK35Ltn66vBvGoq+q4SxplLWMPNrW+6B6ABcu45Ku32tbV3eumafdkqJHD5FxKr0FNJXVUcETS58jg0DqSuGeW70i9TD2C0VVa7Z8o9ni+ZHvH0bt/mC5iV2SVvanronTsoqV4dTUje7a4cnu+071P5ALnXuyV5+XL6So3lRORvKicV56gSUDuSIoSVihAoggBRZSAwibzQNKILQkBRgqIFECtQWS/vIw0/Ez4fMdEIKjDsFGdxxD1C1sek6bl77syka07013Jf5B8Qx/pKy5Jc5Q9nFX7S276fcd7jTd5AD+/iPG0eo4h6qqZcr1ceXxUE81S+UQU8Y4iMmSQ4Y0eZ8fkEbLdbXN/8zqa2ud+7py2CP6kOJ+gQOeozJ5qXv2L7ZbHF8OnoJsbD2mrnefyc0fkpBeaGLaDTdhj83Uxk/1ucsl0gURkweanQ6H/AIyvMcRhpqsUMZ2LKKJlOP8A8wFkS1ck0hklkfI87lzjkn1KqGTzUM1ZHAPfdueTRzKeWhf71RvrYWAl0rBjq5ZhfPV/GTDH91p94/MqWOlp48ERMz1Iys+dvoWW3WMuHcmWR45GNpJQ0k80U1TUVFLVh0zgeIwu5DrspGzlo908I8tkbKyZhyyWRvycQrP6JYK2KpcWxP4nDm3BB+il75Qm4VEjeF8z3A9Sou9W5kLvtHmtew1v7NjrrwdvY4HCLPjK8FrR+ZPouba9z3tY0FznHAA8Spr7XCGnhs8DgWwu7ydw5PlP8mjb6qzPU2MwOLj1K3I5RYbWZuVbVsLYuscZ2LvmdwPU9Fm26OGFhrKsZiYfdZnBld0Hl1KpV9fLXVD55nZe7psB0AHgAuXlqbEE0nESVXc5E5yicd1wtAvUTijJQFYqBQlOShWQgiCFIbKCQHCIFR5RgrUoIFEDugGycFUSAo2uwoQUYK1KL1tr5rZX09fSu4ZqeRsjfIg5+i6rUPcmsbX0YxR1ze/iA+yT8TfQ5C4hriDkFblou8BpHW2uJbTudxxyDfun9fkfELtxZT/NWJTMo3Seallt0o3iqKWZp5FsoH6qpJBM13D3tKHdO9Dj9At2ZT2CMihlqWRjL3AKrJPGM95VF34YWfzKgNc2I/8ALQtjP33e8/6nkuVzRdf7VKwFgZCHfCZXBpf8gVAG+zSYnY+OU8zIOfyKoSSPlcXvcXOPMk5Kmhrp4W8AfxR/ceOJv0Kx5QaTXDGcow9ZzaqncfeifA7rC7b/AKSpmyA/3dTC/wApAWH+i15C5xpxJ5qp3kw3MDiOrCHfohNYxpw4Oaehar5C+HpGRURWxff/ACQSVuRwxbk+KecGmy4ewtc9hzORhh+55/NU4Wg/2spPDnl4uP8A34qu3DN3nid0/qk6UvOSUuWxYqKt87gTgNaMNaOTR0CrOdlCXIC5ZtU7nKNxyk52UJKxahihcU5O6AlZoYlMUkishk4KbKSAgnBwhTqg8ogVGCiBV2DzhLKFOCqDDk+UGUsq7EnGcYO480UT2xlzgcO4SG56lRZTJsA5pHMJlJnbYpsZ8AoASR8I803AOqAUkfB5pcIQBkjcEj5Kdj+/b3Uh3+y4+Hl8kAAHh9UQSARFg+8fojGG/CMJJKggUi5DlCSrsGXICUspsqbCyhcUiUJWdhEoScpZTEqBJkklAkkkkCTpk6B8ogUGU4OFQeUgUOU6bBZSyhykrsHlJDlPlNgspIUsqh0uSWUsoFlOEyWUDpwmSygfJSymSygclNlMShymwSbKbKYlTYWUxKbKZQOhKdMoEmKSWUCBSTBOgdJMnQJOmSQFlLKHKfKB8p0OU6B8p8oUsqgwcJZQ53STYPKWUGU+U2CyllCkEBZSyhSymwWU2fNDlLKbD5THmmJTIHykmyllQJJMUkCSSTIEmKSRUH//2Q==";
 // ═══════════════════════════════════════════════════════════════════════════
@@ -2678,8 +2700,8 @@ function _adaptWho(){const p=_P(),f=(S.rwField||'').trim(),r=(p.role||'').trim()
   return [f?'Their field: '+f:'',r?'Their role: '+r:'',p.stage?'Career stage: '+_label(STAGES,p.stage):'',pr?'In their words, their biggest problem: "'+pr.slice(0,200)+'"':''].filter(Boolean).join('\n');}
 function _adaptKey(id,who){let h=0;for(const ch of id+'|'+who)h=(h*31+ch.charCodeAt(0))|0;return id+':'+(h>>>0).toString(36);}
 async function _caseAdapt(c,item,line,key,who){
-  const sys='You adapt a practice scene so it happens in the person’s own world. Keep exactly the same situation, tension, power balance, the other person’s attitude, and what the speaker must handle. Change only the surface: what the work is, who the other person is (a first name and what they do), and the details, so it fits the person below. If the scene already fits their world, return it unchanged. If their field is unclear, choose something close to what they told you. Keep it universal: no country-specific details. Plain, simple American English, short sentences, about the same length as the original. Keep [[double brackets]] around the same key moment. Reply ONLY with compact JSON using exactly the keys you were given.\n\nTHE PERSON:\n'+who;
-  const src=Object.assign({},item,{line});
+  const sys='You adapt a practice scene so it happens in the person’s own world. Keep exactly the same situation, tension, power balance, the other person’s attitude, and what the speaker must handle. Change only the surface: what the work is, who the other person is (a first name and what they do), and the details, so it fits the person below. If the scene already fits their world, return it unchanged. If their field is unclear, choose something close to what they told you. Keep it universal: no country-specific details. Plain, simple American English, short sentences, about the same length as the original. Keep [[double brackets]] around the same key moment. "line" is what the other person says first; "k" (if given) is the model answer a coach would say back: adapt it to the new details but keep its technique, structure and length. Reply ONLY with compact JSON using exactly the keys you were given.\n\nTHE PERSON:\n'+who;
+  const src=Object.assign({},item,{line},c.k?{k:c.k}:{});
   const raw=await Promise.race([callCoach(sys,JSON.stringify(src),{maxTokens:420,featureId:'case-adapt',noLang:true}),new Promise((_,rej)=>setTimeout(()=>rej(new Error('slow')),9000))]);
   const j=_jsonFrom(raw);if(!j)throw new Error('bad');
   const out={};for(const k of Object.keys(src)){const v=typeof j[k]==='string'?j[k].trim():'';if(!v)throw new Error('missing '+k);out[k]=v;}
@@ -2695,14 +2717,14 @@ function caseToPractice(c,opts){
   let item=_rwIsClient(k)?{c:p.who,scene:p.scene||'',job:p.job||p.moment,pos:('pos' in p)?p.pos:(S.rwPrice?S.rwPrice+(S.rwLowest?'. Lowest you’ll accept: '+S.rwLowest:''):'Your usual price')}:{who:p.who,moment:p.moment,role:p.role||'',scene:p.scene||''};
   Object.keys(item).forEach(x=>{if(!item[x])delete item[x];});
   const who=opts.noAdapt?'':_adaptWho(),key=who?_adaptKey(c.id,who):'',saved=key&&S.caseAdapt&&S.caseAdapt[key];
-  if(saved){const a=Object.assign({},saved);RW.question=a.line||RW.question;delete a.line;item=Object.assign({},item,a);}
-  _rwCast(item);
+  let kAd='';if(saved){const a=Object.assign({},saved);RW.question=a.line||RW.question;delete a.line;if(a.k){kAd=a.k;delete a.k;}item=Object.assign({},item,a);}
+  _rwCast(item);if(kAd&&RW.fromCase)RW.fromCase.k=kAd;
   RW.adapting=false;
   RW.phase=RW.question?'brief':'setup';
   _casesDone()[c.id]=new Date().toISOString();save();
   if(who&&!saved&&_aiOn()&&RW.question){
     const tok=(RW._adTok=(RW._adTok||0)+1);RW.adapting=true;
-    _caseAdapt(c,item,RW.question,key,who).then(a=>{if(RW._adTok!==tok||!RW.adapting)return;const b=Object.assign({},a);RW.question=b.line;delete b.line;_rwCast(Object.assign({},item,b));}).catch(()=>{}).finally(()=>{if(RW._adTok!==tok)return;RW.adapting=false;if(V.view==='real'&&RW.phase==='brief')render();});
+    _caseAdapt(c,item,RW.question,key,who).then(a=>{if(RW._adTok!==tok||!RW.adapting)return;const b=Object.assign({},a);RW.question=b.line;delete b.line;if(b.k){if(RW.fromCase)RW.fromCase.k=b.k;delete b.k;}_rwCast(Object.assign({},item,b));}).catch(()=>{}).finally(()=>{if(RW._adTok!==tok)return;RW.adapting=false;if(V.view==='real'&&RW.phase==='brief')render();});
   }
   go('real');
 }
@@ -4116,6 +4138,33 @@ function rwSendTyped(){const t=(RW.typed||'').trim();if(!t)return;const w=_wc(t)
 
 // ── Screens ───────────────────────────────────────────────────────────────
 function _rwDots(){const n=_rwFuN()+1,k=(RW.convo||[]).length;return gDots(n+2,RW.phase==='setup'?0:RW.phase==='brief'?1:RW.phase==='turn'?Math.min(n,2+Math.min(k,n-1)):n+1).slice(0,5);}
+// The end of every practice: how it landed → K's notes (what worked, one fix) → the technique
+function _rwNoteBit(key){const t=String(RW.notes||'').replace(/\*\*|__/g,'');const sec=KN_SECTIONS.find(x=>x.key===key);if(!sec)return '';let out='',on=false;
+  t.split('\n').forEach(l=>{const x=l.trim();if(!x)return;const hit=KN_SECTIONS.find(z=>z.re.test(x));if(hit){on=hit.key===key;if(on)out=x.replace(/^[^:：]*[:：]\s*/,'');return;}if(on)out+=' '+x;});return out.trim();}
+function _rwEndSlides(){
+  const d=RW.decision||RW.review,out=[];if(!d)return out;
+  const top=_rwDoneCardsHtml(true);if(top)out.push({k:'How it landed',h:top});
+  // K's notes
+  const pros=_rwxGrounded(d.why,'quote',3).filter(x=>!(x.effect==='-'||x.effect==='−'));
+  const fixes=_rwxGrounded(d.improve,'said',2);
+  let n='';
+  const w=pros[0],wn=_rwNoteBit('worked');
+  if(w)n+='<div class="g-card rw-kn"><div class="g-kick"><span class="g-plus">+</span> What worked</div><div class="rw-kq">“'+escHtml(w.quote)+'”</div><p class="rw-kw">'+escHtml(w.reason||'')+'</p></div>';
+  else if(wn)n+='<div class="g-card rw-kn"><div class="g-kick"><span class="g-plus">+</span> What worked</div><p class="rw-knp">'+escHtml(wn)+'</p></div>';
+  const f=fixes[0],fn=_rwNoteBit('one');
+  if(f){const why=String(f.why||'');const tk=techKeyFor(why.match(/\b(give to get|warm,? then firm|two good options|know your lowest|anchoring|walk-?away|bottom line first|star|prep|labeling|pivot|buffer|talk about their problem)\b/i)?.[0]||'');
+    n+='<div class="g-card rw-kn"><div class="g-kick"><span class="g-minus">−</span> One thing to fix</div><div class="g-kick" style="margin-top:10px">You said</div><div class="g-said">“'+escHtml(f.said)+'”</div><div class="g-kick" style="margin-top:10px">Try this</div><div class="g-better">“'+escHtml(_stripQ(f.try))+'”</div><div class="g-why"><b>Why:</b> '+escHtml(why)+(tk?' <span style="display:inline-block;vertical-align:middle;margin-left:4px">'+techTag(tk)+'</span>':'')+'</div></div>';}
+  else if(fn)n+='<div class="g-card rw-kn"><div class="g-kick"><span class="g-minus">−</span> One thing to fix</div><p class="rw-knp">'+escHtml(fn)+'</p></div>';
+  if(!n&&RW.loading)n='<p class="quiet">K’s notes are on their way…</p>';
+  if(n)out.push({k:'K’s notes',h:n});
+  // The technique
+  const topic=(TT_REAL[RW.scenario]||{}).name?String(TT_REAL[RW.scenario].name).toLowerCase():'';
+  const fc=RW.fromCase;
+  if(fc&&fc.k)out.push({k:'The technique',h:'<div class="g-card case-k"><div class="g-k">'+kav()+'<b style="font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)">How K would say it</b></div><div class="case-line">'+escHtml(fc.k)+'</div></div>'+(fc.principle?'<div class="case-pr"><small>The principle</small><b>'+escHtml(fc.principle)+'</b></div>':'')+workCardHtml(topic)});
+  else{const hint=_rwHint();const f2=fixes[1];
+    out.push({k:'The technique',h:(hint?'<div class="case-pr"><small>The principle</small><b>'+escHtml(hint)+'</b></div>':'')+(f2?'<div class="g-card"><div class="g-kick">Another line to try</div><div class="g-said">“'+escHtml(f2.said)+'”</div><div class="g-better" style="margin-top:8px">“'+escHtml(_stripQ(f2.try))+'”</div><div class="g-why"><b>Why:</b> '+escHtml(f2.why||'')+'</div></div>':'')+workCardHtml(topic)});}
+  return out;
+}
 function _rwDoneSlides(){
   // Split the results into steps: how it landed, what made the difference
   const d=RW.decision,r=RW.review,out=[];
@@ -4128,10 +4177,10 @@ function _rwDoneSlides(){
   if(why.length)out.push({k:'What made the difference',h:why.map(x=>x.outerHTML).join('')});
   return out;
 }
-function _rwDoneCardsHtml(){
+function _rwDoneCardsHtml(topOnly){
   const d=RW.decision,r=RW.review,name=_rwName(),she=_rwShe();
   let h='';
-  const whyHtml=w=>w.length?'<div class="g-card tight">'+w.map(x=>{const dn=x.effect==='-'||x.effect==='−';return '<div class="g-row top"><span class="'+(dn?'g-minus':'g-plus')+'">'+(dn?'−':'+')+'</span><span class="t"><span class="q">“'+escHtml(x.quote)+'”</span><span class="w">'+escHtml(x.reason||'')+'</span></span></div>';}).join('')+'</div>':'';
+  const whyHtml=w=>topOnly?'':w.length?'<div class="g-card tight">'+w.map(x=>{const dn=x.effect==='-'||x.effect==='−';return '<div class="g-row top"><span class="'+(dn?'g-minus':'g-plus')+'">'+(dn?'−':'+')+'</span><span class="t"><span class="q">“'+escHtml(x.quote)+'”</span><span class="w">'+escHtml(x.reason||'')+'</span></span></div>';}).join('')+'</div>':'';
   if(d&&d.decision){
     const H={deal:['Deal',d.terms||'you have a deal','yes'],think:['Thinking it over','“Let me think about it”','maybe'],walk:['Walked away','no deal this time','no']}[d.decision]||['Thinking it over','“Let me think about it”','maybe'];
     h+=_rwVerdictHtml(name,H[0],H[1],H[2],d.say);
@@ -4214,23 +4263,15 @@ function renderReal(app){
     const busy=RW.loading&&!RW.decision&&!RW.review;
     if(busy)h+=kWritingHtml('K is taking notes…',_rwIsClient()?'And '+name+' is deciding.':'Working out how it landed.');else if(false)h+='<div class="g-card" style="display:flex;flex-direction:column;gap:14px"><div class="g-k">'+kav()+'<div><b style="font-size:15px">K is listening back</b><div class="small" style="margin-top:2px">'+(_rwIsClient()?'And '+escHtml(name)+' is deciding.':'Working out how it landed.')+'</div></div></div><div class="stack" style="gap:9px"><div class="sk w9"></div><div class="sk w7"></div><div class="sk w8"></div></div></div>';
     else{
-      const slides=_rwDoneSlides();
-      const topic=(TT_REAL[RW.scenario]||{}).name?String(TT_REAL[RW.scenario].name).toLowerCase():'';
-      if(!RW.loading){
-        if(RW.fromCase&&RW.fromCase.k)slides.push({k:'How K would say it',h:'<div class="g-card case-k"><div class="g-k">'+kav()+'<b style="font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)">How K would say it'+(RW.fromCase.kWhen?' · '+escHtml(RW.fromCase.kWhen):'')+'</b></div><div class="case-line">'+escHtml(RW.fromCase.k)+'</div>'+(RW.fromCase.id?'<button class="link" style="margin-top:10px" data-act="rw-case">Why it works →</button>':'')+'</div>'+workCardHtml(topic)});
-        else if(_rwBetterHtml())slides.push({k:'Try it this way',h:_rwBetterHtml()+workCardHtml(topic)});
-      }
-      const lastIsBetter=slides.length&&slides[slides.length-1].k==='Try it this way';
+      const slides=_rwEndSlides();
       const notesOk=RW.notes&&!/ai-err/.test(RW.notes)&&typeof RW.notes==='string'&&!_nbRetry(RW.notes);
-      const endCta=(!lastIsBetter&&_rwBetterHtml()?gCta('Do it better','better'):gCta('Run it again','again',{icon:'again'}))+
-        '<div class="rw-endlinks">'+(notesOk||_rwxTurns().length?'<button class="link" data-act="rw-notes">'+ic('book','s')+'K’s full notes</button>':'')+(!lastIsBetter&&_rwBetterHtml()?'<button class="link" data-act="again">Run it again</button>':'')+'</div>';
+      const endCta=gCta('Done','rw-finish',{icon:'check'})+'<div class="rw-endlinks"><button class="link" data-act="again">Run it again</button>'+(notesOk||_rwxTurns().length?'<button class="link" data-act="rw-notes">'+ic('book','s')+'K’s full notes</button>':'')+'</div>';
       if(slides.length>1){
         h+='<div class="rw-slides" id="rw-slides">'+slides.map((s,i)=>'<section class="rw-slide"><div class="rw-step">'+(i+1)+' of '+slides.length+' · '+escHtml(s.k)+'</div><div class="rw-sbody">'+s.h+'</div>'+(i===slides.length-1?'<div class="rw-end">'+endCta+'</div>':'')+'</section>').join('')+'</div>';
         h+='<div class="rw-nav"><div class="rw-sdots">'+slides.map((_,i)=>'<i'+(i?'':' class="on"')+'></i>').join('')+'</div><button class="rw-next" data-act="rw-next">Next'+ic('arrow','s')+'</button></div>';
       }else{
         if(slides.length)h+=slides[0].h;
         if(!RW.decision&&!RW.review&&!RW.loading){h+=RW.notes&&/ai-err/.test(RW.notes)?RW.notes:'<div class="g-card"><div class="g-q">'+(RW.words<12?'I didn’t catch enough to judge that one.':'No verdict this time.')+'</div><p class="sub">'+(RW.words<12?'Say a few full sentences and I’ll tell you how it landed.':'Open K’s full notes for the details.')+'</p></div>';}
-        if(RW.loading)h+='<p class="quiet">K’s notes are on their way…</p>';
         h+='<div class="push"></div>'+endCta;
       }
     }
@@ -4241,6 +4282,7 @@ function renderReal(app){
   }
   h+='</main>';
   app.innerHTML=h;
+  if(ph==='done')app.querySelectorAll('.rw-slide').forEach(sl=>{const b=sl.querySelector('.rw-sbody');if(b)_fillZoom([b],()=>sl.scrollHeight<=sl.clientHeight);});
   const on=(s,f)=>{const el=app.querySelector(s);if(el)el.addEventListener('click',f);};
   app.querySelectorAll('[data-goal]').forEach(b=>b.addEventListener('click',()=>{RW.goal=b.dataset.goal;const g=RW_GOALS.find(x=>x.k===RW.goal);if(!g.items.includes(RW.scenario))RW.scenario=g.items[0];render();}));
   app.querySelectorAll('[data-scen]').forEach(b=>b.addEventListener('click',()=>{if(RW.loadingScene)return;RW.scenario=b.dataset.scen;RW.tougher=false;RW.fromReply=null;RW.fromCase=null;rwFetchScene();}));
@@ -4270,6 +4312,7 @@ function renderReal(app){
     if(nx)nx.addEventListener('click',()=>sl.scrollTo({left:(cur()+1)*sl.clientWidth,behavior:'smooth'}));}
   on('[data-act="rw-case"]',()=>{if(RW.fromCase&&RW.fromCase.id){V.caseOpen=RW.fromCase.id;openCase(RW.fromCase.id);}});
   on('[data-act="again"]',()=>{_rwResetConvo();RW.phase='brief';render();});
+  on('[data-act="rw-finish"]',()=>{_rwResetConvo();RW.phase='setup';RW.question='';RW.fromCase=null;render();});
   on('[data-act="tougher"]',()=>{RW.tougher=true;RW.fromReply=null;rwFetchScene();});
   on('[data-act="new"]',()=>{RW.phase='setup';RW.question='';RW.fromReply=null;render();});
   on('[data-act="rw-retry"]',()=>{RW.loading=true;RW.notes=null;render();rwAnalyze();});
@@ -4377,7 +4420,7 @@ async function piNotes(){
 function _piNotesHtml(){
   const n=PI.notes,tk=PI.take;if(!n)return '';
   let h='';
-  if(n.big)h+='<div class="g-block p-org"><div class="between"><span class="g-kick">The one big thing</span>'+(n.big.tech?techTag(n.big.tech):'')+'</div><div class="g-big" style="font-size:19px">'+escHtml(n.big.text)+'</div></div>';
+  if(n.big)h+='<div class="g-block p-org"><div class="g-kick">The one big thing</div><div class="g-big" style="font-size:19px;margin-top:6px">'+escHtml(n.big.text)+'</div>'+(n.big.tech?'<div style="margin-top:10px">'+techTag(n.big.tech)+'</div>':'')+'</div>';
   if(n.moment)h+='<div class="g-card"><div class="between"><span class="g-kick">You said</span>'+(n.moment.tech?techTag(n.moment.tech):'')+'</div><div class="g-said" style="margin-top:6px;text-decoration:none;color:var(--ink-2)">“'+_piMark(n.moment.said)+'”</div><div class="g-kick" style="margin-top:12px">Try this</div><div class="g-better">“'+escHtml(n.moment.try)+'”</div><div class="g-why"><b>Why:</b> '+escHtml(n.moment.why)+'</div></div>';
   else if(n.worked)h+='<div class="g-card"><div class="kn-h g-kick"><span class="g-plus">+</span> What worked</div><p class="sub" style="color:var(--ink);margin-top:6px">'+escHtml(n.worked)+'</p></div>';
   return h;
@@ -4433,7 +4476,7 @@ async function piLanded(){
 function _piLandedHtml(){
   const v=PI.verdict;if(!v||v.err||v.off)return '';
   let h='<div class="g-alert"><div class="g-kick">The room’s verdict</div><div style="font-size:22px;font-weight:800;letter-spacing:-.02em;margin-top:8px">'+escHtml(v.verdict)+'</div><div class="sub" style="margin-top:6px">'+escHtml(v.line)+'</div></div>';
-  if(v.weakest)h+='<div class="g-card"><div class="between"><span class="g-kick">Your weakest answer</span>'+(v.weakest.tech?techTag(v.weakest.tech):'')+'</div><div style="font-size:14px;font-weight:700;margin-top:6px">To “'+escHtml(v.weakest.to)+'”</div><div class="g-said">“'+escHtml(v.weakest.said)+'”</div><div class="g-kick" style="margin-top:12px">Try this</div><div class="g-better">“'+escHtml(v.weakest.try)+'”</div><div class="g-why"><b>Why:</b> '+escHtml(v.weakest.why)+'</div></div>';
+  if(v.weakest)h+='<div class="g-card"><div class="g-kick">Your weakest answer</div>'+(v.weakest.tech?'<div style="margin-top:6px">'+techTag(v.weakest.tech)+'</div>':'')+'<div style="font-size:14px;font-weight:700;margin-top:6px">To “'+escHtml(v.weakest.to)+'”</div><div class="g-said">“'+escHtml(v.weakest.said)+'”</div><div class="g-kick" style="margin-top:12px">Try this</div><div class="g-better">“'+escHtml(v.weakest.try)+'”</div><div class="g-why"><b>Why:</b> '+escHtml(v.weakest.why)+'</div></div>';
   return h;
 }
 // ── Screens ───────────────────────────────────────────────────────────────
@@ -4473,15 +4516,15 @@ function renderPitch(app){
     h+='<div class="push"></div><button class="g-stop" data-act="stop" aria-label="Stop"></button><div style="height:4px"></div>';
   }else if(ph==='notes'){
     const tk=PI.take||{},wpm=tk.elapsed>0?Math.round(tk.words/(tk.elapsed/60)):0,fl=_piFillers(tk.transcript);
-    h+=gBar('K’s notes','pi-build',_piDots())+_piTabs();
-    h+='<div class="g-stats"><div><b'+(tk.elapsed>PI.mins*60?' style="color:var(--err)"':'')+'>'+fmtMs((tk.elapsed||0)*1000)+'</b><span>of '+PI.mins+':00</span></div><div><b>'+wpm+'</b><span>words/min</span></div><div><b>'+fl+'</b><span>'+(fl===1?'filler':'fillers')+'</span></div></div>';
+    h+=gBar('Pitch · K’s notes','pi-build',_piDots())+_piTabs();
+    /* time, pace and filler counts removed: K’s notes carry the feedback */
     if(PI.notesLoading)h+=kWritingHtml('K is taking notes…','Notes on how your pitch landed.');else if(false)h+='<div class="g-card" style="display:flex;flex-direction:column;gap:14px"><div class="g-k">'+kav()+'<div><b style="font-size:15px">K is listening back</b><div class="small" style="margin-top:2px">Against your plan and the clock.</div></div></div><div class="stack" style="gap:9px"><div class="sk w9"></div><div class="sk w7"></div><div class="sk w8"></div></div></div>';
     else if(PI.notes&&PI.notes.short)h+='<div class="g-card"><div class="g-q">I didn’t catch enough to judge that one.</div><p class="sub">Give it a full run and I’ll tell you the one big thing.</p></div>';
-    else if(PI.notes&&PI.notes.off)h+='<div class="g-card"><div class="g-q">AI is off, so no notes this time.</div><p class="sub">Your timing and fillers are above.</p></div>';
+    else if(PI.notes&&PI.notes.off)h+='<div class="g-card"><div class="g-q">AI is off, so no notes this time.</div><p class="sub">Turn AI on to get K’s notes on your run.</p></div>';
     else if(PI.notes&&PI.notes.err)h+=renderAIError(PI.notes.err,'pi-notes-retry');
     else h+=_piNotesHtml();
     if(tk.transcript)h+='<details class="convo"><summary>'+ic('list','s')+'Show what you said · '+tk.words+' words</summary><div class="g-card"><div class="pre">'+_piMark(tk.transcript)+'</div></div></details>';
-    h+='<div class="push"></div><div class="g-row2"><button class="g-chip" style="min-height:56px;padding:0 18px" data-act="run">Next take</button>'+gCta('Face the room','room')+'</div>';
+    h+='<div class="push"></div>'+gCta('Done','pi-done',{icon:'check'})+'<div class="rw-endlinks"><button class="link" data-act="run">Next take</button><button class="link" data-act="room">Face the room →</button></div>';
   }else if(ph==='room'){
     const panel=_piPanel(),cur=PI.panelQ,lit=cur?cur.who:(panel[PI.qIdx%panel.length]||{}).n;
     h+='<div class="g-bar"><button class="g-back" data-act="room-back" aria-label="Back">'+ic('back')+'</button><span class="g-kick" style="flex:1">Face the room · '+(PI.qIdx+1)+' of 3</span><span class="g-time" style="color:#fff" id="pi-qtimer">0:00</span></div>';
@@ -4493,16 +4536,18 @@ function renderPitch(app){
     h+='<div class="push"></div><div class="g-callbar">'+(PI.mode==='type'?'<button class="g-cb" data-act="mode-turns" aria-label="Use the microphone">'+ic('mic')+'</button><button class="g-end" data-act="send-typed" style="background:#fff;color:#0B0C10">Send answer</button>':'<button class="g-cb'+(PI.rec?' on':'')+'" data-act="'+(PI.rec?'a-stop':'a-rec')+'" aria-label="'+(PI.rec?'Stop':'Answer')+'"'+(cur?'':' disabled')+'>'+ic(PI.rec?'mic':'micoff')+'</button><button class="g-end" data-act="end-room">End · see how it landed</button>')+'<button class="g-cb" data-act="'+(PI.mode==='type'?'end-room':'mode-type')+'" aria-label="'+(PI.mode==='type'?'End':'Switch to typing')+'">'+ic(PI.mode==='type'?'x':'keyboard')+'</button></div>';
     if(PI.mode!=='type'&&!PI.rec&&cur)h+='<p class="small center-t" style="color:rgba(255,255,255,.5)">Tap the mic to answer. Tap again when you’re done.</p>';
   }else if(ph==='landed'){
-    h+=gBar('How it landed','pi-notes',_piDots());
+    h+=gBar('Pitch · How it landed','pi-notes',_piDots());
     if(PI.verdictLoading)h+='<div class="g-card" style="display:flex;flex-direction:column;gap:14px"><div class="g-k">'+kav()+'<div><b style="font-size:15px">The room is deciding</b><div class="small" style="margin-top:2px">And K is finding your weakest answer.</div></div></div><div class="stack" style="gap:9px"><div class="sk w9"></div><div class="sk w7"></div></div></div>';
     else if(PI.verdict&&PI.verdict.err)h+=renderAIError(PI.verdict.err,'pi-landed-retry');
     else if(PI.verdict&&PI.verdict.off)h+='<div class="g-card"><div class="g-q">AI is off, so no verdict this time.</div></div>';
     else h+=_piLandedHtml();
     h+='<details class="convo"><summary>'+ic('list','s')+'Show the questions</summary><div class="thread">'+PI.qa.map(x=>'<div class="b-them">'+escHtml(x.who)+': '+escHtml(x.q)+'</div><div class="b-me"><p>'+escHtml(x.a||'(no words caught)')+'</p></div>').join('')+'</div></details>';
-    h+='<div class="push"></div>'+gCta('Face the room again','room',{icon:'again'})+'<button class="g-ghost" data-act="new">New pitch</button>';
+    h+='<div class="push"></div>'+gCta('Done','pi-done',{icon:'check'})+'<div class="rw-endlinks"><button class="link" data-act="room">Face the room again</button><button class="link" data-act="new">New pitch</button></div>';
   }
   h+='</main>';
   app.innerHTML=h;
+  if((ph==='notes'&&!PI.notesLoading)||(ph==='landed'&&!PI.verdictLoading)){const m=app.querySelector('main'),kids=[...m.children],pi=kids.findIndex(e=>e.classList.contains('push'));
+    _fillZoom(kids.slice(0,pi<0?kids.length:pi).filter(e=>!e.matches('.g-bar,.g-rtab,details')),()=>document.scrollingElement.scrollHeight<=window.innerHeight);m.classList.add('pi-fill');if(document.scrollingElement.scrollHeight>window.innerHeight)m.classList.remove('pi-fill');}
   const on=(s,f)=>{const el=app.querySelector(s);if(el)el.addEventListener('click',f);};
   app.querySelectorAll('[data-kind]').forEach(b=>b.addEventListener('click',()=>{PI.kind=b.dataset.kind;app.querySelectorAll('[data-kind]').forEach(x=>x.classList.toggle('on',x===b));}));
   app.querySelectorAll('[data-room]').forEach(b=>b.addEventListener('click',()=>{PI.room=b.dataset.room;app.querySelectorAll('[data-room]').forEach(x=>x.classList.toggle('on',x===b));}));
@@ -4519,6 +4564,7 @@ function renderPitch(app){
   on('[data-act="opening"]',()=>piBuild({opening:true}));
   on('[data-act="pi-rebuild"]',()=>piBuild({restructure:true}));
   on('[data-act="tech"]',()=>{PI.phase='tech';render();});
+  on('[data-act="pi-done"]',()=>{speakStop();PI.phase='setup';render();});
   app.querySelectorAll('[data-part]').forEach(b=>b.addEventListener('click',()=>{const i=+b.dataset.part,p=PI.parts[i];openSheet('<div class="g-kick">'+escHtml(p.name)+' · '+fmtMs(p.secs*1000)+'</div><textarea class="g-answer" id="pi-part" placeholder="What you’ll say in this part" style="min-height:110px">'+escHtml(p.text)+'</textarea><input class="inp" id="pi-cue" placeholder="Cue for the card (optional)" value="'+escHtml(p.cue||'')+'"><button class="btn btn-pri" data-close>Done</button>',{wire:sh=>{sh.querySelector('#pi-part').addEventListener('input',e=>{p.text=e.target.value;});sh.querySelector('#pi-cue').addEventListener('input',e=>{p.cue=e.target.value;});},onClose:render});}));
   on('[data-act="run"]',()=>piRunStart());
   on('[data-act="next"]',()=>piNextCard());
