@@ -41,6 +41,7 @@ const DAILY_LIMITS = {
   "quick-eval":  15,
   "focus-brief": 2,
   "nb-note":     6,
+  "case-adapt":  30,
   "desk-route":  30,
   "desk-advice": 15,
   "ask-q":       25,

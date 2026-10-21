@@ -1066,6 +1066,9 @@ html[data-theme="light"] .ch-ph b,html[data-theme="light"] .ch-m{filter:brightne
 .ch-t2{gap:8px}.ch-t2 .ch-scene{padding:13px 16px}.ch-t2 .ch-scene p{font-size:14px;line-height:1.35;margin-top:2px}.ch-t2 .ch-sting{font-size:16px;margin-top:6px}.ch-t2 .ch-scene .ch-to{margin-top:6px}.ch-t2 .ch-line{font-size:16px;margin-top:2px}
 .ch-t2 .ch-opt{padding:9px 12px}.ch-t2 .ch-opt span{font-size:14px;line-height:1.32}.ch-t2 .ch-opts{gap:6px}.ch-t2 .ch-q{margin-top:2px}
 .ch-t2 .ch-out,.ch-t2 .ch-k{padding:12px 14px}.ch-t2 .ch-m{font-size:22px}.ch-t2 .ch-sub{font-size:15.5px}.ch-t2 .ch-re{margin-top:6px;font-size:13.5px}.ch-t2 .ch-kr{margin-top:6px}.ch-t2 .ch-kr p{font-size:13.5px;line-height:1.35}.ch-t2 .ch-opt.sel span{font-size:14px}
+.g-cta.case-choose{background:transparent;border:1px solid var(--line);box-shadow:none;min-height:50px;height:50px;font-size:15.5px}
+.g-cta.case-choose .ar{width:34px;height:34px;background:var(--seg-bg);color:var(--ink)}
+@media (max-height:740px){.g-cta.case-choose{min-height:44px;height:44px;font-size:14.5px}.g-cta.case-choose .ar{width:30px;height:30px}.case-peek{min-height:36px}}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -1105,7 +1108,9 @@ const CHANGELOG=[
   {v:'1.5',d:'2026-10-21',items:[
     'New way to answer: Choose. On 10 cases, pick the answer closest to yours and see where it leads: what happens, why you picked it, what it costs, and what to do next time. Then say it your way.',
     'K’s notebook notes your instinct once you’ve made a few choices.',
-    'The library fills the screen, and every topic has its own color.']},
+    'The library fills the screen, and every topic has its own color.',
+    'When you practice a case, K sets the scene in your own world, from what you’ve told K about your work.',
+    'The other side no longer speaks out loud. Read their lines on screen.']},
   {v:'1.4',d:'2026-10-19',items:[
     'If you’ve told K what’s hardest, the home screen suggests where to start: one pick from K while you’re new, three to choose from after that. You can always type your own situation instead.',
     'The case of the day now comes from what you told K, not at random.',
@@ -2187,7 +2192,7 @@ async function recWhisper(r){
   return r;
 }
 // ── The other side's voice ─────────────────────────────────────────────────
-const VOICE_ON=true; // the other side's voice: natural cloud voice only, never the robotic phone voice
+const VOICE_ON=false; // the other side's voice: natural cloud voice only, never the robotic phone voice
 const TTS={on:true,voice:null};
 function ttsOk(){return TTS.on&&!TTS.cloudOff;}
 // Natural voices from the server (OpenAI gpt-4o-mini-tts); the phone's own voice is the fallback.
@@ -2676,13 +2681,38 @@ function _caseOfDay(){
   return pool[n%pool.length];
 }
 function openCase(id){const c=_case(id);if(!c)return;_casesSeen()[c.id]=new Date().toISOString();save();go('case',{caseId:c.id});}
-function caseToPractice(c){
+// Fit a case's practice scene to the person's own world (their field, role, or what they told K). Saved per case.
+function _adaptWho(){const p=_P(),f=(S.rwField||'').trim(),r=(p.role||'').trim(),pr=String(p.problem||'').trim();
+  if(!f&&!r&&!pr)return '';
+  return [f?'Their field: '+f:'',r?'Their role: '+r:'',p.stage?'Career stage: '+_label(STAGES,p.stage):'',pr?'In their words, their biggest problem: "'+pr.slice(0,200)+'"':''].filter(Boolean).join('\n');}
+function _adaptKey(id,who){let h=0;for(const ch of id+'|'+who)h=(h*31+ch.charCodeAt(0))|0;return id+':'+(h>>>0).toString(36);}
+async function _caseAdapt(c,item,line,key,who){
+  const sys='You adapt a practice scene so it happens in the person’s own world. Keep exactly the same situation, tension, power balance, the other person’s attitude, and what the speaker must handle. Change only the surface: what the work is, who the other person is (a first name and what they do), and the details, so it fits the person below. If the scene already fits their world, return it unchanged. If their field is unclear, choose something close to what they told you. Keep it universal: no country-specific details. Plain, simple American English, short sentences, about the same length as the original. Keep [[double brackets]] around the same key moment. Reply ONLY with compact JSON using exactly the keys you were given.\n\nTHE PERSON:\n'+who;
+  const src=Object.assign({},item,{line});
+  const raw=await Promise.race([callCoach(sys,JSON.stringify(src),{maxTokens:420,featureId:'case-adapt',noLang:true}),new Promise((_,rej)=>setTimeout(()=>rej(new Error('slow')),9000))]);
+  const j=_jsonFrom(raw);if(!j)throw new Error('bad');
+  const out={};for(const k of Object.keys(src)){const v=typeof j[k]==='string'?j[k].trim():'';if(!v)throw new Error('missing '+k);out[k]=v;}
+  if(!S.caseAdapt||typeof S.caseAdapt!=='object')S.caseAdapt={};
+  const ks=Object.keys(S.caseAdapt);if(ks.length>60)delete S.caseAdapt[ks[0]];
+  S.caseAdapt[key]=out;save();return out;
+}
+function caseToPractice(c,opts){
+  opts=opts||{};
   const p=c.practice||{};const k=TT_REAL[p.scen]?p.scen:'conflict';
   RW.scenario=k;RW.goal=_rwGoalOf(k).k;RW.tougher=false;_rwResetConvo();
   RW.question=p.line||'';RW.source='case';RW.prevFix='';RW.fromReply=null;RW.fromCase={id:c.id,title:c.title,principle:c.principle,k:c.k,kWhen:c.kWhen||'',feel:c.feel||'',most:c.most||'',fails:c.fails||''};
-  _rwCast(_rwIsClient(k)?{c:p.who,scene:p.scene||'',job:p.job||p.moment,pos:('pos' in p)?p.pos:(S.rwPrice?S.rwPrice+(S.rwLowest?'. Lowest you’ll accept: '+S.rwLowest:''):'Your usual price')}:{who:p.who,moment:p.moment,role:p.role||'',scene:p.scene||''});
+  let item=_rwIsClient(k)?{c:p.who,scene:p.scene||'',job:p.job||p.moment,pos:('pos' in p)?p.pos:(S.rwPrice?S.rwPrice+(S.rwLowest?'. Lowest you’ll accept: '+S.rwLowest:''):'Your usual price')}:{who:p.who,moment:p.moment,role:p.role||'',scene:p.scene||''};
+  Object.keys(item).forEach(x=>{if(!item[x])delete item[x];});
+  const who=opts.noAdapt?'':_adaptWho(),key=who?_adaptKey(c.id,who):'',saved=key&&S.caseAdapt&&S.caseAdapt[key];
+  if(saved){const a=Object.assign({},saved);RW.question=a.line||RW.question;delete a.line;item=Object.assign({},item,a);}
+  _rwCast(item);
+  RW.adapting=false;
   RW.phase=RW.question?'brief':'setup';
   _casesDone()[c.id]=new Date().toISOString();save();
+  if(who&&!saved&&_aiOn()&&RW.question){
+    const tok=(RW._adTok=(RW._adTok||0)+1);RW.adapting=true;
+    _caseAdapt(c,item,RW.question,key,who).then(a=>{if(RW._adTok!==tok||!RW.adapting)return;const b=Object.assign({},a);RW.question=b.line;delete b.line;_rwCast(Object.assign({},item,b));}).catch(()=>{}).finally(()=>{if(RW._adTok!==tok)return;RW.adapting=false;if(V.view==='real'&&RW.phase==='brief')render();});
+  }
   go('real');
 }
 // ── Screens ───────────────────────────────────────────────────────────────
@@ -2730,7 +2760,6 @@ function renderCase(app){
     h+='<div class="g-card tight case-turn">'+(p.who?'<div class="g-row top"><span class="t"><b>You’ll talk to</b><span>'+escHtml(p.who.replace(' · ',', '))+'</span></span></div>':'')+
       '<div class="g-row top"><span class="t"><b>A hint</b><span>'+escHtml(c.principle)+'</span></span></div></div>';
     h+='<div class="push"></div>'+gCta('Try it','case-practice');
-    h+='<button class="link case-peek" data-act="case-peek">Just show me how K would say it</button>';
   }else{
     h+='<div class="g-card case-k"><div class="g-k">'+kav()+'<b style="font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)">How K would say it'+(c.kWhen?' · '+escHtml(c.kWhen):'')+'</b></div><div class="case-line">'+escHtml(c.k)+'</div></div>';
     h+='<div class="case-pr"><small>The principle</small><b>'+escHtml(c.principle)+'</b></div>';
@@ -3905,6 +3934,7 @@ function ttpOfflineReal(key){
 }
 // ── The scene (AI when on, bank otherwise) ────────────────────────────────
 async function rwFetchScene(){
+  RW._adTok=(RW._adTok||0)+1;RW.adapting=false;
   _rwResetConvo();RW.item=null;RW.context=_rwCtx();RW.source='';RW.prevFix='';RW.fromCase=RW._keepCase||null;RW._keepCase=null;
   const sc=TT_REAL[RW.scenario]||TT_REAL.interview;
   const ctx=(RW.context||'').trim();
@@ -4146,6 +4176,8 @@ function renderReal(app){
       '<button class="lib-topic lib-tk rw-surprise" data-act="surprise"'+(RW.loadingScene?' disabled':'')+'><b>Surprise me</b><span>K picks one</span></button></div>';
     h+='<div class="g-kick" style="margin-top:2px">'+escHtml(g.t)+'</div><div class="lib-list">'+g.items.map(k=>'<button class="lib-li" data-scen="'+k+'"'+(RW.loadingScene?' disabled':'')+'><span class="lib-lt"><b>'+escHtml(RW_PLAIN[k]||TT_REAL[k].name)+'</b></span>'+(RW.loadingScene&&RW.scenario===k?'<span class="think"><i></i><i></i><i></i></span>':ic('chev','s'))+'</button>').join('')+'</div>';
     if(!_aiOn())h+='<p class="small center-t">AI is off or you’re offline, so scenes come from the built-in set.</p>';
+  }else if(ph==='brief'&&RW.adapting){
+    h+=gBar(sc.name,'rw-setup',_rwDots())+kWritingHtml('K is setting the scene in your world…','Same situation, your kind of work.');
   }else if(ph==='brief'){
     const b=_rwBriefOk()?RW.brief:null,cl=_rwIsClient();
     h+=gBar(sc.name,'rw-setup',_rwDots());
@@ -4638,7 +4670,7 @@ function renderQuick(app){
     else if(QA.notes&&QA.notes.off)h+='<div class="g-card"><div class="g-q">AI is off, so no notes this time.</div></div>';
     else if(QA.notes&&QA.notes.err)h+=renderAIError(QA.notes.err,'qa-retry');
     else h+=_qaNotesHtml();
-    if(!QA.loading&&_aiOn())h+='<div><button class="g-chip" data-act="strong"'+(QA.strongLoading?' disabled':'')+'>'+ic('play','s')+(QA.strongLoading?'K is writing one…':QA.strong?'Hear it again':'Hear a strong answer')+'</button></div>';
+    if(!QA.loading&&_aiOn()&&!(QA.strong&&!ttsOk()))h+='<div><button class="g-chip" data-act="strong"'+(QA.strongLoading?' disabled':'')+'>'+(ttsOk()?ic('play','s'):'')+(QA.strongLoading?'K is writing one…':QA.strong?'Hear it again':ttsOk()?'Hear a strong answer':'Show a strong answer')+'</button></div>';
     if(QA.strong)h+='<div class="g-card"><div class="g-kick">A strong answer</div><p class="sub" style="color:var(--ink);margin-top:6px">'+escHtml(QA.strong)+'</p></div>';
     if(QA.take&&QA.take.transcript)h+='<details class="convo"><summary>'+ic('list','s')+'Show what you said · '+QA.take.words+' words</summary><div class="g-card"><div class="pre">'+escHtml(QA.take.transcript)+'</div></div></details>';
     h+='<div class="push"></div>'+gCta('Another question','again',{icon:'again'});
@@ -4809,7 +4841,7 @@ function renderChoose(app){
   on('[data-act="ch-all"]',()=>{CH.step='all';render();});
   app.querySelectorAll('[data-act="ch-say"]').forEach(b=>b.addEventListener('click',()=>{
     if(!_canStartSession()){openLimitSheet('month');return;}
-    const cs=_case(CH.id);if(cs)caseToPractice(cs);RW.mode='turns';RW.phase='turn';RW.rec=false;go('real');rwSpeakLine();}));
+    const cs=_case(CH.id);if(cs)caseToPractice(cs,{noAdapt:true});RW.mode='turns';RW.phase='turn';RW.rec=false;go('real');rwSpeakLine();}));
 }
 // One screen: tighten step by step if the content is too tall for this phone
 function _chFit(app){const m=app.querySelector('main');if(!m)return;const over=()=>document.scrollingElement.scrollHeight>window.innerHeight+1;
