@@ -1014,6 +1014,58 @@ html[data-theme="dark"] .c-start{--c:#A9D98E}html[data-theme="dark"] .c-career{-
 .sc-cat i{width:8px;height:8px;border-radius:50%;background:var(--p);flex-shrink:0}
 .shelf-card.sc-dark .shelf-st{left:auto;right:12px;color:var(--ink-3);opacity:1}
 html[data-theme="light"] .sc-cat{color:var(--pd)}html[data-theme="light"] .sc-cat i{background:var(--pd)}
+
+/* Choose */
+.ch-scr{gap:12px}
+.ch-scene{padding:22px 20px}
+.ch-scene p{font-size:17px;font-weight:600;line-height:1.45;margin-top:8px}
+.ch-scene .g-kick+p{margin-top:12px}
+.ch-sting{margin-top:14px;font-size:21px;font-weight:900;line-height:1.25}
+.ch-sting span{background:rgba(0,0,0,.12);padding:0 4px;border-radius:4px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.ch-scene .ch-to{margin-top:14px;opacity:.8}
+.ch-line{font-size:21px;font-weight:900;line-height:1.3;margin-top:6px}
+.ch-q{margin-top:6px}
+.ch-opts{display:flex;flex-direction:column;gap:10px}
+.ch-opt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;border-radius:18px;padding:16px;background:var(--card);border:1px solid var(--line);color:var(--ink)}
+.ch-opt b{width:26px;height:26px;border-radius:50%;background:var(--seg-bg);display:grid;place-items:center;flex-shrink:0;font-size:12.5px}
+.ch-opt span{font-size:16.5px;font-weight:600;line-height:1.45}
+.ch-opt.sel{border-color:var(--chc)}
+.ch-opt.sel span{font-size:15.5px}
+.ch-foot{text-align:center}
+.ch-hint{text-align:center;margin:-2px 0 0}
+.ch-out{padding:20px}
+.ch-m{font-size:30px;font-weight:900;letter-spacing:-.02em;line-height:1.1;margin-top:6px}
+.ch-sub{font-size:19px;font-weight:800;line-height:1.25}
+.ch-re{margin-top:14px;font-size:16px;line-height:1.5;color:var(--ink-2)}
+.ch-re b{color:var(--ink)}
+.ch-k{padding:18px}
+.ch-kh{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.ch-kr{margin-top:12px}
+.ch-kr small{display:block;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.ch-kr p{font-size:15.5px;font-weight:600;line-height:1.45;margin-top:3px}
+.ch-allh{font-size:24px;margin-top:2px}
+.ch-all{display:flex;flex-direction:column;gap:10px}
+.ch-path{border-radius:18px;background:var(--card);border:1px solid var(--line);padding:15px 16px}
+.ch-path.on{border-color:var(--chc);box-shadow:0 0 0 1px var(--chc)}
+.ch-ph{display:flex;flex-direction:column;gap:2px}
+.ch-ph small{font-size:12.5px;font-weight:700;color:var(--ink-3)}
+.ch-ph b{font-size:16.5px;font-weight:800;color:var(--chc)}
+html[data-theme="light"] .ch-ph b,html[data-theme="light"] .ch-m{filter:brightness(.62) saturate(1.4)}
+.ch-path p{font-size:14.5px;color:var(--ink-2);line-height:1.4;margin-top:4px}
+.ch-nb b{font-size:16px}
+@media (max-height:740px){
+  .ch-scene{padding:16px}.ch-scene p{font-size:15.5px;margin-top:4px}.ch-sting{font-size:18px;margin-top:8px}.ch-scene .ch-to{margin-top:8px}.ch-line{font-size:18px}
+  .ch-opt{padding:11px 14px}.ch-opt span{font-size:15px;line-height:1.35}.ch-opts{gap:8px}
+  .ch-m{font-size:25px}.ch-sub{font-size:17px}.ch-out,.ch-k{padding:14px 16px}.ch-re{margin-top:8px;font-size:14.5px}.ch-kr{margin-top:8px}.ch-kr p{font-size:14px}
+  .ch-path{padding:11px 14px}.ch-path p{font-size:13.5px}.ch-ph b{font-size:15px}
+}
+
+.ch-t1 .ch-scene{padding:16px 18px}.ch-t1 .ch-scene p{font-size:15.5px;margin-top:4px}.ch-t1 .ch-sting{font-size:18px;margin-top:8px}.ch-t1 .ch-scene .ch-to{margin-top:8px}.ch-t1 .ch-line{font-size:18px}
+.ch-t1 .ch-opt{padding:12px 14px}.ch-t1 .ch-opt span{font-size:15px;line-height:1.38}.ch-t1 .ch-opts{gap:8px}
+.ch-t1 .ch-out,.ch-t1 .ch-k{padding:14px 16px}.ch-t1 .ch-m{font-size:25px}.ch-t1 .ch-sub{font-size:17px}.ch-t1 .ch-re{margin-top:8px;font-size:14.5px}.ch-t1 .ch-kr{margin-top:8px}.ch-t1 .ch-kr p{font-size:14px}
+.ch-t2{gap:8px}.ch-t2 .ch-scene{padding:13px 16px}.ch-t2 .ch-scene p{font-size:14px;line-height:1.35;margin-top:2px}.ch-t2 .ch-sting{font-size:16px;margin-top:6px}.ch-t2 .ch-scene .ch-to{margin-top:6px}.ch-t2 .ch-line{font-size:16px;margin-top:2px}
+.ch-t2 .ch-opt{padding:9px 12px}.ch-t2 .ch-opt span{font-size:14px;line-height:1.32}.ch-t2 .ch-opts{gap:6px}.ch-t2 .ch-q{margin-top:2px}
+.ch-t2 .ch-out,.ch-t2 .ch-k{padding:12px 14px}.ch-t2 .ch-m{font-size:22px}.ch-t2 .ch-sub{font-size:15.5px}.ch-t2 .ch-re{margin-top:6px;font-size:13.5px}.ch-t2 .ch-kr{margin-top:6px}.ch-t2 .ch-kr p{font-size:13.5px;line-height:1.35}.ch-t2 .ch-opt.sel span{font-size:14px}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -1050,6 +1102,10 @@ const TOPUP={price:'¥39',sessions:30};
 const FREE_LIMITS={sessions:40,replies:8}; // monthly sessions · daily replies (abuse stop while the paywall is off)
 
 const CHANGELOG=[
+  {v:'1.5',d:'2026-10-21',items:[
+    'New way to answer: Choose. On 10 cases, pick the answer closest to yours and see where it leads: what happens, why you picked it, what it costs, and what to do next time. Then say it your way.',
+    'K’s notebook notes your instinct once you’ve made a few choices.',
+    'The library fills the screen, and every topic has its own color.']},
   {v:'1.4',d:'2026-10-19',items:[
     'If you’ve told K what’s hardest, the home screen suggests where to start: one pick from K while you’re new, three to choose from after that. You can always type your own situation instead.',
     'The case of the day now comes from what you told K, not at random.',
@@ -1294,7 +1350,7 @@ function render(){
   if(!app)return;
   closeSheet();
   if(!S.onboarded&&V.view!=='owner'){return renderOnboarding(app);}
-  const R={hub:renderHub,reply:renderReply,real:renderReal,pitch:renderPitch,quick:renderQuick,settings:renderSettings,notebook:renderNotebook,advice:renderAdvice,library:renderLibrary,case:renderCase,'nb-entry':renderNbEntry,sync:renderSync,owner:renderOwner,ask:renderAsk};
+  const R={hub:renderHub,reply:renderReply,real:renderReal,pitch:renderPitch,quick:renderQuick,settings:renderSettings,notebook:renderNotebook,advice:renderAdvice,library:renderLibrary,case:renderCase,'nb-entry':renderNbEntry,sync:renderSync,owner:renderOwner,ask:renderAsk,choose:renderChoose};
   const fn=R[V.view]||renderHub;
   fn(app);
   renderHubPill();
@@ -1657,9 +1713,11 @@ function nbContext(cat){
   if(!_nbOn())return '';
   const recent=_nbEntries(cat).filter(e=>e.fix).slice(0,3);
   const note=_nbNote();
-  if(!recent.length&&!(note&&note.habits&&note.habits.length))return '';
+  const sty=typeof chStyle==='function'?chStyle():null;
+  if(!recent.length&&!(note&&note.habits&&note.habits.length)&&!sty)return '';
   const lines=['','','YOUR NOTEBOOK ON THIS PERSON (what you noted in past sessions; use it, never recite it):'];
   if(note&&note.habits&&note.habits.length)lines.push('Habits you are tracking with them: '+note.habits.map(h=>h.name+(h.trend==='up'?' (improving)':h.trend==='flat'?' (still working on it)':'')+(h.next?'; next step you gave: '+h.next:'')).join('; ')+'.');
+  if(sty)lines.push('In Choose (picking from four options), their instinct: '+CH_STYLE[sty].t.replace(/^You /,'they ')+'.');
   if(recent.length){lines.push('Their last '+(recent.length===1?'':recent.length+' ')+(NB_CAT_ONE[cat]||cat)+' session'+(recent.length===1?'':'s')+':');
     recent.forEach(e=>{const ot=_nbOnTime(e);lines.push('- '+_nbAgo(e.iso)+(e.elapsed?', '+fmtMs(e.elapsed*1000)+(ot===null?'':ot?' (on time)':e.elapsed>e.tmax?' (over time)':' (under time)'):'')+'; your one thing: "'+_kShort(e.fix,170)+'"');});}
   lines.push('If today shows progress on something you flagged before, say so in one short clause where it fits. If the same issue is back, name it as a pattern ("second time in a row"). Only mention history when it is genuinely relevant. Never invent past sessions, never add a section, and stay within the word limit.');
@@ -1748,6 +1806,7 @@ function renderNotebook(app){
   }else{
     h+='<div class="g-block p-lav nbk-hero"><div class="g-kick">Your notebook</div><div class="nbk-name">Nothing here yet.</div><p class="nbk-why">Do a practice. K reads every session and keeps one simple plan for you here.</p><button class="nbk-go" data-go="real">Start a practice'+ic('arrow','s')+'</button></div>';
   }
+  {const sty=typeof chStyle==='function'?chStyle():null;if(sty)h+='<div class="g-card nbk-mini ch-nb"><span class="nbk-tag">Your instinct, from Choose</span><b>'+escHtml(CH_STYLE[sty].t)+'</b></div>';}
   if(all.length){
   h+='<details class="nbk-hist"'+(V.nbHist?' open':'')+'><summary><b>All sessions</b><span>'+all.length+'</span>'+ic('chev','s')+'</summary>';
   h+='<div class="g-chips">'+NB_CATS.map(c=>'<button class="g-chip'+(tab===c[0]?' on':'')+'" data-nbtab="'+c[0]+'">'+c[1]+'</button>').join('')+'</div>';
@@ -4101,7 +4160,7 @@ function renderReal(app){
     if(RW.prevFix)h+='<div class="g-block p-lav"><div class="g-kick">Last time, K said</div><div style="font-size:16px;font-weight:700;line-height:1.35">'+escHtml(_kShort(RW.prevFix,200))+'</div></div>';
     if(RW.fromReply)h+='<div class="g-card tight"><div class="g-row"><span class="t"><b>Their message</b><span>'+escHtml(_kShort(RW.question,160))+'</span></span></div>'+(RW.fromReply.reply?'<div class="g-row"><span class="t"><b>You replied</b><span>'+escHtml(_kShort(RW.fromReply.reply,160))+'</span></span></div>':'')+'</div>';
     if(cl&&RW.secret)h+='<div class="g-alert rw-secret" style="display:flex;gap:10px;align-items:flex-start"><span style="color:#C4AEFF;margin-top:1px;display:flex">'+ic('lock','s')+'</span><div><b style="font-size:14.5px">'+escHtml(name)+' has a secret.</b> <span class="sub">Ask good questions to find it.</span></div></div>';
-    h+='<div class="push"></div>'+_rwModeSwitch()+gCta('Start','start');
+    h+='<div class="push"></div>'+_rwModeSwitch(true)+gCta('Start','start');
   }else if(ph==='turn'){
     const line=RW.fuQ||RW.question,wait=RW.fuLoading||!line,inFu=RW.convo.length>0,n=_rwFuN();
     if(RW.mode==='live'){
@@ -4168,7 +4227,8 @@ function renderReal(app){
   on('[data-act="shuffle"]',()=>{const g=RW_GOALS.find(x=>x.k===RW.goal);RW.scenario=_pick(g.items);RW.tougher=false;RW.fromReply=null;rwFetchScene();});
   app.querySelectorAll('[data-go="rw-setup"],[data-go="rw-restart"]').forEach(b=>{b.removeAttribute('data-go');b.addEventListener('click',async()=>{if(RW.rec)await recStop();speakStop();RW.rec=false;_rwResetConvo();RW.phase='setup';RW.question='';RW.fromReply=null;render();});});
   app.querySelectorAll('[data-go="rw-done"]').forEach(b=>{b.removeAttribute('data-go');b.addEventListener('click',()=>{RW.phase='done';render();});});
-  on('[data-act="start"]',()=>{if(!_canStartSession()){openLimitSheet('month');return;}RW.phase='turn';RW.rec=false;render();if(RW.mode!=='type')rwSpeakLine();});
+  {const hn=app.querySelector('.ch-hint');if(hn&&document.scrollingElement.scrollHeight>window.innerHeight+1)hn.remove();}
+  on('[data-act="start"]',()=>{if(RW.mode==='choose'&&RW.fromCase&&chHas(RW.fromCase.id)){openChoose(RW.fromCase.id);return;}if(!_canStartSession()){openLimitSheet('month');return;}RW.phase='turn';RW.rec=false;render();if(RW.mode!=='type')rwSpeakLine();});
   on('[data-act="play"]',()=>rwSpeakLine());
   on('[data-act="rec"]',()=>{speakStop();rwStartRec();});
   on('[data-act="stop"]',()=>rwStopRec());
@@ -4206,7 +4266,10 @@ function _rwCtxPanel(){
   else if(RW_AIM[RW.scenario])rows.push(['Your goal',RW_AIM[RW.scenario]]);
   return '<div class="rw-ctx">'+rows.map(r=>'<div><small>'+escHtml(r[0])+'</small><span>'+escHtml(short(r[1]))+'</span></div>').join('')+'</div>';
 }
-function _rwModeSwitch(){return '<div class="g-mode" role="radiogroup" aria-label="How you answer"><button data-mode="live"'+(RW.mode==='live'?' class="on"':'')+(LIVE_ON?'':' style="opacity:.55"')+'>Call<em>'+(LIVE_ON?'NEW':'SOON')+'</em></button><button data-mode="turns"'+(RW.mode==='turns'?' class="on"':'')+'>Speak</button><button data-mode="type"'+(RW.mode==='type'?' class="on"':'')+'>Type</button></div>';}
+function _rwModeSwitch(brief){
+  const ch=brief&&RW.fromCase&&chHas(RW.fromCase.id);if(RW.mode==='choose'&&!ch)RW.mode='turns';if(RW.mode==='live')RW.mode='turns';
+  const b=(m,t)=>'<button data-mode="'+m+'"'+(RW.mode===m?' class="on"':'')+'>'+t+'</button>';
+  return '<div class="g-mode" role="radiogroup" aria-label="How you answer" style="grid-template-columns:repeat('+(ch?3:2)+',minmax(0,1fr))">'+b('turns','Speak')+b('type','Type')+(ch?b('choose','Choose'):'')+'</div>'+(ch&&RW.mode==='choose'?'<p class="quiet ch-hint">Not sure what you’d say? Pick from four real options.</p>':'');}
 function _rwHint(){const k=RW.scenario;const H={bargain:'Trade something, not your price.',ground:'Same position, same reason, warm every time.',difficult:'Calm first. Then the professional route.',proposal:'Their problem first. Then your plan.',interview:'One real example beats three claims.',pitch:'Hook, problem, proof, ask.',intro:'What you do for them, not your title.',meeting:'Point first. Then one reason.',tough:'Acknowledge, answer, then bridge.',smalltalk:'Answer, add a hook, hand it back.'};return 'Hint from K: '+(H[k]||'Say it the way you would.');}
 // ═══════════════════════════════════════════════════════════════════════════
 // PITCH IT: Build (a structure with timed parts) → Run (cue cards against the
@@ -4652,6 +4715,105 @@ function renderAsk(app){
   on('[data-act="ask-new"]',()=>{_askNew();render();});
   on('[data-act="ask-retry"]',()=>{ASK.res=null;ASK.q='';render();});
 }
+// ═══ Choose: pick the answer closest to yours, see where it leads ═══
+// Content: "Choose: first 10 cases" in K's principles doc (drafted by Claude, approved by Kian).
+// Styles: push (pushes back hard), yes (keeps the peace), trade (looks for the trade), around (goes around it)
+const CH_STYLE={push:{t:'You tend to push back hard',c:'#F6A8C8'},yes:{t:'You tend to keep the peace',c:'#F5C27A'},trade:{t:'You look for the trade',c:'#A9D98E'},around:{t:'You tend to go around it',c:'#8FD3F0'}};
+const _chO=(s,lab,say,m,sub,re,why,cost,next)=>({s,lab,say,m,sub,re,why,cost,next});
+const CHOOSE={
+ 'credit':{them:'Your teammate',scene:['Team meeting.','Your teammate just presented your idea as their own.','!Your boss loves it.'],to:'They turn to you:',line:'“Anything you’d add?”',o:[
+  _chO('push','Call it out','“Actually, that was my idea. I told you last week.”','Right','but costly','Awkward silence.','It’s your idea. You want the credit, now.','Your boss remembers a fight, not an idea.','Only go public if you hold the leverage. Otherwise you win the point and lose the room.'),
+  _chO('yes','Let it go','“Looks great. Nice work.”','Peace now','but it will happen again','“Thanks!”','You didn’t want a scene in front of your boss. That’s fair.','Your boss now links the idea to them. And they learned it works.','Keeping the peace is fine. Never let it happen twice.'),
+  _chO('trade','Take the next step','“Glad you like it. I had an idea for the next step when I came up with this. Can I take that part?”','Credit','no scene','Your boss links you to the idea. Your teammate gets the message.','You want the credit without a fight.','Little. You may need to stay firm if they push back.','Correct the record by moving forward, not by accusing.'),
+  _chO('around','Talk after','Say nothing now. Talk to them alone after the meeting.','Fixed','quietly','They apologize, or shrug.','You’d rather sort it out without an audience.','The room still thinks it was theirs.','Good for an honest mistake. If it was on purpose, decide if you work with them again.')]},
+ 'one-more':{them:'Your boss',scene:['It’s 6 pm. You’re about to go home.','Your boss walks over with one more job.','!Your week is already full.'],to:'Your boss:',line:'“A new client needs a proposal by Monday. Can you take it on?”',o:[
+  _chO('yes','Just yes','“Sure, no problem.”','Loved today','but burned out','“Great, thanks!”','You want to look reliable.','Your weekend, and the work that slips.','A yes you can’t deliver is worse than a no.'),
+  _chO('push','Flat no','“I can’t, I’m too busy.”','Heard','but you look difficult','“Everyone’s busy.”','You’re genuinely overloaded.','Goodwill. And the work often comes anyway.','No leverage means no flat no. Show the trade instead.'),
+  _chO('trade','Show the trade','“I can. If I take it, the client deck slips to Wednesday. Which matters more?”','They choose','you’re covered','They pick what matters more.','You want to help without drowning.','A slightly harder conversation, today.','Let them decide. Then confirm it in one line in writing.'),
+  _chO('yes','Yes, quietly resentful','“Okay…” And complain to colleagues later.','Done','and it shows','Nothing, at first.','Saying no feels risky.','Your mood shows, and people notice.','If you say yes, own it. Otherwise say the trade out loud.')]},
+ 'discount':{them:'Lena',scene:['You quoted Lena ¥8,000 to design labels for her tea brand.','She likes your work.','!But she wants a lower price.'],to:'Lena:',line:'“¥8,000 is a lot for a small brand. Can you do better?”',o:[
+  _chO('yes','Drop the price','“Sure, I can do ¥6,000.”','Deal','but cheaper forever','“Great!”','You don’t want to lose the deal.','Your price, on this project and the next.','If they know you’ll take less, why would they pay more?'),
+  _chO('push','Refuse','“Sorry, the price is the price.”','Firm','but cold','“We’ll think about it.”','You know your worth.','Sometimes the deal. Cold sounds like you don’t care.','Firm is right. Warm first, then firm.'),
+  _chO('trade','Give to get','“I can do ¥6,000 for two concepts instead of three. Or ¥8,000 for all three. Which works?”','Deal','on your terms','She picks one.','You want the deal, but not for less.','Nothing. You only gave what you got back.','Give only to get something back.'),
+  _chO('around','Over-explain','“Well, the price includes research, software, my time…”','Doubt','not trust','“So some of that is optional?”','You want her to see the value.','She starts cutting pieces.','Say your price, then stop. Explaining sounds like defending.')]},
+ 'market-rate':{them:'Lena',scene:['You quoted Lena for packaging for three teas.','She has looked up other designers online.','!She thinks you charge too much.'],to:'Lena:',line:'“The market rate is about ¥5,000. Why is yours so much higher?”',o:[
+  _chO('yes','Match it','“Okay, I can match ¥5,000.”','Deal','as a commodity','She hires you.','You’d rather have the work.','You become the cheap option.','Market rate is a reference, not a rule.'),
+  _chO('push','Argue','“Those designers aren’t as good as me.”','Defensive','and debating','“Maybe, but they’re cheaper.”','It stings to be compared.','You’re now debating your worth.','Never justify yourself against the market.'),
+  _chO('trade','Talk about her problem','“Some are. What matters is whether the packaging sells your tea. Here’s how mine does that.”','Value','not price','She compares results, not numbers.','You want her to see what she’d get.','Some will still choose cheaper.','Clients don’t care about your technique. They care if you solve their problem.'),
+  _chO('push','Walk away','“Then I’m probably not the right fit.”','Clean exit','maybe no deal','Sometimes they come back.','You know your lowest.','Maybe this client.','Not every client is your client. Know your lowest before you talk.')]},
+ 'big-name':{them:'The producer',scene:['A famous game studio wants you for sound design.','You’d love it on your CV.','!The pay is a fraction of your rate.'],to:'Their producer:',line:'“Our budget is ¥300 a day. But imagine our name on your CV.”',o:[
+  _chO('yes','Take it for the CV','“Yes! I’d love to.”','Great CV','empty wallet','“Great!”','The name could open doors.','They remember your rate. So will others.','Say yes to less only for a reason you can name.'),
+  _chO('push','Refuse','“That’s way below my rate.”','Self-respect','door closed','“Okay, thanks.”','You won’t work below your rate.','The name, and the door.','A firm no is fine, but you can get more than a no.'),
+  _chO('trade','Trade','“I can work with that budget for a smaller part, with a credit and a reference.”','The name','on your terms','Often they agree.','You want the name, but not for nothing.','Less work for less money. Fair.','If you give, get something back.'),
+  _chO('trade','Ask for upside','“I’ll take less upfront for a share if it does well.”','A bet','on yourself','Some studios say yes. Many can’t.','You believe it will do well.','Money now, for a bet later.','Like Hollywood: a smaller cut for a share. Only if you believe in it.')]},
+ 'raise':{them:'Your boss',scene:['You’ve taken on a lot more work this year.','Your pay hasn’t changed.','!You want a raise.'],to:'How do you ask?',line:'',o:[
+  _chO('push','I deserve it','“I think I deserve more.”','Heard','not convinced','“Everyone thinks that.”','You’ve worked hard. It feels obvious.','A no, and no reason to revisit it.','Deserving it isn’t a case. Bring what you’ve delivered.'),
+  _chO('around','Bad timing','Ask in the hallway, the week of layoffs.','No','and remembered','“Not now.”','You finally got the nerve.','A no that sticks.','The timing matters more than the number.'),
+  _chO('trade','Your case, good moment','Book a meeting: “This year I took on X and trained two people. I’d like to talk about my pay.”','Taken seriously','a real talk starts','“Let me see what I can do.”','You want to be taken seriously.','Time to prepare.','Prepare your case. Pick the moment.'),
+  _chO('push','Threaten to leave','“I have another offer.”','Leverage','if it’s true','They may match it, or call your bluff.','It feels like your strongest card.','If you’re bluffing, maybe your job.','Only use leverage you actually have.')]},
+ 'weekend-work':{them:'Your manager',scene:['Friday evening.','Your manager asks you to work this weekend.','!It’s the third weekend this month.'],to:'Your manager:',line:'“Can you come in tomorrow? I need you.”',o:[
+  _chO('yes','Yes, again','“Sure.”','Reliable','and running on empty','“Great.”','You want to show you’re committed.','Your weekends, as the new normal.','Early on, some extra hours are training. Not every weekend.'),
+  _chO('push','Flat no','“No, I have plans.”','Weekend saved','tension rising','“Okay…”','You need your weekend.','Some goodwill. They’ll remember.','Know what the extra hours are buying you before you refuse.'),
+  _chO('trade','Yes, with a line','“I can do tomorrow. Can we plan these earlier from now on?”','Helpful','with a boundary','“Fair, I’ll try.”','You’ll help, but not forever.','This one weekend.','Say yes on your terms, and set the line for next time.'),
+  _chO('around','Make an excuse','“I’m visiting family.” (You’re not.)','Out of it','for now','It works, once.','A no feels too risky.','The same ask next week. And a lie to keep track of.','A soft no costs more than a firm one. And don’t lie.')]},
+ 'group-project':{them:'Your group member',scene:['Your group project is due in two weeks.','One member barely replies in the group chat.','!They haven’t done anything.'],to:'What do you do?',line:'',o:[
+  _chO('yes','Do it yourself','Say nothing. Do their part.','Done','and resentful','Nothing changes.','It’s faster than arguing.','Your time, and your patience.','Doing it all teaches them it works.'),
+  _chO('push','Complain','Tell the teacher, or the group chat.','Pressure','no help','They feel attacked and go quieter.','It’s unfair, and you want someone to know.','The group, and their effort.','Talk to them first, privately.'),
+  _chO('trade','Draw them in','Call them: “You’d be great on the visuals. Want to own that part?”','They show up','with a clear part','They often step up.','You think they might just be shy.','Some patience.','Draw out the shy ones. Make them feel useful.'),
+  _chO('around','Route around','Give them one small task and move on.','Contained','and moving','The work gets done.','You don’t want to waste more energy.','A small part from them, but not your energy.','If they’re lazy, don’t spend more energy than it’s worth.')]},
+ 'critique':{them:'The reviewers',scene:['Your portfolio review.','Two senior reviewers just went through your work.','!They don’t like most of it.'],to:'One of them:',line:'“Honestly, most of this feels unfinished. What were you going for?”',o:[
+  _chO('push','Defend','“What I was going for was…” and explain it all.','Explained','but difficult','They get shorter with you.','They missed what you were going for.','Their best advice.','Explaining sounds like arguing.'),
+  _chO('around','Go quiet','Nod, say nothing, leave.','Survived','learned nothing','They move on.','You just want it to be over.','Nothing to fix next time.','Silence wastes the review. Ask one question.'),
+  _chO('trade','Ask','“Thank you. If you were me, what would you fix first?”','Grace','and a next step','They soften and give you their best advice.','You want to get better.','Your pride, for a minute.','Take criticism with grace. Managing your emotions beats skill.'),
+  _chO('yes','Agree with everything','“You’re right, it’s all bad.”','Humble','but lost','They wonder if you believe in anything you made.','Agreeing feels safe.','Your own voice.','Grace isn’t giving up your work. Keep what you stand by.')]},
+ 'vague-blame':{them:'Your boss',scene:['Your boss gave you a one-line brief.','You did what they asked. The client hated it.','!Now your boss is blaming you.'],to:'Your boss:',line:'“This isn’t what I asked for. What happened?”',o:[
+  _chO('yes','Take the blame','“Sorry, my fault. I’ll fix it.”','Calm now','but it’s on you','“Okay, just fix it.”','You want it over with.','Your name on their mistake. And it will happen again.','Taking it teaches them they can do it again.'),
+  _chO('push','Blow up','“That’s exactly what you told me to do!”','Right','but you’re the problem','They get defensive.','It’s unfair, and you’re right.','Being right. Now you’re the problem.','Blowing up makes you the problem, even when you’re right.'),
+  _chO('trade','Show the record','“I followed what we agreed on Tuesday. Here’s the message. Can we make the next brief clearer?”','Cleared','calmly','They check, and back down.','You want it fixed, not a fight.','Nothing, if you kept the message.','Get it in writing. Then decide: honest mistake, or power play?'),
+  _chO('push','Go over their head','Take it straight to their boss.','Heard','and now it’s war','Your boss feels ambushed.','You’ve had enough.','Trust, with your boss.','Only after you’ve shown them the record, and they keep doing it on purpose.')]}
+};
+const CH_L='ABCD';
+let CH={id:null,pick:null,step:'pick'};
+function chHas(id){return !!(id&&CHOOSE[id]);}
+function _chList(){if(!Array.isArray(S.choices))S.choices=[];return S.choices;}
+// Most common style over the last 10 picks, once there are 3
+function chStyle(){const a=_chList().slice(-10);if(a.length<3)return null;const n={};a.forEach(x=>{n[x.s]=(n[x.s]||0)+1;});const top=Object.keys(n).sort((x,y)=>n[y]-n[x])[0];return n[top]>=2?top:null;}
+function openChoose(id){CH={id,pick:null,step:'pick'};go('choose');}
+function _chScene(c){
+  return '<div class="g-block ch-scene"><div class="g-kick">The scene</div>'+c.scene.map(l=>l[0]==='!'?'<div class="ch-sting"><span>'+escHtml(l.slice(1))+'</span></div>':'<p>'+escHtml(l)+'</p>').join('')+
+    '<p class="ch-to">'+escHtml(c.to)+'</p>'+(c.line?'<div class="ch-line">'+escHtml(c.line)+'</div>':'')+'</div>';
+}
+function _chOpt(o,i,cls){return '<button class="ch-opt'+(cls?' '+cls:'')+'" data-pick="'+i+'"><b>'+CH_L[i]+'</b><span>'+escHtml(o.say)+'</span></button>';}
+function renderChoose(app){
+  const c=CHOOSE[CH.id];if(!c){go('library');return;}
+  let h='<main class="scr p-teal ch-scr">'+gBar('Choose','real');
+  if(CH.step==='pick'||CH.pick==null){
+    h+=_chScene(c)+'<div class="g-kick ch-q">Which is closest to you?</div><div class="ch-opts">'+c.o.map((o,i)=>_chOpt(o,i)).join('')+'</div>';
+    h+='<div class="push"></div><p class="quiet ch-foot">No right answer. Pick your honest one.</p>';
+  }else if(CH.step==='res'){
+    const o=c.o[CH.pick],st=CH_STYLE[o.s];
+    h+='<div class="ch-opt sel" style="--chc:'+st.c+'"><b>'+CH_L[CH.pick]+'</b><span>'+escHtml(o.say)+'</span></div>';
+    h+='<div class="g-card ch-out"><div class="g-kick">What happens</div><div class="ch-m" style="color:'+st.c+'">'+escHtml(o.m)+'</div><div class="ch-sub">'+escHtml(o.sub)+'</div><p class="ch-re">'+(/^[“"]/.test(o.re)?'<b>'+escHtml(c.them)+':</b> ':'')+escHtml(o.re)+'</p></div>';
+    h+='<div class="g-card ch-k"><div class="ch-kh">'+kav('xs')+'<span>K · if this is you</span></div>'+
+      [['Why you picked it',o.why],['What it costs',o.cost],['Next time',o.next]].map(r=>'<div class="ch-kr"><small>'+r[0]+'</small><p>'+escHtml(r[1])+'</p></div>').join('')+'</div>';
+    h+='<div class="push"></div>'+gCta('Say it your way','ch-say')+'<button class="g-ghost" data-act="ch-all">See where the other choices lead</button>';
+  }else{
+    h+='<div class="h1 ch-allh">Where each choice leads</div><div class="ch-all">'+c.o.map((o,i)=>{const st=CH_STYLE[o.s];return '<div class="ch-path'+(i===CH.pick?' on':'')+'" style="--chc:'+st.c+'"><div class="ch-ph"><small>'+CH_L[i]+' · '+escHtml(o.lab)+'</small><b>'+escHtml(o.m)+', '+escHtml(o.sub)+'</b></div><p>'+escHtml(o.cost)+'</p></div>';}).join('')+'</div>';
+    const sty=chStyle();
+    h+='<div class="push"></div>'+gCta('Say it your way','ch-say')+'<p class="quiet ch-foot">'+(sty?'K’s note on you: “'+escHtml(CH_STYLE[sty].t)+'.” It’s in your notebook.':'K notes your choices in your notebook.')+'</p>';
+  }
+  h+='</main>';
+  app.innerHTML=h;wireCommon(app);_chFit(app);
+  app.querySelectorAll('[data-pick]').forEach(b=>b.addEventListener('click',()=>{const i=+b.dataset.pick;CH.pick=i;CH.step='res';_chList().push({id:CH.id,o:i,s:c.o[i].s,iso:new Date().toISOString()});if(S.choices.length>50)S.choices=S.choices.slice(-50);save();render();}));
+  const on=(s,f)=>{const el=app.querySelector(s);if(el)el.addEventListener('click',f);};
+  on('[data-act="ch-all"]',()=>{CH.step='all';render();});
+  app.querySelectorAll('[data-act="ch-say"]').forEach(b=>b.addEventListener('click',()=>{
+    if(!_canStartSession()){openLimitSheet('month');return;}
+    const cs=_case(CH.id);if(cs)caseToPractice(cs);RW.mode='turns';RW.phase='turn';RW.rec=false;go('real');rwSpeakLine();}));
+}
+// One screen: tighten step by step if the content is too tall for this phone
+function _chFit(app){const m=app.querySelector('main');if(!m)return;const over=()=>document.scrollingElement.scrollHeight>window.innerHeight+1;
+  if(over())m.classList.add('ch-t1');if(over()){m.classList.remove('ch-t1');m.classList.add('ch-t2');}}
 </script>
 </body>
 </html>
