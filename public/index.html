@@ -1075,6 +1075,9 @@ html[data-theme="light"] .ch-ph b,html[data-theme="light"] .ch-m{filter:brightne
 .pi-fill>.g-card:not(.tight){flex:1 1 auto;display:flex;flex-direction:column;justify-content:center}
 .pi-fill>.push{margin-top:0}
 .g-bar h1.long{font-size:17px;letter-spacing:-.01em}
+.rw-sdots{visibility:hidden}
+.rw-nav{justify-content:flex-end}
+.rw-verdict .rv-sub{color:inherit}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -1384,7 +1387,7 @@ function _wireSlides(root){
   const sl=root.querySelector('#rw-slides');if(!sl)return;
   const dots=[...root.querySelectorAll('.rw-sdots i')],nx=root.querySelector('[data-act="rw-next"]');
   const cur=()=>Math.round(sl.scrollLeft/sl.clientWidth);
-  const upd=()=>{const c=cur();dots.forEach((d,k)=>d.classList.toggle('on',k===c));if(nx)nx.style.visibility=c>=dots.length-1?'hidden':'visible';};
+  const upd=()=>{const c=cur();dots.forEach((d,k)=>d.classList.toggle('on',k===c));if(nx){const nv=nx.closest('.rw-nav');if(nv)nv.style.display=c>=dots.length-1?'none':'flex';}};
   sl.addEventListener('scroll',()=>{clearTimeout(sl._t);sl._t=setTimeout(upd,60);});
   if(nx)nx.addEventListener('click',()=>sl.scrollTo({left:(cur()+1)*sl.clientWidth,behavior:'smooth'}));
 }
@@ -4147,7 +4150,7 @@ function rwSendTyped(){const t=(RW.typed||'').trim();if(!t)return;const w=_wc(t)
 
 // ── Screens ───────────────────────────────────────────────────────────────
 function _rwDots(){const n=_rwFuN()+1,k=(RW.convo||[]).length;return gDots(n+2,RW.phase==='setup'?0:RW.phase==='brief'?1:RW.phase==='turn'?Math.min(n,2+Math.min(k,n-1)):n+1).slice(0,5);}
-// The end of every practice: how it landed → K's notes (what worked, one fix) → the technique
+// The end of every practice: how it landed → K's notes (what worked, one fix) → next time
 function _rwNoteBit(key){const t=String(RW.notes||'').replace(/\*\*|__/g,'');const sec=KN_SECTIONS.find(x=>x.key===key);if(!sec)return '';let out='',on=false;
   t.split('\n').forEach(l=>{const x=l.trim();if(!x)return;const hit=KN_SECTIONS.find(z=>z.re.test(x));if(hit){on=hit.key===key;if(on)out=x.replace(/^[^:：]*[:：]\s*/,'');return;}if(on)out+=' '+x;});return out.trim();}
 function _rwEndSlides(){
@@ -4169,9 +4172,9 @@ function _rwEndSlides(){
   // The technique
   const topic=(TT_REAL[RW.scenario]||{}).name?String(TT_REAL[RW.scenario].name).toLowerCase():'';
   const fc=RW.fromCase;
-  if(fc&&fc.k)out.push({k:'The technique',h:'<div class="g-card case-k"><div class="g-k">'+kav()+'<b style="font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)">How K would say it</b></div><div class="case-line">'+escHtml(fc.k)+'</div></div>'+(fc.principle?'<div class="case-pr"><small>The principle</small><b>'+escHtml(fc.principle)+'</b></div>':'')+workCardHtml(topic)});
-  else{const hint=_rwHint();const f2=fixes[1];
-    out.push({k:'The technique',h:(hint?'<div class="case-pr"><small>The principle</small><b>'+escHtml(hint)+'</b></div>':'')+(f2?'<div class="g-card"><div class="g-kick">Another line to try</div><div class="g-said">“'+escHtml(f2.said)+'”</div><div class="g-better" style="margin-top:8px">“'+escHtml(_stripQ(f2.try))+'”</div><div class="g-why"><b>Why:</b> '+escHtml(f2.why||'')+'</div></div>':'')+workCardHtml(topic)});}
+  if(fc&&fc.k)out.push({k:'Next time',h:'<div class="g-card case-k"><div class="g-k">'+kav()+'<b style="font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)">How K would say it</b></div><div class="case-line">'+escHtml(fc.k)+'</div></div>'+(fc.principle?'<div class="case-pr"><b>'+escHtml(fc.principle)+'</b></div>':'')});
+  else{const hint=_rwHint().replace(/^Hint from K:\s*/,'');const f2=fixes[1];
+    out.push({k:'Next time',h:(hint?'<div class="case-pr"><b>'+escHtml(hint)+'</b></div>':'')+(f2?'<div class="g-card"><div class="g-kick">Another line to try</div><div class="g-said">“'+escHtml(f2.said)+'”</div><div class="g-better" style="margin-top:8px">“'+escHtml(_stripQ(f2.try))+'”</div><div class="g-why"><b>Why:</b> '+escHtml(f2.why||'')+'</div></div>':'')});}
   return out;
 }
 function _rwDoneSlides(){
@@ -4274,7 +4277,7 @@ function renderReal(app){
     else{
       const slides=_rwEndSlides();
       const notesOk=RW.notes&&!/ai-err/.test(RW.notes)&&typeof RW.notes==='string'&&!_nbRetry(RW.notes);
-      const endCta=gCta('Done','rw-finish',{icon:'check'})+'<div class="rw-endlinks"><button class="link" data-act="again">Run it again</button>'+(notesOk||_rwxTurns().length?'<button class="link" data-act="rw-notes">'+ic('book','s')+'K’s full notes</button>':'')+'</div>';
+      const endCta=workCardHtml((TT_REAL[RW.scenario]||{}).name?String(TT_REAL[RW.scenario].name).toLowerCase():'')+gCta('Done','rw-finish',{icon:'check'})+'<div class="rw-endlinks"><button class="link" data-act="again">Run it again</button>'+(notesOk||_rwxTurns().length?'<button class="link" data-act="rw-notes">'+ic('book','s')+'K’s full notes</button>':'')+'</div>';
       if(slides.length>1){
         h+='<div class="rw-slides" id="rw-slides">'+slides.map((s,i)=>'<section class="rw-slide"><div class="rw-step">'+(i+1)+' of '+slides.length+' · '+escHtml(s.k)+'</div><div class="rw-sbody">'+s.h+'</div>'+(i===slides.length-1?'<div class="rw-end">'+endCta+'</div>':'')+'</section>').join('')+'</div>';
         h+='<div class="rw-nav"><div class="rw-sdots">'+slides.map((_,i)=>'<i'+(i?'':' class="on"')+'></i>').join('')+'</div><button class="rw-next" data-act="rw-next">Next'+ic('arrow','s')+'</button></div>';
@@ -4316,7 +4319,7 @@ function renderReal(app){
   const sl=document.getElementById('rw-slides');
   if(sl){const dots=[...document.querySelectorAll('.rw-sdots i')],nx=document.querySelector('[data-act="rw-next"]');
     const cur=()=>Math.round(sl.scrollLeft/sl.clientWidth);
-    const upd=()=>{const c=cur();dots.forEach((d,k)=>d.classList.toggle('on',k===c));if(nx)nx.style.visibility=c>=dots.length-1?'hidden':'visible';};
+    const upd=()=>{const c=cur();dots.forEach((d,k)=>d.classList.toggle('on',k===c));if(nx){const nv=nx.closest('.rw-nav');if(nv)nv.style.display=c>=dots.length-1?'none':'flex';}};
     sl.addEventListener('scroll',()=>{clearTimeout(sl._t);sl._t=setTimeout(upd,60);});
     if(nx)nx.addEventListener('click',()=>sl.scrollTo({left:(cur()+1)*sl.clientWidth,behavior:'smooth'}));}
   on('[data-act="rw-case"]',()=>{if(RW.fromCase&&RW.fromCase.id){V.caseOpen=RW.fromCase.id;openCase(RW.fromCase.id);}});
