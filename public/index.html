@@ -1190,6 +1190,7 @@ html[data-theme="dark"] .tk-ex small.st{color:#F5C27A}
 .tk-scr{height:100dvh;max-height:100dvh}.tk-scr .tk-body{min-height:0}
 
 .tk-watch,.tk-hero{flex-shrink:0}
+.st-app{width:100%;height:100%;border-radius:12px;object-fit:cover;display:block}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -1218,7 +1219,7 @@ html[data-theme="dark"] .tk-ex small.st{color:#F5C27A}
 // hub, Help me reply, Pitch it and Quick answer are new, built to the handoff.
 // ═══════════════════════════════════════════════════════════════════════════
 'use strict';
-const APP_VERSION='1.4';
+const APP_VERSION='1.6';
 // Feature switches. Flip in code, ship, done.
 const PAYWALL_ON=false;   // free for now: the top-up screen and balance stay hidden
 const LIVE_ON=false;      // Live voice (real-time call) needs the relay server first
@@ -3429,7 +3430,7 @@ function renderSettings(app){
   if(sp)return renderSettingsPage(app,sp);
   const u=_usage(),th=(window.__themePref?window.__themePref():'system'),done=_profileDone();
   let h='<main class="scr" style="--gap:12px"><div class="bar"><button class="ibtn r" data-go="hub" aria-label="Back">'+ic('back')+'</button><h1 class="h1 xl" style="font-size:30px">Settings</h1></div>';
-  h+='<button class="st-row" data-sp="about"><span class="st-ic">'+kav('m')+'</span><span class="st-t"><b>About</b><span>Kian How · v'+APP_VERSION+'</span></span>'+ic('chev','s chev')+'</button>';
+  h+='<button class="st-row" data-sp="about"><span class="st-ic"><img class="st-app" src="icons/icon-180.png" alt=""></span><span class="st-t"><b>About Ground</b><span>Version '+APP_VERSION+'</span></span>'+ic('chev','s chev')+'</button>';
   h+=_stRow('coaching',ic('quick'),'#C2457A','Coaching',[_coachLang().id==='auto'?'Auto':_coachLang().label,_nbOn()?'Remembers past sessions':'Memory off',S.aiConfig&&S.aiConfig.enabled?'AI on':'AI off'].join(' · '));
   h+=_stRow('usage',ic('clock'),'#0E8C8C','Usage & codes',PAYWALL_ON?S.credits+' sessions left':'This month: '+u.sessions+' sessions · replies today: '+u.replies);
   h+=_stRow('look',ic('settings'),'#1F7FA8','Appearance',{light:'Light',dark:'Dark',system:'Same as phone'}[th]||'Same as phone');
@@ -3454,7 +3455,7 @@ function _wireYou(app,p){
 }
 function renderSettingsPage(app,sp){
   const p=_P(),u=_usage();
-  const T={you:'You',coaching:'Coaching',usage:'Usage & codes',look:'Appearance',data:'Your data',about:'About'}[sp]||'Settings';
+  const T={you:'You',coaching:'Coaching',usage:'Usage & codes',look:'Appearance',data:'Your data',about:'About Ground'}[sp]||'Settings';
   let h='<main class="scr" style="--gap:12px"><div class="bar"><button class="ibtn r" data-act="st-back" aria-label="Back">'+ic('back')+'</button><h1 class="h1" style="flex:1">'+escHtml(T)+'</h1>'+(V._spFromHub?'':HUB_BTN)+'</div>';
   if(sp==='you'){
     // One page: a summary row per section; tap to edit that section in a pop-up
