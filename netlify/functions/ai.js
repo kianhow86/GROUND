@@ -44,6 +44,7 @@ const DAILY_LIMITS = {
   "case-adapt":  30,
   "desk-route":  30,
   "desk-advice": 15,
+  "advice-follow": 30,
   "ask-q":       25,
   "default":     20
 };

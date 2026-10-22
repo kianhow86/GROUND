@@ -1236,6 +1236,13 @@ html[data-theme="dark"] .cl-good .cl-k{color:var(--p)}
 .tk-tool .tk-seeit .cl-dot{background:var(--p)}
 .tk-tool .tk-body{overflow:hidden}
 .tk-sh{display:flex;flex-direction:column;gap:16px;margin:18px 0 6px;--p:#C4AEFF;--pi:#120C24}
+.af-sheet{display:flex;flex-direction:column;gap:12px;max-height:88dvh}
+.af-th{display:flex;flex-direction:column;gap:10px;overflow-y:auto;max-height:52dvh;padding:2px 0}
+.af-k,.af-you{font-size:15.5px;line-height:1.45;padding:12px 14px;border-radius:18px;max-width:90%}
+.af-k{background:var(--card);border:1px solid var(--line);color:var(--ink);align-self:flex-start;border-top-left-radius:6px}
+.af-you{background:#C4AEFF;color:#120C24;align-self:flex-end;border-top-right-radius:6px;font-weight:600}
+.af-wait{color:var(--ink-3);font-style:italic}
+.af-in{min-height:64px;resize:none}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -3679,13 +3686,16 @@ function deskGo(route){
     let k=TT_REAL[r.scenario]?r.scenario:_deskGuess(text).scenario;
     RW.scenario=k;RW.goal=_rwGoalOf(k).k;RW.tougher=false;_rwResetConvo();RW.fromReply=null;RW.fromCase=null;RW.prevFix='';
     RW.context=text.slice(0,400);
-    const line=_clean(r.line);
+    const _n=x=>String(x||'').toLowerCase().replace(/[^a-z0-9\u4e00-\u9fff]+/g,' ').trim();
+    {const nl=_n(r.line),nt=_n(text);if(nl.length>8&&nt.length>8&&(nt.includes(nl)||nl.includes(nt.slice(0,40))))r.line='';}
+    const line=_clean(r.line),fromK=!!(line&&r.who);
     // No scene from K (offline): build it from their own words, never a random one
     const OPEN={disagree:'“You wanted a word?”',conflict:'“Hey, what’s up?”',feedback:'“You wanted to talk?”',sayno:'“So, can you take it on?”',bargain:'“So, what’s your price?”',ground:'“Can you do any better than that?”',difficult:'“We need to talk about this.”',proposal:'“So, what do you propose?”',interview:'“So, tell me about yourself.”',intro:'“So, what do you do?”',meeting:'“Okay, you’re up.”',tough:'“So, what happened?”',smalltalk:'“Hi! How do you know the host?”',pitch:'“Okay, you have a minute. Go.”'};
     if(!(line&&r.who)){r.who=RW_ROLE[k]||'The other person';r.moment=_kShort(text,200);r.line=OPEN[k]||'“So, what’s on your mind?”';}
     {const line=_clean(r.line);
       RW.question=/^[“"]/.test(line)?line:'“'+line+'”';RW.source='desk';
       _rwCast(_rwIsClient(k)?{c:_clean(r.who),job:_clean(r.moment)||_kShort(text,160),pos:(k==='bargain'||k==='ground'||k==='proposal')&&S.rwPrice?S.rwPrice+(S.rwLowest?'. Lowest you’ll accept: '+S.rwLowest:''):''}:{who:_clean(r.who),moment:_clean(r.moment)});
+      if(fromK){RW.who=_clean(r.who)+(_clean(r.moment)?'. '+_clean(r.moment):'');if(!['bargain','ground','proposal'].includes(k))RW.secret=null;}
       RW.phase='brief';go('real');
     }
     return;
@@ -3709,13 +3719,14 @@ async function deskAdvice(){
   const cases=CASES.map(c=>c.id+': '+c.title+' (principle: '+c.principle+')').join('\n');
   const sys=K_VOICE+'\nSomeone has brought you a real situation and wants to know what to do. Coach them the way you coach: calm, direct, warm, practical. No blame, no lecture, no therapy talk.\n\n'+K_CLIENT_VIEW+'\n'+K_CONFLICT_VIEW+'\n'+K_PEOPLE_VIEW+'\n'+K_PLAIN+
     '\n\nThe library cases and their principles (use the closest one if it truly fits):\n'+cases+'\n'+TECH_LIST+
-    '\n\nReply with JSON only, no markdown: {"read":"what is really going on and what matters most right now, 1–2 sentences, said to them","steps":["3 short steps in order, each starting with a verb, each under 20 words"],"say":"the first words they could actually say or write to open, spoken, under 40 words","avoid":"the one thing not to do, under 18 words","principle":"the principle underneath, 3–8 plain words","case":"the closest library case id, or empty","next":"reply|practice"}';
+    '\n\nReply with JSON only, no markdown: {"read":"what is really going on and what matters most right now, 1–2 sentences, said to them","steps":["3 short steps in order, each starting with a verb, each under 20 words"],"say":"the first words they could actually say or write to open, spoken, under 40 words","avoid":"the one thing not to do, under 18 words","principle":"the principle underneath, 3–8 plain words","case":"the closest library case id, or empty","next":"practice if a spoken conversation is still ahead and worth rehearsing; reply if they need to write a message; none if neither fits (for example the moment has passed and what they need is a plan)","ask":"one short question you would ask them to help better, if something important is missing; else empty","practice":{"scenario":"if next is practice: the closest practice key from: '+Object.keys(TT_REAL).join(', ')+'","who":"who they will talk to, under 12 words","moment":"what is at stake in that conversation, under 25 words","line":"the first thing that person will say to them, spoken, in curly quotes, under 25 words. Never the user\u2019s own words"}}';
   try{
     const raw=await callCoach(sys,'THEIR SITUATION:\n'+A.text+nbContext('real'),{maxTokens:700,featureId:'desk-advice'});
     let j;try{j=_jsonFrom(raw);}catch(_){j=_jsonFrom(await callCoach(sys,'THEIR SITUATION:\n'+A.text+'\n\nReply with valid JSON only.',{maxTokens:700,featureId:'desk-advice',grace:true}));}
     const steps=(Array.isArray(j.steps)?j.steps:[]).map(_clean).filter(Boolean).slice(0,4);
     if(!j.read||!steps.length)throw new Error('Unexpected answer');
-    A.data={read:_clean(j.read),steps,say:_clean(j.say),avoid:_clean(j.avoid),principle:_clean(j.principle),case:_case(j.case)?j.case:'',next:j.next==='reply'?'reply':'practice'};
+    const px=j.practice&&typeof j.practice==='object'&&TT_REAL[j.practice.scenario]?{scenario:j.practice.scenario,who:_clean(j.practice.who),moment:_clean(j.practice.moment),line:_clean(j.practice.line)}:null;
+    A.data={read:_clean(j.read),steps,say:_clean(j.say),avoid:_clean(j.avoid),principle:_clean(j.principle),case:_case(j.case)?j.case:'',next:['reply','practice','none'].includes(j.next)?j.next:'none',ask:_clean(j.ask||''),px};A.thread=[];
     nbAdd({cat:'reply',title:_kShort(A.text,80),sub:'K’s advice',fix:A.data.principle,worked:'',fb:'',_noNote:true});
   }catch(e){A.err=e;}
   A.loading=false;if(V.view==='advice')render();
@@ -3734,10 +3745,11 @@ function renderAdvice(app){
     const d=A.data,c=d.case?_case(d.case):null;
     const s1='<div class="g-card tight"><div class="g-row top"><span class="t"><b>You told K</b><span>'+escHtml(_kShort(A.text,140))+'</span></span></div></div><div class="g-block"><div class="g-k" style="align-items:flex-start">'+kav()+'<div><div class="g-kick">What’s really going on</div><div class="adv-read">'+escHtml(d.read)+'</div></div></div></div>'+(d.avoid?'<div class="g-card tight"><div class="g-row top"><span class="g-minus">−</span><span class="t"><b>Avoid</b><span>'+escHtml(d.avoid)+'</span></span></div></div>':'');
     const s2='<div class="g-card tight">'+d.steps.map((s,i)=>'<div class="g-row top"><span class="g-num">'+(i+1)+'</span><span class="t"><span class="adv-step">'+escHtml(s)+'</span></span></div>').join('')+'</div>'+(d.principle?'<div class="case-pr"><small>The principle</small><b>'+escHtml(d.principle)+'</b></div>':'');
-    const s3=(d.say?'<div class="g-card case-k"><div class="between"><span class="g-kick">Say this first</span><button class="g-chip" data-act="adv-copy">'+ic('copy','s')+'Copy</button></div><div class="case-line">“'+escHtml(d.say.replace(/^[“"]|[”"]$/g,''))+'”</div></div>':'')+
+    const s3=(d.say?'<div class="g-card case-k"><div class="between"><span class="g-kick">One way to open</span><button class="g-chip" data-act="adv-copy">'+ic('copy','s')+'Copy</button></div><div class="case-line">“'+escHtml(d.say.replace(/^[“"]|[”"]$/g,''))+'”</div></div>':'')+
       (c?'<button class="lib-li '+_caseCat(c.cat).c+'" data-case="'+c.id+'"><span class="lib-dot"></span><span class="lib-lt"><span>Related case</span><b>'+escHtml(c.title)+'</b></span>'+ic('chev','s')+'</button>':'');
-    const end=gCta(d.next==='reply'?'Write the message with K':'Rehearse the conversation',d.next==='reply'?'adv-reply':'adv-practice')+'<div class="rw-endlinks"><button class="link" data-act="'+(d.next==='reply'?'adv-practice':'adv-reply')+'">'+(d.next==='reply'?'Rehearse it instead':'Write the message instead')+'</button></div>';
-    const sl=[['What’s going on',s1],['What to do',s2],['Say this',s3]];
+    const fq=d.ask&&!(A.thread||[]).length;
+    const end=(d.next==='practice'?gCta('Rehearse the conversation','adv-practice'):d.next==='reply'?gCta('Write the message with K','adv-reply'):gCta(fq?'Answer K’s question':'Ask K a follow-up','adv-follow',{icon:'talk'}))+'<div class="rw-endlinks">'+(d.next!=='none'?'<button class="link" data-act="adv-follow">'+(fq?'K has a question for you':'Ask K a follow-up')+'</button>':'<button class="link" data-go="hub">Done</button>')+'</div>';
+    const sl=[['What’s going on',s1],['What to do',s2],['A way in',s3]];
     h+='<div class="rw-slides" id="rw-slides">'+sl.map((x,i)=>'<section class="rw-slide"><div class="rw-step">'+(i+1)+' of 3 · '+x[0]+'</div><div class="rw-sbody">'+x[1]+'</div>'+(i===2?'<div class="rw-end">'+end+'</div>':'')+'</section>').join('')+'</div>';
     h+='<div class="rw-nav"><div class="rw-sdots"><i class="on"></i><i></i><i></i></div><button class="rw-next" data-act="rw-next">Next'+ic('arrow','s')+'</button></div>';
   }else{
@@ -3754,7 +3766,36 @@ function renderAdvice(app){
   on('[data-act="adv-copy"]',()=>copyText(A.data.say.replace(/^[“"]|[”"]$/g,'')));
   on('[data-act="adv-retry"]',()=>{A.loading=true;A.err=null;render();deskAdvice();});
   on('[data-act="adv-reply"]',()=>{V.deskRoute=Object.assign({},V.deskRoute||{},{rwant:'fix',reply_text:''});deskGo('reply');});
-  on('[data-act="adv-practice"]',()=>{V.deskRoute=Object.assign({},V.deskRoute||{},{scenario:A.scen});deskGo('practice');});
+  on('[data-act="adv-practice"]',()=>{const px=A.data&&A.data.px;V.deskRoute=Object.assign({},V.deskRoute||{},px?{scenario:px.scenario,who:px.who,moment:px.moment,line:px.line}:{scenario:A.scen,who:'',moment:'',line:''});deskGo('practice');});
+  app.querySelectorAll('[data-act="adv-follow"]').forEach(b=>b.addEventListener('click',openAdvFollow));
+}
+
+// ── Follow-ups with K about the same situation ──
+function openAdvFollow(){
+  const A=V.adv;if(!A||!A.data)return;A.thread=A.thread||[];
+  const draw=sh=>{
+    const d=A.data;let h='<div class="g-k">'+kav()+'<span class="g-kick">Ask K</span></div><div class="af-th">';
+    if(d.ask)h+='<div class="af-k">'+escHtml(d.ask)+'</div>';
+    A.thread.forEach(t=>{h+='<div class="af-you">'+escHtml(t.q)+'</div>'+(t.a?'<div class="af-k">'+escHtml(t.a)+'</div>':'<div class="af-k af-wait">K is thinking…</div>');});
+    if(!d.ask&&!A.thread.length)h+='<p class="sub">Anything K should know, or anything you want to ask about this?</p>';
+    h+='</div><textarea class="inp af-in" rows="2" placeholder="'+(d.ask&&!A.thread.length?'Your answer…':'Ask K…')+'"></textarea><button class="g-cta" data-act="af-send">Send<span class="ar">'+ic('arrow','s')+'</span></button>';
+    sh.innerHTML='<div class="grab"></div>'+h;
+    const th=sh.querySelector('.af-th');th.scrollTop=th.scrollHeight;
+    const ta=sh.querySelector('.af-in');
+    sh.querySelector('[data-act="af-send"]').addEventListener('click',async()=>{
+      const q=String(ta.value||'').trim();if(q.length<2||A.thread.some(t=>!t.a))return;
+      A.thread.push({q,a:''});draw(sh);
+      const t=A.thread[A.thread.length-1];
+      try{
+        const sys=K_VOICE+'\n'+K_PLAIN+'\nYou already gave this person advice about a real situation. Now they are following up: answering your question, adding detail, or asking something new. Answer like a coach in a quick chat: direct, warm, practical. If what they add changes your advice, say what changes and the new first step. If they need words to say, give them. If you still need one key fact, ask one short question. Under 90 words, plain text, no lists, no markdown.';
+        const ctx='THEIR SITUATION:\n'+A.text+'\n\nYOUR ADVICE:\n'+d.read+'\nSteps: '+d.steps.join(' / ')+(d.say?'\nSay first: '+d.say:'')+(d.ask?'\nYou asked them: '+d.ask:'')+'\n\nTHE CHAT SO FAR:\n'+A.thread.map(x=>'Them: '+x.q+(x.a?'\nYou: '+x.a:'')).join('\n')+'\n\nYour reply:';
+        const raw=await callCoach(sys,ctx,{maxTokens:260,featureId:'advice-follow'});
+        t.a=_clean(String(raw||'').replace(/\*\*|__|```/g,'').trim())||'Sorry, I lost that one. Ask me again?';
+      }catch(e){t.a='I couldn’t answer just now. Try again in a moment.';}
+      if(document.getElementById('sheet')===sh)draw(sh);
+    });
+  };
+  openSheet('',{cls:'af-sheet',wire:draw});
 }
 // ═══════════════════════════════════════════════════════════════════════════
 // SUGGESTIONS FROM THEIR DETAILS
@@ -4359,7 +4400,7 @@ function realAgain(e){
 // ── The other person's follow-up (the engine) ─────────────────────────────
 async function _rwFollowup(allowEnd){
   const last=(RW.convo||[])[RW.convo.length-1]||{};
-  if(_aiOn()&&(last.words||0)>=6){
+  if(_aiOn()&&(last.words||0)>=1){
     const l=_coachLang();
     const langLine=l.id==='auto'?'Reply in the same language the speaker used.':'Reply in '+l.name+', the way a native speaker would naturally say it.';
     const sc=TT_REAL[RW.scenario]||TT_REAL.interview;
@@ -4376,13 +4417,15 @@ async function _rwFollowup(allowEnd){
     RW.convo.forEach((t,i)=>{msg+=(i?'You asked: ':'Prompt: ')+t.q+'\nThe speaker said: '+(t.a||'(nothing caught)')+'\n';});
     if(RW.scenario==='ground'){const pi=Math.min(RW.convo.length-1,2);msg+='\nThis is your next push. '+RW_GROUND_PUSH[pi]+' React to what they just said, then push.';}
     if(allowEnd)msg+='\nIf the conversation has reached its natural end (you have agreed, decided, refused for good, or it is wrapped up and a real person would stop here), say your short closing line and add [END] after it. Otherwise keep it going with what you would really say next. Only end when it is truly settled, never just to be polite.';
+    const rude=/\b(fuck|f\*+k|shit|bitch|asshole|bastard|idiot|stupid|moron|screw you|shut up|go to hell)\b|他妈|傻逼|滚/i.test(last.a||'');
+    msg+='\nYou are a real person. If the speaker insults you, swears at you or is rude, react the way that person really would: shocked, hurt, cold or angry. Never carry on as if nothing happened, and never keep negotiating as normal.'+(rude?' They were just rude to you. If it is serious, end the conversation with a short, cold closing line and add [END] after it.':'');
     msg+='\nYour follow-up:';
     for(let i=0;i<2;i++){
       try{
         const raw=await callCoach(sys,msg,{maxTokens:110,noLang:true,featureId:'rw-turn',grace:true});
         let t=String(raw||'').replace(/```/g,'').replace(/\*\*|__/g,'').split(/\n\s*\n/)[0].replace(/\s*\n\s*/g,' ').trim();
         const isEnd=/\[END\]/i.test(t);t=t.replace(/\s*\[END\]\s*/ig,' ').trim();
-        if(isEnd&&allowEnd)return {end:true,t};
+        if(isEnd&&(allowEnd||rude))return {end:true,t};
         t=t.replace(/^(?:interviewer|investor|colleague|chair|client|you|them|me|面试官|对方|客户)\s*[:：]\s*/i,'').replace(/^["“'「『]+|["”'」』]+$/g,'').trim();
         const ends=(t.match(/[.!?。！？]/g)||[]).length;
         if(t.length>=4&&t.length<=240&&ends<=3&&!/✅|🎯|💡|🏗|ONE THING|THE THREAD|WHAT WORKED/i.test(t))return t;
