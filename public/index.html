@@ -1092,6 +1092,35 @@ p,.sub,.small,.g-why,.rw-kw,.ch-re,.ch-kr p,.ch-path p,.rw-scene{text-wrap:prett
 .rw-slide .rw-sbody:has(+ .rw-end){margin:auto 0 0}
 .rw-slide .rw-end{gap:12px;padding-top:0;margin-bottom:auto}
 .rw-donescr .rw-end{padding-top:0}
+
+/* ── Hub: the deck ── */
+.hub.dk{gap:14px}
+.dk-deck{flex:1 1 0;min-height:0;display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 calc(-1*var(--pad));padding:0 var(--pad);scroll-padding:0 var(--pad);scrollbar-width:none}
+.dk-deck::-webkit-scrollbar{display:none}
+.dk-card{flex:0 0 calc(100% - 26px);scroll-snap-align:start;border-radius:28px;padding:24px;display:flex;flex-direction:column;background:var(--p);color:var(--pi)}
+.dk-tag{align-self:flex-start;padding:7px 12px;border-radius:999px;background:var(--pi);color:var(--p);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.dk-body{flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0}
+.dk-big{font-size:clamp(28px,4.6dvh,40px);font-weight:900;letter-spacing:-.03em;line-height:1.06}
+.dk-pre{font-size:16px;font-weight:600;line-height:1.45;opacity:.72;margin-bottom:12px}
+.dk-sub{margin-top:14px;font-size:16px;font-weight:600;line-height:1.45;opacity:.72}
+.dk-cta{display:flex;align-items:center;justify-content:space-between;border-radius:999px;background:var(--pi);color:#fff;padding:0 8px 0 22px;height:60px;font-weight:800;font-size:17px;width:100%}
+.dk-cta span{width:44px;height:44px;border-radius:50%;background:var(--p);color:var(--pi);display:grid;place-items:center}
+.dk-card .desk{background:transparent;border:0;padding:0;box-shadow:none;margin:auto 0}
+.dk-tools{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;flex-shrink:0}
+.dk-tools button{display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 6px;border-radius:18px;background:var(--card);border:1px solid var(--line);font-weight:800;font-size:12.5px;color:var(--ink)}
+.dk-tools i{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--p);color:var(--pi)}
+@media (max-height:740px){.dk-card{padding:18px}.dk-sub,.dk-pre{font-size:14.5px}.dk-cta{height:52px}.dk-tools button{padding:10px 6px}}
+.dk-big{text-wrap:balance}.dk-sub,.dk-pre{text-wrap:pretty}
+
+/* Stacked deck */
+.dk-stack{flex:1 1 0;min-height:0;position:relative;margin-right:2px;touch-action:pan-y}
+.dk-stack .dk-card{position:absolute;top:0;bottom:0;left:0;right:30px;transform-origin:right center;will-change:transform;user-select:none;-webkit-user-select:none}
+.dk-stack .dk-card[aria-hidden="true"]{box-shadow:none}
+.dk-stack .dk-card[aria-hidden="false"]{box-shadow:0 18px 40px -18px rgba(0,0,0,.45)}
+
+.askk{display:flex;align-items:center;gap:8px;height:44px;padding:0 14px 0 6px;border-radius:999px;background:#8FD3F0;color:#06202B;font-weight:800;font-size:14px}
+.askk .kav{width:32px;height:32px}
+.dk-stack .dk-card[aria-hidden="true"] > *{opacity:0}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -1128,6 +1157,10 @@ const TOPUP={price:'¥39',sessions:30};
 const FREE_LIMITS={sessions:40,replies:8}; // monthly sessions · daily replies (abuse stop while the paywall is off)
 
 const CHANGELOG=[
+  {v:'1.6',d:'2026-10-22',items:[
+    'A new home: one big card at a time. Swipe for the next one: practice, read, choose, quick answer, and around again.',
+    'Ask K sits at the top. Tell K what’s coming up and K points you to the right tool.',
+    'Settings and your details are in the notebook menu.']},
   {v:'1.5',d:'2026-10-21',items:[
     'New way to answer: Choose. On 10 cases, pick the answer closest to yours and see where it leads: what happens, why you picked it, what it costs, and what to do next time. Then say it your way.',
     'K’s notebook notes your instinct once you’ve made a few choices.',
@@ -1452,7 +1485,7 @@ function _fillZoom(els,fits,max){els=[...els].filter(Boolean);if(!els.length)ret
   for(let i=0;i<7;i++){const m=(lo+hi)/2;set(m);if(fits())lo=m;else hi=m;}set(lo);}
 
 // Older browsers ignore text-wrap: glue the last two words of short text blocks so one word never sits alone
-const _NO_ORPHAN='h1,h2,h3,.g-kick,.kick,.g-big,.rv-main,.rv-sub,.rv-say,.case-line,.case-pr b,.ch-m,.ch-sub,.ch-line,.rw-kq,.g-better,.g-q,.nbk-name,.ch-opt span,.ch-psay,.ch-ph b,.g-why,.rw-kw,.ch-re,.ch-kr p,.sub,.case-feel,.rw-scene';
+const _NO_ORPHAN='.dk-big,.dk-sub,h1,h2,h3,.g-kick,.kick,.g-big,.rv-main,.rv-sub,.rv-say,.case-line,.case-pr b,.ch-m,.ch-sub,.ch-line,.rw-kq,.g-better,.g-q,.nbk-name,.ch-opt span,.ch-psay,.ch-ph b,.g-why,.rw-kw,.ch-re,.ch-kr p,.sub,.case-feel,.rw-scene';
 function _noOrphans(root){try{if(CSS&&CSS.supports&&CSS.supports('text-wrap','pretty'))return;}catch(e){}
   root.querySelectorAll(_NO_ORPHAN).forEach(el=>{const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);let last=null;while(w.nextNode())if(w.currentNode.nodeValue.trim())last=w.currentNode;
     if(!last)return;const t=last.nodeValue,m=t.match(/^([\s\S]*\S)\s+(\S{1,12}\s*)$/);if(m&&m[1].indexOf(' ')>0)last.nodeValue=m[1]+'\u00A0'+m[2];});}
@@ -1868,7 +1901,7 @@ function renderNotebook(app){
   app.querySelector('[data-act="nb-more"]').addEventListener('click',()=>{
     openSheet('<h2 class="h2">Notebook</h2><div class="stack">'+
       '<button class="btn btn-sec sb" data-act="mem">K remembers my sessions<span class="tag k">'+(_nbOn()?'On':'Off')+'</span></button>'+
-      '<button class="btn btn-sec" data-go="sync">Sync between devices</button>'+
+      '<button class="btn btn-sec" data-go="settings">Settings and your details</button>'+'<button class="btn btn-sec" data-go="sync">Sync between devices</button>'+
       '<button class="btn btn-sec" data-act="exp">Export notebook</button>'+
       '<button class="btn btn-sec" data-act="clr" style="color:var(--err)">Clear notebook</button></div>',{wire:sh=>{
         sh.querySelector('[data-act="mem"]').addEventListener('click',()=>{S.kMemory=!_nbOn();save();render();});
@@ -2890,33 +2923,109 @@ function _wireLastTile(app,back){
   const lo=app.querySelector('[data-act="last-open"]');if(lo)lo.addEventListener('click',()=>{const e=_lastSession();if(!e)return;V.nbId=e.id;V._back=back;go('nb-entry');});
   const l=app.querySelector('[data-act="last"]');if(l)l.addEventListener('click',()=>{const e=_lastSession();if(!e)return;if(e.cat==='real')realAgain(e);else go(e.cat);});
 }
+// The deck: endless. Every flip deals a fresh card in a cycle: Practice → Read → Choose → Quick answer.
+// K's check-in and "your one thing" come first when they apply.
+const DK_CYCLE=['practice','read','choose','quick'];
+function _dkPools(){
+  const keys=_sugKeys(),pref=[];keys.forEach(k=>SUG_MAP[k].cases.forEach(id=>{if(!pref.includes(id))pref.push(id);}));
+  const order=list=>{const a=list.filter(c=>pref.includes(c.id)).sort((x,y)=>pref.indexOf(x.id)-pref.indexOf(y.id)),b=list.filter(c=>!pref.includes(c.id));return a.concat(b);};
+  const done=_casesDone(),seen=_casesSeen(),chd=new Set(_chList().map(x=>x.id));
+  const fresh=(l,f)=>l.filter(c=>!f(c)).concat(l.filter(f));
+  const prac=fresh(order(CASES.filter(c=>c.practice)),c=>done[c.id]);
+  const read=fresh(order(CASES.slice()),c=>seen[c.id]||done[c.id]);
+  const cho=fresh(order(Object.keys(CHOOSE).map(_case).filter(Boolean)),c=>chd.has(c.id));
+  const gs=keys.map(k=>SUG_QA[k]).filter(Boolean),qa=[];
+  gs.concat(Object.keys(QA_BANK)).filter((g,i,a)=>a.indexOf(g)===i).forEach(g=>QA_BANK[g].forEach(x=>qa.push({cx:x[0],q:x[1],g})));
+  const sq=new Set(typeof _ttSeenList==='function'?_ttSeenList():[]);
+  return {practice:prac,read:read.length>3?read.slice(2).concat(read.slice(0,2)):read,choose:cho,quick:qa.filter(x=>!sq.has(x.q)).concat(qa.filter(x=>sq.has(x.q)))};
+}
+function _dkSpecials(){
+  const out=[];
+  if(_checkinDue())out.push({kind:'checkin',p:'p-lav'});
+  const note=S.nb&&S.nb.notes&&S.nb.notes[0],hb=note&&note.habits&&note.habits[0];
+  if(hb&&note.practice&&TT_REAL[note.practice])out.push({kind:'focus',p:'p-green',tag:'Your one thing',big:_clean(hb.name).replace(/\.?$/,'.'),sub:hb.next?_kShort(_clean(hb.next),110):'',cta:'Practice it',scen:note.practice});
+  return out;
+}
+function _dkCard(k,P,sp){
+  if(k<0)return sp[sp.length+k];
+  const kind=DK_CYCLE[k%4],j=Math.floor(k/4),L=P[kind];if(!L||!L.length)return null;
+  let it=L[j%L.length];
+  if(kind==='read'||kind==='choose'){it=_dkSeq(P,kind,j);if(!it)return null;}
+  if(kind==='practice')return {kind,p:'p-teal',tag:'Practice',big:it.title,sub:_sugMoment(it),cta:'Play this round',caseId:it.id};
+  if(kind==='read')return {kind,p:'p-lav',tag:'Read',big:it.title,sub:_sugMoment(it),cta:'Read the case',caseId:it.id};
+  if(kind==='choose')return {kind,p:'p-pink',tag:'Choose',big:it.title,sub:'Four ways to answer. Pick yours, see where it leads.',cta:'Pick your answer',caseId:it.id};
+  return {kind,p:'p-org',tag:'Quick answer',pre:it.cx,big:'“'+it.q.replace(/^[“"]|[”"]$/g,'')+'”',cta:'Answer it',q:it.q,cx:it.cx,gk:it.g};
+}
+// Read and Choose are dealt in order, skipping any case you were just (or are about to be) asked to practice or read
+function _dkSeq(P,kind,j){
+  P._s=P._s||{};const S2=P._s[kind]=P._s[kind]||{list:[],ptr:0};const L=P[kind];
+  const prac=x=>P.practice.length?P.practice[((x%P.practice.length)+P.practice.length)%P.practice.length].id:'';
+  while(S2.list.length<=j){const jj=S2.list.length,avoid=[prac(jj-1),prac(jj),prac(jj+1),prac(jj+2)];
+    if(kind==='choose'){const r=_dkSeq(P,'read',jj);if(r)avoid.push(r.id);}
+    let pick=null;for(let t=0;t<L.length;t++){const c=L[(S2.ptr+t)%L.length];if(!avoid.includes(c.id)){pick=c;S2.ptr=(S2.ptr+t+1)%L.length;break;}}
+    if(!pick){pick=L[S2.ptr%L.length];S2.ptr=(S2.ptr+1)%L.length;}
+    S2.list.push(pick);}
+  return S2.list[j];
+}
+function _deckCardHtml(c,r){
+  if(!c)return '';
+  const inner=c.kind==='checkin'?_checkinHtml():'<span class="dk-tag">'+escHtml(c.tag)+'</span><div class="dk-body">'+(c.pre?'<p class="dk-pre">'+escHtml(c.pre)+'</p>':'')+'<div class="dk-big">'+escHtml(c.big)+'</div>'+(c.sub?'<p class="dk-sub">'+escHtml(c.sub)+'</p>':'')+'</div><button class="dk-cta" data-dk="go">'+escHtml(c.cta)+'<span>'+ic('arrow','s')+'</span></button>';
+  return '<section class="dk-card '+c.p+'" data-r="'+r+'">'+inner+'</section>';
+}
+function _dkOpen(c){
+  if(!c)return;_track('deck_'+c.kind);
+  if(c.kind==='focus'){RW.scenario=c.scen;RW.goal=_rwGoalOf(c.scen).k;RW.fromCase=null;_rwResetConvo();RW.question='';RW.phase='setup';go('real');rwFetchScene();return;}
+  if(c.kind==='practice'){const cs=_case(c.caseId);if(cs)caseToPractice(cs);return;}
+  if(c.kind==='choose'){const cs=_case(c.caseId);if(cs){caseToPractice(cs,{noAdapt:true});openChoose(cs.id);}return;}
+  if(c.kind==='read'){V.caseOpen=c.caseId;openCase(c.caseId);return;}
+  if(c.kind==='quick'){QA.q=c.q;QA.ctx=c.cx;QA.goal=c.gk;QA.phase='q';QA.take=null;QA.notes=null;QA.strong=null;go('quick');}
+}
+function openAskK(){
+  openSheet('<div class="sug-k" style="margin-bottom:4px">'+kav()+'<div><small>Ask K</small><p style="font-size:20px;font-weight:800;line-height:1.25">What’s coming up, or what just happened?</p></div></div><textarea id="desk-text" class="g-answer" rows="5" placeholder="Paste their message, or describe the conversation…">'+escHtml(V.deskText||'')+'</textarea><button class="g-cta" data-act="dk-ask">Help me with this<span class="ar">'+ic('arrow','s')+'</span></button>',
+    {wire:sh=>{const t=sh.querySelector('#desk-text');t.addEventListener('input',()=>{V.deskText=t.value;});setTimeout(()=>t.focus(),80);sh.querySelector('[data-act="dk-ask"]').addEventListener('click',()=>{V.deskText=t.value;closeSheet();deskRead();});}});
+}
 function renderHub(app){
-  const k=_hubFocus(),first=!_nbEntries().length,st=_streak(),u=_usage();
-  let h='<main class="scr hub'+(typeof _sugMode==='function'&&_sugMode()==='A'&&!_checkinDue()?' dense':'')+'">';
-  h+='<div class="top"><div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div><div class="ibtns"><button class="ibtn ib-nb" data-go="notebook" aria-label="K’s notebook">'+ic('book')+'</button><button class="ibtn ib-you" data-act="you" aria-label="About you">'+ic('user')+(typeof _profileDone==='function'&&!_profileDone()?'<i class="ibtn-dot"></i>':'')+'</button><button class="ibtn ib-set" data-go="settings" aria-label="Settings">'+ic('settings')+'</button></div></div>';
-  // The open box: suggestions from their details (A/B), or type the situation and K routes it
-  h+=deskBoxHtml();
-  h+='<div class="hub-tiles"><div class="v3-two">'+
-     '<button class="v3-blk '+(first?'first':'cmp')+' p-lav" data-go="reply"><span class="bi">'+ic('reply')+'</span><span class="ba">'+ic('arrowne','s')+'</span><b>Before you<br>reply</b><span class="s"><span class="lg-only">K reads it with you.</span><span class="sm-only">K reads it first.</span></span></button>'+
-     '<button class="v3-blk '+(first?'first':'cmp')+' p-teal" data-go="real"><span class="bi">'+ic('talk')+'</span><span class="ba">'+ic('arrowne','s')+'</span><b>Practice<br>a talk</b><span class="s">They push. You hold.</span></button></div>';
-  h+='<button class="v3-wide p-org" data-go="pitch"><span class="wtop"><span class="bi">'+ic('pitch')+'</span><span class="stages" aria-hidden="true"><i>Build</i><i>Run</i><i>Face the room</i></span></span><span class="wbot"><span class="wt"><b>Pitch it</b><span class="s">Present it. Then take the questions.</span></span><span class="ba">'+ic('arrowne','s')+'</span></span></button></div>';
-  {const me=_caseForMe(),cs=_caseOfDay(),cc=_caseCat(cs.cat);
-   h+='<div class="v3-lib '+cc.c+'"><button class="lib-main" data-act="lib-case"><small>Case of the day</small><b>'+escHtml(cs.title)+'</b></button><button class="lib-all" data-go="library">'+ic('book','s')+'Library<span>'+CASES.length+'</span></button></div>';}
-  h+='<p class="quiet push hub-usage">'+(PAYWALL_ON?escHtml(S.credits+' sessions left'):'This month: '+u.sessions+(u.sessions===1?' practice session':' practice sessions'))+'</p>';
+  let h='<main class="scr hub dk">';
+  h+='<div class="top"><div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div><div class="ibtns"><button class="ibtn ib-nb" data-go="notebook" aria-label="K’s notebook">'+ic('book')+'</button><button class="askk" data-act="askk">'+kav()+'<span>'+(V.deskBusy?'Reading…':'Ask K')+'</span></button></div></div>';
+  h+='<div class="dk-stack" id="dk-deck"></div>';
+  h+='<div class="dk-tools"><button data-go="reply"><i class="p-lav">'+ic('reply','s')+'</i>Reply</button><button data-go="real"><i class="p-teal">'+ic('talk','s')+'</i>Practice</button><button data-go="pitch"><i class="p-org">'+ic('pitch','s')+'</i>Pitch</button><button data-go="library"><i class="p-green">'+ic('book','s')+'</i>Library</button></div>';
   h+='</main>';
-  app.innerHTML=h;_hubFit();
-  app.querySelector('[data-act="you"]').addEventListener('click',()=>{go('settings',{setPage:'you',_spFromHub:true});});
-  app.querySelectorAll('[data-act="k"]').forEach(el=>el.addEventListener('click',()=>{if(k.a==='notebook'){go('notebook');}else go(k.a);}));
-  app.querySelectorAll('[data-focus]').forEach(b=>b.addEventListener('click',()=>{const a=b.dataset.focus;
-    const scen=_focusScen(k);
-    if(a==='case'){const c=first?_caseOfDay():(CASES.find(x=>x.practice&&x.practice.scen===scen)||_caseOfDay());openCase(c.id);return;}
-    if(a==='you'){go('settings',{setPage:'you',_spFromHub:true});return;}
-    if(a==='practice'){RW.scenario=scen;RW.goal=_rwGoalOf(scen).k;RW.tougher=false;RW.fromReply=null;RW._keepCase={title:'Today’s focus',principle:k.h,label:'Today’s focus · use it here'};go('real');rwFetchScene();return;}
-    if(a==='settings'){go('settings',{setPage:'you',_spFromHub:true});return;}
-    go(a);}));
-  wireDeskBox(app);
-  {const lc=app.querySelector('[data-act="lib-case"]');if(lc)lc.addEventListener('click',()=>openCase(_caseOfDay().id));}
+  app.innerHTML=h;
+  app.querySelector('[data-act="askk"]').addEventListener('click',()=>{if(!V.deskBusy)openAskK();});
+  _deckWire(app.querySelector('#dk-deck'));
   _kTakeRefresh();
+}
+// Three cards on screen (front + two peeking). Drag left = next, right = back, tap the edge = next.
+function _deckWire(st){
+  if(!st)return;
+  const P=_dkPools(),sp=_dkSpecials();
+  if(V.dkK==null||V.dkK<-sp.length)V.dkK=-sp.length;
+  const draw=()=>{const k=V.dkK;const cs=[0,1,2].map(r=>_dkCard(k+r,P,sp));
+    st.innerHTML=cs.map((c,r)=>_deckCardHtml(c,r)).reverse().join('');
+    st._front=cs[0];
+    st.querySelectorAll('.dk-card').forEach(c=>{const r=+c.dataset.r;c.style.zIndex=String(20-r);c.style.transform=r===0?'none':r===1?'translateX(16px) scale(.94)':'translateX(28px) scale(.88)';c.setAttribute('aria-hidden',r===0?'false':'true');});
+    const cta=st.querySelector('.dk-card[data-r="0"] [data-dk="go"]');if(cta)cta.addEventListener('click',e=>{if(V._dkDragged){e.preventDefault();return;}_dkOpen(st._front);});
+    _wireCheckin(st);};
+  draw();
+  const front=()=>st.querySelector('.dk-card[data-r="0"]');
+  const ease='cubic-bezier(.2,.8,.2,1)';
+  const next=()=>{const f=front();if(!f)return;
+    st.querySelectorAll('.dk-card').forEach(c=>{const r=+c.dataset.r;if(r>0){c.style.transition='transform .34s '+ease;c.style.transform=r===1?'none':'translateX(16px) scale(.94)';}});
+    f.style.transition='transform .34s cubic-bezier(.4,0,.6,1),opacity .34s';f.style.transform='translateX(-125%) rotate(-14deg)';f.style.opacity='0';
+    setTimeout(()=>{V.dkK++;draw();const nb=st.querySelector('.dk-card[data-r="2"]');if(nb){nb.style.opacity='0';nb.offsetWidth;nb.style.transition='opacity .25s';nb.style.opacity='1';}},300);};
+  const back=()=>{const f=front();if(V.dkK<=-sp.length){if(f){f.style.transition='transform .25s';f.style.transform='none';}return;}
+    V.dkK--;draw();const n=front();if(!n)return;n.style.transition='none';n.style.transform='translateX(-125%) rotate(-14deg)';n.offsetWidth;n.style.transition='transform .36s '+ease;n.style.transform='none';
+    st.querySelectorAll('.dk-card').forEach(c=>{const r=+c.dataset.r;if(r>0){c.style.transition='none';c.style.transform=r===1?'none':'translateX(16px) scale(.94)';c.offsetWidth;c.style.transition='transform .36s '+ease;c.style.transform=r===1?'translateX(16px) scale(.94)':'translateX(28px) scale(.88)';}});};
+  let x0=0,y0=0,dx=0,drag=false,lock=null;
+  st.addEventListener('pointerdown',e=>{const f=front();if(!f||!f.contains(e.target))return;x0=e.clientX;y0=e.clientY;dx=0;drag=true;lock=null;V._dkDragged=false;});
+  st.addEventListener('pointermove',e=>{if(!drag)return;const ddx=e.clientX-x0,ddy=e.clientY-y0;
+    if(lock===null&&(Math.abs(ddx)>8||Math.abs(ddy)>8))lock=Math.abs(ddx)>Math.abs(ddy)?'x':'y';
+    if(lock!=='x')return;dx=ddx;V._dkDragged=Math.abs(dx)>8;const f=front();f.style.transition='none';f.style.transform='translateX('+dx+'px) rotate('+(dx/22)+'deg)';});
+  const end=()=>{if(!drag)return;drag=false;if(lock!=='x')return;
+    if(dx<-60)next();else if(dx>60)back();else{const f=front();f.style.transition='transform .25s';f.style.transform='none';}
+    setTimeout(()=>{V._dkDragged=false;},60);};
+  st.addEventListener('pointerup',end);st.addEventListener('pointercancel',end);
+  st.addEventListener('click',e=>{if(V._dkDragged)return;const f=front();if(e.target===st||(f&&!f.contains(e.target)&&e.target.closest('.dk-card')))next();});
 }
 
 // Make the home fit any phone: if the tiles get squeezed, trim the top box step by step until they have room
