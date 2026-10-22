@@ -4408,7 +4408,7 @@ function renderReal(app){
     const g=RW.pickOpen&&RW_GOALS.find(x=>x.k===RW.pickOpen);
     if(!g){
       h+=gBar('Practice a talk','hub');
-      h+='<div class="lib-grid rw-topics rw-tiles">'+RW_GOALS.map(x=>'<button class="lib-topic '+GP[x.k]+'" data-goal="'+x.k+'"><b>'+x.t+'</b><span>'+x.items.length+(x.items.length===1?' situation':' situations')+'</span></button>').join('')+
+      h+='<div class="lib-grid rw-topics rw-tiles">'+RW_GOALS.map(x=>'<button class="lib-topic '+GP[x.k]+'" data-goal="'+x.k+'"><b>'+x.t+'</b><span>'+(PRACTICE_SITS[x.k]||[]).length+' situations'+'</span></button>').join('')+
         '<button class="lib-topic p-yellow" data-go="pitch"><b>Pitch it</b><span>Build, run, face the room</span></button>'+
         '<button class="lib-topic lib-tk rw-surprise" data-act="surprise"'+(RW.loadingScene?' disabled':'')+'><b>'+(RW.loadingScene?'K is picking…':'Surprise me')+'</b><span>K picks one</span></button></div>';
     }else{
