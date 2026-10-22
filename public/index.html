@@ -1121,6 +1121,43 @@ p,.sub,.small,.g-why,.rw-kw,.ch-re,.ch-kr p,.ch-path p,.rw-scene{text-wrap:prett
 .askk{display:flex;align-items:center;gap:8px;height:44px;padding:0 14px 0 6px;border-radius:999px;background:#8FD3F0;color:#06202B;font-weight:800;font-size:14px}
 .askk .kav{width:32px;height:32px}
 .dk-stack .dk-card[aria-hidden="true"] > *{opacity:0}
+
+/* Ask K page */
+.askk-body{display:flex;flex-direction:column;gap:14px}
+.askk-heard{padding:22px 20px}
+.askk-heard .g-k{display:flex;align-items:center;gap:10px}
+.askk-why{font-size:26px;font-weight:900;letter-spacing:-.02em;line-height:1.15;margin-top:14px;text-wrap:balance}
+.askk-sc{margin-top:10px;font-size:15px;font-weight:700;opacity:.75}
+.askk-you{padding:4px 4px 0}
+.askk-you small{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.askk-you p{margin-top:6px;font-size:15px;line-height:1.5;color:var(--ink-2);text-wrap:pretty}
+.askk-alt{margin-top:4px}
+.askk-others{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.askk-others button{display:flex;align-items:center;gap:8px;padding:12px;border-radius:14px;background:var(--card);border:1px solid var(--line);font-weight:700;font-size:13.5px;color:var(--ink);text-align:left}
+.askk-others .ic{color:var(--ink-3);flex-shrink:0}
+.askk-scr .askk-body{margin-top:auto}.askk-scr .askk-others{margin-bottom:auto}
+
+/* Practice picker: tiles only; a tile grows into its own section */
+.rw-tiles{flex:1;grid-auto-rows:1fr;min-height:0}
+.rw-tiles .lib-topic{opacity:1;min-height:0;padding:16px 18px;border-radius:22px}
+.rw-tiles .lib-topic b{font-size:clamp(17px,2.6dvh,21px)}
+.rw-tiles .rw-surprise{grid-column:1/-1}
+.rw-sec{flex:1;border-radius:28px;background:var(--p);color:var(--pi);padding:22px;display:flex;flex-direction:column;gap:16px;animation:rwsec .25s ease}
+@keyframes rwsec{from{opacity:.6}to{opacity:1}}
+.rw-sech b{display:block;font-size:34px;font-weight:900;letter-spacing:-.03em;line-height:1.05}
+.rw-sech span{display:block;margin-top:6px;font-size:14px;font-weight:700;opacity:.7}
+.rw-secl{flex:1;display:flex;flex-direction:column;gap:10px;justify-content:flex-end}
+.rw-secl button{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 18px;border-radius:18px;background:rgba(0,0,0,.08);color:var(--pi);text-align:left;font-size:18px;font-weight:800;line-height:1.25}
+.rw-secl button .ic{flex-shrink:0}
+@media (max-height:740px){.rw-secl button{padding:14px 16px;font-size:16px}.rw-sech b{font-size:28px}}
+.rw-secl{justify-content:center}
+.rw-secl button{flex:1 1 0;max-height:118px;font-size:clamp(17px,2.5dvh,21px)}
+.rw-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+.rw-secl{flex:1 1 0;min-height:0;overflow-y:auto;justify-content:flex-start;scrollbar-width:none;margin:0 -4px;padding:0 4px 4px;-webkit-mask-image:linear-gradient(#000 calc(100% - 28px),transparent);mask-image:linear-gradient(#000 calc(100% - 28px),transparent)}
+.rw-secl::-webkit-scrollbar{display:none}
+.rw-secl button{flex:0 0 auto;max-height:none;min-height:72px}
+.rw-secl .rw-any{background:var(--pi);color:var(--p)}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -1160,7 +1197,9 @@ const CHANGELOG=[
   {v:'1.6',d:'2026-10-22',items:[
     'A new home: one big card at a time. Swipe for the next one: practice, read, choose, quick answer, and around again.',
     'Ask K sits at the top. Tell K what’s coming up and K points you to the right tool.',
-    'Settings and your details are in the notebook menu.']},
+    'Settings sit next to Ask K. Notes are in the bottom bar.',
+    'Practice a talk: tap a topic and it opens into its own page, with new everyday situations to practice.',
+    'Ask K now opens its own page with what K heard and where to go.']},
   {v:'1.5',d:'2026-10-21',items:[
     'New way to answer: Choose. On 10 cases, pick the answer closest to yours and see where it leads: what happens, why you picked it, what it costs, and what to do next time. Then say it your way.',
     'K’s notebook notes your instinct once you’ve made a few choices.',
@@ -1413,7 +1452,7 @@ function render(){
   if(!app)return;
   closeSheet();
   if(!S.onboarded&&V.view!=='owner'){return renderOnboarding(app);}
-  const R={hub:renderHub,reply:renderReply,real:renderReal,pitch:renderPitch,quick:renderQuick,settings:renderSettings,notebook:renderNotebook,advice:renderAdvice,library:renderLibrary,case:renderCase,'nb-entry':renderNbEntry,sync:renderSync,owner:renderOwner,ask:renderAsk,choose:renderChoose};
+  const R={hub:renderHub,reply:renderReply,real:renderReal,pitch:renderPitch,quick:renderQuick,settings:renderSettings,notebook:renderNotebook,advice:renderAdvice,library:renderLibrary,case:renderCase,'nb-entry':renderNbEntry,sync:renderSync,owner:renderOwner,ask:renderAsk,choose:renderChoose,askk:renderAskK};
   const fn=R[V.view]||renderHub;
   fn(app);
   _noOrphans(app);
@@ -2986,9 +3025,9 @@ function openAskK(){
 }
 function renderHub(app){
   let h='<main class="scr hub dk">';
-  h+='<div class="top"><div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div><div class="ibtns"><button class="ibtn ib-nb" data-go="notebook" aria-label="K’s notebook">'+ic('book')+'</button><button class="askk" data-act="askk">'+kav()+'<span>'+(V.deskBusy?'Reading…':'Ask K')+'</span></button></div></div>';
+  h+='<div class="top"><div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div><div class="ibtns"><button class="ibtn ib-set" data-go="settings" aria-label="Settings">'+ic('settings')+'</button><button class="askk" data-act="askk">'+kav()+'<span>'+(V.deskBusy?'Reading…':'Ask K')+'</span></button></div></div>';
   h+='<div class="dk-stack" id="dk-deck"></div>';
-  h+='<div class="dk-tools"><button data-go="reply"><i class="p-lav">'+ic('reply','s')+'</i>Reply</button><button data-go="real"><i class="p-teal">'+ic('talk','s')+'</i>Practice</button><button data-go="pitch"><i class="p-org">'+ic('pitch','s')+'</i>Pitch</button><button data-go="library"><i class="p-green">'+ic('book','s')+'</i>Library</button></div>';
+  h+='<div class="dk-tools"><button data-go="reply"><i class="p-lav">'+ic('reply','s')+'</i>Reply</button><button data-go="real"><i class="p-teal">'+ic('talk','s')+'</i>Practice</button><button data-go="library"><i class="p-green">'+ic('book','s')+'</i>Library</button><button data-go="notebook"><i class="p-yellow">'+ic('list','s')+'</i>Notes</button></div>';
   h+='</main>';
   app.innerHTML=h;
   app.querySelector('[data-act="askk"]').addEventListener('click',()=>{if(!V.deskBusy)openAskK();});
@@ -3264,10 +3303,6 @@ function renderOnboarding(app){
     h+='<div class="stack t" style="margin-top:6px"><h1 class="h1">What’s hardest for you?</h1><p class="sub">Pick any. K will push you there first.</p></div>';
     h+=chipsHtml(STRUGGLES,p.struggles||[],'str',true);
     h+='<div class="fieldset"><label class="lab" for="ob-prob">In your own words <span style="text-transform:none;letter-spacing:0;font-weight:600">(optional)</span></label><textarea class="g-answer" id="ob-prob" style="min-height:84px" placeholder="e.g. Clients always ask for a discount and I say yes too fast.">'+escHtml(p.problem||'')+'</textarea></div>';
-    h+='<div class="card stack" style="gap:12px"><div class="between"><span class="h2" style="font-size:15px">Your numbers</span><span class="tag k">Optional</span></div>'+
-       '<div class="grid2"><div class="fieldset"><label class="lab" for="ob-price">Your price</label><input class="inp" id="ob-price" type="text" placeholder="¥8,000" value="'+escHtml(S.rwPrice||'')+'"></div>'+
-       '<div class="fieldset"><label class="lab" for="ob-low">Lowest you’ll take</label><input class="inp" id="ob-low" type="text" placeholder="¥6,500" value="'+escHtml(S.rwLowest||'')+'"></div></div>'+
-       '<div class="device">'+ic('phone','s')+'<span>These stay on this device. K uses them to coach you on price.</span></div></div>';
     h+='<button class="btn btn-pri push" data-act="done">Done</button>';
   }
   h+='</main>';
@@ -3339,8 +3374,7 @@ function renderSettingsPage(app,sp){
       ['about','About you',[p.name,p.age].filter(Boolean).join(' · ')],
       ['work','Work',[_label(STAGES,p.stage),S.rwField,p.role].filter(Boolean).join(' · ')],
       ['hard','What’s hard',(p.struggles||[]).map(k=>lab(STRUGGLES,k)).filter(Boolean).join(', ')||(p.problem?_kShort(p.problem,60):'')],
-      ['lang','Language',[lab(ENGLISH,p.english),p.firstLang].filter(Boolean).join(' · ')],
-      ['nums','Your numbers',[S.rwPrice?'Price '+S.rwPrice:'',S.rwLowest?'lowest '+S.rwLowest:''].filter(Boolean).join(' · ')]];
+      ['lang','Language',[lab(ENGLISH,p.english),p.firstLang].filter(Boolean).join(' · ')]];
     h+='<p class="sub">K reads this before coaching you, so the advice fits. It stays on this device.</p>';
     h+='<div class="list">'+rows.map(r=>'<button class="row" data-yous="'+r[0]+'"><span class="rt"><b>'+escHtml(r[1])+'</b><span>'+escHtml(r[2]||'Not set yet')+'</span></span>'+ic('chev','s chev')+'</button>').join('')+'</div>';
   }else if(sp==='coaching'){
@@ -3430,7 +3464,7 @@ async function deskRead(){
   V.deskText=text;
   let r=null;
   if(_aiOn()){
-    V.deskBusy=true;render();
+    V.deskBusy=true;V.deskRoute=null;go('askk');
     const scenes=Object.keys(TT_REAL).map(k=>k+' ('+TT_REAL[k].name+')').join(', ');
     const sys='You are the front desk of a communication coaching app. A person describes a situation. Decide which tool helps them most, and fill it in.\n'+
       'Tools: "advice" (they are asking what to do, something has gone wrong, emotions are high, or they need a plan before any words: choose this whenever they ask for guidance rather than a draft or a rehearsal; it is the safe default), "reply" (they received a message and need to answer it: the text contains or describes what someone said to them, and the answer is written), "practice" (a spoken conversation is coming up or keeps happening: they want to rehearse it with K playing the other person), "pitch" (they must present or pitch something to a group or a decision maker), "quick" (they want a strong short answer to one question they expect to be asked).\n'+
@@ -3443,7 +3477,24 @@ async function deskRead(){
   if(r.route==='practice'&&!TT_REAL[r.scenario])r.scenario=_deskGuess(text).scenario;
   V.deskRoute=r;
   if(r.route==='advice'){deskGo('advice');return;}
-  openDeskSheet();
+  if(V.view!=='askk')go('askk');else render();
+}
+// Ask K: a full page. While K reads it, a full loading screen; then what K heard and where to go.
+function renderAskK(app){
+  let h='<main class="scr p-blue askk-scr">'+gBar('Ask K','hub');
+  const r=V.deskRoute;
+  if(V.deskBusy||!r){h+=kWritingHtml('K is reading it…','Working out what will help most.');}
+  else{const main=DESK_ROUTES[r.route]||DESK_ROUTES.practice;
+    const scName=r.route==='practice'&&TT_REAL[r.scenario]?TT_REAL[r.scenario].name:'';
+    const others=Object.keys(DESK_ROUTES).filter(k=>k!==r.route);
+    h+='<div class="askk-body"><div class="g-block askk-heard"><div class="g-k">'+kav()+'<span class="g-kick">Here’s what I heard</span></div><div class="askk-why">'+escHtml(_clean(r.why)||main.say)+'</div>'+(scName?'<p class="askk-sc">'+escHtml(scName)+(r.who?' · '+escHtml(_clean(r.who)):'')+'</p>':'')+'</div>'+
+      '<div class="askk-you"><small>You wrote</small><p>'+escHtml(_kShort(V.deskText||'',220))+'</p></div></div>';
+    h+='<div class="push"></div>'+gCta(main.t,'askk-main',{icon:main.ic})+'<div class="g-kick askk-alt">Not quite? Do this instead</div><div class="askk-others">'+others.map(k=>'<button data-desk="'+k+'">'+ic(DESK_ROUTES[k].ic,'s')+'<span>'+escHtml(DESK_ROUTES[k].t)+'</span></button>').join('')+'</div>';}
+  h+='</main>';
+  app.innerHTML=h;
+  const m=app.querySelector('[data-act="askk-main"]');if(m)m.addEventListener('click',()=>deskGo(V.deskRoute.route));
+  app.querySelectorAll('[data-desk]').forEach(b=>b.addEventListener('click',()=>deskGo(b.dataset.desk)));
+  const body=app.querySelector('.askk-body');if(body)_fillZoom([body],()=>document.scrollingElement.scrollHeight<=window.innerHeight,1.3);
 }
 function openDeskSheet(){
   const r=V.deskRoute;if(!r)return;const main=DESK_ROUTES[r.route];
@@ -3517,7 +3568,7 @@ function _adviceCases(scen){
 function renderAdvice(app){
   const A=V.adv;if(!A){go('hub');return;}
   let h='<main class="scr p-lav'+(A.data&&!A.loading?' rw-donescr':'')+'">'+gBar('K’s advice','hub');
-  if(!(A.data&&!A.loading))h+='<div class="g-card tight"><div class="g-row top"><span class="t"><b>What you told K</b><span>'+escHtml(_kShort(A.text,220))+'</span></span></div></div>';
+  if(!A.data&&!A.loading)h+='<div class="g-card tight"><div class="g-row top"><span class="t"><b>What you told K</b><span>'+escHtml(_kShort(A.text,220))+'</span></span></div></div>';
   if(A.loading){
     h+=kWritingHtml('K is thinking it through','What matters most, what to do, and what to say first.');if(false)h+='<div class="g-card" style="display:flex;flex-direction:column;gap:14px"><div class="g-k">'+kav()+'<div><b style="font-size:15px">K is thinking it through</b><div class="small" style="margin-top:2px">What matters most, what to do, and what to say first.</div></div></div><div class="stack" style="gap:9px"><div class="sk w9"></div><div class="sk w8"></div><div class="sk w9"></div><div class="sk w5"></div></div></div>';
   }else if(A.data){
@@ -4042,7 +4093,7 @@ const RW_SETTING={interview:'A first-round interview for a job you really want. 
 function _cap(s){return String(s||'').replace(/^./,c=>c.toUpperCase());}
 function _rwCast(item){
   const k=RW.scenario,cl=_rwIsClient(k);
-  RW.brief=cl&&item&&item.c?{q:RW.question,c:item.c,scene:item.scene||'',job:item.job,pos:String(item.pos).replace(/^(You|Your offer|Your price|Your quote|Your position|The agreement)\s*:\s*/,'')}:(!cl&&item&&item.who?{q:RW.question,who:item.who,moment:item.moment,role:item.role||'',scene:item.scene||''}:null);
+  RW.brief=cl&&item&&item.c?{q:RW.question,c:item.c,scene:item.scene||'',job:item.job,pos:(item.pos?String(item.pos):'').replace(/^(You|Your offer|Your price|Your quote|Your position|The agreement)\s*:\s*/,'')}:(!cl&&item&&item.who?{q:RW.question,who:item.who,moment:item.moment,role:item.role||'',scene:item.scene||''}:null);
   RW.persona=cl?_pick(RW_PEOPLE.client):(item&&item.who&&(k==='intro'||k==='smalltalk'))?_pick(['friendly and curious','relaxed and chatty','polite, a little reserved','warm, a bit distracted','dry sense of humor, easy to talk to']):_pick(RW_PEOPLE[k]||RW_PEOPLE.intro);
   RW.who=cl?((item&&item.c?item.c.replace(' · ',', ')+', ':'')+RW.persona):((item&&item.who?item.who.replace(' · ',', ')+'; ':'')+RW.persona);
   // A built-in scene with no brief: build one, so the speaker always knows who, where and why
@@ -4306,7 +4357,7 @@ function _rwEndSlides(){
   const topic=(TT_REAL[RW.scenario]||{}).name?String(TT_REAL[RW.scenario].name).toLowerCase():'';
   const fc=RW.fromCase;
   if(fc&&fc.k)out.push({k:'Next time',h:'<div class="g-card case-k"><div class="g-k">'+kav()+'<b style="font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)">How K would say it</b></div><div class="case-line">'+escHtml(fc.k)+'</div>'+(fc.principle?'<div class="nt-pr">'+escHtml(fc.principle)+'</div>':'')+'</div>'});
-  else{const hint=_rwHint().replace(/^Hint from K:\s*/,'');const f2=fixes[1];
+  else{const hint=(fc&&fc.principle)||_rwHint().replace(/^Hint from K:\s*/,'');const f2=fixes[1];
     out.push({k:'Next time',h:(hint?'<div class="case-pr"><b>'+escHtml(hint)+'</b></div>':'')+(f2?'<div class="g-card"><div class="g-kick">Another line to try</div><div class="g-said">“'+escHtml(f2.said)+'”</div><div class="g-better" style="margin-top:8px">“'+escHtml(_stripQ(f2.try))+'”</div><div class="g-why"><b>Why:</b> '+escHtml(f2.why||'')+'</div></div>':'')});}
   return out;
 }
@@ -4353,13 +4404,20 @@ function renderReal(app){
   let h='<main class="scr p-teal'+(ph==='turn'&&RW.mode==='live'?' g-call':'')+(ph==='done'?' rw-donescr':'')+'">';
   const name=_rwName();
   if(ph==='setup'){
-    const g=RW_GOALS.find(x=>x.k===RW.goal);
-    h+=gBar('Practice a talk','hub',_rwDots());
-    h+='<h2 class="g-h">What’s coming up?</h2>';
     const GP={client:'p-teal',job:'p-lav',disagree:'p-pink',work:'p-org',people:'p-blue'};
-    h+='<div class="lib-grid rw-topics">'+RW_GOALS.map(x=>'<button class="lib-topic '+GP[x.k]+(x.k===RW.goal?' on':'')+'" data-goal="'+x.k+'"><b>'+x.t+'</b><span>'+x.items.length+(x.items.length===1?' situation':' situations')+'</span></button>').join('')+
-      '<button class="lib-topic lib-tk rw-surprise" data-act="surprise"'+(RW.loadingScene?' disabled':'')+'><b>Surprise me</b><span>K picks one</span></button></div>';
-    h+='<div class="g-kick" style="margin-top:2px">'+escHtml(g.t)+'</div><div class="lib-list">'+g.items.map(k=>'<button class="lib-li" data-scen="'+k+'"'+(RW.loadingScene?' disabled':'')+'><span class="lib-lt"><b>'+escHtml(RW_PLAIN[k]||TT_REAL[k].name)+'</b></span>'+(RW.loadingScene&&RW.scenario===k?'<span class="think"><i></i><i></i><i></i></span>':ic('chev','s'))+'</button>').join('')+'</div>';
+    const g=RW.pickOpen&&RW_GOALS.find(x=>x.k===RW.pickOpen);
+    if(!g){
+      h+=gBar('Practice a talk','hub');
+      h+='<div class="lib-grid rw-topics rw-tiles">'+RW_GOALS.map(x=>'<button class="lib-topic '+GP[x.k]+'" data-goal="'+x.k+'"><b>'+x.t+'</b><span>'+x.items.length+(x.items.length===1?' situation':' situations')+'</span></button>').join('')+
+        '<button class="lib-topic p-yellow" data-go="pitch"><b>Pitch it</b><span>Build, run, face the room</span></button>'+
+        '<button class="lib-topic lib-tk rw-surprise" data-act="surprise"'+(RW.loadingScene?' disabled':'')+'><b>'+(RW.loadingScene?'K is picking…':'Surprise me')+'</b><span>K picks one</span></button></div>';
+    }else{
+      h+=gBar('Practice a talk','rw-pickback');
+      const L=PRACTICE_SITS[g.k]||[],dn=_casesDone();
+      h+='<div class="rw-sec '+GP[g.k]+'"><div class="rw-sech"><b>'+escHtml(g.t)+'</b><span>'+L.length+' situations · swipe up for more</span></div><div class="rw-secl">'+
+        '<button class="rw-any" data-anyof="'+g.k+'"'+(RW.loadingScene?' disabled':'')+'><span>'+(RW.loadingScene?'K is writing one…':'Any situation · K makes one up')+'</span>'+(RW.loadingScene?'<span class="think"><i></i><i></i><i></i></span>':ic('shuffle','s'))+'</button>'+
+        L.map((x,i)=>'<button data-px="'+i+'"'+(RW.loadingScene?' disabled':'')+'><span>'+escHtml(x.t)+'</span>'+(dn['px-'+g.k+'-'+i]?ic('check','s'):ic('arrow','s'))+'</button>').join('')+'</div></div>';
+    }
     if(!_aiOn())h+='<p class="small center-t">AI is off or you’re offline, so scenes come from the built-in set.</p>';
   }else if(ph==='brief'&&RW.adapting){
     h+=gBar(_rwShort(),'rw-setup',_rwDots())+kWritingHtml('K is setting the scene in your world…','Same situation, your kind of work.');
@@ -4429,7 +4487,10 @@ function renderReal(app){
   app.innerHTML=h;
   if(ph==='done')app.querySelectorAll('.rw-slide').forEach(sl=>{const b=sl.querySelector('.rw-sbody');if(b)_fillZoom([b],()=>sl.scrollHeight<=sl.clientHeight);});
   const on=(s,f)=>{const el=app.querySelector(s);if(el)el.addEventListener('click',f);};
-  app.querySelectorAll('[data-goal]').forEach(b=>b.addEventListener('click',()=>{RW.goal=b.dataset.goal;const g=RW_GOALS.find(x=>x.k===RW.goal);if(!g.items.includes(RW.scenario))RW.scenario=g.items[0];render();}));
+  app.querySelectorAll('[data-goal]').forEach(b=>b.addEventListener('click',()=>{RW.goal=b.dataset.goal;const g=RW_GOALS.find(x=>x.k===RW.goal);if(!g.items.includes(RW.scenario))RW.scenario=g.items[0];_rwOpenTopic(b,g.k);}));
+  app.querySelectorAll('[data-px]').forEach(b=>b.addEventListener('click',()=>{const c=_pxCase(RW.pickOpen,+b.dataset.px);if(c)caseToPractice(c);}));
+  app.querySelectorAll('[data-anyof]').forEach(b=>b.addEventListener('click',()=>{if(RW.loadingScene)return;const g=RW_GOALS.find(x=>x.k===b.dataset.anyof);RW.scenario=_pick(g.items);RW.goal=g.k;RW.tougher=false;RW.fromReply=null;RW.fromCase=null;rwFetchScene();}));
+  app.querySelectorAll('[data-go="rw-pickback"]').forEach(b=>{b.removeAttribute('data-go');b.addEventListener('click',()=>{RW.pickOpen=null;render();});});
   app.querySelectorAll('[data-scen]').forEach(b=>b.addEventListener('click',()=>{if(RW.loadingScene)return;RW.scenario=b.dataset.scen;RW.tougher=false;RW.fromReply=null;RW.fromCase=null;rwFetchScene();}));
   on('[data-act="surprise"]',()=>{if(RW.loadingScene)return;const all=RW_GOALS.flatMap(g=>g.items);RW.scenario=_pick(all);RW.goal=_rwGoalOf(RW.scenario).k;RW.tougher=false;RW.fromReply=null;RW.fromCase=null;rwFetchScene();});
   app.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.mode;if(m==='live'&&!LIVE_ON){showToast('Live calls are coming. Speak works today.','info');return;}if(RW.rec)return;RW.mode=m;render();if(ph==='turn'&&m!=='type')rwSpeakLine();}));
@@ -4462,6 +4523,15 @@ function renderReal(app){
   on('[data-act="new"]',()=>{RW.phase='setup';RW.question='';RW.fromReply=null;render();});
   on('[data-act="rw-retry"]',()=>{RW.loading=true;RW.notes=null;render();rwAnalyze();});
   if(ph==='turn'&&RW.rec)recLevelLoop(app.querySelector('#rw-wave'));
+}
+// Tap a topic tile: it grows into its own section, then the situations appear
+function _rwOpenTopic(tile,k){
+  const r=tile.getBoundingClientRect(),cs=getComputedStyle(tile),bar=document.querySelector('.g-bar'),top=bar?bar.getBoundingClientRect().bottom+12:80;
+  const ov=document.createElement('div');ov.className='rw-grow';ov.style.cssText='position:fixed;z-index:50;left:'+r.left+'px;top:'+r.top+'px;width:'+r.width+'px;height:'+r.height+'px;border-radius:'+cs.borderRadius+';background:'+cs.backgroundColor+';transition:all .32s cubic-bezier(.2,.8,.2,1)';
+  document.body.appendChild(ov);ov.offsetWidth;
+  const pad=parseFloat(getComputedStyle(document.querySelector('main')).paddingLeft)||18,m=document.querySelector('main').getBoundingClientRect();
+  ov.style.left=(m.left+pad)+'px';ov.style.top=top+'px';ov.style.width=(m.width-2*pad)+'px';ov.style.height=(window.innerHeight-top-pad)+'px';ov.style.borderRadius='28px';
+  setTimeout(()=>{RW.pickOpen=k;render();ov.style.transition='opacity .2s';ov.style.opacity='0';setTimeout(()=>ov.remove(),220);},300);
 }
 // The scene, kept on the speaking card: who, the job or the moment, your numbers, your goal
 const RW_CTX_ON=false; // scene panel on the speaking card: waiting for approval
@@ -5035,6 +5105,62 @@ function _chFit(app){const m=app.querySelector('main');if(!m)return;
   m.classList.remove('ch-nocost','ch-fill');
   if(!fit()||parseFloat(m.style.getPropertyValue('--k'))<.86){m.classList.add('ch-nocost');fit();}
   m.classList.add('ch-fill');if(over())m.classList.remove('ch-fill');}
+// ═══ Practice situations: variations per topic, seen through Kian's principles ═══
+// Drafted by Claude from K's principles (see "Ground: K's principles"). The Library stays as the
+// principle-and-technique cases; these are the everyday situations people practice out loud.
+// Each: t title · s scenario type · w who · sc scene ([[the key moment]]) · l their first line · r how they play it
+//       p the principle (Do) · m what most people do (Don't) · pos (money talks only)
+const PX=(t,s,w,sc,l,r,p,m,pos)=>({t,s,w,sc,l,r,p,m,pos});
+const PRACTICE_SITS={
+ job:[
+  PX('“Tell me about yourself”','interview','The interviewer · first interview','It’s the first question of the interview. [[Your mind goes blank.]]','“So, tell me a bit about yourself.”','A friendly interviewer who loses interest if the answer turns into a life story.','One line on who you are, one proof, one reason you’re here.','Reciting your whole CV.'),
+  PX('“Why do you want to work here?”','interview','The interviewer · a design studio','They want to know why you picked them, [[not just any job]].','“Why do you want to work with us, specifically?”','An interviewer who can tell a copy-paste answer from a real one. You never ask the speaker about your own company’s private details.','Talk about what they do and how you’d help.','“I’ve always admired your company.”'),
+  PX('“What’s your biggest weakness?”','interview','The interviewer · final round','The question everyone dreads. [[They’re watching how honest you are.]]','“What would you say is your biggest weakness?”','A sharp interviewer who pushes back on fake weaknesses.','A real weakness, and what you’re doing about it.','“I work too hard.”'),
+  PX('“Your experience is a bit thin”','interview','The interviewer · a junior role','You love this role. [[They think you’re too new.]]','“Honestly, we were hoping for someone with more experience.”','Skeptical but fair. You warm up if they show real commitment and work they did on their own.','Show commitment: what you did because you couldn’t stop.','Apologizing for being new.'),
+  PX('“What are your salary expectations?”','interview','HR · after the second interview','They like you. [[Now they want a number.]]','“So, what salary are you expecting?”','A friendly HR manager with a budget. You push gently if they give a number with no reason.','Give a range you’ve researched. Then stop talking.','“Whatever you think is fair.”'),
+  PX('“Do you have any questions for us?”','interview','The interviewer · end of the interview','The interview is almost over. [[This is your last chance to stand out.]]','“That’s all from us. Any questions for us?”','An interviewer who enjoys good questions and is bored by “What’s the salary?”','Ask from real curiosity about their work.','“No, I think you covered everything.”'),
+  PX('“So, what do you do?”','intro','Someone at an industry event','A stranger turns to you with a drink. [[You have ten seconds.]]','“So, what do you do?”','Curious and friendly. You drift away if the answer is a job title and nothing else.','What you do, for whom, and one result.','Just a job title.')
+ ],
+ client:[
+  PX('They want it faster, same price','difficult','A client · two days before the deadline','The client wants the work [[a week early]]. Same budget.','“Any chance you can get this to us by Friday instead?”','A client under pressure from their boss. You respect a clear trade; you push on a flat no.','Show the trade: faster costs something.','A yes you can’t deliver.'),
+  PX('“Just one more small change”','difficult','A client · the fourth round','It’s the fourth “small change” this week. [[None of it was in the brief.]]','“Love it. Just one tiny change and we’re done, promise.”','Friendly and a bit pushy. You accept a warm, clear line about what’s included.','Name it, price it. Warm, then firm.','Doing it free, again.'),
+  PX('Chasing a late payment','difficult','A client · 30 days late','Your invoice is [[a month late]], and you need the money.','“Oh hi! Sorry, things have been crazy here.”','Apologetic, vague, slow. You commit to a date if they ask for one clearly.','Polite, firm, and a specific date.','Apologizing for asking.'),
+  PX('Quoting a new project','proposal','A new client · first call','They describe the job, then [[ask what it costs]].','“Okay, sounds good. So what would something like this cost?”','A new client comparing a few people. You like clarity and a reason.','Their problem first. Then your price. Then stop.','A price with five excuses attached.','Your price: ¥10,000. Lowest you’ll accept: ¥8,000'),
+  PX('“Can we pay you after launch?”','bargain','A startup founder','They love your work. [[They want to pay later.]]','“Cash is tight. Could we pay you after we launch?”','A charming founder who will agree to a deposit if asked clearly.','Give only to get something back.','Saying yes and hoping.','Your price: ¥12,000. Lowest you’ll accept: half upfront'),
+  PX('The client went quiet','proposal','A client · two weeks after your proposal','You sent a proposal. [[Two weeks of silence.]] You call.','“Oh hi, sorry, I’ve been meaning to get back to you.”','Busy and unsure. You decide if they’re asked one clear question.','Ask one clear question about the decision.','Pushing for a yes, or giving up.'),
+  PX('They want all your source files','ground','A client · after delivery','The job is done. [[Now they want everything, for free.]]','“Can you send us all the working files too? We might edit it ourselves.”','Reasonable-sounding. You accept a clear answer about what was included and what it costs.','Know what’s included before you talk.','Sending it all to avoid a fight.','Your price for working files: ¥2,000. Lowest you’ll accept: ¥1,500')
+ ],
+ disagree:[
+  PX('A colleague keeps interrupting you','conflict','A colleague · in the meeting','You start your point. [[They cut you off. Again.]]','“Sorry, can I just jump in here?”','Not mean, just loud. You back off if someone calmly holds their point.','Finish your point calmly, then hand back.','Going quiet, or snapping.'),
+  PX('The priorities change every week','disagree','Your boss · Monday morning','New week, [[new top priority]]. Last week’s is now late.','“Drop that. This is the priority now.”','A busy boss who means well. You respond to a clear trade-off in writing.','Show the trade. Confirm it in writing.','Trying to do everything.'),
+  PX('Their work isn’t good enough','feedback','A teammate · after they sent their part','You have to tell them [[their part isn’t ready]].','“So, what did you think of my part?”','A bit sensitive. You open up to one specific, kind point.','One specific thing, and why it matters.','A vague “it’s fine” or a list of ten things.'),
+  PX('Join my startup, no pay yet','sayno','A friend · over coffee','A friend wants you as a co-founder. [[No money for a year.]]','“Come on, it’ll be huge. We’ll pay you when we raise money.”','Enthusiastic and persistent. You accept a clear, warm no or real terms.','A soft no costs more than a firm one.','“Maybe, let me think” forever.'),
+  PX('Someone senior talks down to you','conflict','A senior colleague','In front of others, they [[dismiss your idea]] without listening.','“That won’t work. Let’s not waste time on it.”','Senior and impatient. You listen if someone stays calm and sticks to the work.','Warm, then firm. Stick to the work.','Arguing in front of everyone.'),
+  PX('You made a mistake that hurt them','conflict','A teammate · after the client call','Your mistake [[made them look bad]] in front of the client.','“That was really embarrassing. What happened?”','Upset but fair. You calm down once someone owns it.','Own it first. Then fix it.','Explaining before apologizing.'),
+  PX('Covering for someone, again','sayno','Your manager · Thursday afternoon','A colleague is out [[for the third time]]. You’re asked to cover.','“Can you cover their work again this week?”','A manager who assumes you’ll say yes. You respect a yes with a line, or a clear trade.','Say yes on your terms, or show the trade.','Quietly taking it all on.')
+ ],
+ work:[
+  PX('Your idea, in thirty seconds','pitch','Your boss · in the corridor','You finally have the boss [[for thirty seconds]].','“You wanted to tell me something? I’ve got a minute.”','Busy and distracted. You stop if they hear the point first.','Bottom line first.','Starting with the background.'),
+  PX('Your project is late','meeting','Your manager · weekly meeting','It’s your turn. [[Your project is a week behind.]]','“Where are we on your project?”','Calm, but hates surprises. You trust a clear date.','Say the problem and the new date first.','Burying the delay in details.'),
+  PX('Defending your creative choice','tough','A creative director · review','They question [[the choice you’re proudest of]].','“Why did you go with this direction? It feels off to me.”','Direct, open to being convinced by the goal, not the technique.','Explain the goal, not the technique.','Getting defensive.'),
+  PX('Asking for more time','meeting','Your boss · one-on-one','You won’t make the deadline. [[You have to say it now.]]','“Yes? What’s up?”','A boss who prefers early bad news to late surprises.','Ask early, with a new date and a reason.','Waiting until the last day.'),
+  PX('A question you can’t answer','tough','A client · in the presentation','They ask something [[you don’t know]].','“And what happens if the numbers drop next quarter?”','Sharp and fair. You trust someone who says what they know and when they’ll find out.','Say what you know, what you’ll find out, and when.','Making something up.'),
+  PX('Explaining your work to a non-expert','meeting','A manager from another team','They need to understand your work [[in plain words]].','“Okay, explain this to me like I’m not a designer.”','Smart, not technical. You glaze over at jargon.','Their problem, in their words.','Technical terms.'),
+  PX('The room goes quiet','meeting','Your manager · team meeting','You have an idea. [[Nobody is talking.]]','“Any thoughts, anyone?”','Encouraging. You warm to one clear point.','One point, said plainly.','Waiting for someone else.')
+ ],
+ people:[
+  PX('Meeting someone new at an event','smalltalk','A guest · at a friend’s launch party','You know nobody here. [[Someone smiles at you.]]','“Hi! So how do you know the host?”','Friendly, open, a bit shy too.','Ask about them. Listen for the thread.','Talking only about yourself.'),
+  PX('Following up months later','smalltalk','Someone you met last year','You met once, months ago. [[Now you need their help.]]','“Oh hey! It’s been a while. How are you?”','Warm but busy. You respond better if they get something too.','Give before you ask.','Asking for the favor in the first sentence.'),
+  PX('Talking to someone you admire','intro','A well-known person in your field','After their talk, [[you finally get a moment]].','“Hi. Did you enjoy the talk?”','Kind but tired of compliments. You light up at a real question.','Ask a good question, from real curiosity.','A long compliment and nothing else.'),
+  PX('Small talk with the boss','smalltalk','Your boss’s boss · in the lift','Just you and the big boss. [[Thirty floors to go.]]','“Busy week?”','Friendly, a bit formal.','Keep it light. One real thing about your work.','Silence, or complaining.'),
+  PX('Introducing yourself to a new team','intro','Your new team · first day','Everyone turns to you. [[Your turn to introduce yourself.]]','“So, tell us a bit about yourself!”','Curious and welcoming.','Who you are, what you’ll do, one human detail.','A job title and a nervous laugh.'),
+  PX('Asking for an introduction','smalltalk','A friend who knows someone you want to meet','They know the person you need. [[You have to ask.]]','“So, what did you want to talk about?”','Helpful but careful with their contacts. You agree if it’s easy and clear.','Make it easy to say yes.','A vague “could you connect us sometime?”')
+ ]
+};
+function _pxCase(g,i){const x=(PRACTICE_SITS[g]||[])[i];if(!x)return null;
+  const cl=['bargain','proposal','ground','difficult'].includes(x.s);
+  return {id:'px-'+g+'-'+i,cat:g,title:x.t.replace(/^[“"]|[”"]$/g,''),principle:x.p,most:x.m,feel:'',
+    practice:Object.assign({scene:x.sc,scen:x.s,who:x.w,moment:_unsting(x.sc),role:x.r,line:x.l},cl?{job:x.t,pos:x.pos||''}:{})};}
 </script>
 </body>
 </html>
