@@ -2569,6 +2569,16 @@ const CASES=[
    then:'Acknowledge the feeling, state the agreed facts calmly, then make the new work a new decision, with its own time and price.',
    story:null,tech:'labeling',
    practice:{scene:'Aisha, a marketing lead, approved your brand video draft last week. You’ve been finishing it since. Now she calls and [[wants you to start over]].',scen:'difficult',who:'Aisha · marketing lead',moment:'She approved the draft last week.',job:'A brand video, approved last week',pos:'',line:'“Honestly, now that I see it again, it’s just not working. Can you start over?”'}},
+  {id:'late-payment',cat:'client',title:'The client is late paying you',
+   feel:'You did the work. Now asking for what’s yours feels awkward.',moment:'The invoice was due two weeks ago. You call, and they say: [[“Things are tight right now. Maybe in two weeks?”]]',
+   most:'Waiting quietly and hoping. Or demanding the money right now.',
+   fails:'Waiting tells them dragging you on is fine. Demanding it now, when they can’t pay, ends the call with nothing.',
+   k:'“Okay, two weeks. I’ll check in with you on the 15th. Can you confirm that date?”',
+   principle:'Being paid is your right. Hold them to their own date, and check in when it comes.',
+   then:'Decide first what matters more to you: the relationship, or being paid on time. Then chase politely on the due date, and on every date they give you after that. If they think dragging you on is fine, that’s your line.',
+   story:{src:'kian',t:'I’ve been paid for everything I’ve ever done. But more than half of it needed chasing, because clients didn’t pay on the date we agreed. I never demand the money on the spot. When they say “two weeks”, I say I’ll check in in two weeks, and I do, every time. It rarely makes either side happy. I’m fine with that: being paid is my right, and if you think it’s okay to drag me on for months, that’s my red line.'},
+   tech:'warm-then-firm',
+   practice:{scene:'Your invoice was due two weeks ago. [[They still haven’t paid.]] You call them.',scen:'difficult',who:'A client · two weeks late',job:'A late invoice',pos:'',role:'A friendly client who drags payments when nobody follows up. You commit to a specific date if asked clearly and calmly. You test whether they will really check in.',line:'“Oh hi! Sorry, things have been crazy here. Can you give us a bit more time?”'}},
   {id:'market-rate',cat:'client',title:'“The market rate is lower than that”',
    feel:'And now you feel like you have to defend your worth.',moment:'You quoted your price. The client has done some research: [[“Others charge much less for this.”]]',
    most:'Defending your price line by line. Or matching the lower number to keep them.',
@@ -2712,9 +2722,29 @@ const CASES=[
    k:'“I don’t have much experience yet, but here are three projects I did on my own because I couldn’t stop. I learn fast, I’m happy to take direction, and I’ll make your time training me worth it.”',
    principle:'Show enthusiasm, and show you’ll take direction.',
    then:'Bring your own projects, even small ones. If you can’t show enthusiasm now, they’ll wonder if you’ll enjoy the job at all.',
-   story:{src:'kian',t:'One student applying for an internship brought the projects he had done outside school alongside his application. The boss liked how he presented himself, and he got the place.'},
+   story:{src:'kian',t:'My first job was an unpaid internship at a game sound design outsourcing studio in Boston. I found it through the career center at Berklee, sent an email, prepared my portfolio from my graduation work and the Video Game Orchestra, and went in showing I was keen to learn. I treated every lesson as the most valuable thing I had. I wasn’t the only one who applied. I got in through luck, attitude, and having something to show.'},
    tech:'their-problem',
    practice:{scene:'You’re interviewing for an internship at a small design studio. You don’t have much work experience yet, and [[the interviewer can see it]].',scen:'interview',who:'The interviewer · a small studio',moment:'They are looking at your CV.',role:'You run a small studio and are interviewing for an intern. Training costs you time. You want enthusiasm, a good attitude and willingness to take direction.',line:'“You don’t have much experience yet. Why should we take you as our intern?”'}},
+  {id:'nothing-to-show',cat:'job',title:'You turn up with nothing to show',
+   feel:'You meant to bring it. Now you’re hoping they won’t ask.',moment:'The studio owner smiles: [[“So, can I see some of your work?”]] Your portfolio is at home.',
+   most:'“I didn’t bring it, but I can email it to you.”',
+   fails:'It tells them you didn’t prepare. If you didn’t care enough to bring it, why would they care enough to ask again?',
+   k:'“Yes. Here are two pieces on my phone. The full portfolio is on my site, and I’ll send you the link today.”',
+   principle:'Have something to show. Walking in empty-handed says you don’t care.',
+   then:'Keep two pieces on your phone, always. Prepare for every meeting as if it’s the one that counts.',
+   story:{src:'kian',t:'Before I graduated, I half-heartedly tried for an internship at an audio production studio. I went in with no website and no portfolio, and said I’d email them. The boss was nice enough to show me his studio. I sent something afterwards, and that was that. Looking back, I didn’t look like I cared, and I wasn’t prepared.'},
+   tech:'star',
+   practice:{scene:'You’re visiting a studio you’d love to intern at. The owner is friendly, and then [[asks to see your work]].',scen:'interview',who:'The studio owner · a quick visit',moment:'They just asked to see your work.',role:'You own a small studio and are open to an intern. You are friendly but notice who came prepared. You warm up if they show something now; you lose interest at excuses.',line:'“So, can I see some of your work?”'}},
+  {id:'best-package',cat:'job',title:'They have candidates just as good as you',
+   feel:'You’re good. So are the others. What makes the difference?',moment:'Final round. The hiring manager says: [[“Honestly, we’ve seen people with similar skills. Why you?”]]',
+   most:'Listing more skills, louder.',
+   fails:'When the skills are close, more skills don’t decide it. They’re choosing who they want to work with every day.',
+   k:'“You’ve seen my work. On top of it, you get someone who cares about this project, takes direction well, and is easy to work with.”',
+   principle:'Skills get you on the list. Attitude gets you picked.',
+   then:'Show the attitude, don’t just claim it: ask about their project, be reasonable about terms, and follow up when you say you will.',
+   story:{src:'kian',t:'When I applied for my first in-house game job, at Spicy Horse in Shanghai, I had everything on the list: English and Mandarin, music, sound design, implementation, and a long list of credits. Years later my boss told me why he picked me. People as good or slightly better had applied from around the world, but many didn’t seem to care or made unreasonable requests. I thought I was the best at what I did. He said I had the best package, and my attitude made it.'},
+   tech:'their-problem',
+   practice:{scene:'Final round for a job you really want. The hiring manager tells you [[the others are just as skilled]].',scen:'interview',who:'The hiring manager · final round',moment:'They have several candidates with similar skills.',role:'You are choosing between equally skilled candidates. You care most about attitude and whether they will be easy to work with every day. Skill lists and demands put you off.',line:'“Honestly, we’ve seen people with similar skills. Why should we pick you?”'}},
   {id:'first-pay',cat:'start',title:'Your first salary offer is low',
    feel:'You’re grateful for the offer, and a little deflated.',moment:'You got the job. Then the number arrives, and [[it’s lower than you hoped]].',
    most:'Saying yes on the spot out of relief. Or demanding more without a reason.',
@@ -2885,7 +2915,7 @@ function renderLibrary(app){
     const f=_tkFamOf(V.tkTool),cs=_tkCases(V.tkTool);
     h='<main class="scr '+f.p+' tk-scr">'+gBar(tool.title,'tk-back');
     h+='<div class="tk-body"><div class="g-block tk-hero"><div class="g-kick">The tool</div><div class="tk-sum">'+escHtml(tool.sum)+'</div>'+(tool.how?'<p class="tk-how">'+escHtml(tool.how)+'</p>':'')+'</div>';
-    if(cs.length)h+='<div class="g-kick tk-k">See it in action</div><div class="tk-ex">'+cs.map(c=>'<button data-case="'+c.id+'"><small'+(c.story&&c.story.t?' class="st"':'')+'>'+(c.story&&c.story.t?'● A real story':'A case')+'</small><b>'+escHtml(c.title)+'</b></button>').join('')+'</div>';
+    if(cs.length)h+='<div class="g-kick tk-k">See it in action</div><div class="tk-ex">'+cs.map(c=>'<button data-case="'+c.id+'"><small'+(c.story&&c.story.t?' class="st"':'')+'>'+(c.story&&c.story.t?(c.story.src==='kian'?'● Kian’s story':'● A real story'):'A case')+'</small><b>'+escHtml(c.title)+'</b></button>').join('')+'</div>';
     else if(tool.watch)h+='<div class="g-card tk-watch"><div class="g-kick">Watch out</div><p>'+escHtml(tool.watch)+'</p></div>';
     h+='</div>'+gCta('Practice it','tk-practice');
   }else if(fam){
@@ -2932,16 +2962,17 @@ function renderCase(app){
     h+='<div class="case-pr"><small>The principle</small><b>'+escHtml(c.principle)+'</b></div>';
     let why='<div class="g-row top"><span class="t"><b>What most people say</b><span>'+escHtml(c.most)+'</span></span></div><div class="g-row top"><span class="t"><b>Why it backfires</b><span>'+escHtml(c.fails)+'</span></span></div>';
     if(c.then)why+='<div class="g-row top"><span class="t"><b>Then</b><span>'+escHtml(c.then)+'</span></span></div>';
-    if(c.story&&c.story.t)why+='<div class="g-row top"><span class="t"><b>A real story</b><span>'+escHtml(c.story.t)+'</span></span></div>';
+    if(c.story&&c.story.t)why+='<div class="g-row top"><span class="t"><b>'+(c.story.src==='kian'?'Kian’s story':'A real story')+'</b><span>'+escHtml(c.story.t)+'</span></span></div>';
     const tags=[];if(c.tech&&TECHNIQUES[c.tech])tags.push('<button class="g-chip" data-tech="'+c.tech+'">'+escHtml(TECHNIQUES[c.tech].title)+'</button>');
     if(tags.length||c.aka)why+='<div class="g-chips" style="align-items:center;padding:10px 0 4px">'+tags.join('')+(c.aka?'<span class="small">'+escHtml(c.aka)+'</span>':'')+'</div>';
     V._caseWhy=why;
-    h+='<button class="g-card tight case-whybtn" data-act="case-why"><b>Why this works</b><span class="small">'+(c.story&&c.story.t?'Plus a real story':'What most people get wrong')+'</span>'+ic('chev','s')+'</button>';
+    h+='<button class="g-card tight case-whybtn" data-act="case-why"><b>Why this works</b><span class="small">'+(c.story&&c.story.t?(c.story.src==='kian'?'Plus Kian’s story':'Plus a real story'):'What most people get wrong')+'</span>'+ic('chev','s')+'</button>';
     h+='<div class="push"></div>'+gCta(_casesDone()[c.id]?'Try it again':'Try it','case-practice');
   }
   if(['one-more','friend-free','walk-away','free-now','big-name'].includes(c.id))h+='<button class="link case-peek" data-act="yescheck" style="margin-top:-6px">Not sure yet? Should I say yes? →</button>';
   h+='</main>';
   app.innerHTML=h;wireCommon(app);
+  {const m=app.querySelector('main'),kids=[...m.children],pi=kids.findIndex(e=>e.classList.contains('push'));const els=kids.slice(0,pi<0?kids.length:pi).filter(e=>!e.matches('.g-bar'));if(document.scrollingElement.scrollHeight>window.innerHeight)_fillZoom(els,()=>document.scrollingElement.scrollHeight<=window.innerHeight,1);}
   const b=app.querySelector('[data-act="case-practice"]');if(b)b.addEventListener('click',()=>caseToPractice(c));
   app.querySelectorAll('[data-act="yescheck"]').forEach(b=>b.addEventListener('click',openYesCheck));
   const cw=app.querySelector('[data-act="case-why"]');if(cw)cw.addEventListener('click',()=>openSheet('<div class="kick" style="margin:0">Why this works</div><div class="g-card tight case-whysheet">'+V._caseWhy+'</div><button class="g-cta" data-close>Got it<span class="ar">'+ic('check','s')+'</span></button>',{wire:sh=>sh.querySelectorAll('[data-tech]').forEach(b=>b.addEventListener('click',()=>{closeSheet();openTechnique(b.dataset.tech);}))}));
@@ -3666,9 +3697,9 @@ function renderAdvice(app){
 // Every 30 days K checks in: is it still the same, or has something new come up?
 // ═══════════════════════════════════════════════════════════════════════════
 const SUG_MAP={
-  money:{t:'money talks',practice:'discount',read:'market-rate',quick:'Can you do better on the price?',cases:['discount','market-rate','too-expensive','big-name','free-now','first-pay','raise']},
+  money:{t:'money talks',practice:'discount',read:'market-rate',quick:'Can you do better on the price?',cases:['discount','market-rate','too-expensive','late-payment','big-name','free-now','first-pay','raise']},
   no:{t:'saying no',practice:'one-more',read:'friend-free',quick:'Can you take this on as well? It needs to be done by Monday.',cases:['one-more','friend-free','walk-away','weekend-work']},
-  interview:{t:'interviews',practice:'stand-out',read:'one-project',quick:'Why should we hire you?',cases:['stand-out','internship','career-change','all-over','one-project']},
+  interview:{t:'interviews',practice:'stand-out',read:'one-project',quick:'Why should we hire you?',cases:['stand-out','internship','nothing-to-show','best-package','career-change','all-over','one-project']},
   intro:{t:'introducing yourself',practice:'what-you-do',read:'known-for-one',quick:'So, what do you do?',cases:['what-you-do','known-for-one','stand-out']},
   smalltalk:{t:'small talk',practice:'introvert',read:'follow-up',quick:'So how do you know the host?',cases:['introvert','follow-up','senior-event']},
   meetings:{t:'speaking up in meetings',practice:'nervous',read:'boss-plan',quick:'Any thoughts before we move on?',cases:['nervous','class-question','too-long','boss-plan','senior-push']},
@@ -5175,7 +5206,9 @@ const PRACTICE_SITS={
   PX('“Tell me about yourself”','interview','The interviewer · first interview','It’s the first question of the interview. [[Your mind goes blank.]]','“So, tell me a bit about yourself.”','A friendly interviewer who loses interest if the answer turns into a life story.','One line on who you are, one proof, one reason you’re here.','Reciting your whole CV.'),
   PX('“Why do you want to work here?”','interview','The interviewer · a design studio','They want to know why you picked them, [[not just any job]].','“Why do you want to work with us, specifically?”','An interviewer who can tell a copy-paste answer from a real one. You never ask the speaker about your own company’s private details.','Talk about what they do and how you’d help.','“I’ve always admired your company.”'),
   PX('“What’s your biggest weakness?”','interview','The interviewer · final round','The question everyone dreads. [[They’re watching how honest you are.]]','“What would you say is your biggest weakness?”','A sharp interviewer who pushes back on fake weaknesses.','A real weakness, and what you’re doing about it.','“I work too hard.”'),
-  PX('“Your experience is a bit thin”','interview','The interviewer · a junior role','You love this role. [[They think you’re too new.]]','“Honestly, we were hoping for someone with more experience.”','Skeptical but fair. You warm up if they show real commitment and work they did on their own.','Show commitment: what you did because you couldn’t stop.','Apologizing for being new.'),
+  PX('“Your experience is a bit thin”','interview','The interviewer · a junior role','You love this role. [[They think you’re too new.]]','“Honestly, we were hoping for someone with more experience.”','Skeptical but fair. You warm up if they show real commitment and work they did on their own.','Bring something to show, and show you care.','Apologizing for being new.'),
+  PX('“Can I see some of your work?”','interview','A studio owner · a quick visit','The owner is friendly, then [[asks to see your work]].','“So, can I see some of your work?”','Friendly, but notices who came prepared. Excuses lose you; something shown right now wins you.','Have something to show, right now.','“I didn’t bring it, but I can email it.”'),
+  PX('“Why you, over people just as good?”','interview','The hiring manager · final round','The skills on the table are close. [[Now it’s about you.]]','“Honestly, others have similar skills. Why you?”','Choosing who to work with every day. Put off by skill lists and demands.','Skills get you on the list. Attitude gets you picked.','Listing more skills, louder.'),
   PX('“What are your salary expectations?”','interview','HR · after the second interview','They like you. [[Now they want a number.]]','“So, what salary are you expecting?”','A friendly HR manager with a budget. You push gently if they give a number with no reason.','Give a range you’ve researched. Then stop talking.','“Whatever you think is fair.”'),
   PX('“Do you have any questions for us?”','interview','The interviewer · end of the interview','The interview is almost over. [[This is your last chance to stand out.]]','“That’s all from us. Any questions for us?”','An interviewer who enjoys good questions and is bored by “What’s the salary?”','Ask from real curiosity about their work.','“No, I think you covered everything.”'),
   PX('“So, what do you do?”','intro','Someone at an industry event','A stranger turns to you with a drink. [[You have ten seconds.]]','“So, what do you do?”','Curious and friendly. You drift away if the answer is a job title and nothing else.','What you do, for whom, and one result.','Just a job title.')
@@ -5183,7 +5216,7 @@ const PRACTICE_SITS={
  client:[
   PX('They want it faster, same price','difficult','A client · two days before the deadline','The client wants the work [[a week early]]. Same budget.','“Any chance you can get this to us by Friday instead?”','A client under pressure from their boss. You respect a clear trade; you push on a flat no.','Show the trade: faster costs something.','A yes you can’t deliver.'),
   PX('“Just one more small change”','difficult','A client · the fourth round','It’s the fourth “small change” this week. [[None of it was in the brief.]]','“Love it. Just one tiny change and we’re done, promise.”','Friendly and a bit pushy. You accept a warm, clear line about what’s included.','Name it, price it. Warm, then firm.','Doing it free, again.'),
-  PX('Chasing a late payment','difficult','A client · 30 days late','Your invoice is [[a month late]], and you need the money.','“Oh hi! Sorry, things have been crazy here.”','Apologetic, vague, slow. You commit to a date if they ask for one clearly.','Polite, firm, and a specific date.','Apologizing for asking.'),
+  PX('Chasing a late payment','difficult','A client · 30 days late','Your invoice is [[a month late]], and you need the money.','“Oh hi! Sorry, things have been crazy here.”','Apologetic, vague, slow. You commit to a date if they ask for one clearly.','Hold them to their own date. Check in when it comes.','Waiting quietly, or demanding it all now.'),
   PX('Quoting a new project','proposal','A new client · first call','They describe the job, then [[ask what it costs]].','“Okay, sounds good. So what would something like this cost?”','A new client comparing a few people. You like clarity and a reason.','Their problem first. Then your price. Then stop.','A price with five excuses attached.','Your price: ¥10,000. Lowest you’ll accept: ¥8,000'),
   PX('“Can we pay you after launch?”','bargain','A startup founder','They love your work. [[They want to pay later.]]','“Cash is tight. Could we pay you after we launch?”','A charming founder who will agree to a deposit if asked clearly.','Give only to get something back.','Saying yes and hoping.','Your price: ¥12,000. Lowest you’ll accept: half upfront'),
   PX('The client went quiet','proposal','A client · two weeks after your proposal','You sent a proposal. [[Two weeks of silence.]] You call.','“Oh hi, sorry, I’ve been meaning to get back to you.”','Busy and unsure. You decide if they’re asked one clear question.','Ask one clear question about the decision.','Pushing for a yes, or giving up.'),
