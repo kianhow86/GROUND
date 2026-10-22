@@ -1191,6 +1191,34 @@ html[data-theme="dark"] .tk-ex small.st{color:#F5C27A}
 
 .tk-watch,.tk-hero{flex-shrink:0}
 .st-app{width:100%;height:100%;border-radius:12px;object-fit:cover;display:block}
+
+.cl-path{display:flex;flex-direction:column;flex:1;min-height:0;padding:4px 2px 0}
+.cl-step{display:flex;gap:14px;flex:1 1 auto}
+.cl-step.cl-rule{flex:0 0 auto}
+.cl-rail{display:flex;flex-direction:column;align-items:center;width:28px;flex-shrink:0}
+.cl-rail i{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:900;font-size:13px}
+.cl-rail span{flex:1;width:2px;background:var(--line);margin:6px 0;min-height:10px}
+.cl-b{flex:1;padding-bottom:14px}
+.cl-k{font-size:11.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;margin:6px 0 8px}
+.cl-q{font-size:18px;font-weight:800;line-height:1.3;color:var(--ink);text-wrap:pretty}
+.cl-b p{font-size:14.5px;line-height:1.45;color:var(--ink-2);margin-top:6px;text-wrap:pretty}
+.cl-bad .cl-rail i{background:color-mix(in srgb,#E0567F 22%,transparent);color:#C23B66}.cl-bad .cl-k{color:#C23B66}
+html[data-theme="dark"] .cl-bad .cl-rail i,html[data-theme="dark"] .cl-bad .cl-k{color:#F6A8C8}
+.cl-bad .cl-q{text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:color-mix(in srgb,#E0567F 60%,transparent);color:var(--ink-2)}
+.cl-good .cl-rail i{background:var(--p);color:var(--pi)}.cl-good .cl-k{color:var(--pd)}
+html[data-theme="dark"] .cl-good .cl-k{color:var(--p)}
+.cl-rule .cl-rail i{background:var(--ink);color:var(--bg)}.cl-rule .cl-k{color:var(--ink-3)}
+.cl-rule .cl-q{font-size:22px;font-weight:900;letter-spacing:-.02em;line-height:1.15}
+.cl-story{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--line);border-radius:18px;padding:13px 16px;background:var(--card);color:var(--ink);flex-shrink:0}
+.cl-story>.cl-tx{flex:1;display:flex;flex-direction:column;gap:2px}
+.cl-story b{font-size:15.5px}.cl-story small{font-size:13px;color:var(--ink-3);line-height:1.35}
+.cl-story .kav,.cl-story .cl-dot{flex-shrink:0}
+.cl-dot{width:28px;height:28px;border-radius:50%;background:var(--p)}
+.cl-sh{font-size:21px;font-weight:900;letter-spacing:-.02em;line-height:1.2;margin:8px 0 10px}
+.cl-st{font-size:16px;line-height:1.55;color:var(--ink)}
+.cl-story .kav{width:36px;height:36px;border-radius:50%;overflow:hidden;flex:0 0 36px}.cl-story .kav img{width:100%;height:100%;object-fit:cover}
+.cl-tight .cl-rule p{display:none}
+.cl-tight .case-peek{display:none}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -2960,6 +2988,9 @@ function _growTile(tile,then){
 function _libMine(){const ks=(typeof _sugKeys==='function')?_sugKeys():[];const mine=[];ks.forEach(k=>(SUG_MAP[k].cases||[]).forEach(id=>{const c=_case(id);if(c&&!mine.includes(c))mine.push(c);}));return mine;}
 function _sting(s){s=String(s||'');const end=/(^|[.!?”]\s)\[\[[^\]]+\]\]$/.test(s.trim());return escHtml(s.trim()).replace(/\[\[(.+?)\]\]/g,'<mark class="sting'+(end?' own':'')+'">$1</mark>');}
 function _unsting(s){return String(s||'').replace(/\[\[|\]\]/g,'');}
+// Kian's notes on a case: a method (how he does it) or a story (what happened), with a one-line teaser
+const STORY_META={gatekeeper:['s','The project where every choice needed one man’s approval'],discount:['m','Why I build a 10–20% buffer into every quote'],'free-now':['m','What I do when they promise ten paid jobs later'],'too-expensive':['s','From 50 dollars a minute to 30 times that'],'too-technical':['s','The day I realized I wasn’t selling music'],'too-long':['s','The Berklee lesson that stuck: subtraction'],'stand-out':['s','The student show that beat a perfect GPA'],introvert:['s','The shy kid who scared customers away'],'follow-up':['s','A LinkedIn message that paid off two years later'],'late-payment':['m','How I chase every late invoice'],'big-name':['s','Dishonored won a BAFTA. I made ten dollars an hour.'],'team-pay':['s','The conference job that made me an audio director'],delegate:['s','Why I stopped doing everything myself'],nervous:['s','Why I started making videos, scared'],'known-for-one':['s','What Wolf Warrior did to my label'],'career-change':['s','Three musicians, three new careers'],'all-over':['s','Going freelance used the other 80% of me'],'one-project':['s','Two dozen titles in two years'],teaching:['s','Teaching guitar at sixteen, with no experience'],internship:['s','How I got my first job: unpaid, in Boston'],'nothing-to-show':['s','The time I turned up with nothing to show'],'best-package':['s','Why Spicy Horse picked me'],'below-market':['m','Why I tell students to collect work first']};
+function _storyLbl(c){if(!c.story||!c.story.t)return '';if(c.story.src!=='kian')return 'A real story';return (STORY_META[c.id]||[])[0]==='m'?'Kian’s method':'Kian’s story';}
 function renderCase(app){
   const c=_case(V.caseId);if(!c){go('library');return;}
   const cc=_caseCat(c.cat),p=c.practice||{};
@@ -2972,25 +3003,24 @@ function renderCase(app){
       '<div class="g-row top"><span class="t"><b>A hint</b><span>'+escHtml(c.principle)+'</span></span></div></div>';
     h+='<div class="push"></div>'+gCta('Try it','case-practice');
   }else{
-    h+='<div class="g-card case-k"><div class="g-k">'+kav()+'<b style="font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)">How K would say it'+(c.kWhen?' · '+escHtml(c.kWhen):'')+'</b></div><div class="case-line">'+escHtml(c.k)+'</div></div>';
-    h+='<div class="case-pr"><small>The principle</small><b>'+escHtml(c.principle)+'</b></div>';
-    let why='<div class="g-row top"><span class="t"><b>What most people say</b><span>'+escHtml(c.most)+'</span></span></div><div class="g-row top"><span class="t"><b>Why it backfires</b><span>'+escHtml(c.fails)+'</span></span></div>';
-    if(c.then)why+='<div class="g-row top"><span class="t"><b>Then</b><span>'+escHtml(c.then)+'</span></span></div>';
-    if(c.story&&c.story.t)why+='<div class="g-row top"><span class="t"><b>'+(c.story.src==='kian'?'Kian’s story':'A real story')+'</b><span>'+escHtml(c.story.t)+'</span></span></div>';
-    const tags=[];if(c.tech&&TECHNIQUES[c.tech])tags.push('<button class="g-chip" data-tech="'+c.tech+'">'+escHtml(TECHNIQUES[c.tech].title)+'</button>');
-    if(tags.length||c.aka)why+='<div class="g-chips" style="align-items:center;padding:10px 0 4px">'+tags.join('')+(c.aka?'<span class="small">'+escHtml(c.aka)+'</span>':'')+'</div>';
-    V._caseWhy=why;
-    h+='<button class="g-card tight case-whybtn" data-act="case-why"><b>Why this works</b><span class="small">'+(c.story&&c.story.t?(c.story.src==='kian'?'Plus Kian’s story':'Plus a real story'):'What most people get wrong')+'</span>'+ic('chev','s')+'</button>';
-    h+='<div class="push"></div>'+gCta(_casesDone()[c.id]?'Try it again':'Try it','case-practice');
+    const sh=(STORY_META[c.id]||[])[1]||'',lbl=_storyLbl(c),tech=c.tech&&TECHNIQUES[c.tech];
+    h+='<div class="cl-path">'+
+      '<div class="cl-step cl-bad"><div class="cl-rail"><i>1</i><span></span></div><div class="cl-b"><div class="cl-k">The trap</div><div class="cl-q">'+escHtml(c.most)+'</div><p>'+escHtml(c.fails)+'</p></div></div>'+
+      '<div class="cl-step cl-good"><div class="cl-rail"><i>2</i><span></span></div><div class="cl-b"><div class="cl-k">The move</div><div class="cl-q">'+escHtml(c.k)+'</div></div></div>'+
+      '<div class="cl-step cl-rule"><div class="cl-rail"><i>3</i></div><div class="cl-b"><div class="cl-k">Remember</div><div class="cl-q">'+escHtml(c.principle)+'</div>'+(c.then?'<p>'+escHtml(c.then)+'</p>':'')+'</div></div></div>';
+    if(lbl)h+='<button class="cl-story" data-act="case-why">'+(c.story.src==='kian'?kav():'<span class="cl-dot"></span>')+'<span class="cl-tx"><b>'+lbl+'</b><small>'+escHtml(sh||c.story.t.split('. ')[0])+'</small></span>'+ic('chev','s')+'</button>';
+    else if(tech)h+='<button class="cl-story" data-tech="'+c.tech+'"><span class="cl-dot"></span><span class="cl-tx"><b>The tool: '+escHtml(tech.title)+'</b><small>'+escHtml(tech.sum)+'</small></span>'+ic('chev','s')+'</button>';
+    V._caseWhy=lbl?'<div class="kick" style="margin:0">'+lbl+'</div><div class="cl-sh">'+escHtml(sh)+'</div><p class="cl-st">'+escHtml(c.story.t)+'</p>'+(tech?'<div class="g-chips" style="padding:4px 0 2px"><button class="g-chip" data-tech="'+c.tech+'">The tool: '+escHtml(tech.title)+'</button></div>':''):'';
+    h+=gCta('Practice it','case-practice');
   }
   if(['one-more','friend-free','walk-away','free-now','big-name'].includes(c.id))h+='<button class="link case-peek" data-act="yescheck" style="margin-top:-6px">Not sure yet? Should I say yes? →</button>';
   h+='</main>';
   app.innerHTML=h;wireCommon(app);
-  {const m=app.querySelector('main'),kids=[...m.children],pi=kids.findIndex(e=>e.classList.contains('push'));const els=kids.slice(0,pi<0?kids.length:pi).filter(e=>!e.matches('.g-bar'));if(document.scrollingElement.scrollHeight>window.innerHeight)_fillZoom(els,()=>document.scrollingElement.scrollHeight<=window.innerHeight,1);}
+  {const m=app.querySelector('main'),kids=[...m.children],pi=kids.findIndex(e=>e.classList.contains('push'));const els=kids.slice(0,pi<0?kids.length:pi).filter(e=>!e.matches('.g-bar'));const ov=()=>document.scrollingElement.scrollHeight>window.innerHeight;if(ov()){_fillZoom(els,()=>!ov(),1);if(ov()&&m.querySelector('.cl-path')){m.classList.add('cl-tight');els.forEach(e=>e.style.zoom=1);_fillZoom(els,()=>!ov(),1);}}}
   const b=app.querySelector('[data-act="case-practice"]');if(b)b.addEventListener('click',()=>caseToPractice(c));
   app.querySelectorAll('[data-act="yescheck"]').forEach(b=>b.addEventListener('click',openYesCheck));
-  const cw=app.querySelector('[data-act="case-why"]');if(cw)cw.addEventListener('click',()=>openSheet('<div class="kick" style="margin:0">Why this works</div><div class="g-card tight case-whysheet">'+V._caseWhy+'</div><button class="g-cta" data-close>Got it<span class="ar">'+ic('check','s')+'</span></button>',{wire:sh=>sh.querySelectorAll('[data-tech]').forEach(b=>b.addEventListener('click',()=>{closeSheet();openTechnique(b.dataset.tech);}))}));
-  const pk=app.querySelector('[data-act="case-peek"]');if(pk)pk.addEventListener('click',()=>{V.caseOpen=c.id;render();});
+  const cw=app.querySelector('[data-act="case-why"]');if(cw)cw.addEventListener('click',()=>openSheet(V._caseWhy+'<button class="g-cta" data-close>Got it<span class="ar">'+ic('check','s')+'</span></button>',{wire:sh=>sh.querySelectorAll('[data-tech]').forEach(b=>b.addEventListener('click',()=>{closeSheet();openTechnique(b.dataset.tech);}))}));
+  app.querySelectorAll('main [data-tech]').forEach(b=>b.addEventListener('click',()=>openTechnique(b.dataset.tech)));const pk=app.querySelector('[data-act="case-peek"]');if(pk)pk.addEventListener('click',()=>{V.caseOpen=c.id;render();});
 }
 
 // ── Should I say yes? A quick check in Kian's logic ─────────────────────────
