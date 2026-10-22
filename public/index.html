@@ -1691,12 +1691,13 @@ const K_CLIENT_VIEW=`How K sees client work (the coach's own view; let it shape 
 - Client work is a value exchange, and what decides the terms is how much you have to stand on. A newcomer has little to show yet, which is exactly why clients press them on price and terms.
 - Never think like a mere service provider. Something about you must stand out from a pool of similarly manufactured talent. Know what you are really selling (the result, the experience of working with you, reliability, peace of mind; not your hours) and say it. Aim to be the standard, not the best: common is common.
 - Clients don't care about your technique; they care whether you solve their problem. Talk about their problem, keep it simple.
-- Market rate is only a reference: what others agreed was acceptable. Never treat it as a rule you must justify yourself against.
+- Market rate is only a reference: what others agreed was acceptable. Never treat it as a rule you must justify yourself against, in either direction.
+- Starting out is the exception on money. A newcomer usually has little to show and competes with hundreds of people with similar skills, some better, so the client has options. Being paid under market at the start costs far less than being undercut mid-career: collect work first, and the portfolio becomes what you bargain with later. Don’t coach a beginner to hold out on price, or to stress over whether it’s fair market rate, unless they are truly the client’s only option (the client is out of options, has no time, or doesn’t want trouble). That’s a tightrope: be sure before you lean on it. Taking less is fine early on; still get something back (credit, the right to show the work, a review date).
 - Never belittle your own value to get the gig: if they know you’ll take less, why would they pay more? Say yes to less only for a reason: you believe in the project, it brings repeat work, or you get a share of the upside.
 - A soft no costs more than a firm one. Saying no to cheap work buys time for your own.
 - Know three numbers before you talk: your price, your lowest price, and how much of the gap you will defend. Know when to say no and walk away. Not every client is your client; walking away politely is a legitimate result.
 - Build a buffer of 10–20% into your price, so a discount doesn't hurt you. When they ask for a discount, give them something: a real 10–20%, or something extra (a free revision, a faster start) instead of money. A flat no can let the deal go cold. But never cut far: going from 100 to 20 makes your price look like a joke, and you with it. A discount request is a test of how far they can push; know where you hold the line.
-- If you give something, get something back: a smaller scope, phased payment, a longer timeline, a credit, more work later. Racing to the bottom to "get a foot in the door" teaches the client you are cheap.
+- If you give something, get something back: a smaller scope, phased payment, a longer timeline, a credit, more work later. Mid-career, racing to the bottom to "get a foot in the door" teaches the client you are cheap.
 - "Do this one free and I'll give you ten paid ones": judge the person. Trustworthy with real potential is a calculated risk; hot air gets a polite no.
 - Two valid ways to open on price: name yours first (you take the high ground but might pitch below their budget) or let them name a range first. Neither is wrong. Every client is a new judgment call; for someone without experience, practice is the substitute.
 - You are the brand. A consistent position reads as confidence; changing your story under pressure reads as uncertainty. Warm and firm go together.
@@ -2587,7 +2588,7 @@ const CASES=[
    fails:'Market rate is only what other people agreed to. Argue about it, and you make it the rule.',
    k:'“That may be true for some. My price is for it being right the first time, on the date we agree. If budget is the main thing, here’s what I can do for less.”',
    principle:'Market rate is a reference, not a rule.',
-   then:'Talk about what they get from you, then offer a smaller version at a lower number. Never just drop the price.',
+   then:'Talk about what they get from you, then offer a smaller version at a lower number. Never just drop the price. The exception: when you’re just starting out, collecting work matters more than the rate.',
    story:null,tech:'give-to-get',
    practice:{scene:'You quoted Lena for packaging design for three teas. She has looked up other designers online, and [[she thinks you charge too much]].',scen:'ground',who:'Lena · runs a small tea brand',moment:'She has compared quotes online.',job:'Packaging design for three teas',pos:'¥8,000. Lowest you’ll accept: ¥7,000',line:'“I checked around online. The market rate for this kind of design is about ¥5,000. Why is yours so much higher?”'}},
   {id:'big-name',cat:'client',title:'A big name offers you very little money',
@@ -2749,13 +2750,23 @@ const CASES=[
    practice:{scene:'Final round for a job you really want. The hiring manager tells you [[the others are just as skilled]].',scen:'interview',who:'The hiring manager · final round',moment:'They have several candidates with similar skills.',role:'You are choosing between equally skilled candidates. You care most about attitude and whether they will be easy to work with every day. Skill lists and demands put you off.',line:'“Honestly, we’ve seen people with similar skills. Why should we pick you?”'}},
   {id:'first-pay',cat:'start',title:'Your first salary offer is low',
    feel:'You’re grateful for the offer, and a little deflated.',moment:'You got the job. Then the number arrives, and [[it’s lower than you hoped]].',
-   most:'Saying yes on the spot out of relief. Or demanding more without a reason.',
-   fails:'At the start you have little leverage, so a demand can backfire. But a quick yes tells them you’ll always take less.',
+   most:'Demanding the market rate. Or losing sleep over whether it’s fair.',
+   fails:'At the start they usually have other options, so a hard push can cost you the job. And the job, the work you collect, is what you need most right now.',
    k:'“I’m really excited about this role. Is there any flexibility on the starting pay? If not, could we review it after three months, once you’ve seen my work?”',
-   principle:'Starting out, experience is part of the pay. Just don’t sell yourself as cheap.',
-   then:'Ask once, politely, with a reason. If the answer is no, get a review date in writing, then earn it.',
+   principle:'Starting out, collect work first. It’s what you’ll bargain with later.',
+   then:'Ask once, politely. If the answer is no and the work is good, take it, and get a review date in writing. Press for money once you have work to show, unless you’re sure you’re their only option.',
    story:null,tech:'give-to-get',
    practice:{scene:'You got your first job offer. You’re excited, but [[the salary is lower than you hoped]]. The hiring manager calls to go through it.',scen:'tough',who:'The hiring manager · on a call',moment:'They just made you an offer.',role:'You are the hiring manager making a junior offer. Your budget is tight but you can review pay after a few months if they ask well. You don’t respond to demands.',line:'“So that’s the offer: ¥8,000 a month to start. Does that work for you?”'}},
+  {id:'below-market',cat:'start',title:'Your first paid job is below market rate',
+   feel:'You’re glad to be paid. And you wonder if you’re being taken for a ride.',moment:'Your first real client. You looked it up, and [[their offer is half the market rate]].',
+   most:'Holding out for the market rate. Or saying yes and stewing over it.',
+   fails:'They have dozens of people like you to choose from. Push hard, and they pick someone else. Say yes and resent it, and it shows in the work.',
+   k:'“Okay, ¥3,000 works for me. In return, I’d like my name in the credits and the right to show it in my portfolio.”',
+   principle:'Starting out, collect work first. Get something back for the low rate.',
+   then:'Take it if the work is worth showing, and get something back: credit, the right to show it, a review next time. Once you have a body of work, that’s what you bargain with.',
+   story:{src:'kian',t:'Students ask me if they’re being paid fairly. Everyone should be. But if there’s one time you can afford to be undercut, it’s at the start, not mid-career. Most of us graduate with little to show, unless you’re Justin Bieber. Think of a small city-state between big empires: you have little to bargain with, unless you sit between empires that need you. So I tell my younger self: collect work first. The portfolio is what you bargain with later.'},
+   tech:'give-to-get',
+   practice:{scene:'Your first real client wants a short video edited. You looked it up, and [[their offer is half the market rate]].',scen:'bargain',who:'A small agency · your first paid job',moment:'They made you an offer below market rate.',job:'Editing a short promo video',pos:'Their offer: ¥3,000 (market is about ¥6,000). What you want back: credit and the right to show it',role:'A friendly agency producer with a fixed budget and plenty of other freelancers to call. You won’t raise the fee much, but you will happily give credit, portfolio rights, or a better rate next time if asked clearly.',line:'“We can offer ¥3,000 for this one. Does that work for you?”'}},
   {id:'critique',cat:'start',title:'A review where they tear your work apart',
    feel:'Your face burns. You want to explain everything.',moment:'Portfolio review. The panel goes through your work one piece at a time, and [[they don’t like most of it]].',
    most:'Defending every choice: “What I was going for was…”',
@@ -5213,6 +5224,7 @@ const PRACTICE_SITS={
   PX('“Why you, over people just as good?”','interview','The hiring manager · final round','The skills on the table are close. [[Now it’s about you.]]','“Honestly, others have similar skills. Why you?”','Choosing who to work with every day. Put off by skill lists and demands.','Skills get you on the list. Attitude gets you picked.','Listing more skills, louder.'),
   PX('“What are your salary expectations?”','interview','HR · after the second interview','They like you. [[Now they want a number.]]','“So, what salary are you expecting?”','A friendly HR manager with a budget. You push gently if they give a number with no reason.','Give a range you’ve researched. Then stop talking.','“Whatever you think is fair.”'),
   PX('“Do you have any questions for us?”','interview','The interviewer · end of the interview','The interview is almost over. [[This is your last chance to stand out.]]','“That’s all from us. Any questions for us?”','An interviewer who enjoys good questions and is bored by “What’s the salary?”','Ask from real curiosity about their work.','“No, I think you covered everything.”'),
+  PX('The pay is below market rate','bargain','A client · your first paid job','Your first paying client. [[The offer is half the market rate.]]','“Our budget is ¥3,000 for this. Can you do it?”','A friendly client with other people to call. You won’t move much on the fee, but you give credit, portfolio rights or a better rate next time if asked.','Collect work first. Get something back.','Holding out for the market rate.','Their offer: ¥3,000. What you want back: credit and the right to show it'),
   PX('“So, what do you do?”','intro','Someone at an industry event','A stranger turns to you with a drink. [[You have ten seconds.]]','“So, what do you do?”','Curious and friendly. You drift away if the answer is a job title and nothing else.','What you do, for whom, and one result.','Just a job title.')
  ],
  client:[
