@@ -2928,7 +2928,7 @@ function renderLibrary(app){
     const f=_tkFamOf(V.tkTool),cs=_tkCases(V.tkTool);
     h='<main class="scr '+f.p+' tk-scr">'+gBar(tool.title,'tk-back');
     h+='<div class="tk-body"><div class="g-block tk-hero"><div class="g-kick">The tool</div><div class="tk-sum">'+escHtml(tool.sum)+'</div>'+(tool.how?'<p class="tk-how">'+escHtml(tool.how)+'</p>':'')+'</div>';
-    if(cs.length)h+='<div class="g-kick tk-k">See it in action</div><div class="tk-ex">'+cs.map(c=>'<button data-case="'+c.id+'"><small'+(c.story&&c.story.t?' class="st"':'')+'>'+(c.story&&c.story.t?(c.story.src==='kian'?'● Kian’s story':'● A real story'):'A case')+'</small><b>'+escHtml(c.title)+'</b></button>').join('')+'</div>';
+    if(cs.length)h+='<div class="g-kick tk-k">See it in action</div><div class="tk-ex">'+cs.map(c=>'<button data-case="'+c.id+'"><b>'+escHtml(c.title)+'</b></button>').join('')+'</div>';
     else if(tool.watch)h+='<div class="g-card tk-watch"><div class="g-kick">Watch out</div><p>'+escHtml(tool.watch)+'</p></div>';
     h+='</div>'+gCta('Practice it','tk-practice');
   }else if(fam){
