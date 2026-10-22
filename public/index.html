@@ -1188,6 +1188,8 @@ html[data-theme="dark"] .tk-ex small.st{color:#F5C27A}
 .tk-ex button{flex-shrink:0}
 .tk-ex.scroll{-webkit-mask-image:linear-gradient(#000 calc(100% - 24px),transparent);mask-image:linear-gradient(#000 calc(100% - 24px),transparent)}
 .tk-scr{height:100dvh;max-height:100dvh}.tk-scr .tk-body{min-height:0}
+
+.tk-watch,.tk-hero{flex-shrink:0}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -2932,7 +2934,7 @@ function renderLibrary(app){
   app.querySelectorAll('[data-tool]').forEach(b=>b.addEventListener('click',()=>{V.tkTool=b.dataset.tool;render();}));
   app.querySelectorAll('[data-case]').forEach(b=>b.addEventListener('click',()=>openCase(b.dataset.case)));
   const pr=app.querySelector('[data-act="tk-practice"]');if(pr)pr.addEventListener('click',()=>_tkPractice(V.tkTool));
-  const body=app.querySelector('.tk-body');if(body){const ex=body.querySelector('.tk-ex');_fillZoom([body],()=>document.scrollingElement.scrollHeight<=window.innerHeight&&(!ex||ex.scrollHeight<=ex.clientHeight+1),1.3);if(ex&&ex.scrollHeight>ex.clientHeight+1){body.style.zoom=1;ex.classList.add('scroll');}}
+  const body=app.querySelector('.tk-body');if(body){const ex=body.querySelector('.tk-ex');const cta=app.querySelector('[data-act="tk-practice"]'),fit=()=>{const l=body.lastElementChild;return document.scrollingElement.scrollHeight<=window.innerHeight&&(!ex||ex.scrollHeight<=ex.clientHeight+1)&&(!cta||!l||l.getBoundingClientRect().bottom<=cta.getBoundingClientRect().top-10);};_fillZoom([body],fit,1.3);if(ex&&ex.scrollHeight>ex.clientHeight+1){body.style.zoom=1;ex.classList.add('scroll');}}
 }
 // A tile grows to fill the screen in its own color, then the next page renders
 function _growTile(tile,then){
