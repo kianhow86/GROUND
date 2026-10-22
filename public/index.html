@@ -1158,6 +1158,36 @@ p,.sub,.small,.g-why,.rw-kw,.ch-re,.ch-kr p,.ch-path p,.rw-scene{text-wrap:prett
 .rw-secl::-webkit-scrollbar{display:none}
 .rw-secl button{flex:0 0 auto;max-height:none;min-height:72px}
 .rw-secl .rw-any{background:var(--pi);color:var(--p)}
+
+/* Toolkit */
+.tk-bands{flex:1;display:flex;flex-direction:column;gap:10px;min-height:0}
+.tk-band{flex:1;display:flex;align-items:center;justify-content:space-between;gap:12px;border-radius:24px;padding:18px 22px;background:var(--p);color:var(--pi);text-align:left}
+.tk-band small{display:block;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.6}
+.tk-band b{display:block;font-size:clamp(28px,4.2dvh,36px);font-weight:900;letter-spacing:-.03em;line-height:1.05;margin-top:6px}
+.tk-band .ic{width:28px;height:28px;flex-shrink:0}
+.tk-list button{min-height:84px}
+.tk-list button>span{display:flex;flex-direction:column;gap:3px}
+.tk-list b{font-size:18px;font-weight:800}
+.tk-list small{font-size:13.5px;font-weight:600;opacity:.72;line-height:1.35}
+.tk-body{flex:1;display:flex;flex-direction:column;gap:12px;min-height:0}
+.tk-hero{padding:22px 20px}
+.tk-sum{font-size:26px;font-weight:900;letter-spacing:-.02em;line-height:1.15;margin-top:8px;text-wrap:balance}
+.tk-how{font-size:15.5px;font-weight:600;line-height:1.5;margin-top:12px;opacity:.82;text-wrap:pretty}
+.tk-k{margin-top:4px}
+.tk-ex{display:flex;flex-direction:column;gap:8px}
+.tk-ex button{display:flex;flex-direction:column;gap:4px;text-align:left;padding:14px 16px;border-radius:16px;background:var(--card);border:1px solid var(--line);color:var(--ink)}
+.tk-ex small{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.tk-ex small.st{color:#C9962E}
+html[data-theme="dark"] .tk-ex small.st{color:#F5C27A}
+.tk-ex b{font-size:16px;line-height:1.3}
+.tk-watch p{font-size:15px;line-height:1.5;margin-top:6px}
+.tk-scr .tk-body{margin-bottom:auto}
+.tk-list button{flex:1 0 84px;max-height:124px}
+.tk-ex{flex:0 1 auto;min-height:96px;overflow-y:auto;scrollbar-width:none}
+.tk-ex::-webkit-scrollbar{display:none}
+.tk-ex button{flex-shrink:0}
+.tk-ex.scroll{-webkit-mask-image:linear-gradient(#000 calc(100% - 24px),transparent);mask-image:linear-gradient(#000 calc(100% - 24px),transparent)}
+.tk-scr{height:100dvh;max-height:100dvh}.tk-scr .tk-body{min-height:0}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -1199,7 +1229,8 @@ const CHANGELOG=[
     'Ask K sits at the top. Tell K what’s coming up and K points you to the right tool.',
     'Settings sit next to Ask K. Notes are in the bottom bar.',
     'Practice a talk: tap a topic and it opens into its own page, with new everyday situations to practice.',
-    'Ask K now opens its own page with what K heard and where to go.']},
+    'Ask K now opens its own page with what K heard and where to go.',
+    'The Library is now the Toolkit: K’s tools in four families. Each tool shows the idea, real cases, and a way to practice it.']},
   {v:'1.5',d:'2026-10-21',items:[
     'New way to answer: Choose. On 10 cases, pick the answer closest to yours and see where it leads: what happens, why you picked it, what it costs, and what to do next time. Then say it your way.',
     'K’s notebook notes your instinct once you’ve made a few choices.',
@@ -2826,35 +2857,60 @@ function caseToPractice(c,opts){
   go('real');
 }
 // ── Screens ───────────────────────────────────────────────────────────────
+// ═══ The Toolkit (was the Library): K's tools by family. Each tool: the idea, how, the cases that show it, practice it. ═══
+const TK_FAM=[
+  {k:'money',t:'Money talk',p:'p-teal',tools:['give-to-get','know-your-lowest','buffer','anchoring','walk-away']},
+  {k:'hard',t:'Hard talks',p:'p-pink',tools:['warm-then-firm','two-good-options','labeling','aab']},
+  {k:'clear',t:'Be clear',p:'p-org',tools:['bottom-line-first','rule-of-3','prep','subtraction','pppp']},
+  {k:'sell',t:'Sell yourself',p:'p-lav',tools:['star','pivot','their-problem','monroe','good-question']}
+];
+// How to practice a tool that has no case of its own
+const TK_PRACTICE={buffer:{scen:'bargain'},anchoring:{scen:'bargain'},'know-your-lowest':{scen:'bargain'},aab:{scen:'tough'},prep:{go:'quick'},pppp:{go:'quick'},'rule-of-3':{go:'quick'},monroe:{go:'pitch'},'good-question':{fn:'ask'},'walk-away':{fn:'yes'}};
+function _tkFamOf(t){return TK_FAM.find(f=>f.tools.includes(t))||TK_FAM[0];}
+function _tkCases(t){return CASES.filter(c=>c.tech===t);}
+function _tkPractice(t){
+  const pr=TK_PRACTICE[t];
+  if(pr&&pr.fn==='ask'){openAsk();return;}
+  if(pr&&pr.fn==='yes'){openYesCheck();return;}
+  if(pr&&pr.go){if(pr.go==='quick'){QA.phase='q';QA.take=null;QA.notes=null;QA.strong=null;}if(pr.go==='pitch')PI.phase='setup';go(pr.go);return;}
+  const c=_tkCases(t).find(c=>c.practice&&!_casesDone()[c.id])||_tkCases(t).find(c=>c.practice);
+  if(c){caseToPractice(c);return;}
+  const k=(pr&&pr.scen)||'bargain';RW.scenario=k;RW.goal=_rwGoalOf(k).k;RW.tougher=false;RW.fromReply=null;RW.fromCase=null;RW.pickOpen=null;go('real');rwFetchScene();
+}
 function renderLibrary(app){
-  const seen=_casesSeen(),done=_casesDone(),topic=V.libTopic||'';
-  const stTag=c=>done[c.id]?'<i class="shelf-st">'+ic('check','s')+'Practiced</i>':seen[c.id]?'<i class="shelf-st">'+ic('check','s')+'Read</i>':'';
-  let h='<main class="scr lib-scr">';
-  if(topic){
-    // One topic: its cases as a simple list
-    const isTool=topic==='toolkit',x=CASE_CATS.find(c=>c.k===topic)||{t:'For you',c:'c-job',p:'p-lav'};
-    h+='<div class="g-bar"><button class="g-back" data-act="lib-root" aria-label="Back">'+ic('back')+'</button><h1>'+escHtml(isTool?'The toolkit':x.t)+'</h1></div>';
-    if(isTool){
-      h+='<p class="sub" style="margin-top:-4px">Techniques K uses in feedback. Tap one to learn it.</p><div class="lib-list">'+Object.keys(TECHNIQUES).map(k=>'<button class="lib-li c-job" data-tech="'+k+'"><span class="lib-dot"></span><span class="lib-lt"><b>'+escHtml(TECHNIQUES[k].title)+'</b><span>'+escHtml(TECHNIQUES[k].sum)+'</span></span>'+ic('chev','s')+'</button>').join('')+'</div>';
-    }else{
-      const cs=topic==='mine'?_libMine():CASES.filter(c=>c.cat===topic);
-      h+='<div class="lib-list">'+cs.map(c=>{const cc=_caseCat(c.cat);return '<button class="lib-li '+cc.c+'" data-case="'+c.id+'"><span class="lib-dot"></span><span class="lib-lt"><b>'+escHtml(c.title)+'</b>'+'</span>'+ic('chev','s')+'</button>';}).join('')+'</div>';
-    }
+  const fam=V.tkFam&&TK_FAM.find(f=>f.k===V.tkFam),tool=V.tkTool&&TECHNIQUES[V.tkTool];
+  let h='';
+  if(tool){
+    const f=_tkFamOf(V.tkTool),cs=_tkCases(V.tkTool);
+    h='<main class="scr '+f.p+' tk-scr">'+gBar(tool.title,'tk-back');
+    h+='<div class="tk-body"><div class="g-block tk-hero"><div class="g-kick">The tool</div><div class="tk-sum">'+escHtml(tool.sum)+'</div>'+(tool.how?'<p class="tk-how">'+escHtml(tool.how)+'</p>':'')+'</div>';
+    if(cs.length)h+='<div class="g-kick tk-k">See it in action</div><div class="tk-ex">'+cs.map(c=>'<button data-case="'+c.id+'"><small'+(c.story&&c.story.t?' class="st"':'')+'>'+(c.story&&c.story.t?'● A real story':'A case')+'</small><b>'+escHtml(c.title)+'</b></button>').join('')+'</div>';
+    else if(tool.watch)h+='<div class="g-card tk-watch"><div class="g-kick">Watch out</div><p>'+escHtml(tool.watch)+'</p></div>';
+    h+='</div>'+gCta('Practice it','tk-practice');
+  }else if(fam){
+    h='<main class="scr tk-scr">'+gBar('Toolkit','tk-back');
+    h+='<div class="rw-sec '+fam.p+'"><div class="rw-sech"><b>'+escHtml(fam.t)+'</b><span>'+fam.tools.length+' tools</span></div><div class="rw-secl tk-list">'+fam.tools.map(t=>{const x=TECHNIQUES[t];return x?'<button data-tool="'+t+'"><span><b>'+escHtml(x.title)+'</b><small>'+escHtml(x.sum)+'</small></span>'+ic('arrow','s')+'</button>':'';}).join('')+'</div></div>';
   }else{
-    h+=gBar('Library','hub');
-    h+='<div class="lib-tools"><button class="lib-tool" data-act="yescheck"><span class="lt-ic yc">'+ic('check','s')+'</span><b>Should I say yes?</b></button><button class="lib-tool" data-act="askdrill"><span class="lt-ic ask">?</span><b>Ask a good question</b></button></div>';
-    const mine=_libMine();
-    if(mine.length)h+='<section class="shelf c-job"><div class="shelf-h"><span class="lib-dot"></span><b>For you</b><button class="link lib-all" data-topic="mine">See all '+mine.length+'</button></div><div class="shelf-row">'+mine.slice(0,6).map(c=>{const cc=_caseCat(c.cat);return '<button class="shelf-card sc-dark '+cc.p+'" data-case="'+c.id+'"><span class="sc-cat"><i></i>'+escHtml(cc.t)+'</span><b>'+escHtml(c.title)+'</b></button>';}).join('')+'</div></section>';
-    h+='<div class="lib-grid">'+CASE_CATS.map(x=>{const n=CASES.filter(c=>c.cat===x.k).length;return '<button class="lib-topic '+x.p+'" data-topic="'+x.k+'"><b>'+escHtml(x.t)+'</b><span>'+n+' cases</span></button>';}).join('')+
-      '<button class="lib-topic lib-tk" data-topic="toolkit"><b>The toolkit</b><span>'+Object.keys(TECHNIQUES).length+' techniques</span></button></div>';
+    h='<main class="scr tk-scr">'+gBar('Toolkit','hub');
+    h+='<div class="tk-bands">'+TK_FAM.map((f,i)=>'<button class="tk-band '+f.p+'" data-fam="'+f.k+'"><span><small>0'+(i+1)+' · '+f.tools.length+' tools</small><b>'+escHtml(f.t)+'</b></span>'+ic('arrow')+'</button>').join('')+'</div>';
   }
   h+='</main>';
   app.innerHTML=h;wireCommon(app);
+  app.querySelectorAll('[data-go="tk-back"]').forEach(b=>{b.removeAttribute('data-go');b.addEventListener('click',()=>{if(V.tkTool){V.tkTool=null;}else V.tkFam=null;render();});});
+  app.querySelectorAll('[data-fam]').forEach(b=>b.addEventListener('click',()=>{const f=TK_FAM.find(x=>x.k===b.dataset.fam);_growTile(b,()=>{V.tkFam=f.k;render();});}));
+  app.querySelectorAll('[data-tool]').forEach(b=>b.addEventListener('click',()=>{V.tkTool=b.dataset.tool;render();}));
   app.querySelectorAll('[data-case]').forEach(b=>b.addEventListener('click',()=>openCase(b.dataset.case)));
-  app.querySelectorAll('[data-topic]').forEach(b=>b.addEventListener('click',()=>{V.libTopic=b.dataset.topic;render();}));
-  const rt=app.querySelector('[data-act="lib-root"]');if(rt)rt.addEventListener('click',()=>{V.libTopic='';render();});
-  const yc=app.querySelector('[data-act="yescheck"]');if(yc)yc.addEventListener('click',openYesCheck);
-  const ad=app.querySelector('[data-act="askdrill"]');if(ad)ad.addEventListener('click',openAsk);
+  const pr=app.querySelector('[data-act="tk-practice"]');if(pr)pr.addEventListener('click',()=>_tkPractice(V.tkTool));
+  const body=app.querySelector('.tk-body');if(body){const ex=body.querySelector('.tk-ex');_fillZoom([body],()=>document.scrollingElement.scrollHeight<=window.innerHeight&&(!ex||ex.scrollHeight<=ex.clientHeight+1),1.3);if(ex&&ex.scrollHeight>ex.clientHeight+1){body.style.zoom=1;ex.classList.add('scroll');}}
+}
+// A tile grows to fill the screen in its own color, then the next page renders
+function _growTile(tile,then){
+  const r=tile.getBoundingClientRect(),cs=getComputedStyle(tile),bar=document.querySelector('.g-bar'),top=bar?bar.getBoundingClientRect().bottom+12:80;
+  const m=document.querySelector('main').getBoundingClientRect(),pad=parseFloat(getComputedStyle(document.querySelector('main')).paddingLeft)||18;
+  const ov=document.createElement('div');ov.style.cssText='position:fixed;z-index:50;left:'+r.left+'px;top:'+r.top+'px;width:'+r.width+'px;height:'+r.height+'px;border-radius:'+cs.borderRadius+';background:'+cs.backgroundColor+';transition:all .32s cubic-bezier(.2,.8,.2,1)';
+  document.body.appendChild(ov);ov.offsetWidth;
+  ov.style.left=(m.left+pad)+'px';ov.style.top=top+'px';ov.style.width=(m.width-2*pad)+'px';ov.style.height=(window.innerHeight-top-pad)+'px';ov.style.borderRadius='28px';
+  setTimeout(()=>{then();ov.style.transition='opacity .2s';ov.style.opacity='0';setTimeout(()=>ov.remove(),220);},300);
 }
 function _libMine(){const ks=(typeof _sugKeys==='function')?_sugKeys():[];const mine=[];ks.forEach(k=>(SUG_MAP[k].cases||[]).forEach(id=>{const c=_case(id);if(c&&!mine.includes(c))mine.push(c);}));return mine;}
 function _sting(s){s=String(s||'');const end=/(^|[.!?”]\s)\[\[[^\]]+\]\]$/.test(s.trim());return escHtml(s.trim()).replace(/\[\[(.+?)\]\]/g,'<mark class="sting'+(end?' own':'')+'">$1</mark>');}
@@ -3027,7 +3083,7 @@ function renderHub(app){
   let h='<main class="scr hub dk">';
   h+='<div class="top"><div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div><div class="ibtns"><button class="ibtn ib-set" data-go="settings" aria-label="Settings">'+ic('settings')+'</button><button class="askk" data-act="askk">'+kav()+'<span>'+(V.deskBusy?'Reading…':'Ask K')+'</span></button></div></div>';
   h+='<div class="dk-stack" id="dk-deck"></div>';
-  h+='<div class="dk-tools"><button data-go="reply"><i class="p-lav">'+ic('reply','s')+'</i>Reply</button><button data-go="real"><i class="p-teal">'+ic('talk','s')+'</i>Practice</button><button data-go="library"><i class="p-green">'+ic('book','s')+'</i>Library</button><button data-go="notebook"><i class="p-yellow">'+ic('list','s')+'</i>Notes</button></div>';
+  h+='<div class="dk-tools"><button data-go="reply"><i class="p-lav">'+ic('reply','s')+'</i>Reply</button><button data-go="real"><i class="p-teal">'+ic('talk','s')+'</i>Practice</button><button data-go="library"><i class="p-green">'+ic('book','s')+'</i>Toolkit</button><button data-go="notebook"><i class="p-yellow">'+ic('list','s')+'</i>Notes</button></div>';
   h+='</main>';
   app.innerHTML=h;
   app.querySelector('[data-act="askk"]').addEventListener('click',()=>{if(!V.deskBusy)openAskK();});
