@@ -1243,6 +1243,10 @@ html[data-theme="dark"] .cl-good .cl-k{color:var(--p)}
 .af-you{background:#C4AEFF;color:#120C24;align-self:flex-end;border-top-right-radius:6px;font-weight:600}
 .af-wait{color:var(--ink-3);font-style:italic}
 .af-in{min-height:64px;resize:none}
+.kq{display:flex;flex-direction:column;gap:12px}
+.kq-q{font-size:22px;font-weight:800;line-height:1.25;letter-spacing:-.01em;text-wrap:pretty}
+.kq-in{min-height:96px;resize:none;background:rgba(255,255,255,.72);border-color:transparent;color:#120C24}
+.kq-in::placeholder{color:rgba(18,12,36,.5)}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -3719,10 +3723,12 @@ async function deskAdvice(){
   const cases=CASES.map(c=>c.id+': '+c.title+' (principle: '+c.principle+')').join('\n');
   const sys=K_VOICE+'\nSomeone has brought you a real situation and wants to know what to do. Coach them the way you coach: calm, direct, warm, practical. No blame, no lecture, no therapy talk.\n\n'+K_CLIENT_VIEW+'\n'+K_CONFLICT_VIEW+'\n'+K_PEOPLE_VIEW+'\n'+K_PLAIN+
     '\n\nThe library cases and their principles (use the closest one if it truly fits):\n'+cases+'\n'+TECH_LIST+
-    '\n\nReply with JSON only, no markdown: {"read":"what is really going on and what matters most right now, 1–2 sentences, said to them","steps":["3 short steps in order, each starting with a verb, each under 20 words"],"say":"the first words they could actually say or write to open, spoken, under 40 words","avoid":"the one thing not to do, under 18 words","principle":"the principle underneath, 3–8 plain words","case":"the closest library case id, or empty","next":"practice if a spoken conversation is still ahead and worth rehearsing; reply if they need to write a message; none if neither fits (for example the moment has passed and what they need is a plan)","ask":"one short question you would ask them to help better, if something important is missing; else empty","practice":{"scenario":"if next is practice: the closest practice key from: '+Object.keys(TT_REAL).join(', ')+'","who":"who they will talk to, under 12 words","moment":"what is at stake in that conversation, under 25 words","line":"the first thing that person will say to them, spoken, in curly quotes, under 25 words. Never the user\u2019s own words"}}';
+    (A.asked?'':'\n\nIf you do not know enough to give useful advice (what actually happened, who is involved, what is at stake), do not guess and do not give generic advice: reply with JSON {"need":"one short, specific question to them, under 20 words"} instead, and nothing else.')+
+    '\n\nOtherwise reply with JSON only, no markdown: {"read":"what is really going on and what matters most right now, 1–2 sentences, said to them","steps":["3 short steps in order, each starting with a verb, each under 20 words"],"say":"the first words they could actually say or write to open, spoken, under 40 words","avoid":"the one thing not to do, under 18 words","principle":"the principle underneath, 3–8 plain words","case":"the closest library case id, or empty","next":"practice if a spoken conversation is still ahead and worth rehearsing; reply if they need to write a message; none if neither fits (for example the moment has passed and what they need is a plan)","ask":"one short question you would ask them to help better, if something important is missing; else empty","practice":{"scenario":"if next is practice: the closest practice key from: '+Object.keys(TT_REAL).join(', ')+'","who":"who they will talk to, under 12 words","moment":"what is at stake in that conversation, under 25 words","line":"the first thing that person will say to them, spoken, in curly quotes, under 25 words. Never the user\u2019s own words"}}';
   try{
     const raw=await callCoach(sys,'THEIR SITUATION:\n'+A.text+nbContext('real'),{maxTokens:700,featureId:'desk-advice'});
     let j;try{j=_jsonFrom(raw);}catch(_){j=_jsonFrom(await callCoach(sys,'THEIR SITUATION:\n'+A.text+'\n\nReply with valid JSON only.',{maxTokens:700,featureId:'desk-advice',grace:true}));}
+    if(j&&j.need&&!A.asked&&!j.read){A.need=_clean(j.need);A.loading=false;if(V.view==='advice')render();return;}
     const steps=(Array.isArray(j.steps)?j.steps:[]).map(_clean).filter(Boolean).slice(0,4);
     if(!j.read||!steps.length)throw new Error('Unexpected answer');
     const px=j.practice&&typeof j.practice==='object'&&TT_REAL[j.practice.scenario]?{scenario:j.practice.scenario,who:_clean(j.practice.who),moment:_clean(j.practice.moment),line:_clean(j.practice.line)}:null;
@@ -3738,8 +3744,12 @@ function _adviceCases(scen){
 function renderAdvice(app){
   const A=V.adv;if(!A){go('hub');return;}
   let h='<main class="scr p-lav'+(A.data&&!A.loading?' rw-donescr':'')+'">'+gBar('K’s advice','hub');
-  if(!A.data&&!A.loading)h+='<div class="g-card tight"><div class="g-row top"><span class="t"><b>What you told K</b><span>'+escHtml(_kShort(A.text,220))+'</span></span></div></div>';
-  if(A.loading){
+  if(!A.data&&!A.loading&&!A.need)h+='<div class="g-card tight"><div class="g-row top"><span class="t"><b>What you told K</b><span>'+escHtml(_kShort(A.text,220))+'</span></span></div></div>';
+  if(A.need&&!A.loading&&!A.data){
+    h+='<div class="g-card tight"><div class="g-row top"><span class="t"><b>You told K</b><span>'+escHtml(_kShort(A.text,160))+'</span></span></div></div>';
+    h+='<div class="g-block kq"><div class="g-k">'+kav()+'<span class="g-kick">K needs to know</span></div><div class="kq-q">'+escHtml(A.need)+'</div><textarea class="inp kq-in" id="adv-need" rows="3" placeholder="Tell K…"></textarea></div>';
+    h+='<div class="push"></div>'+gCta('Send to K','adv-need')+'<div class="rw-endlinks"><button class="link" data-act="adv-skip">Just give me your best advice</button></div>';
+  }else if(A.loading){
     h+=kWritingHtml('K is thinking it through','What matters most, what to do, and what to say first.');if(false)h+='<div class="g-card" style="display:flex;flex-direction:column;gap:14px"><div class="g-k">'+kav()+'<div><b style="font-size:15px">K is thinking it through</b><div class="small" style="margin-top:2px">What matters most, what to do, and what to say first.</div></div></div><div class="stack" style="gap:9px"><div class="sk w9"></div><div class="sk w8"></div><div class="sk w9"></div><div class="sk w5"></div></div></div>';
   }else if(A.data){
     const d=A.data,c=d.case?_case(d.case):null;
@@ -3764,6 +3774,8 @@ function renderAdvice(app){
   const on=(s,f)=>{const el=app.querySelector(s);if(el)el.addEventListener('click',f);};
   _wireSlides(app);
   on('[data-act="adv-copy"]',()=>copyText(A.data.say.replace(/^[“"]|[”"]$/g,'')));
+  on('[data-act="adv-need"]',()=>{const a=String((app.querySelector('#adv-need')||{}).value||'').trim();if(a.length<2)return;A.text=A.text.trim()+'\n\nMore detail (K asked “'+A.need+'”): '+a;A.need='';A.asked=true;A.loading=true;render();deskAdvice();});
+  on('[data-act="adv-skip"]',()=>{A.need='';A.asked=true;A.loading=true;render();deskAdvice();});
   on('[data-act="adv-retry"]',()=>{A.loading=true;A.err=null;render();deskAdvice();});
   on('[data-act="adv-reply"]',()=>{V.deskRoute=Object.assign({},V.deskRoute||{},{rwant:'fix',reply_text:''});deskGo('reply');});
   on('[data-act="adv-practice"]',()=>{const px=A.data&&A.data.px;V.deskRoute=Object.assign({},V.deskRoute||{},px?{scenario:px.scenario,who:px.who,moment:px.moment,line:px.line}:{scenario:A.scen,who:'',moment:'',line:''});deskGo('practice');});
@@ -3974,7 +3986,7 @@ function _rpSys(){
     (RP.who==='client'||RP.who==='auto'?K_CLIENT_VIEW+'\n'+(RP.who==='auto'?K_PEOPLE_VIEW+'\n':''):RP.who==='interviewer'?K_INTERVIEW_VIEW+'\n':RP.who==='new'?K_PEOPLE_VIEW+'\n':'')+K_JUDGE+'\n'+K_PLAIN+'\n'+(ctx?'\nWhat you know about the user:\n'+ctx+'\n':'')+
     '\nRULES FOR THE DRAFT: 40–90 words, sounds like a real person typing, no greeting line or sign-off, no bullet points, no headings. Warm first, then firm. If a price is involved, the draft keeps the user’s price unless they chose otherwise; if it gives something, it gets something back in the same breath. Never invent facts the user did not give (no made-up dates, names or numbers beyond those in the message or context). If the message asks for a price below the lowest the user will accept, the draft must hold the price and offer a smaller scope instead; never say yes to it.\n'+
     'Also explain it line by line: pick 3 to 4 key lines of the draft (each "quote" must be an EXACT substring of the draft, copied character for character), name the technique behind each from this list only: '+Object.values(TECHNIQUES).map(t=>t.title).join('; ')+', and say why in one plain sentence.\n'+
-    'Reply with JSON only, no markdown: {"read":"what is really going on in their message and the move you recommend, 1–2 short sentences said to the user, like an advisor (never just a summary)","draft":"…","give":"what the user gives in this reply, 2–5 words (or \\"Nothing\\")","get":"what the user gets back, 2–5 words","why":[{"quote":"exact substring of the draft","technique":"title from the list","why":"one sentence"}],"below_lowest":true|false}';
+    (RP.asked?'':'If the user only describes a situation (no message they received) and you do not know enough to write a good message (what happened, what was said, who it is to), do not guess and do not write a generic draft: reply with JSON {"need":"one short, specific question to the user, under 20 words"} instead. Otherwise:\n')+'Reply with JSON only, no markdown: {"read":"what is really going on in their message and the move you recommend, 1–2 short sentences said to the user, like an advisor (never just a summary)","draft":"…","give":"what the user gives in this reply, 2–5 words (or \\"Nothing\\")","get":"what the user gets back, 2–5 words","why":[{"quote":"exact substring of the draft","technique":"title from the list","why":"one sentence"}],"below_lowest":true|false}';
 }
 async function rpDraft(tone){
   if(!RP.text.trim())return;
@@ -3985,7 +3997,7 @@ async function rpDraft(tone){
   let msg='THEIR MESSAGE:\n'+RP.text.trim()+(tone?'\n\nADJUST: the previous draft was "'+RP.draft.draft+'". Write it again '+({warmer:'warmer: more human, more acknowledgement, same position',firmer:'firmer: fewer softeners, the position stated plainly, still polite',shorter:'shorter: cut it to about half, keep the position and the ask',yes:'as a yes: the user has decided to accept their number. Write the best version of saying yes that still gets something back (a deposit, faster payment, a smaller scope), without sulking'})[tone]+'.':'')+(guard?'\n\nNOTE: they are asking for about '+_fmtMoney(asked)+', which is below the user’s lowest ('+S.rwLowest+'). Hold the price and offer a smaller scope.':'')+nbContext('reply');
   try{
     const raw=await callCoach(_rpSys(),msg,{maxTokens:850,featureId:'reply-draft'});
-    let j;try{j=_jsonFrom(raw);if(String(j.draft||'').trim().length<20)throw 0;}
+    let j;try{j=_jsonFrom(raw);if(j&&j.need&&!RP.asked&&!tone){RP.need=_clean(j.need);RP.step='ask';RP.loading=false;render();return;}if(String(j.draft||'').trim().length<20)throw 0;}
     catch(_){const raw2=await callCoach(_rpSys(),msg+'\n\nYour last answer could not be read. Reply again with valid JSON only, in the exact format asked.',{maxTokens:850,featureId:'reply-draft',grace:true});j=_jsonFrom(raw2);}
     const draft=String(j.draft||'').trim();if(draft.length<20)throw new Error('short');
     const why=(Array.isArray(j.why)?j.why:[]).map(w=>({quote:String(w.quote||'').trim(),technique:String(w.technique||'').trim(),why:String(w.why||'').trim()})).filter(w=>w.quote&&draft.toLowerCase().includes(w.quote.toLowerCase())).slice(0,4);
@@ -4017,6 +4029,11 @@ function renderReply(app){
     h+='<div class="g-block"><div class="g-kick">'+escHtml(RP.who==='auto'&&RP.want==='auto'?'Their message':who+' · '+want)+'</div><div class="g-msg">“'+escHtml(_stripQ(RP.text))+'”</div></div>';
     h+=kWritingHtml('K is reading it','What’s really going on, and one way to say it.');if(false)h+='<div class="g-card" style="display:flex;flex-direction:column;gap:14px"><div class="g-k">'+kav()+'<div><b style="font-size:15px">K is on it</b><div class="small" style="margin-top:2px">'+(RP.tone?(RP.tone==='yes'?'Writing the yes.':'Making it '+RP.tone+'.'):'Working out what you give, and what you get back.')+'</div></div></div><div class="stack" style="gap:9px"><div class="sk w9"></div><div class="sk w8"></div><div class="sk w9"></div><div class="sk w5"></div></div></div>';
     h+='<div class="push"></div><p class="small center-t">About 10 seconds. You can leave; it’ll be here.</p>';
+  }else if(st==='ask'){
+    h+=gBar('Before you reply','rp-back');
+    h+='<div class="g-card tight"><div class="g-row top"><span class="t"><b>You told K</b><span>'+escHtml(_kShort(RP.text,160))+'</span></span></div></div>';
+    h+='<div class="g-block kq"><div class="g-k">'+kav()+'<span class="g-kick">K needs to know</span></div><div class="kq-q">'+escHtml(RP.need)+'</div><textarea class="inp kq-in" id="rp-need" rows="3" placeholder="Tell K…"></textarea></div>';
+    h+='<div class="push"></div>'+gCta('Send to K','rp-need')+'<div class="rw-endlinks"><button class="link" data-act="rp-skip">Just write it</button></div>';
   }else if(st==='error'){
     h+=gBar('Before you reply','rp-back');
     h+='<div class="g-block"><div class="g-kick">'+escHtml(RP.who==='auto'&&RP.want==='auto'?'Their message':who+' · '+want)+'</div><div class="g-msg">“'+escHtml(_stripQ(RP.text))+'”</div></div>';
@@ -4048,7 +4065,9 @@ function renderReply(app){
   on('[data-act="paste"]',async()=>{try{const t=await navigator.clipboard.readText();if(t){RP.text=t;ta.value=t;ta.dispatchEvent(new Event('input'));}else ta.focus();}catch(e){ta.focus();showToast('Tap the box and paste');}});
   app.querySelectorAll('[data-who]').forEach(b=>b.addEventListener('click',()=>{RP.who=RP.who===b.dataset.who?'auto':b.dataset.who;app.querySelectorAll('[data-who]').forEach(x=>x.classList.toggle('on',x.dataset.who===RP.who));}));
   app.querySelectorAll('[data-want]').forEach(b=>b.addEventListener('click',()=>{RP.want=RP.want===b.dataset.want?'auto':b.dataset.want;app.querySelectorAll('[data-want]').forEach(x=>x.classList.toggle('on',x.dataset.want===RP.want));}));
-  on('[data-act="draft"]',()=>rpDraft());
+  on('[data-act="draft"]',()=>{RP.asked=false;RP.need='';rpDraft();});
+  on('[data-act="rp-need"]',()=>{const a=String((app.querySelector('#rp-need')||{}).value||'').trim();if(a.length<2)return;RP.text=RP.text.trim()+'\n\nMORE DETAIL FROM THE USER (K asked “'+RP.need+'”): '+a;RP.asked=true;rpDraft();});
+  on('[data-act="rp-skip"]',()=>{RP.asked=true;rpDraft();});
   on('[data-act="retry"]',()=>rpDraft(RP.tone));
   on('[data-act="rp-back"]',()=>{RP.step='paste';render();});
   app.querySelectorAll('[data-go="rp-back"]').forEach(b=>{b.removeAttribute('data-go');b.addEventListener('click',()=>{RP.step='paste';render();});});
