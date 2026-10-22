@@ -1235,6 +1235,7 @@ html[data-theme="dark"] .cl-good .cl-k{color:var(--p)}
 .tk-seeit{margin-top:12px}
 .tk-tool .tk-seeit .cl-dot{background:var(--p)}
 .tk-tool .tk-body{overflow:hidden}
+.tk-sh{display:flex;flex-direction:column;gap:16px;margin:18px 0 6px;--p:#C4AEFF;--pi:#120C24}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -1779,10 +1780,13 @@ function techTag(key,cls){const t=TECHNIQUES[key];if(!t)return '';return '<butto
 function techKeyFor(name){const n=String(name||'').toLowerCase();const k=Object.keys(TECHNIQUES).find(k=>TECHNIQUES[k].title.toLowerCase()===n);if(k)return k;return Object.keys(TECHNIQUES).find(k=>n.includes(k.replace(/-/g,' '))||n.includes(TECHNIQUES[k].title.toLowerCase().split(' ')[0]))||null;}
 function openTechnique(key){
   const t=TECHNIQUES[key];if(!t)return;
-  const h='<div class="kick">Technique</div><div class="g-h" style="font-size:26px">'+escHtml(t.title)+'</div><p class="sub" style="font-size:15px;color:var(--ink);font-weight:600">'+escHtml(t.sum)+'</p>'+
-    '<div class="stack"><div class="tech-sec"><b>How to use it</b><span>'+escHtml(t.how)+'</span></div><div class="tech-sec"><b>Watch out</b><span>'+escHtml(t.watch)+'</span></div><div class="tech-sec"><b>Where it comes from</b><span>'+escHtml(t.from)+'</span></div></div>'+
+  const st=t.steps||[];
+  const h='<div class="kick">The tool</div><div class="g-h" style="font-size:26px">'+escHtml(t.title)+'</div><p class="sub" style="font-size:16px;color:var(--ink);font-weight:700;margin-top:6px">'+escHtml(t.sum)+'</p>'+(t.why?'<p class="sub" style="font-size:15px;margin-top:8px">'+escHtml(t.why)+'</p>':'')+
+    '<div class="tk-sh">'+(st.length?'<div class="tk-sec"><div class="g-kick tk-k">How to do it</div><ol class="tk-steps">'+st.map((x,i)=>'<li><i>'+(i+1)+'</i><span>'+escHtml(x)+'</span></li>').join('')+'</ol></div>':'<div class="tk-sec"><div class="g-kick tk-k">How to do it</div><p class="sub">'+escHtml(t.how)+'</p></div>')+
+    (t.ex?'<div class="tk-sec"><div class="g-kick tk-k">'+(/^[“"]/.test(t.ex)?'It sounds like':'For example')+'</div><div class="tk-say">'+escHtml(t.ex)+'</div></div>':'')+
+    (t.watch?'<div class="tk-sec tk-wo"><div class="g-kick tk-k">Watch out</div><p>'+escHtml(t.watch)+'</p></div>':'')+'</div>'+
     '<button class="g-cta" data-close>Got it<span class="ar" style="--p:#C4AEFF;--pi:#120C24">'+ic('check','s')+'</span></button>';
-  openSheet(h);
+  openSheet(h,{wire:sh=>{const ov=()=>sh.scrollHeight>sh.clientHeight+1,els=[...sh.children].filter(e=>!e.matches('.grab,.g-cta'));if(ov())_fillZoom(els,()=>!ov(),1);if(ov()){const w=sh.querySelector('.tk-wo');if(w)w.style.display='none';els.forEach(e=>e.style.zoom=1);_fillZoom(els,()=>!ov(),1);}}});
 }
 const TECH_LIST='Techniques you may name (use the exact title): '+Object.values(TECHNIQUES).map(t=>t.title).join('; ')+'.';
 
