@@ -3638,7 +3638,7 @@ function _deskGuess(text){
 async function deskRead(){
   const ta=document.getElementById('desk-text');const text=String((ta&&ta.value)||V.deskText||'').trim();
   if(text.length<8){showToast('Tell K a little more first.');if(ta)ta.focus();return;}
-  V.deskText=text;
+  V.deskText=text;V.deskErr=null;
   let r=null;
   if(_aiOn()){
     V.deskBusy=true;V.deskRoute=null;go('askk');
@@ -3647,7 +3647,7 @@ async function deskRead(){
       'Tools: "advice" (they are asking what to do, something has gone wrong, emotions are high, or they need a plan before any words: choose this whenever they ask for guidance rather than a draft or a rehearsal; it is the safe default), "reply" (they received a message and need to answer it: the text contains or describes what someone said to them, and the answer is written), "practice" (a spoken conversation is coming up or keeps happening: they want to rehearse it with K playing the other person), "pitch" (they must present or pitch something to a group or a decision maker), "quick" (they want a strong short answer to one question they expect to be asked).\n'+
       'Practice scenarios (pick the closest key): '+scenes+'.\n'+
       'Reply with JSON only, no markdown: {"route":"advice|reply|practice|pitch|quick","why":"one short sentence to them, starting with You, saying what you understood (under 18 words)","scenario":"a practice key","who":"who they will talk to: name or role, who they are, one telling detail, under 14 words","moment":"where they are and what is at stake, under 30 words","line":"the first thing the other person will say, spoken, in curly quotes, under 25 words","reply_text":"for reply: the message they received, copied word for word if it is in their text, else empty","rwho":"client|boss|interviewer|new","rwant":"price|no|time|more|fix|well","pitch_line":"for pitch: what they are pitching, in one line","pitch_room":"client|investors|boss|panel","question":"for quick: the question they expect, in curly quotes"}';
-    try{const raw=await callCoach(sys,'THEIR SITUATION:\n'+text,{maxTokens:420,featureId:'desk-route',noLang:true});r=_jsonFrom(raw);if(!DESK_ROUTES[r.route])r=null;}catch(e){r=null;}
+    try{const raw=await callCoach(sys,'THEIR SITUATION:\n'+text,{maxTokens:420,featureId:'desk-route',noLang:true});r=_jsonFrom(raw);if(!DESK_ROUTES[r.route])throw new Error('K gave an answer the app couldn’t use');}catch(e){V.deskBusy=false;V.deskErr=e;render();return;}
     V.deskBusy=false;render();
   }
   if(!r)r=_deskGuess(text);
@@ -3660,7 +3660,8 @@ async function deskRead(){
 function renderAskK(app){
   let h='<main class="scr p-blue askk-scr">'+gBar('Ask K','hub');
   const r=V.deskRoute;
-  if(V.deskBusy||!r){h+=kWritingHtml('K is reading it…','Working out what will help most.');}
+  if(V.deskErr){h+=renderAIError(V.deskErr,'askk-retry')+'<div class="push"></div>';}
+  else if(V.deskBusy||!r){h+=kWritingHtml('K is reading it…','Working out what will help most.');}
   else{const main=DESK_ROUTES[r.route]||DESK_ROUTES.practice;
     const scName=r.route==='practice'&&TT_REAL[r.scenario]?TT_REAL[r.scenario].name:'';
     const others=Object.keys(DESK_ROUTES).filter(k=>k!==r.route);
@@ -3669,6 +3670,7 @@ function renderAskK(app){
     h+='<div class="push"></div>'+gCta(main.t,'askk-main',{icon:main.ic})+'<div class="g-kick askk-alt">Not quite? Do this instead</div><div class="askk-others">'+others.map(k=>'<button data-desk="'+k+'">'+ic(DESK_ROUTES[k].ic,'s')+'<span>'+escHtml(DESK_ROUTES[k].t)+'</span></button>').join('')+'</div>';}
   h+='</main>';
   app.innerHTML=h;
+  const rt=app.querySelector('[data-act="askk-retry"]');if(rt)rt.addEventListener('click',()=>{V.deskErr=null;deskRead();});
   const m=app.querySelector('[data-act="askk-main"]');if(m)m.addEventListener('click',()=>deskGo(V.deskRoute.route));
   app.querySelectorAll('[data-desk]').forEach(b=>b.addEventListener('click',()=>deskGo(b.dataset.desk)));
   const body=app.querySelector('.askk-body');if(body)_fillZoom([body],()=>document.scrollingElement.scrollHeight<=window.innerHeight,1.3);
@@ -4364,7 +4366,7 @@ function ttpOfflineReal(key){
 }
 // ── The scene (AI when on, bank otherwise) ────────────────────────────────
 async function rwFetchScene(){
-  RW._adTok=(RW._adTok||0)+1;RW.adapting=false;const myTok=RW._adTok;
+  RW._adTok=(RW._adTok||0)+1;RW.adapting=false;RW.sceneErr=null;const myTok=RW._adTok;
   _rwResetConvo();RW.item=null;RW.context=_rwCtx();RW.source='';RW.prevFix='';RW.fromCase=RW._keepCase||null;RW._keepCase=null;
   const sc=TT_REAL[RW.scenario]||TT_REAL.interview;
   const ctx=(RW.context||'').trim();
@@ -4402,7 +4404,7 @@ async function rwFetchScene(){
         const line=String(j.line||'').trim();if(!line||line.length>240||!j.client||!j.job||!j.position)throw new Error('brief');
         RW.question=line;RW.source='ai';RW.item={c:String(j.client).slice(0,70),scene:String(j.scene||'').slice(0,280),job:String(j.job).slice(0,90),pos:String(j.position).replace(/^[^:]{0,20}:\s*/,'').slice(0,140)};
       }
-    }catch(e){RW.question=ttpOfflineReal(RW.scenario);RW.source='bank';}
+    }catch(e){if(myTok!==RW._adTok)return;RW.loadingScene=false;RW.sceneErr=e;render();return;}
     if(myTok!==RW._adTok)return; // they went back while K was writing
     RW.loadingScene=false;
   }else{RW.question=ttpOfflineReal(RW.scenario);RW.source='bank';}
@@ -4459,6 +4461,8 @@ async function _rwFollowup(allowEnd){
         if(t.length>=4&&t.length<=240&&ends<=3&&!/✅|🎯|💡|🏗|ONE THING|THE THREAD|WHAT WORKED/i.test(t))return t;
       }catch(e){RW.fuErr=e;break;}
     }
+    if(!RW.fuErr)RW.fuErr=new Error('K gave a line the app couldn’t use');
+    return null;
   }
   return _rwBankFu();
 }
@@ -4638,7 +4642,9 @@ function renderReal(app){
   const ph=RW.phase;
   let h='<main class="scr p-teal'+(ph==='turn'&&RW.mode==='live'?' g-call':'')+(ph==='done'?' rw-donescr':'')+'">';
   const name=_rwName();
-  if(ph==='setup'&&RW.loadingScene){
+  if(ph==='setup'&&RW.sceneErr){
+    h+=gBar('Practice a talk','rw-setup')+renderAIError(RW.sceneErr,'rw-scene-retry')+'<div class="push"></div>';
+  }else if(ph==='setup'&&RW.loadingScene){
     const g=RW.pickOpen&&RW_GOALS.find(x=>x.k===RW.pickOpen);
     h+=gBar('Practice a talk','rw-setup')+kWritingHtml(g?'K is writing a '+g.t.toLowerCase()+' situation…':'K is picking one for you…',g?'A real moment from your kind of work.':'Any situation, from your kind of work.');
   }else if(ph==='setup'){
@@ -4730,6 +4736,7 @@ function renderReal(app){
   app.querySelectorAll('[data-anyof]').forEach(b=>b.addEventListener('click',()=>{if(RW.loadingScene)return;const g=RW_GOALS.find(x=>x.k===b.dataset.anyof);RW.scenario=_pick(g.items);RW.goal=g.k;RW.tougher=false;RW.fromReply=null;RW.fromCase=null;rwFetchScene();}));
   app.querySelectorAll('[data-go="rw-pickback"]').forEach(b=>{b.removeAttribute('data-go');b.addEventListener('click',()=>{RW.pickOpen=null;render();});});
   app.querySelectorAll('[data-scen]').forEach(b=>b.addEventListener('click',()=>{if(RW.loadingScene)return;RW.scenario=b.dataset.scen;RW.tougher=false;RW.fromReply=null;RW.fromCase=null;rwFetchScene();}));
+  on('[data-act="rw-scene-retry"]',()=>{RW.sceneErr=null;rwFetchScene();});
   on('[data-act="surprise"]',()=>{if(RW.loadingScene)return;const all=RW_GOALS.flatMap(g=>g.items);RW.scenario=_pick(all);RW.goal=_rwGoalOf(RW.scenario).k;RW.tougher=false;RW.fromReply=null;RW.fromCase=null;rwFetchScene();});
   app.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.mode;if(m==='live'&&!LIVE_ON){showToast('Live calls are coming. Speak works today.','info');return;}if(RW.rec)return;RW.mode=m;render();if(ph==='turn'&&m!=='type')rwSpeakLine();}));
   on('[data-act="get"]',()=>{RW.tougher=false;RW.fromReply=null;rwFetchScene();});
@@ -4886,13 +4893,14 @@ async function piRoomStart(){
   piNextQuestion();
 }
 async function piNextQuestion(){
-  PI.qLoading=true;PI.panelQ=null;render();
+  PI.qLoading=true;PI.panelQ=null;PI.qErr=null;render();
   const panel=_piPanel(),who=panel[PI.qIdx%panel.length];
   let q=null;
   if(_aiOn()){
     const sys='You play '+who.n+' ('+who.r+'), one of three people hearing a pitch ('+_piKindLabel()+'). You are '+who.p+'. Ask the ONE question a real '+who.r+' would ask next, about something specific the speaker said or left out. Plain spoken English, under 25 words, no name label, no quotes.'+(PI.qa.length?' Do not repeat a question already asked.':'');
     const msg='THE PITCH:\n'+(PI.take&&PI.take.transcript?PI.take.transcript:_piPitchText())+(PI.qa.length?'\n\nSO FAR:\n'+PI.qa.map(x=>x.who+' asked: '+x.q+'\nThe speaker said: '+(x.a||'(nothing)')).join('\n'):'')+'\n\nYour question:';
-    try{q=String(await callCoach(sys,msg,{maxTokens:80,noLang:true,featureId:'rw-turn',grace:true})).split('\n')[0].replace(/^[^:]{0,20}:\s*/,'').replace(/^["“]|["”]$/g,'').trim();if(q.length<6||q.length>220)q=null;}catch(e){q=null;}
+    try{q=String(await callCoach(sys,msg,{maxTokens:80,noLang:true,featureId:'rw-turn',grace:true})).split('\n')[0].replace(/^[^:]{0,20}:\s*/,'').replace(/^["“]|["”]$/g,'').trim();if(q.length<6||q.length>220)q=null;}catch(e){PI.panelQ=null;PI.qLoading=false;PI.qErr=e;render();return;}
+    if(!q){PI.qLoading=false;PI.qErr=new Error('K gave a question the app couldn’t use');render();return;}
   }
   if(!q)q=_pick({client:['What do we get in month one if it doesn’t work?','Why this price and not half of it?','Who else have you done this for?'],investors:['Why now?','What’s your margin on this?','What breaks first when you grow?'],boss:['What will this cost us, all in?','Who owns it if you’re away?','What could go wrong?'],panel:['What makes this different?','What’s your evidence?','What happens in year two?']}[PI.room]||['Why should we say yes?']);
   PI.panelQ={who:who.n,role:who.r,q};PI.qLoading=false;render();
@@ -4982,7 +4990,7 @@ function renderPitch(app){
     const panel=_piPanel(),cur=PI.panelQ,lit=cur?cur.who:(panel[PI.qIdx%panel.length]||{}).n;
     h+='<div class="g-bar"><button class="g-back" data-act="room-back" aria-label="Back">'+ic('back')+'</button><span class="g-kick" style="flex:1">Face the room · '+(PI.qIdx+1)+' of 3</span><span class="g-time" style="color:#fff" id="pi-qtimer">0:00</span></div>';
     h+='<div class="g-panel">'+panel.map(p=>'<div'+(p.n===lit?' class="lit"':'')+'><span class="pa">'+escHtml(p.n.charAt(0).toUpperCase())+'</span>'+escHtml(p.n+' · '+p.r)+'</div>').join('')+'</div>';
-    h+='<div class="g-cap"><small>'+escHtml(cur?cur.who+' asks':'Listening…')+'</small>'+(cur?'“'+escHtml(cur.q)+'”':'<div class="think"><i></i><i></i><i></i></div>')+'</div>';
+    h+=PI.qErr?'<div class="g-cap"><small>K lost the connection</small>'+escHtml(String(PI.qErr.message||'').slice(0,120))+'<div style="margin-top:10px"><button class="g-chip" data-act="pi-q-retry">Try again</button></div></div>':'<div class="g-cap"><small>'+escHtml(cur?cur.who+' asks':'Listening…')+'</small>'+(cur?'“'+escHtml(cur.q)+'”':'<div class="think"><i></i><i></i><i></i></div>')+'</div>';
     h+='<div class="g-wave" id="pi-wave" style="--ink:var(--p)">'+'<i></i>'.repeat(17)+'</div>';
     h+='<div class="g-hint">'+kav('xs')+'<span>'+(PI.rec?'You’re on. Acknowledge, answer, then bridge to your plan.':'Acknowledge, answer, bridge: name the worry, answer it, then move to your plan.')+'</span></div>';
     if(PI.mode==='type')h+='<textarea class="g-answer" id="pi-typed" placeholder="Type your answer…" style="background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.1);color:#fff">'+escHtml(PI.answerTyped||'')+'</textarea>';
@@ -5033,6 +5041,7 @@ function renderPitch(app){
   on('[data-act="send-typed"]',()=>piAnswerTyped());
   on('[data-act="end-room"]',async()=>{speakStop();if(PI.rec){await piAnswerStop();return;}if(PI.qa.length)piLanded();else{PI.phase=PI.take?'notes':'build';render();}});
   on('[data-act="pi-landed-retry"]',()=>piLanded());
+  on('[data-act="pi-q-retry"]',()=>piNextQuestion());
   on('[data-act="new"]',()=>{PI={...PI,phase:'setup',parts:null,script:'',run:null,take:null,notes:null,qa:[],qIdx:0,panelQ:null,verdict:null};render();});
   if(ph==='room'&&PI.rec)recLevelLoop(app.querySelector('#pi-wave'));
 }
