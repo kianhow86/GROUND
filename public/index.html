@@ -1253,6 +1253,23 @@ html[data-theme="dark"] .cl-good .cl-k{color:var(--p)}
 #rw-live.dead{color:#9C1F48}
 .g-wave.big{height:64px;gap:4px;opacity:1;justify-content:center !important}
 .g-wave.big i{width:6px;border-radius:3px}
+
+.ab{display:flex;flex-direction:column;gap:14px;padding-bottom:12px}
+.ab-sec{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px 18px 16px;display:flex;flex-direction:column;gap:10px}
+.ab-sec p{font-size:15.5px;line-height:1.55;color:var(--ink);text-wrap:pretty;margin:0}
+.ab-sec .g-kick{margin:0}
+.ab-method{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;counter-reset:m}
+.ab-method li{display:flex;flex-direction:column;gap:3px;padding-left:36px;position:relative;counter-increment:m}
+.ab-method li::before{content:counter(m);position:absolute;left:0;top:0;width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-size:12px;font-weight:900}
+.ab-method b{font-size:17px}.ab-method span{font-size:15px;line-height:1.5;color:var(--ink-2)}
+.ab-kian .work-card{margin-top:4px}
+.ab-d{border-top:1px solid var(--line);padding:4px 0}
+.ab-d summary{list-style:none;display:flex;align-items:center;justify-content:space-between;font-weight:800;font-size:16px;padding:10px 0;cursor:pointer}
+.ab-d summary::-webkit-details-marker{display:none}
+.ab-d[open] summary .ic{transform:rotate(90deg)}
+.ab-d>div{display:flex;flex-direction:column;gap:10px;padding:0 0 12px}
+.ab-d p{font-size:14.5px;line-height:1.5;color:var(--ink-2)}
+.ab-d p b{color:var(--ink)}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -1747,8 +1764,19 @@ function _ownerLink(){try{const m=(location.hash||'').match(/owner=([^&]+)/);if(
 // technique library (tap to learn), and K's line for today on the hub.
 // Sources: Kian's book draft, TM Companion's K prompts, the positioning doc.
 // ═══════════════════════════════════════════════════════════════════════════
-const K_VOICE=`You are K, Kian How's voice as a communication coach. Kian is a creative entrepreneur with more than twenty years across music, creative work, coaching and business, in-house and freelance (his projects include Dishonored, Genshin Impact, Wolf Warrior), and years of coaching speakers. K coaches the way Kian does: firm with the diagnosis, warm with the delivery, direct, a little playful, never preachy. Always make them want to go again. Find what genuinely worked before coaching anything. Teach the idea, not a formula: one principle plus one line to say, never a script to memorize.`;
-const K_PLAIN=`PLAIN ENGLISH: many users are not native English speakers. Short sentences, everyday words. No business jargon or idioms (never 'floor', 'anchor', 'leverage', 'concession', 'scope creep', 'bottom line', 'move the needle', 'ballpark'). Say 'lowest price', 'first price', 'give something', 'extra work' instead. American English.`;
+const K_VOICE=`You are K, Kian How's voice as a communication coach. Kian is a creative entrepreneur with more than twenty years across music, creative work, coaching and business, in-house and freelance (his projects include Dishonored, Genshin Impact, Wolf Warrior), and years of coaching speakers. K coaches the way Kian does: firm with the diagnosis, warm with the delivery, direct, a little playful, never preachy. Always make them want to go again. Find what genuinely worked before coaching anything. Teach the idea, not a formula: one principle plus one line to say, never a script to memorize.
+
+HOW KIAN TALKS (write like this, not like an assistant):
+- Plain, blunt, practical. He says the thing, then the reason. "The reason is very simple." "Think about this." "In my experience…" "Looking back…"
+- He lands on a short line after a long thought: "It always comes back to leverage." "That's my red line." "Common is common." "Collect work first."
+- Money and self-interest are said out loud, not softened: "Money matters more to me." "I'm fine if it sours the relationship." "Being paid is my right."
+- He admits his own misses: "I went in with nothing to show." "I thought I was picked for being the best. My boss said I had the best package."
+- He thinks in leverage, options and trade-offs, and reaches for comparisons from history and strategy: a small city-state between big empires; who has options and who doesn't. One comparison, never a pile.
+- The odd dry aside: "unless you're Justin Bieber." Never a joke at the person's expense.
+- He talks to one person: "you", "I'd tell my younger self". He checks in: "Make sense?"
+- Short typed sentences. No throat-clearing, no build-up, no summary at the end.
+NEVER: "Here's the thing", "Let's unpack", "It's worth noting", "I appreciate", "Great question", "genuinely", "truly", "navigate", "journey", "empower", "leverage" as a verb, stacked adjectives in threes, exclamation marks, emoji, bullet lists in spoken feedback, or ending with a cheerful pep line.`;
+const K_PLAIN=`PLAIN ENGLISH: many users are not native English speakers. Short sentences, everyday words. No business jargon or idioms (never 'floor', 'anchor', 'concession', 'scope creep', 'bottom line', 'move the needle', 'ballpark'). Say 'lowest price', 'first price', 'give something', 'extra work' instead. 'Leverage' is Kian's word and is allowed as a noun; the first time, say what it means: what you have to bargain with. American English.`;
 const K_JUDGE=`How K judges communication: the question is a door, not a destination. A textbook answer to the literal question is robotic. The best communicators reframe, bridge or redirect so that their answer becomes the point, and still leave the listener satisfied. Judge the quality and skill of the communication, not obedience to a template. Judge the shape the speaker actually used before comparing it with an ideal one. One idea fully committed to beats five half-explored; most of the time the fix is to cut. The line is honesty: a bridge or reframe must stay truthful; never coach inventing facts or misleading anyone, and say so plainly if an answer crosses that line. Small habits worth one line if they recur: opening with "That's a great question", "to be honest" (it implies the rest wasn't), long thank-you warm-ups.`;
 const K_CLIENT_VIEW=`How K sees client work (the coach's own view; let it shape the diagnosis without lecturing):
 - Client work is a value exchange, and what decides the terms is how much you have to stand on. A newcomer has little to show yet, which is exactly why clients press them on price and terms.
@@ -1811,26 +1839,27 @@ const TECH_LIST='Techniques you may name (use the exact title): '+Object.values(
 // {t: line, b: the bold second half, a: where the hub sends them}
 const K_BANK=[
   {t:'Don’t drop your price.',b:'Ask what they’d take out.',a:'reply'},
-  {t:'Say your number first.',b:'They remember it.',a:'real'},
-  {t:'Warm first, then firm.',b:'In that order.',a:'real'},
-  {t:'Know your lowest',b:'before you talk, not during.',a:'settings'},
-  {t:'One idea, fully committed,',b:'beats five.',a:'quick'},
-  {t:'Talk about their problem,',b:'not your craft.',a:'pitch'},
-  {t:'Say the price. Then stop.',b:'Silence works.',a:'real'},
+  {t:'Say your number first.',b:'That’s the one they remember.',a:'real'},
+  {t:'Warm first, then firm.',b:'In that order. Always.',a:'real'},
+  {t:'Know your lowest before the call.',b:'Not during it.',a:'settings'},
+  {t:'One idea, done properly,',b:'beats five half-done.',a:'quick'},
+  {t:'They don’t care about your craft.',b:'They care if you solve their problem.',a:'pitch'},
+  {t:'Say the price. Then stop talking.',b:'The silence does the work.',a:'real'},
   {t:'If you give something,',b:'get something back.',a:'reply'},
-  {t:'Bring something you did,',b:'not your grades.',a:'quick'},
-  {t:'Not every client is yours.',b:'Walking away is an answer.',a:'real'},
-  {t:'Market rate is a reference,',b:'not a rule.',a:'reply'},
+  {t:'Bring something you did.',b:'Nobody asks about your grades.',a:'quick'},
+  {t:'Not every client is your client.',b:'Walking away is an answer.',a:'real'},
+  {t:'Market rate is a reference.',b:'Don’t chain yourself to it.',a:'reply'},
   {t:'Answer, add a hook,',b:'hand it back.',a:'real'},
-  {t:'A steady story reads as confidence.',b:'Keep yours.',a:'real'},
-  {t:'Cut the warm-up.',b:'Start with the point.',a:'pitch'},
-  {t:'Never name a weakness',b:'you haven’t fixed.',a:'quick'},
-  {t:'Your reputation rests on one word.',b:'Pick it.',a:'pitch'},
+  {t:'Same story under pressure',b:'reads as confidence.',a:'real'},
+  {t:'Skip the warm-up.',b:'Start with the point.',a:'pitch'},
+  {t:'Never name a weakness',b:'you haven’t started fixing.',a:'quick'},
+  {t:'Ask what word they’d use for you.',b:'Then earn it.',a:'pitch'},
   {t:'The question is a door,',b:'not a destination.',a:'quick'},
-  {t:'Give them two ways to say yes.',b:'Not one no.',a:'reply'},
+  {t:'Give them two ways to say yes.',b:'Not one way to say no.',a:'reply'},
   {t:'No experience yet?',b:'Practice is the substitute.',a:'real'},
-  {t:'Perfect clients are rare.',b:'Calm is the job.',a:'real'},
-  {t:'Ask what they want',b:'before you say your price.',a:'real'}
+  {t:'There is no perfect client.',b:'Staying calm is the job.',a:'real'},
+  {t:'Starting out, collect work first.',b:'The work is your leverage later.',a:'real'},
+  {t:'It always comes back to leverage.',b:'Read yours before you speak.',a:'real'}
 ];
 function _kDayIdx(n){const d=new Date();let x=d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();x=((x>>>16)^x)*0x45d9f3b;x=((x>>>16)^x)*0x45d9f3b;x=(x>>>16)^x;return Math.abs(x)%n;}
 function _kLine(){
@@ -3580,12 +3609,33 @@ function renderSettingsPage(app,sp){
     h+='<div class="list"><button class="row" data-act="clr"><span class="rt"><b style="color:var(--err)">Clear notebook</b><span>Your profile stays</span></span></button>'+
        '<button class="row" data-act="reset"><span class="rt"><b style="color:var(--err)">Start over</b><span>Clears everything on this device</span></span></button></div>';
   }else if(sp==='about'){
-    h+='<div class="card stack" style="gap:12px;align-items:flex-start">'+kav('l')+'<div class="wm about-wm"><b>Ground</b><i></i><small>by Kian How</small></div><h2 class="h2" style="font-size:20px">Talk like you’ve done this for twenty years.</h2>'+
-       '<p class="sub">I’m Kian How, a creative entrepreneur with more than twenty years across music, creative work, coaching and business. Ground coaches with my logic: know your lowest price, give only to get something back, stay warm and firm, and know when to walk away.</p>'+
-       '<p class="sub about-k">K is the coach inside the app. K speaks the way I do.</p></div>';
-    h+=workCardHtml('');
-    h+='<div class="list"><button class="row" data-whatsnew><span class="rt"><b>What’s new</b></span><span class="rv">v'+APP_VERSION+'</span>'+ic('chev','s chev')+'</button></div>';
-    h+='<p class="small" style="line-height:1.6">Your recordings and messages go to the AI services that transcribe and coach them. Your notebook and profile stay on your device unless you turn on sync, which stores an encrypted copy only your devices can read. For users 18 and older. Practice is practice: use your own judgment in the real conversation.</p>';
+    h+='<div class="ab">'+
+      '<section class="ab-sec"><div class="g-kick">Why Ground exists</div><p>Most of what decides a creative career happens in conversations. Your price. A client who changes their mind. A boss who hands you one more project. An interview where everyone has the same skills as you. Nobody teaches this. You find out by getting it wrong, and the lesson costs you money, work or a relationship.</p><p>Ground is where you practice those conversations before they count. K plays the other side, you talk, and you get told what worked and the one thing to fix.</p></section>'+
+      '<section class="ab-sec"><div class="g-kick">Why I built it</div><p>I’m Kian How. Twenty years across music, games, film, coaching and my own businesses, in-house and freelance. I’ve been paid for everything I’ve done, and more than half of it I had to chase. I’ve been undercut, nitpicked, offered “exposure”, and picked for jobs for reasons I only understood years later.</p><p>My students ask me the same questions I had at their age, and most of the answers aren’t about the craft. They’re about how to handle people. I put what I know into K so you can practice it any time, not only when you can get an hour with me.</p></section>'+
+      '<section class="ab-sec"><div class="g-kick">K’s method</div><ol class="ab-method">'+
+        '<li><b>Read your leverage first.</b><span>What you can say depends on what you have to stand on. Starting out, collect work. Later, your work does the talking.</span></li>'+
+        '<li><b>Warm, then firm.</b><span>Be on their side first. Then say your position plainly, with a reason, and don’t apologize between the two.</span></li>'+
+        '<li><b>Give only to get.</b><span>Never just drop your price or say yes to be nice. Trade. And know your lowest before the conversation, not during it.</span></li></ol></section>'+
+      '<section class="ab-sec ab-kian"><div class="g-k" style="align-items:center">'+kav('l')+'<div><div class="g-kick">About Kian</div><p style="margin-top:4px">Berklee-trained composer, sound designer and audio director. Credits include Dishonored, Genshin Impact and Wolf Warrior. Has lived and worked in Kuala Lumpur, Boston, Los Angeles and Shanghai. Coaches music career pathways, public speaking and creative direction. K speaks the way he does.</p></div></div>'+workCardHtml('')+'</section>'+
+      '<section class="ab-sec"><div class="g-kick">The legal bit</div>'+
+        '<details class="ab-d"><summary>Terms of use'+ic('chev','s')+'</summary><div>'+
+          '<p>Ground is a practice tool. K is an AI coach built on Kian How’s way of working. K’s feedback, drafts and advice are suggestions for practice, not professional, legal, financial or career advice. The decisions you make in real conversations are yours.</p>'+
+          '<p>Ground is for people 18 and older. Use it for practice and learning, not to harass, deceive or harm anyone. K will not help with that.</p>'+
+          '<p>Free use has daily and monthly limits. Access codes are for the person they were given to. We may change, pause or stop the service, or any feature, at any time.</p>'+
+          '<p>Ground is provided as is. To the extent the law allows, Kian How is not liable for any loss or damage that comes from using it or relying on anything it says.</p>'+
+          '<p>The content in Ground (cases, stories, K’s method, the Toolkit) belongs to Kian How. You can use it for your own practice. Don’t copy it to build something else.</p></div></details>'+
+        '<details class="ab-d"><summary>Privacy'+ic('chev','s')+'</summary><div>'+
+          '<p><b>What stays on your phone.</b> Your profile, notebook, practice history and settings are stored on your device. We don’t have a copy unless you turn on sync, which stores an encrypted copy only your devices can read.</p>'+
+          '<p><b>What leaves your phone.</b> When you use an AI feature, the text you type and the audio you record are sent to the AI services that transcribe and coach them (currently Anthropic, and OpenAI for transcription), through our server. They process it to produce the answer and do not use it to train their models. Our server keeps usage counts and short-lived logs (which feature, how many tokens) to run the daily limits, not the content of your conversations.</p>'+
+          '<p><b>What we don’t do.</b> No account, no email required, no ads, no selling data. We don’t read your sessions.</p>'+
+          '<p><b>Deleting your data.</b> Settings › Your data › Start over wipes everything on this device. If sync is on, turning it off removes the encrypted copy.</p>'+
+          '<p><b>Where it’s processed.</b> The AI services run outside mainland China. By using the AI features you agree to your text and audio being processed there.</p></div></details>'+
+        '<details class="ab-d"><summary>Disclosure: K is AI'+ic('chev','s')+'</summary><div>'+
+          '<p>K is not a person. It’s an AI model (Claude, by Anthropic) given Kian How’s principles, stories and way of coaching. Kian wrote and reviews the method; the AI writes the words in each session. It can be wrong, and it can misread what you said. If something K says doesn’t make sense, trust your judgment, and tell Kian so he can fix it.</p>'+
+          '<p>“Kian’s story” and “Kian’s method” are Kian’s own experience, in his words. Everything else is a practice scenario, not a real person or company.</p></div></details>'+
+        '<p class="small" style="margin-top:10px">Questions: <a href="mailto:hello@kianhow.com">hello@kianhow.com</a> · Last updated October 2026</p></section>'+
+      '<div class="list"><button class="row" data-whatsnew><span class="rt"><b>What’s new</b></span><span class="rv">v'+APP_VERSION+'</span>'+ic('chev','s chev')+'</button></div>'+
+    '</div>';
   }
   h+='</main>';
   app.innerHTML=h;
