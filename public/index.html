@@ -1840,7 +1840,7 @@ If the speaker's situation includes their price or the lowest they will accept, 
 const K_INTERVIEW_VIEW=`How K sees interviews and introductions: bring something you did, not your grades (a sold-out student show beat a 4.0 GPA in Kian's first interview). Lead with one story only you can tell. Many interviews are just a conversation: be someone they'd like to work with. Soft skills beat raw talent; the most gifted people who struggle are the ones who can't explain their value.`;
 const K_PEOPLE_VIEW=`How K sees talking to people: it's a skill, not a personality (Kian was an introvert who scared customers away and learned to act outgoing). Connection matters as much as content. Answer, add one detail they can pick up, hand it back. Listening beats jumping topics. When you need help, admit it, be courteous, and offer something back. Take criticism with grace: don't defend, ask how to improve; managing your emotions is often worth more than your skills. With someone senior, decide where you stand: near-peers meet as equals, real veterans get your curiosity. No question is stupid, but think it through and ask what you genuinely want to know. Starting out, enthusiasm and a willingness to take direction are your biggest assets. Never coach pickup lines, tricks or pressure; coach curiosity and being comfortably yourself.`;
 const K_CONFLICT_VIEW=`How K sees disagreement (Kian’s view; let it shape the diagnosis without lecturing): Read the leverage first: what to do depends on the stakes and who holds the power. You are hired to do a job, not to win the creative argument, unless you own the outcome. Pick your moment with a boss: push back only when they are open to options; praise first, frame it as a discussion, and let them make the call. A lot of nitpicking is a show for their own boss; don’t take it personally. Never be a pushover: push back just enough. Whatever happens, don’t let it happen twice. If money fixes it and you can afford it, pay; if not, offer something real instead (like future work). Argue from the greater good, not your ego. A professional gets paid, is reliable and communicates with respect. When instructions are vague, confirm them in writing; if you are blamed anyway, tell an honest mistake (sort it out privately) from a power play (show the record, take it higher if needed). Extra hours early in a career can be training, within reason; mid-career, protect your health and boundaries. Stay honest: never coach lying, blaming others or threatening people.`;
-const K_RULES='If this was a single answer and the transcript is very short (under 15 words, mostly silence, or clearly incomplete) reply with exactly: "No worries, let\'s give it another go." Nothing else.';
+const K_RULES='Short answers are real answers: a plain “Yes”, “No” or “Sure” is a choice, so judge it like any other. Only if this was a single answer and the transcript is empty, mostly silence or clearly cut off mid-sentence, reply with exactly: "No worries, let\'s give it another go." Nothing else.';
 
 // ── Techniques (tap to learn). Each: title · summary · how · watch · from · outcome ──
 const TECHNIQUES={
@@ -4426,7 +4426,7 @@ function _fixSpokenNums(s){
     .replace(/(^|[^\d.,])(\d{1,3})(,?)00([1-9])(?![\d.,]\d)(\s*(?:yuan|rmb|dollars?|bucks|sgd|usd|hkd|块|元)?)/gi,(m,p,k,c,d,cur)=>
       (k==='2'&&!c&&!cur.trim()&&!/[¥$€£]\s*$/.test(p))?m:p+k+','+d+'00'+cur);
 }
-function _rwTooShort(){return RW.words<12&&(RW.convo||[]).length<3;}
+function _rwTooShort(){return RW.words<3&&(RW.convo||[]).length<2;}
 function _rwResetConvo(){RW.convo=[];RW.fuQ=null;RW.fuLoading=false;RW.decision=null;RW.review=null;RW.notes=null;RW.transcript='';RW.words=0;RW.elapsed=0;RW.typed='';}
 // What the speaker is trying to achieve, and the default setting when a built-in scene has none
 const RW_AIM={interview:'Show them, with one real example, why you’re the person for this role.',pitch:'Get them to want the next conversation, inside a minute.',intro:'Leave them with one thing about you they’ll remember, and a reason to talk again.',smalltalk:'Turn a polite exchange into a real conversation, without forcing it.',meeting:'Be useful fast: your point first, then why, then what should happen next.',tough:'Stay calm, answer what they’re really worried about, and keep their trust.',disagree:'Change their mind, or at least get it reconsidered, and keep the relationship.',conflict:'Get the problem fixed without making an enemy.',feedback:'Say the hard thing so they hear it, and leave them able to act on it.',sayno:'Say no clearly, and keep the goodwill.',proposal:'Win the work at a price that works for you.',bargain:'Close the deal without giving away your price.',difficult:'Keep it calm, keep the client, and protect the agreement.',ground:'Keep your position, and the client, through three pushes.'};
@@ -4583,10 +4583,11 @@ async function _rwAfterTurn(r){
   const curQ=RW.fuQ||RW.question;
   RW.fuQ=null;RW.fuLoading=true;RW.phase='turn';RW.rec=false;render();
   if(r.blob)await recWhisper(r);
+  if(!String(r.transcript||'').trim()){RW.fuQ=curQ===RW.question&&!RW.convo.length?null:curQ;RW.fuLoading=false;render();showToast('I couldn’t hear anything. Check your mic and try again.','warn');return;}
   const turn={q:curQ,a:_fixSpokenNums((r.transcript||'').trim()),elapsed:r.elapsed||0,words:r.words||0};
   RW.convo.push(turn);
   const L=_rwLen(),n=RW.convo.length;
-  const more=n<L.max&&(turn.words>=3||turn.elapsed>5);
+  const more=n<L.max&&(turn.words>=1||turn.elapsed>2);
   if(!more)return _rwFinish();
   const t0=Date.now();let q=null;RW.fuErr=null;
   try{q=await _rwFollowup(n>=L.min);}catch(e){RW.fuErr=e;}
@@ -4681,7 +4682,7 @@ async function rwStartRec(){
   if(!ok){RW.rec=false;render();showToast('I can’t reach your microphone. Check the browser’s mic permission, or switch to Type.','warn');return;}
   recLevelLoop(document.getElementById('rw-wave'));
 }
-async function rwStopRec(){if(!RW.rec)return;RW.rec=false;const r=await recStop();if(r.words<2&&r.elapsed<3){render();showToast('I didn’t catch that. Try once more.','warn');return;}_rwAfterTurn(r);}
+async function rwStopRec(){if(!RW.rec)return;RW.rec=false;const r=await recStop();if(!r.words&&r.elapsed<0.8){render();showToast('That was very short. Tap, speak, then tap again.','warn');return;}_rwAfterTurn(r);}
 function rwSendTyped(){const t=(RW.typed||'').trim();if(!t)return;const w=_wc(t);RW.typed='';_rwAfterTurn({transcript:t,words:w,elapsed:Math.max(6,Math.round(w*0.45)),blob:null});}
 
 // ── Screens ───────────────────────────────────────────────────────────────
@@ -5026,7 +5027,7 @@ async function piAnswerStart(){
   if(!ok){PI.rec=false;render();showToast('I can’t reach your microphone. Switch to Type.','warn');return;}
   recLevelLoop(document.getElementById('pi-wave'));
 }
-async function piAnswerStop(){if(!PI.rec)return;PI.rec=false;const r=await recStop();if(r.words<2&&r.elapsed<3){render();showToast('I didn’t catch that. Try once more.','warn');return;}await recWhisper(r);_piAfterAnswer(r.transcript,r.words);}
+async function piAnswerStop(){if(!PI.rec)return;PI.rec=false;const r=await recStop();if(!r.words&&r.elapsed<0.8){render();showToast('That was very short. Tap, speak, then tap again.','warn');return;}await recWhisper(r);if(!String(r.transcript||'').trim()){render();showToast('I couldn’t hear anything. Check your mic and try again.','warn');return;}_piAfterAnswer(r.transcript,r.words);}
 function piAnswerTyped(){const t=(PI.answerTyped||'').trim();if(!t)return;PI.answerTyped='';_piAfterAnswer(t,_wc(t));}
 function _piAfterAnswer(a,words){
   PI.qa.push({who:PI.panelQ.who,role:PI.panelQ.role,q:PI.panelQ.q,a:(a||'').trim(),words:words||0});
@@ -5223,7 +5224,7 @@ async function qaStop(){
 }
 async function qaNotes(){
   const tk=QA.take;
-  if(tk.words<8){QA.notes={short:true};QA.loading=false;render();return;}
+  if(tk.words<2){QA.notes={short:true};QA.loading=false;render();return;}
   if(!_aiOn()){QA.notes={off:true};QA.loading=false;render();return;}
   const view=QA.goal==='client'?K_CLIENT_VIEW:QA.goal==='people'?K_PEOPLE_VIEW:K_INTERVIEW_VIEW;
   const sys=K_VOICE+'\n'+K_PLAIN+'\n'+K_JUDGE+'\n'+view+'\nThe speaker answered one question out loud, on the spot. There is no time limit. Judge the answer by whether the person asking would be satisfied: is the answer clear early, is there one reason or real example, does it end cleanly. Never mention PREP, frameworks, acronyms or timing.\nGROUNDING: every "quote" and "said" must be the speaker’s EXACT words from the transcript, copied character for character, 3 to 15 words. Never paraphrase.\nReply with JSON only: {"worked":{"quote":"exact words","why":"one short sentence on why it worked"},"fix":{"said":"exact words of the weakest moment","try":"a better line they could say, spoken, under 25 words","why":"one or two sentences; plain words only, no acronyms"}}';
