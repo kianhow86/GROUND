@@ -3135,18 +3135,25 @@ function _wireLastTile(app,back){
 // The deck: endless. Every flip deals a fresh card in a cycle: Practice → Read → Choose → Quick answer.
 // K's check-in and "your one thing" come first when they apply.
 const DK_CYCLE=['practice','read','choose','quick'];
+// A new deal every day: the unfinished part of each pile is shuffled with today's date as the seed,
+// so the first cards change daily, and the same day always shows the same deck.
+function _dkDayShuffle(list){
+  const d=new Date(),seed0=d.getFullYear()*372+d.getMonth()*31+d.getDate();
+  let x=(seed0*2654435761)>>>0;const rnd=()=>{x^=x<<13;x>>>=0;x^=x>>>17;x^=x<<5;x>>>=0;return x/4294967296;};
+  const a=list.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;
+}
 function _dkPools(){
   const keys=_sugKeys(),pref=[];keys.forEach(k=>SUG_MAP[k].cases.forEach(id=>{if(!pref.includes(id))pref.push(id);}));
   const order=list=>{const a=list.filter(c=>pref.includes(c.id)).sort((x,y)=>pref.indexOf(x.id)-pref.indexOf(y.id)),b=list.filter(c=>!pref.includes(c.id));return a.concat(b);};
   const done=_casesDone(),seen=_casesSeen(),chd=new Set(_chList().map(x=>x.id));
-  const fresh=(l,f)=>l.filter(c=>!f(c)).concat(l.filter(f));
+  const fresh=(l,f)=>_dkDayShuffle(l.filter(c=>!f(c))).concat(_dkDayShuffle(l.filter(f)));
   const prac=fresh(order(CASES.filter(c=>c.practice)),c=>done[c.id]);
   const read=fresh(order(CASES.slice()),c=>seen[c.id]||done[c.id]);
   const cho=fresh(order(Object.keys(CHOOSE).map(_case).filter(Boolean)),c=>chd.has(c.id));
   const gs=keys.map(k=>SUG_QA[k]).filter(Boolean),qa=[];
   gs.concat(Object.keys(QA_BANK)).filter((g,i,a)=>a.indexOf(g)===i).forEach(g=>QA_BANK[g].forEach(x=>qa.push({cx:x[0],q:x[1],g})));
   const sq=new Set(typeof _ttSeenList==='function'?_ttSeenList():[]);
-  return {practice:prac,read:read.length>3?read.slice(2).concat(read.slice(0,2)):read,choose:cho,quick:qa.filter(x=>!sq.has(x.q)).concat(qa.filter(x=>sq.has(x.q)))};
+  return {practice:prac,read,choose:cho,quick:_dkDayShuffle(qa.filter(x=>!sq.has(x.q))).concat(qa.filter(x=>sq.has(x.q)))};
 }
 function _dkSpecials(){
   const out=[];
