@@ -1247,6 +1247,12 @@ html[data-theme="dark"] .cl-good .cl-k{color:var(--p)}
 .kq-q{font-size:22px;font-weight:800;line-height:1.25;letter-spacing:-.01em;text-wrap:pretty}
 .kq-in{min-height:96px;resize:none;background:rgba(255,255,255,.72);border-color:transparent;color:#120C24}
 .kq-in::placeholder{color:rgba(18,12,36,.5)}
+.rw-recbar{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:15px;font-weight:700;color:var(--pi);min-height:24px}
+.rw-dot{width:12px;height:12px;border-radius:50%;background:#E0567F;flex-shrink:0;animation:rw-pulse 1.1s ease-in-out infinite}
+@keyframes rw-pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.7);opacity:.55}}
+#rw-live.dead{color:#9C1F48}
+.g-wave.big{height:64px;gap:4px;opacity:1;justify-content:center !important}
+.g-wave.big i{width:6px;border-radius:3px}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -2335,7 +2341,7 @@ function _recordSfx(starting){
 async function recStart(opts){
   opts=opts||{};
   if(REC.active)await recStop();
-  Object.assign(REC,{active:true,elapsed:0,transcript:'',words:0,chunks:[],mr:null,stream:null,sr:null,onTick:opts.onTick||null,maxSecs:opts.maxSecs||0,level:0,micOk:false});
+  Object.assign(REC,{active:true,elapsed:0,transcript:'',words:0,chunks:[],mr:null,stream:null,sr:null,onTick:opts.onTick||null,maxSecs:opts.maxSecs||0,level:0,micOk:false,_peak:0});
   let stream=null;
   if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){
     try{
@@ -2366,7 +2372,7 @@ function recLevelLoop(el){
   if(!el)return;const bars=el.querySelectorAll('i');
   (function tick(){if(!REC.active||!document.body.contains(el))return;
     let lv=REC.level;if(REC._an){try{const a=new Uint8Array(REC._an.frequencyBinCount);REC._an.getByteTimeDomainData(a);let s=0;for(let i=0;i<a.length;i++){const v=(a[i]-128)/128;s+=v*v;}lv=Math.min(1,Math.sqrt(s/a.length)*5);}catch(e){}}
-    bars.forEach((b,i)=>{const h=4+Math.round((lv*(0.5+Math.abs(Math.sin(i*1.3+Date.now()/180))))*26);b.style.height=h+'px';});
+    const amp=el.classList.contains('big')?40:26;bars.forEach((b,i)=>{const h=4+Math.round((lv*(0.5+Math.abs(Math.sin(i*1.3+Date.now()/180))))*amp);b.style.height=h+'px';});
     requestAnimationFrame(tick);})();
 }
 function recStop(){
@@ -4563,7 +4569,8 @@ async function rwSpeakLine(){if(RW.mode==='type'||!ttsOk())return;const line=RW.
   await speak(line,{voice:ttsVoiceFor(who+RW.scenario),style:'You are '+who+(RW.persona?', '+RW.persona:'')+', speaking in a real conversation. Stay in character, a little guarded.'});if(RW.mode==='live'&&RW.phase==='turn'&&!RW.rec)rwStartRec();}
 async function rwStartRec(){
   if(RW.rec)return;RW.rec=true;RW.elapsed=0;render();
-  const ok=await recStart({onTick:r=>{const t=document.getElementById('rw-timer');if(t)t.textContent=fmtMs(r.elapsed*1000);/* no live transcript on screen: it pulls your eyes off the conversation */
+  const ok=await recStart({onTick:r=>{const t=document.getElementById('rw-timer');if(t)t.textContent=fmtMs(r.elapsed*1000);
+    const lv=document.getElementById('rw-live');if(lv){REC._peak=Math.max(REC._peak||0,r.level||0);const dead=r.elapsed>=4&&(REC._peak||0)<0.04&&!r.words;lv.textContent=dead?'I can’t hear anything. Check your mic, or switch to Type.':'Listening · '+fmtMs(r.elapsed*1000)+(r.words?' · '+r.words+(r.words===1?' word':' words')+' heard':'');lv.classList.toggle('dead',dead);}/* no live transcript on screen: it pulls your eyes off the conversation */
     if(RW.mode==='live'&&r.elapsed>=6&&r.transcript&&r.level<0.06){REC._quiet=(REC._quiet||0)+1;if(REC._quiet>=3){REC._quiet=0;rwStopRec();}}else REC._quiet=0;},maxSecs:180,onMax:()=>rwStopRec()});
   if(!ok){RW.rec=false;render();showToast('I can’t reach your microphone. Check the browser’s mic permission, or switch to Type.','warn');return;}
   recLevelLoop(document.getElementById('rw-wave'));
@@ -4694,9 +4701,9 @@ function renderReal(app){
       h+=gBar(_rwShort(),'rw-restart',_rwDots());
       h+=_rwModeSwitch();
       h+='<div class="g-block" style="flex:1;display:flex;flex-direction:column"><div class="rowx"><span class="g-kick">'+escHtml(name)+(inFu?' says':' says')+'</span>'+(ttsOk()&&!wait?'<button class="g-chip soft" style="margin-left:auto;min-height:36px" data-act="play">'+ic('play','s')+'Play again</button>':'')+'</div>'+
-         (wait?'<div class="rw-mid"><div class="think"><i style="background:var(--pi)"></i><i style="background:var(--pi)"></i><i style="background:var(--pi)"></i></div></div>':'<div class="rw-mid"><div class="rw-line">'+escHtml(line)+'</div>'+(RW.rec?'<div id="rw-live" class="sub" style="margin-top:14px;color:var(--pi);opacity:.8;min-height:40px">Listening…</div>':'')+'</div>')+
+         (wait?'<div class="rw-mid"><div class="think"><i style="background:var(--pi)"></i><i style="background:var(--pi)"></i><i style="background:var(--pi)"></i></div></div>':'<div class="rw-mid"><div class="rw-line">'+escHtml(line)+'</div>'+(RW.rec?'<div class="rw-recbar"><span class="rw-dot"></span><span id="rw-live">Listening · 0:00</span></div>':'')+'</div>')+
          _rwCtxPanel()+
-         '<div class="g-wave" id="rw-wave" style="justify-content:flex-start;opacity:.5;--ink:var(--pi)">'+'<i></i>'.repeat(14)+'</div></div>';
+         '<div class="g-wave'+(RW.rec?' big':'')+'" id="rw-wave" style="justify-content:flex-start;--ink:var(--pi)">'+'<i></i>'.repeat(RW.rec?22:14)+'</div></div>';
       if(RW.mode==='type'){
         h+='<textarea class="g-answer" id="rw-typed" placeholder="Type what you’d say…"'+(wait?' disabled':'')+'>'+escHtml(RW.typed||'')+'</textarea>';
         h+=gCta('Send','send',{disabled:wait});
