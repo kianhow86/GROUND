@@ -1256,7 +1256,9 @@ html[data-theme="dark"] .cl-good .cl-k{color:var(--p)}
 
 .ab-bands{flex:1}
 .ab-bands .tk-band b{font-size:clamp(24px,3.6dvh,32px)}
-.ab-foot{margin-top:12px;flex-shrink:0}
+.ab-foot{margin-top:0;flex-shrink:0;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ab-foot button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 16px;color:var(--ink)}
+.ab-foot b{font-size:15px}.ab-foot small{font-size:12.5px;color:var(--ink-3)}
 .ab-sheet{max-height:88dvh;display:flex;flex-direction:column;gap:12px}
 .ab-sh{overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:10px;padding-bottom:4px}
 .ab-sh::-webkit-scrollbar{display:none}
@@ -1275,6 +1277,24 @@ html[data-theme="dark"] .cl-good .cl-k{color:var(--p)}
 .ab-d>div{display:flex;flex-direction:column;gap:10px;padding:0 0 12px}
 .ab-d p{font-size:14.5px;line-height:1.5;color:var(--ink-2);margin:0}
 .ab-d p b{color:var(--ink)}
+
+.ab-main{flex:1;display:flex;flex-direction:column;gap:12px;min-height:0}
+.ab-hero{background:var(--p);color:var(--pi);border-radius:26px;padding:22px 20px;display:flex;flex-direction:column;gap:10px;flex:1;justify-content:center}
+.ab-hero .g-kick{color:var(--pi);opacity:.6;margin:0}
+.ab-hero h2{font-size:clamp(26px,3.7dvh,32px);font-weight:900;letter-spacing:-.03em;line-height:1.08;text-wrap:balance;margin:0}
+.ab-hero p{font-size:15.5px;line-height:1.5;margin:0;text-wrap:pretty}
+.ab-list{display:flex;flex-direction:column;gap:12px;flex-shrink:0}
+.ab-item{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;color:var(--ink)}
+.ab-item i{width:12px;height:36px;border-radius:6px;background:var(--p);flex-shrink:0}
+.ab-item>span{flex:1;display:flex;flex-direction:column;gap:2px}
+.ab-item b{font-size:17px}.ab-item small{font-size:13.5px;color:var(--ink-3)}
+
+.wn-list{overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column}
+.wn-list::-webkit-scrollbar{display:none}
+.wn summary>span{display:flex;flex-direction:column;gap:2px}
+.wn summary small{font-size:12.5px;font-weight:600;color:var(--ink-3)}
+.wn-ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px}
+.wn-ul li{font-size:14.5px;line-height:1.5;color:var(--ink-2)}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -1303,7 +1323,7 @@ html[data-theme="dark"] .cl-good .cl-k{color:var(--p)}
 // hub, Help me reply, Pitch it and Quick answer are new, built to the handoff.
 // ═══════════════════════════════════════════════════════════════════════════
 'use strict';
-const APP_VERSION='1.6';
+const APP_VERSION='1.7';
 // Feature switches. Flip in code, ship, done.
 const PAYWALL_ON=false;   // free for now: the top-up screen and balance stay hidden
 const LIVE_ON=false;      // Live voice (real-time call) needs the relay server first
@@ -1311,6 +1331,16 @@ const TOPUP={price:'¥39',sessions:30};
 const FREE_LIMITS={sessions:40,replies:8}; // monthly sessions · daily replies (abuse stop while the paywall is off)
 
 const CHANGELOG=[
+  {v:'1.7',d:'2026-10-23',items:[
+    'Every tool in the Toolkit now teaches: why it works, three steps, what it sounds like, and what to watch out for.',
+    'Case pages read as a lesson: the trap, the move, and what to remember. Kian’s own stories and methods sit underneath.',
+    'Ask K asks you a question when it needs more to go on, and lets you follow up after the advice.',
+    'Practice feels more real. The other person reacts if you’re rude, and remembers what they did.',
+    'If K can’t be reached, you’re told. No more stand-in lines.',
+    'You can see the mic working: a red dot, a timer, and how many words K heard.',
+    'The home deck deals new cards every day.',
+    'A new About Ground, with K’s method and the legal bit.'
+  ]},
   {v:'1.6',d:'2026-10-22',items:[
     'A new home: one big card at a time. Swipe for the next one: practice, read, choose, quick answer, and around again.',
     'Ask K sits at the top. Tell K what’s coming up and K points you to the right tool.',
@@ -1604,10 +1634,10 @@ function wireCommon(root){
 function goBack(){if(V._back){const b=V._back;V._back=null;go(b);}else go('hub');}
 function openWhatsNew(){
   let h='<h2 class="h2">What’s new</h2>';
-  CHANGELOG.forEach(c=>{h+='<div class="kick" style="margin-top:4px">Version '+escHtml(c.v)+' · '+escHtml(c.d)+'</div><ul class="stack t" style="margin-top:6px">'+c.items.map(i=>'<li class="sub">· '+escHtml(i)+'</li>').join('')+'</ul>';});
-  h+='<button class="btn btn-pri" data-close>Got it</button>';
+  h+='<div class="wn-list">'+CHANGELOG.map(c=>'<details class="ab-d wn"><summary><span>Version '+escHtml(c.v)+'<small>'+escHtml(c.d)+' · '+c.items.length+(c.items.length===1?' change':' changes')+'</small></span>'+ic('chev','s')+'</summary><div><ul class="wn-ul">'+c.items.map(i=>'<li>'+escHtml(i)+'</li>').join('')+'</ul></div></details>').join('')+'</div>';
+  h+='<button class="g-cta" data-close>Close<span class="ar">'+ic('check','s')+'</span></button>';
   S.whatsNew=APP_VERSION;save();
-  openSheet(h);
+  openSheet(h,{cls:'ab-sheet'});
 }
 
 // ── Boot ───────────────────────────────────────────────────────────────────
@@ -3545,6 +3575,7 @@ function renderSettings(app){
   if(sp)return renderSettingsPage(app,sp);
   const u=_usage(),th=(window.__themePref?window.__themePref():'system'),done=_profileDone();
   let h='<main class="scr" style="--gap:12px"><div class="bar"><button class="ibtn r" data-go="hub" aria-label="Back">'+ic('back')+'</button><h1 class="h1 xl" style="font-size:30px">Settings</h1></div>';
+  {const P0=_P();h+=_stRow('you',ic('user'),'#6447D6','You',(P0.name?P0.name+' · ':'')+(done>=7?'All filled in':done+' of 7 filled in'));}
   h+='<button class="st-row" data-sp="about"><span class="st-ic"><img class="st-app" src="icons/icon-180.png" alt=""></span><span class="st-t"><b>About Ground</b><span>Version '+APP_VERSION+'</span></span>'+ic('chev','s chev')+'</button>';
   h+=_stRow('coaching',ic('quick'),'#C2457A','Coaching',[_coachLang().id==='auto'?'Auto':_coachLang().label,_nbOn()?'Remembers past sessions':'Memory off',S.aiConfig&&S.aiConfig.enabled?'AI on':'AI off'].join(' · '));
   h+=_stRow('usage',ic('clock'),'#0E8C8C','Usage & codes',PAYWALL_ON?S.credits+' sessions left':'This month: '+u.sessions+' sessions · replies today: '+u.replies);
@@ -3554,6 +3585,7 @@ function renderSettings(app){
   h+='<p class="small center-t" style="margin-top:6px;line-height:1.6">Everything stays on this device. Data leaves it only when you use an AI feature, or encrypted when you turn on sync.</p>';
   h+='</main>';
   app.innerHTML=h;
+  {const m=app.querySelector('main');if(m&&document.scrollingElement.scrollHeight>window.innerHeight)_fillZoom([...m.children].filter(e=>!e.matches('.bar')),()=>document.scrollingElement.scrollHeight<=window.innerHeight,1);}
   app.querySelectorAll('[data-sp]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.sp==='sync'){go('sync');return;}V.setPage=b.dataset.sp;V._spFromHub=false;render();}));
 }
 function _wireYou(app,p){
@@ -3621,11 +3653,14 @@ function renderSettingsPage(app,sp){
       kian:{t:'About Kian',p:'p-pink',h:'<div class="g-k" style="align-items:center;margin-bottom:4px">'+kav('l')+'<p>Berklee-trained composer, sound designer and audio director. Credits include Dishonored, Genshin Impact and Wolf Warrior.</p></div><p>Has lived and worked in Kuala Lumpur, Boston, Los Angeles and Shanghai. Coaches music career pathways, public speaking and creative direction.</p><p>K speaks the way he does.</p>'+workCardHtml('')}
     };
     V._about=AB;
-    h+='<div class="tk-bands ab-bands">'+Object.keys(AB).map((k,i)=>'<button class="tk-band '+AB[k].p+'" data-ab="'+k+'"><span><small>0'+(i+1)+'</small><b>'+escHtml(AB[k].t)+'</b></span>'+ic('arrow')+'</button>').join('')+'</div>';
-    h+='<div class="list ab-foot"><button class="row" data-ab="legal"><span class="rt"><b>The legal bit</b><span>Terms, privacy, and K is AI</span></span>'+ic('chev','s chev')+'</button><button class="row" data-whatsnew><span class="rt"><b>What’s new</b></span><span class="rv">v'+APP_VERSION+'</span>'+ic('chev','s chev')+'</button></div>';
+    h+='<div class="ab-main"><div class="ab-hero p-teal"><div class="g-kick">Why Ground exists</div><h2>Nobody teaches the conversations that decide your career.</h2><p>Your price. A client who changes their mind. A boss who hands you one more project. An interview where everyone has your skills. You find out by getting it wrong, and it costs you money, work or a relationship.</p><p>Ground is where you practice before it counts.</p></div>';
+    const SUB={built:'Twenty years of getting it wrong first',method:'Three rules, twenty years to learn',kian:'Who K is modeled on'};
+    h+='<div class="ab-list">'+['built','method','kian'].map(k=>'<button class="ab-item '+AB[k].p+'" data-ab="'+k+'"><i></i><span><b>'+escHtml(AB[k].t)+'</b><small>'+escHtml(SUB[k])+'</small></span>'+ic('chev','s')+'</button>').join('')+'</div></div>';
+    h+='<div class="ab-foot"><button data-ab="legal"><b>The legal bit</b><small>Terms, privacy, K is AI</small></button><button data-whatsnew><b>What’s new</b><small>Version '+APP_VERSION+'</small></button></div>';
   }
   h+='</main>';
   app.innerHTML=h;
+  {const am=app.querySelector('.ab-main');if(am&&document.scrollingElement.scrollHeight>window.innerHeight)_fillZoom([am,app.querySelector('.ab-foot')],()=>document.scrollingElement.scrollHeight<=window.innerHeight,1);}
   app.querySelectorAll('[data-ab]').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.ab;if(k==='legal'){openSheet('<div class="kick" style="margin:0">The legal bit</div><div class="ab-legal">'+_legalHtml()+'</div><button class="g-cta" data-close>Close<span class="ar">'+ic('check','s')+'</span></button>',{cls:'ab-sheet'});return;}const x=V._about[k];openSheet('<div class="ab-sh '+x.p+'"><div class="kick" style="margin:0">'+escHtml(x.t)+'</div><div class="ab-body">'+x.h+'</div></div><button class="g-cta" data-close>Close<span class="ar">'+ic('check','s')+'</span></button>',{cls:'ab-sheet'});}));
   const on=(s,f)=>app.querySelectorAll(s).forEach(el=>el.addEventListener('click',f));
   on('[data-act="st-back"]',()=>{V.setPage='';if(V._spFromHub){V._spFromHub=false;go('hub');}else render();});
