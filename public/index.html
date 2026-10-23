@@ -1303,6 +1303,20 @@ html[data-theme="dark"] .cl-good .cl-k{color:var(--p)}
 .nb-you-t span{font-size:14px;color:var(--ink-2);line-height:1.4}
 .nb-you-t .nb-you-more{color:#6447D6;font-weight:700;font-size:13px}html[data-theme="dark"] .nb-you-t .nb-you-more{color:#C4AEFF}
 .nb-you-e{font-size:13px;font-weight:800;padding:8px 12px;border-radius:999px;background:var(--line);flex-shrink:0}
+
+.nb-you-t span{text-wrap:pretty}
+.nb-fit{--s:1;--gap:calc(12px*var(--s))}
+.nb-fit .nb-you{padding:calc(14px*var(--s)) 16px}
+.nb-fit .nb-you-t b{font-size:calc(16.5px*var(--s))}
+.nb-fit .nb-you-t span{font-size:calc(14px*var(--s))}
+.nb-fit .nbk-meta{font-size:calc(14px*var(--s))}
+.nb-fit .nbk-hero{padding:calc(22px*var(--s)) 20px;gap:calc(10px*var(--s))}
+.nb-fit .nbk-name{font-size:calc(28px*var(--s))}
+.nb-fit .nbk-why{font-size:calc(15.5px*var(--s))}
+.nb-fit .nbk-next{font-size:calc(16px*var(--s));padding:calc(12px*var(--s)) 14px}
+.nb-fit .nbk-go{font-size:calc(15px*var(--s));padding:calc(12px*var(--s)) 18px}
+.nb-fit .nbk-mini{padding:calc(14px*var(--s))}
+.nb-fit .nbk-mini b{font-size:calc(15px*var(--s))}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -1818,7 +1832,7 @@ HOW KIAN TALKS (write like this, not like an assistant):
 - The odd dry aside: "unless you're Justin Bieber." Never a joke at the person's expense.
 - He talks to one person: "you", "I'd tell my younger self". He checks in: "Make sense?"
 - Short typed sentences. No throat-clearing, no build-up, no summary at the end.
-NEVER: "Here's the thing", "Let's unpack", "It's worth noting", "I appreciate", "Great question", "genuinely", "truly", "navigate", "journey", "empower", "leverage" as a verb, stacked adjectives in threes, exclamation marks, emoji, bullet lists in spoken feedback, or ending with a cheerful pep line.`;
+NEVER: "Here's the thing", "Let's unpack", "It's worth noting", "I appreciate", "Great question", "genuinely", "truly", "navigate", "journey", "empower", "leverage" as a verb, stacked adjectives in threes, exclamation marks, emoji, em dashes, bullet lists in spoken feedback, or ending with a cheerful pep line.`;
 const K_PLAIN=`PLAIN ENGLISH: many users are not native English speakers. Short sentences, everyday words. No business jargon or idioms (never 'floor', 'anchor', 'concession', 'scope creep', 'bottom line', 'move the needle', 'ballpark'). Say 'lowest price', 'first price', 'give something', 'extra work' instead. 'Leverage' is Kian's word and is allowed as a noun; the first time, say what it means: what you have to bargain with. American English.`;
 const K_JUDGE=`How K judges communication: the question is a door, not a destination. A textbook answer to the literal question is robotic. The best communicators reframe, bridge or redirect so that their answer becomes the point, and still leave the listener satisfied. Judge the quality and skill of the communication, not obedience to a template. Judge the shape the speaker actually used before comparing it with an ideal one. One idea fully committed to beats five half-explored; most of the time the fix is to cut. The line is honesty: a bridge or reframe must stay truthful; never coach inventing facts or misleading anyone, and say so plainly if an answer crosses that line. Small habits worth one line if they recur: opening with "That's a great question", "to be honest" (it implies the rest wasn't), long thank-you warm-ups.`;
 const K_CLIENT_VIEW=`How K sees client work (the coach's own view; let it shape the diagnosis without lecturing):
@@ -2110,7 +2124,7 @@ function renderNotebook(app){
   h+='</details>';}
   h+='<p class="quiet push">'+(_nbOn()?'K remembers these when coaching you.':'Memory is off. K coaches each session on its own.')+'</p></main>';
   app.innerHTML=h;_wireLastTile(app,'notebook');
-  {const m=app.querySelector('main');if(m&&document.scrollingElement.scrollHeight>window.innerHeight&&!V.nbHist)_fillZoom([...m.children].filter(e=>!e.matches('.g-bar')),()=>document.scrollingElement.scrollHeight<=window.innerHeight,1);}
+  {const m=app.querySelector('main');if(m&&!V.nbHist){m.classList.add('nb-fit');const ok=()=>document.scrollingElement.scrollHeight<=window.innerHeight;let lo=.8,hi=1.45;m.style.setProperty('--s',hi);if(!ok()){for(let i=0;i<9;i++){const mid=(lo+hi)/2;m.style.setProperty('--s',mid);if(ok())lo=mid;else hi=mid;}m.style.setProperty('--s',lo);}if(!ok()){const els=[...m.children].filter(e=>!e.matches('.g-bar,.quiet'));_fillZoom(els,ok,1);}}}
   {const y=app.querySelector('[data-act="nb-you"]');if(y)y.addEventListener('click',()=>go('settings',{setPage:'you',_spFromHub:false,_spFromNb:true}));}
   app.querySelectorAll('[data-nbtab]').forEach(b=>b.addEventListener('click',()=>{V.nbTab=b.dataset.nbtab;V.nbHist=true;render();}));
   const hd=app.querySelector('.nbk-hist');if(hd)hd.addEventListener('toggle',()=>{V.nbHist=hd.open;});
