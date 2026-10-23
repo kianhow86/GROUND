@@ -287,11 +287,12 @@ exports.handler = async (event) => {
     };
   }
 
-  // ── Geo-routing: China users → DeepSeek ──
+  // ── Geo-routing: off. Everyone gets Claude; the calls go through this server, so
+  // China works too. Set USE_DEEPSEEK_CN=1 to send mainland-China users to DeepSeek again.
   const country = (event.headers["x-nf-geo-country"] || "").toUpperCase();
   const dsKey = process.env.DEEPSEEK_API_KEY;
 
-  if (country === "CN" && dsKey) {
+  if (country === "CN" && dsKey && process.env.USE_DEEPSEEK_CN === "1") {
     // Build DeepSeek messages — system goes as first message in array
     const dsMessages = [];
     if (system) dsMessages.push({ role: "system", content: system });
