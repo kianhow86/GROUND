@@ -1677,11 +1677,11 @@ async function callCoach(systemPrompt,userMessage,opts){
   if(!cfg.enabled)throw new Error('AI features are off. Turn them on in Settings.');
   const _cjkOut=/^(zh|zh-TW|yue|ja|ko)$/.test(S.coachLang||'')||(S.coachLang||'auto')==='auto'&&/[぀-ヿ㐀-鿿가-힯]/.test(String(userMessage||''));
   const maxTokens=Math.round((opts.maxTokens||1024)*(_cjkOut?2.2:1));
-  let model=cfg.ownerKey&&cfg.model?cfg.model:'claude-sonnet-5-5';
+  let model=cfg.ownerKey&&cfg.model?cfg.model:'claude-sonnet-4-6';
   if(cfg.mode==='direct'){
     if(!cfg.apiKey)throw new Error('API key missing. Add yours in Settings.');
     const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true','x-api-key':cfg.apiKey},
-      body:JSON.stringify({model:opts.model||cfg.model||'claude-sonnet-5-5',max_tokens:maxTokens,system:systemPrompt,messages:[{role:'user',content:userMessage}]})});
+      body:JSON.stringify({model:opts.model||cfg.model||'claude-sonnet-4-6',max_tokens:maxTokens,system:systemPrompt,messages:[{role:'user',content:userMessage}]})});
     if(!resp.ok){const t=await resp.text().catch(()=>resp.statusText);throw new Error('API error '+resp.status+': '+t.slice(0,200));}
     const data=await resp.json();if(!data.content||!data.content[0]||!data.content[0].text)throw new Error('Unexpected API response shape');
     return data.content[0].text;
