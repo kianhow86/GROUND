@@ -276,8 +276,8 @@ exports.handler = async (event) => {
   const isOwner = ownerKey && clientOwnerKey === ownerKey;
 
   const model = isOwner
-    ? (_clientModel || "claude-sonnet-4-6")  // owner gets whatever they ask for
-    : "claude-sonnet-4-6";                   // everyone else gets Sonnet, always
+    ? (_clientModel || "claude-sonnet-5-5")  // owner gets whatever they ask for
+    : "claude-sonnet-5-5";                   // everyone else gets Sonnet, always
 
   if (!messages || !Array.isArray(messages) || messages.length === 0) {
     return {
@@ -381,7 +381,7 @@ exports.handler = async (event) => {
         "x-api-key":         apiKey
       },
       body: JSON.stringify({
-        model:      model      || "claude-sonnet-4-6",
+        model:      model      || "claude-sonnet-5-5",
         max_tokens: max_tokens || 1024,
         system:     system     || "",
         messages
@@ -416,7 +416,7 @@ exports.handler = async (event) => {
 
   // Log every call so the numbers are visible in the Netlify function log
   // even if the blob store is unavailable.
-  console.log(`[tokens] feature=${featureId} in=${inTok} out=${outTok} model=${model || "claude-sonnet-4-6"}`);
+  console.log(`[tokens] feature=${featureId} in=${inTok} out=${outTok} model=${model || "claude-sonnet-5-5"}`);
 
   // ── Increment usage counters (fire-and-forget, don't block response) ──
   if (store) {
