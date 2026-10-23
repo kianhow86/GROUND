@@ -4388,13 +4388,13 @@ const RW_SECRETS=[
   {k:'quality',t:'You care more about quality and reliability than price. You push on price because you always do. A calm, confident, value-focused answer wins you over; caving fast makes you doubt their quality.'}
 ];
 const RW_POS_LBL={proposal:'Your offer',bargain:'Your price',difficult:'The agreement',ground:'Your position'};
-const RW_VERDICT_Q={interview:'would you move them to the next round?',pitch:'do you want to hear more?',intro:'will you remember them and want to follow up?',meeting:'are you on board with what they said?',tough:'did they answer your concern?',smalltalk:'would you like to keep talking to them?'};
+const RW_VERDICT_Q={disagree:'did the speaker change your plan, or agree a way forward with you?',conflict:'is the problem sorted, and are you still on good terms?',feedback:'did you take the point in, and will you act on it?',sayno:'did you accept their answer, and how do you feel about them now?',interview:'would you move them to the next round?',pitch:'do you want to hear more?',intro:'will you remember them and want to follow up?',meeting:'are you on board with what they said?',tough:'did they answer your concern?',smalltalk:'would you like to keep talking to them?'};
 Object.assign(RW_VERDICT_Q,{disagree:'did they change your mind, or at least make you want to talk it through?',conflict:'do you feel respected, and is the problem going to get sorted?',feedback:'did you take it in, and do you know what to change?',sayno:'can you live with the no, and do you still think well of them?'});
 // Plain-language titles for the practice picker (the old label becomes the small line)
 const RW_PLAIN={interview:'They interview you',pitch:'Sell your idea in one minute',intro:'Tell someone what you do',smalltalk:'Chat with someone new',meeting:'Speak up in a meeting',tough:'They ask you a hard question',disagree:'You disagree with your boss',conflict:'Sort out a clash with a teammate',feedback:'Tell someone a hard truth',sayno:'Say no without burning the bridge',proposal:'Pitch your idea to win the job',bargain:'They want it cheaper',difficult:'A client is being difficult',ground:'They push you to change your answer'};
 // Verdict = a big word in color, then a smaller bold line that adds the contrast ("but…") or the bonus ("and…")
 const RW_VERDICT_H={
-  disagree:{yes:['Open to it','and they want to hear more'],maybe:['Not decided','they’ll think about it'],no:['Shut down','they’re sticking with their plan']},
+  disagree:{yes:['Moved','you agreed a way forward'],maybe:['Not decided','they’ll think about it'],no:['Shut down','they’re sticking with their plan']},
   conflict:{yes:['Sorted','and you’re still on good terms'],maybe:['Calmer','but nothing is fixed yet'],no:['Worse','it turned into a fight']},
   feedback:{yes:['Taken in','and they’ll work on it'],maybe:['Half heard','but they missed the main point'],no:['Defensive','they stopped listening']},
   sayno:{yes:['Accepted','and no hard feelings'],maybe:['Accepted','but they’re not happy about it'],no:['Not accepted','and it hurt the relationship']},
