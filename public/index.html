@@ -4457,7 +4457,7 @@ async function _rwFollowup(allowEnd){
         t=t.replace(/^(?:interviewer|investor|colleague|chair|client|you|them|me|面试官|对方|客户)\s*[:：]\s*/i,'').replace(/^["“'「『]+|["”'」』]+$/g,'').trim();
         const ends=(t.match(/[.!?。！？]/g)||[]).length;
         if(t.length>=4&&t.length<=240&&ends<=3&&!/✅|🎯|💡|🏗|ONE THING|THE THREAD|WHAT WORKED/i.test(t))return t;
-      }catch(e){break;}
+      }catch(e){RW.fuErr=e;break;}
     }
   }
   return _rwBankFu();
@@ -4472,8 +4472,10 @@ async function _rwAfterTurn(r){
   const L=_rwLen(),n=RW.convo.length;
   const more=n<L.max&&(turn.words>=3||turn.elapsed>5);
   if(!more)return _rwFinish();
-  const t0=Date.now();let q=null;
-  try{q=await _rwFollowup(n>=L.min);}catch(e){}
+  const t0=Date.now();let q=null;RW.fuErr=null;
+  try{q=await _rwFollowup(n>=L.min);}catch(e){RW.fuErr=e;}
+  // K couldn’t reach the server: say so and wrap up, rather than slipping in a stock line that ignores what they said
+  if(RW.fuErr&&_aiOn()){RW.fuLoading=false;RW.closing='';RW.notes=renderAIError(RW.fuErr,'rw-retry');showToast(_isLimitErr(RW.fuErr)?'Today’s allowance is used up.':'K lost the connection.','warn');return _rwFinish();}
   if(q&&q.end){RW.fuLoading=false;RW.closing=q.t||'';return _rwFinish();}
   const wait=1200-(Date.now()-t0);if(wait>0)await new Promise(res=>setTimeout(res,wait));
   RW.fuQ=q||_rwBankFu();RW.fuLoading=false;
@@ -4482,7 +4484,7 @@ async function _rwAfterTurn(r){
 function _rwFinish(){
   const c=RW.convo||[];RW.fuQ=null;RW.fuLoading=false;
   RW.elapsed=c.reduce((a,t)=>a+t.elapsed,0);RW.words=c.reduce((a,t)=>a+t.words,0);RW.transcript=c.map(t=>t.a).filter(Boolean).join(' ');
-  RW.phase='done';RW.loading=true;render();
+  RW._notesErr=null;RW.phase='done';RW.loading=true;render();
   _countSession(RW.mode==='live'?2:1);
   rwAnalyze();
 }
@@ -4521,6 +4523,7 @@ async function _rwDecide(){
   }catch(e){return null;}
 }
 async function rwAnalyze(){
+  if(RW.fuErr&&_aiOn()){const e=RW.fuErr;RW.fuErr=null;RW._notesErr=e;RW.notes=renderAIError(e,'rw-retry');RW.loading=false;if(V.view==='real')render();return;}
   const _rw=TT_REAL[RW.scenario];
   const sysUsed=K_VOICE+'\nYou are helping someone practice a real-world speaking situation.\n\n'+RW_STANDARD[RW.scenario]+'\n\n'+(_rw.grp==='client'?K_CLIENT_VIEW:RW.scenario==='interview'||RW.scenario==='intro'||RW.scenario==='pitch'?K_INTERVIEW_VIEW:RW.scenario==='smalltalk'?K_PEOPLE_VIEW:_rw.grp==='conflict'?K_CONFLICT_VIEW:'')+'\n'+K_PLAIN+'\n\n'+
     'No time limit. Only mention length if it hurt: rambling, over-explaining, or so short it came across as cold.\n\n'+K_JUDGE+'\n\n'+K_RULES+'\n\n'+
@@ -4539,7 +4542,7 @@ async function rwAnalyze(){
     if(RW.fromCase)msg+='\n\nTHEY ARE PRACTICING '+(RW.fromCase.label?'TODAY’S FOCUS':'A CASE from the library: "'+RW.fromCase.title+'"')+'. The principle they are trying to use: "'+RW.fromCase.principle+'". In your notes, say plainly whether they used it, quoting their words if they did.';
     if(RW.prevFix)msg+='\n\nTHIS IS A REDO of the same scene. Last time your one thing was: "'+RW.prevFix+'". Start your notes by saying plainly whether they did it this time, quoting their words if they did.';
     RW.notes=_rwTooShort()?'No worries, let\'s give it another go.':await callCoach(sysUsed+RW_STT_NOTE+(RW.convo.length>1?'\nThis was a real back-and-forth, so judge it even if the speaker said little: short answers are a choice, and in a conversation they tell you a lot (curt, rude, dismissive, or sharp and confident). Never say you did not catch enough.':''),msg,{maxTokens:RW.convo.length>1?480:400,featureId:'rw-eval',grace:true});
-  }catch(e){RW.notes=renderAIError(e,'rw-retry');}
+  }catch(e){RW._notesErr=e;RW.notes=renderAIError(e,'rw-retry');}
   RW.loading=false;
   const notesOk=typeof RW.notes==='string'&&!/ai-err/.test(RW.notes);
   const d=RW.decision||RW.review;
@@ -4744,7 +4747,7 @@ function renderReal(app){
   on('[data-act="mode-type"]',async()=>{if(RW.rec)await recStop();RW.rec=false;speakStop();RW.mode='type';render();});
   on('[data-act="better"]',()=>{RW.phase='better';render();});
   on('[data-act="rw-notes"]',()=>{const notesOk=RW.notes&&!/ai-err/.test(RW.notes)&&typeof RW.notes==='string'&&!_nbRetry(RW.notes);
-    openSheet('<div class="kick" style="margin:0">K’s full notes</div>'+(notesOk?renderKNotes(RW.notes):'<p class="sub">No notes this time.</p>')+'<div class="kick" style="margin:6px 0 0">The conversation · '+RW.words+' words</div><div class="thread">'+_rwxTurns().map(t=>'<div class="b-them">'+escHtml(t.q)+'</div><div class="b-me"><p>'+escHtml((t.a||'').trim()||'(no words caught)')+'</p><small>You · '+fmtMs((t.elapsed||0)*1000)+'</small></div>').join('')+'</div><button class="g-cta" data-close>Close<span class="ar">'+ic('check','s')+'</span></button>');});
+    openSheet('<div class="kick" style="margin:0">K’s full notes</div>'+(notesOk?renderKNotes(RW.notes):(RW.notes&&/ai-err/.test(RW.notes)?'<p class="sub">K couldn’t write notes this time.</p>'+(RW._notesErr?_errDetail(RW._notesErr):''):'<p class="sub">No notes this time.</p>'))+'<div class="kick" style="margin:6px 0 0">The conversation · '+RW.words+' words</div><div class="thread">'+_rwxTurns().map(t=>'<div class="b-them">'+escHtml(t.q)+'</div><div class="b-me"><p>'+escHtml((t.a||'').trim()||'(no words caught)')+'</p><small>You · '+fmtMs((t.elapsed||0)*1000)+'</small></div>').join('')+'</div><button class="g-cta" data-close>Close<span class="ar">'+ic('check','s')+'</span></button>');});
   const sl=document.getElementById('rw-slides');
   if(sl){const dots=[...document.querySelectorAll('.rw-sdots i')],nx=document.querySelector('[data-act="rw-next"]');
     const cur=()=>Math.round(sl.scrollLeft/sl.clientWidth);
