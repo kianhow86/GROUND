@@ -1254,21 +1254,26 @@ html[data-theme="dark"] .cl-good .cl-k{color:var(--p)}
 .g-wave.big{height:64px;gap:4px;opacity:1;justify-content:center !important}
 .g-wave.big i{width:6px;border-radius:3px}
 
-.ab{display:flex;flex-direction:column;gap:14px;padding-bottom:12px}
-.ab-sec{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px 18px 16px;display:flex;flex-direction:column;gap:10px}
-.ab-sec p{font-size:15.5px;line-height:1.55;color:var(--ink);text-wrap:pretty;margin:0}
-.ab-sec .g-kick{margin:0}
-.ab-method{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;counter-reset:m}
+.ab-bands{flex:1}
+.ab-bands .tk-band b{font-size:clamp(24px,3.6dvh,32px)}
+.ab-foot{margin-top:12px;flex-shrink:0}
+.ab-sheet{max-height:88dvh;display:flex;flex-direction:column;gap:12px}
+.ab-sh{overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:10px;padding-bottom:4px}
+.ab-sh::-webkit-scrollbar{display:none}
+.ab-body{display:flex;flex-direction:column;gap:12px}
+.ab-body p{font-size:16px;line-height:1.55;color:var(--ink);text-wrap:pretty;margin:0}
+.ab-sh .kick{color:var(--pd)}html[data-theme="dark"] .ab-sh .kick{color:var(--p)}
+.ab-legal{overflow-y:auto;scrollbar-width:none}
+.ab-method{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;counter-reset:m}
 .ab-method li{display:flex;flex-direction:column;gap:3px;padding-left:36px;position:relative;counter-increment:m}
-.ab-method li::before{content:counter(m);position:absolute;left:0;top:0;width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-size:12px;font-weight:900}
+.ab-method li::before{content:counter(m);position:absolute;left:0;top:0;width:26px;height:26px;border-radius:50%;background:var(--p);color:var(--pi);display:grid;place-items:center;font-size:12px;font-weight:900}
 .ab-method b{font-size:17px}.ab-method span{font-size:15px;line-height:1.5;color:var(--ink-2)}
-.ab-kian .work-card{margin-top:4px}
 .ab-d{border-top:1px solid var(--line);padding:4px 0}
 .ab-d summary{list-style:none;display:flex;align-items:center;justify-content:space-between;font-weight:800;font-size:16px;padding:10px 0;cursor:pointer}
 .ab-d summary::-webkit-details-marker{display:none}
 .ab-d[open] summary .ic{transform:rotate(90deg)}
 .ab-d>div{display:flex;flex-direction:column;gap:10px;padding:0 0 12px}
-.ab-d p{font-size:14.5px;line-height:1.5;color:var(--ink-2)}
+.ab-d p{font-size:14.5px;line-height:1.5;color:var(--ink-2);margin:0}
 .ab-d p b{color:var(--ink)}
 </style>
 <script>
@@ -3609,36 +3614,19 @@ function renderSettingsPage(app,sp){
     h+='<div class="list"><button class="row" data-act="clr"><span class="rt"><b style="color:var(--err)">Clear notebook</b><span>Your profile stays</span></span></button>'+
        '<button class="row" data-act="reset"><span class="rt"><b style="color:var(--err)">Start over</b><span>Clears everything on this device</span></span></button></div>';
   }else if(sp==='about'){
-    h+='<div class="ab">'+
-      '<section class="ab-sec"><div class="g-kick">Why Ground exists</div><p>Most of what decides a creative career happens in conversations. Your price. A client who changes their mind. A boss who hands you one more project. An interview where everyone has the same skills as you. Nobody teaches this. You find out by getting it wrong, and the lesson costs you money, work or a relationship.</p><p>Ground is where you practice those conversations before they count. K plays the other side, you talk, and you get told what worked and the one thing to fix.</p></section>'+
-      '<section class="ab-sec"><div class="g-kick">Why I built it</div><p>I’m Kian How. Twenty years across music, games, film, coaching and my own businesses, in-house and freelance. I’ve been paid for everything I’ve done, and more than half of it I had to chase. I’ve been undercut, nitpicked, offered “exposure”, and picked for jobs for reasons I only understood years later.</p><p>My students ask me the same questions I had at their age, and most of the answers aren’t about the craft. They’re about how to handle people. I put what I know into K so you can practice it any time, not only when you can get an hour with me.</p></section>'+
-      '<section class="ab-sec"><div class="g-kick">K’s method</div><ol class="ab-method">'+
-        '<li><b>Read your leverage first.</b><span>What you can say depends on what you have to stand on. Starting out, collect work. Later, your work does the talking.</span></li>'+
-        '<li><b>Warm, then firm.</b><span>Be on their side first. Then say your position plainly, with a reason, and don’t apologize between the two.</span></li>'+
-        '<li><b>Give only to get.</b><span>Never just drop your price or say yes to be nice. Trade. And know your lowest before the conversation, not during it.</span></li></ol></section>'+
-      '<section class="ab-sec ab-kian"><div class="g-k" style="align-items:center">'+kav('l')+'<div><div class="g-kick">About Kian</div><p style="margin-top:4px">Berklee-trained composer, sound designer and audio director. Credits include Dishonored, Genshin Impact and Wolf Warrior. Has lived and worked in Kuala Lumpur, Boston, Los Angeles and Shanghai. Coaches music career pathways, public speaking and creative direction. K speaks the way he does.</p></div></div>'+workCardHtml('')+'</section>'+
-      '<section class="ab-sec"><div class="g-kick">The legal bit</div>'+
-        '<details class="ab-d"><summary>Terms of use'+ic('chev','s')+'</summary><div>'+
-          '<p>Ground is a practice tool. K is an AI coach built on Kian How’s way of working. K’s feedback, drafts and advice are suggestions for practice, not professional, legal, financial or career advice. The decisions you make in real conversations are yours.</p>'+
-          '<p>Ground is for people 18 and older. Use it for practice and learning, not to harass, deceive or harm anyone. K will not help with that.</p>'+
-          '<p>Free use has daily and monthly limits. Access codes are for the person they were given to. We may change, pause or stop the service, or any feature, at any time.</p>'+
-          '<p>Ground is provided as is. To the extent the law allows, Kian How is not liable for any loss or damage that comes from using it or relying on anything it says.</p>'+
-          '<p>The content in Ground (cases, stories, K’s method, the Toolkit) belongs to Kian How. You can use it for your own practice. Don’t copy it to build something else.</p></div></details>'+
-        '<details class="ab-d"><summary>Privacy'+ic('chev','s')+'</summary><div>'+
-          '<p><b>What stays on your phone.</b> Your profile, notebook, practice history and settings are stored on your device. We don’t have a copy unless you turn on sync, which stores an encrypted copy only your devices can read.</p>'+
-          '<p><b>What leaves your phone.</b> When you use an AI feature, the text you type and the audio you record are sent to the AI services that transcribe and coach them (currently Anthropic, and OpenAI for transcription), through our server. They process it to produce the answer and do not use it to train their models. Our server keeps usage counts and short-lived logs (which feature, how many tokens) to run the daily limits, not the content of your conversations.</p>'+
-          '<p><b>What we don’t do.</b> No account, no email required, no ads, no selling data. We don’t read your sessions.</p>'+
-          '<p><b>Deleting your data.</b> Settings › Your data › Start over wipes everything on this device. If sync is on, turning it off removes the encrypted copy.</p>'+
-          '<p><b>Where it’s processed.</b> The AI services run outside mainland China. By using the AI features you agree to your text and audio being processed there.</p></div></details>'+
-        '<details class="ab-d"><summary>Disclosure: K is AI'+ic('chev','s')+'</summary><div>'+
-          '<p>K is not a person. It’s an AI model (Claude, by Anthropic) given Kian How’s principles, stories and way of coaching. Kian wrote and reviews the method; the AI writes the words in each session. It can be wrong, and it can misread what you said. If something K says doesn’t make sense, trust your judgment, and tell Kian so he can fix it.</p>'+
-          '<p>“Kian’s story” and “Kian’s method” are Kian’s own experience, in his words. Everything else is a practice scenario, not a real person or company.</p></div></details>'+
-        '<p class="small" style="margin-top:10px">Questions: <a href="mailto:hello@kianhow.com">hello@kianhow.com</a> · Last updated October 2026</p></section>'+
-      '<div class="list"><button class="row" data-whatsnew><span class="rt"><b>What’s new</b></span><span class="rv">v'+APP_VERSION+'</span>'+ic('chev','s chev')+'</button></div>'+
-    '</div>';
+    const AB={
+      why:{t:'Why Ground exists',p:'p-teal',h:'<p>Most of what decides a creative career happens in conversations. Your price. A client who changes their mind. A boss who hands you one more project. An interview where everyone has the same skills as you.</p><p>Nobody teaches this. You find out by getting it wrong, and the lesson costs you money, work or a relationship.</p><p>Ground is where you practice those conversations before they count. K plays the other side, you talk, and you get told what worked and the one thing to fix.</p>'},
+      built:{t:'Why I built it',p:'p-lav',h:'<p>I’m Kian How. Twenty years across music, games, film, coaching and my own businesses, in-house and freelance. I’ve been paid for everything I’ve done, and more than half of it I had to chase. I’ve been undercut, nitpicked, offered “exposure”, and picked for jobs for reasons I only understood years later.</p><p>My students ask me the same questions I had at their age, and most of the answers aren’t about the craft. They’re about how to handle people.</p><p>I put what I know into K so you can practice it any time, not only when you can get an hour with me.</p>'},
+      method:{t:'K’s method',p:'p-org',h:'<ol class="ab-method"><li><b>Read your leverage first.</b><span>What you can say depends on what you have to stand on. Starting out, collect work. Later, your work does the talking.</span></li><li><b>Warm, then firm.</b><span>Be on their side first. Then say your position plainly, with a reason, and don’t apologize between the two.</span></li><li><b>Give only to get.</b><span>Never just drop your price or say yes to be nice. Trade. And know your lowest before the conversation, not during it.</span></li></ol>'},
+      kian:{t:'About Kian',p:'p-pink',h:'<div class="g-k" style="align-items:center;margin-bottom:4px">'+kav('l')+'<p>Berklee-trained composer, sound designer and audio director. Credits include Dishonored, Genshin Impact and Wolf Warrior.</p></div><p>Has lived and worked in Kuala Lumpur, Boston, Los Angeles and Shanghai. Coaches music career pathways, public speaking and creative direction.</p><p>K speaks the way he does.</p>'+workCardHtml('')}
+    };
+    V._about=AB;
+    h+='<div class="tk-bands ab-bands">'+Object.keys(AB).map((k,i)=>'<button class="tk-band '+AB[k].p+'" data-ab="'+k+'"><span><small>0'+(i+1)+'</small><b>'+escHtml(AB[k].t)+'</b></span>'+ic('arrow')+'</button>').join('')+'</div>';
+    h+='<div class="list ab-foot"><button class="row" data-ab="legal"><span class="rt"><b>The legal bit</b><span>Terms, privacy, and K is AI</span></span>'+ic('chev','s chev')+'</button><button class="row" data-whatsnew><span class="rt"><b>What’s new</b></span><span class="rv">v'+APP_VERSION+'</span>'+ic('chev','s chev')+'</button></div>';
   }
   h+='</main>';
   app.innerHTML=h;
+  app.querySelectorAll('[data-ab]').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.ab;if(k==='legal'){openSheet('<div class="kick" style="margin:0">The legal bit</div><div class="ab-legal">'+_legalHtml()+'</div><button class="g-cta" data-close>Close<span class="ar">'+ic('check','s')+'</span></button>',{cls:'ab-sheet'});return;}const x=V._about[k];openSheet('<div class="ab-sh '+x.p+'"><div class="kick" style="margin:0">'+escHtml(x.t)+'</div><div class="ab-body">'+x.h+'</div></div><button class="g-cta" data-close>Close<span class="ar">'+ic('check','s')+'</span></button>',{cls:'ab-sheet'});}));
   const on=(s,f)=>app.querySelectorAll(s).forEach(el=>el.addEventListener('click',f));
   on('[data-act="st-back"]',()=>{V.setPage='';if(V._spFromHub){V._spFromHub=false;go('hub');}else render();});
   app.querySelectorAll('[data-yous]').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.yous;openSheet('<div class="kick" style="margin:0">'+escHtml(b.querySelector('b').textContent)+'</div>'+V._youSect[k]()+'<button class="g-cta" data-close>Done<span class="ar">'+ic('check','s')+'</span></button>',{cls:'you-sheet',wire:sh=>_wireYou(sh,p),onClose:()=>render()});}));
@@ -3655,6 +3643,25 @@ function renderSettingsPage(app,sp){
   on('[data-act="exp"]',()=>nbExport());
   on('[data-act="clr"]',()=>{if(confirm('Clear everything in K’s notebook on this device? Your profile stays. This can’t be undone.')){nbClear();render();}});
   on('[data-act="reset"]',()=>{if(confirm('Start over? This clears your profile, notebook, settings and codes on this device.')){try{localStorage.removeItem(STORAGE_KEY);localStorage.removeItem('ground-theme');}catch(e){}location.hash='';location.reload();}});
+}
+
+function _legalHtml(){
+  return '<details class="ab-d" open><summary>Terms of use'+ic('chev','s')+'</summary><div>'+
+    '<p>Ground is a practice tool. K is an AI coach built on Kian How’s way of working. K’s feedback, drafts and advice are suggestions for practice, not professional, legal, financial or career advice. The decisions you make in real conversations are yours.</p>'+
+    '<p>Ground is for people 18 and older. Use it for practice and learning, not to harass, deceive or harm anyone. K will not help with that.</p>'+
+    '<p>Free use has daily and monthly limits. Access codes are for the person they were given to. We may change, pause or stop the service, or any feature, at any time.</p>'+
+    '<p>Ground is provided as is. To the extent the law allows, Kian How is not liable for any loss or damage that comes from using it or relying on anything it says.</p>'+
+    '<p>The content in Ground (cases, stories, K’s method, the Toolkit) belongs to Kian How. You can use it for your own practice. Don’t copy it to build something else.</p></div></details>'+
+    '<details class="ab-d"><summary>Privacy'+ic('chev','s')+'</summary><div>'+
+    '<p><b>What stays on your phone.</b> Your profile, notebook, practice history and settings are stored on your device. We don’t have a copy unless you turn on sync, which stores an encrypted copy only your devices can read.</p>'+
+    '<p><b>What leaves your phone.</b> When you use an AI feature, the text you type and the audio you record are sent to the AI services that transcribe and coach them (currently Anthropic, and OpenAI for transcription), through our server. They process it to produce the answer and do not use it to train their models. Our server keeps usage counts and short-lived logs (which feature, how many tokens) to run the daily limits, not the content of your conversations.</p>'+
+    '<p><b>What we don’t do.</b> No account, no email required, no ads, no selling data. We don’t read your sessions.</p>'+
+    '<p><b>Deleting your data.</b> Settings › Your data › Start over wipes everything on this device. If sync is on, turning it off removes the encrypted copy.</p>'+
+    '<p><b>Where it’s processed.</b> The AI services run outside mainland China. By using the AI features you agree to your text and audio being processed there.</p></div></details>'+
+    '<details class="ab-d"><summary>Disclosure: K is AI'+ic('chev','s')+'</summary><div>'+
+    '<p>K is not a person. It’s an AI model (Claude, by Anthropic) given Kian How’s principles, stories and way of coaching. Kian wrote and reviews the method; the AI writes the words in each session. It can be wrong, and it can misread what you said. If something K says doesn’t make sense, trust your judgment, and tell Kian so he can fix it.</p>'+
+    '<p>“Kian’s story” and “Kian’s method” are Kian’s own experience, in his words. Everything else is a practice scenario, not a real person or company.</p></div></details>'+
+    '<p class="small" style="margin-top:10px">Questions: <a href="mailto:hello@kianhow.com">hello@kianhow.com</a> · Last updated October 2026</p>';
 }
 // ═══════════════════════════════════════════════════════════════════════════
 // K'S DESK: one box on the home screen. The person types what's coming up or
