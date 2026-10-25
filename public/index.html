@@ -1372,6 +1372,28 @@ html[data-theme="dark"] .ob-ver .m{color:#A9D98E}
 .ob-priv i .kav{width:40px;height:40px;border-radius:12px}
 .ob-priv span{display:flex;flex-direction:column;gap:2px}.ob-priv b{font-size:16px}.ob-priv small{font-size:13.5px;color:var(--ink-2);line-height:1.4}
 .ob-vis{padding:14px 0}
+
+.obq{flex:1;display:flex;flex-direction:column;justify-content:space-between;gap:14px;min-height:0;margin:6px 0 14px}
+.obq-h .h1{margin:0}.obq-h .sub{margin-top:6px}
+.obq-s{display:flex;flex-direction:column;gap:8px}
+.obq-s .lab{margin:0}
+.obq-g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.obq-g3 .g-chip,.obq-g5 .g-chip{justify-content:center;text-align:center;padding:10px 6px;min-height:46px;font-size:14px;line-height:1.2;white-space:normal}
+.obq-f .g-chip{flex-direction:column;gap:4px;min-height:62px}
+.obq-g5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+
+.obq-g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
+.obq-g4 .g-chip{flex-direction:column;justify-content:center;gap:1px;padding:8px 4px;min-height:54px;text-align:center;line-height:1.15}
+.obq-g4 .g-chip small{font-size:11px;font-weight:700;opacity:.65}
+.obq-g4 .g-chip span{font-size:14.5px;font-weight:800}
+.obq-g3 .g-chip{min-height:54px}
+.obq-str .g-chip{min-height:64px}
+.obq-grow{flex:1;min-height:110px}
+.obq-grow textarea{flex:1;min-height:90px;resize:none}
+
+.obq .g-chip{border-radius:16px}
+.obq-g5 .g-chip{white-space:nowrap;padding:10px 2px}
+.obq-g4 .g-chip span,.obq-g4 .g-chip small{white-space:nowrap}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -3630,19 +3652,19 @@ function renderOnboarding(app){
     h+='<p class="small push center-t">You can change this any time in Settings.</p><button class="btn btn-pri" data-act="next">Continue</button>';
   }else if(step===1){
     h+=top(true);
-    h+='<div class="stack t" style="margin-top:6px"><h1 class="h1">About you</h1><p class="sub">So K’s examples sound like your life, not a textbook.</p></div>';
-    h+='<div class="fieldset"><label class="lab" for="ob-name">First name</label><input class="inp" id="ob-name" placeholder="What should K call you?" value="'+escHtml(p.name||'')+'"></div>';
-    h+='<div class="lab">Where are you now?</div>'+chipsHtml(STAGES,p.stage,'stage');
-    h+='<div class="lab">Your field</div><div class="grid2">'+FIELDS.map(f=>'<button class="tile'+(S.rwField===f[0]?' on':'')+'" data-field="'+escHtml(f[0])+'">'+ic(f[1])+escHtml(f[0])+'</button>').join('')+'</div>';
-    h+='<div class="lab">Age</div>'+chipsHtml(AGES.map(a=>[a,a]),p.age,'age');
-    h+='<div class="device">'+ic('phone','s')+'<span>Everything here stays on this device.</span></div>';
-    h+='<button class="btn btn-pri push" data-act="next">Continue</button>';
+    h+='<div class="obq"><div class="obq-h"><h1 class="h1">About you</h1><p class="sub">So K’s examples sound like your life, not a textbook.</p></div>';
+    h+='<div class="obq-s"><label class="lab" for="ob-name">First name</label><input class="inp" id="ob-name" placeholder="What should K call you?" value="'+escHtml(p.name||'')+'"></div>';
+    const chip=(k,t,sm)=>'<button class="g-chip'+(p.stage===k?' on':'')+'" data-stage="'+k+'">'+(sm?'<small>'+sm+'</small>':'')+'<span>'+t+'</span></button>';
+    h+='<div class="obq-s"><div class="lab">Where are you now?</div><div class="obq-g3">'+chip('student','Student')+chip('jobhunt','First job hunt')+chip('switch','Switching careers')+'</div><div class="obq-g4">'+chip('early','0–2 yrs','Working')+chip('mid','3–5 yrs','Working')+chip('senior','6+ yrs','Working')+chip('freelance','business','Own')+'</div></div>';
+    h+='<div class="obq-s"><div class="lab">Your field</div><div class="obq-g3 obq-f">'+FIELDS.map(f=>'<button class="g-chip'+(S.rwField===f[0]?' on':'')+'" data-field="'+escHtml(f[0])+'">'+ic(f[1],'s')+'<span>'+escHtml(f[0].replace('Business & finance','Business').replace('Sales & marketing','Sales'))+'</span></button>').join('')+'</div></div>';
+    h+='<div class="obq-s"><div class="lab">Age</div><div class="obq-g5">'+AGES.map(a=>'<button class="g-chip'+(p.age===a?' on':'')+'" data-age="'+escHtml(a)+'">'+escHtml(a)+'</button>').join('')+'</div></div></div>';
+    h+='<button class="btn btn-pri" data-act="next">Continue</button>';
   }else{
     h+=top(true);
-    h+='<div class="stack t" style="margin-top:6px"><h1 class="h1">What’s hardest for you?</h1><p class="sub">Pick any. K will push you there first.</p></div>';
-    h+=chipsHtml(STRUGGLES,p.struggles||[],'str',true);
-    h+='<div class="fieldset"><label class="lab" for="ob-prob">In your own words <span style="text-transform:none;letter-spacing:0;font-weight:600">(optional)</span></label><textarea class="g-answer" id="ob-prob" style="min-height:84px" placeholder="e.g. Clients always ask for a discount and I say yes too fast.">'+escHtml(p.problem||'')+'</textarea></div>';
-    h+='<button class="btn btn-pri push" data-act="done">Done</button>';
+    h+='<div class="obq"><div class="obq-h"><h1 class="h1">What’s hardest for you?</h1><p class="sub">Pick any. K will push you there first.</p></div>';
+    h+='<div class="obq-s"><div class="obq-g3 obq-str">'+STRUGGLES.map(x=>'<button class="g-chip'+((p.struggles||[]).includes(x[0])?' on':'')+'" data-str="'+escHtml(x[0])+'">'+escHtml(x[1])+'</button>').join('')+'</div></div>';
+    h+='<div class="obq-s obq-grow"><label class="lab" for="ob-prob">In your own words <span style="text-transform:none;letter-spacing:0;font-weight:600">(optional)</span></label><textarea class="g-answer" id="ob-prob" placeholder="e.g. Clients always ask for a discount and I say yes too fast.">'+escHtml(p.problem||'')+'</textarea></div></div>';
+    h+='<button class="btn btn-pri" data-act="done">Done</button>';
   }
   h+='</main>';
   app.innerHTML=h;
@@ -3655,6 +3677,7 @@ function renderOnboarding(app){
   on('[data-act="done"]',finish);
   app.querySelectorAll('[data-goal]').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.goal;S.goals=S.goals||[];const i=S.goals.indexOf(k);if(i>=0)S.goals.splice(i,1);else S.goals.push(k);save();b.classList.toggle('on');}));
   app.querySelectorAll('[data-field]').forEach(b=>b.addEventListener('click',()=>{S.rwField=S.rwField===b.dataset.field?'':b.dataset.field;save();app.querySelectorAll('[data-field]').forEach(x=>x.classList.toggle('on',x.dataset.field===S.rwField));}));
+  {const q=app.querySelector('.obq');if(q)_fillZoom([q],()=>document.scrollingElement.scrollHeight<=window.innerHeight&&![...q.querySelectorAll('.obq-g5 .g-chip,.obq-g4 .g-chip span')].some(e=>e.scrollHeight>e.clientHeight+2||e.getClientRects().length>1&&e.matches('span')),1.12);}
   wireChips(app,'stage',()=>p.stage,v=>p.stage=v,false,_profTouch);
   wireChips(app,'age',()=>p.age,v=>p.age=v);
   wireChips(app,'str',()=>p.struggles,v=>p.struggles=v,true,_profTouch);
