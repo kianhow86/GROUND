@@ -1394,6 +1394,16 @@ html[data-theme="dark"] .ob-ver .m{color:#A9D98E}
 .obq .g-chip{border-radius:16px}
 .obq-g5 .g-chip{white-space:nowrap;padding:10px 2px}
 .obq-g4 .g-chip span,.obq-g4 .g-chip small{white-space:nowrap}
+
+.tour{position:fixed;inset:0;z-index:200}
+.tour-hole{position:absolute;border-radius:24px;box-shadow:0 0 0 9999px rgba(5,6,10,.78);transition:all .3s ease;pointer-events:none}
+.tour-card{position:absolute;left:18px;right:18px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:22px;padding:18px 18px 14px;box-shadow:0 20px 50px rgba(0,0,0,.4);animation:ob-in .3s ease both}
+.tour-n{font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.tour-card b{display:block;font-size:20px;font-weight:900;letter-spacing:-.01em;margin-top:4px}
+.tour-card p{font-size:15px;line-height:1.5;color:var(--ink-2);margin:6px 0 0;text-wrap:pretty}
+.tour-row{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+.tour-skip{font-size:15px;font-weight:700;color:var(--ink-3);padding:10px 4px}
+.tour-next{font-size:15px;font-weight:800;padding:11px 22px;border-radius:999px;background:#C4AEFF;color:#120C24}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -3389,6 +3399,7 @@ function renderHub(app){
   app.querySelector('[data-act="askk"]').addEventListener('click',()=>{if(!V.deskBusy)openAskK();});
   _deckWire(app.querySelector('#dk-deck'));
   _kTakeRefresh();
+  if(S.onboarded&&!S.tourDone)setTimeout(()=>{if(V.view==='hub'&&!document.getElementById('sheet'))hubTour(0);},450);
 }
 // Three cards on screen (front + two peeking). Drag left = next, right = back, tap the edge = next.
 function _deckWire(st){
@@ -3432,6 +3443,29 @@ function _hubFit(){
   for(const c of ['fit1','fit2','fit3']){if(tiles.getBoundingClientRect().height>=need)break;m.classList.add(c);}
 }
 try{let _hf;window.addEventListener('resize',()=>{clearTimeout(_hf);_hf=setTimeout(()=>{if(V.view==='hub')_hubFit();},120);});}catch(e){}
+
+// ── First visit: a three-step tour of the hub ──
+const HUB_TOUR=[
+  {sel:'#dk-deck',t:'Your deck',b:'One card at a time, picked for you. Swipe for the next: practice, read, choose, quick answer, and around again. New cards every day.'},
+  {sel:'.askk',t:'Ask K',b:'Something coming up, or something just happened? Tell K in your own words. K reads it and takes you to the right tool.'},
+  {sel:'.dk-tools',t:'Everything else',b:'Reply to a message, practice a talk, the Toolkit, and your notes. Settings sit at the top.'}
+];
+function hubTour(i){
+  document.querySelectorAll('.tour').forEach(e=>e.remove());
+  const st=HUB_TOUR[i],el=st&&document.querySelector(st.sel);
+  if(!st||!el){S.tourDone=true;save();return;}
+  const r=el.getBoundingClientRect(),pad=8,last=i===HUB_TOUR.length-1;
+  const t=document.createElement('div');t.className='tour';
+  const below=r.top+r.height/2<window.innerHeight/2;
+  t.innerHTML='<div class="tour-hole" style="left:'+(r.left-pad)+'px;top:'+(r.top-pad)+'px;width:'+(r.width+pad*2)+'px;height:'+(r.height+pad*2)+'px"></div>'+
+    '<div class="tour-card" style="'+(below?'top:'+Math.min(r.bottom+pad+14,window.innerHeight-230)+'px':'bottom:'+Math.min(window.innerHeight-r.top+pad+14,window.innerHeight-230)+'px')+'">'+
+    '<div class="tour-n">'+(i+1)+' of '+HUB_TOUR.length+'</div><b>'+escHtml(st.t)+'</b><p>'+escHtml(st.b)+'</p>'+
+    '<div class="tour-row"><button class="tour-skip"'+(last?' style="visibility:hidden"':'')+'>Skip</button><button class="tour-next">'+(last?'Got it':'Next')+'</button></div></div>';
+  document.body.appendChild(t);
+  const end=()=>{t.remove();S.tourDone=true;save();};
+  t.querySelector('.tour-skip').addEventListener('click',end);
+  t.querySelector('.tour-next').addEventListener('click',()=>{if(last)end();else hubTour(i+1);});
+}
 // ═══════════════════════════════════════════════════════════════════════════
 // Onboarding (3 steps, skippable) · Settings · codes · monthly limit sheet ·
 // paywall (balance + pay, shipped off) · owner codes page
