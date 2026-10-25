@@ -72,7 +72,7 @@ html[data-theme="dark"] .c-money{--c:#A9D98E}html[data-theme="dark"] .c-people{-
 /* ── base ── */
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
-body{min-height:100dvh;overscroll-behavior-y:none}
+body{min-height:var(--vh100,100dvh);overscroll-behavior-y:none}
 p,h1,h2,h3,ul,ol,dl,dd{margin:0;padding:0}
 ul,ol{list-style:none}
 button{font:inherit;color:inherit;background:none;border:0;margin:0;padding:0;text-align:left;cursor:pointer;-webkit-appearance:none}
@@ -90,9 +90,9 @@ a{color:inherit}
 .between{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .hide{display:none!important}
 /* screen root: what the designer's .phone becomes in the app */
-#app{min-height:100dvh}
-.scr{position:relative;min-height:100dvh;max-width:var(--app-w);margin:0 auto;display:flex;flex-direction:column;gap:var(--gap);padding:calc(var(--sat) + 14px) var(--pad) calc(var(--sab) + 18px);background:var(--bg);color:var(--ink)}
-.scr.tall{min-height:100dvh}
+#app{min-height:var(--vh100,100dvh)}
+.scr{position:relative;min-height:var(--vh100,100dvh);max-width:var(--app-w);margin:0 auto;display:flex;flex-direction:column;gap:var(--gap);padding:calc(var(--sat) + 14px) var(--pad) calc(var(--sab) + 18px);background:var(--bg);color:var(--ink)}
+.scr.tall{min-height:var(--vh100,100dvh)}
 @media (max-width:380px){:root{--pad:16px;--gap:10px}}
 
 /* ── type ── */
@@ -669,7 +669,7 @@ html[data-theme="dark"] .g-alert{background:#1B1E24;border:1px solid rgba(255,25
 }
 
 /* Hub fits one screen, no scrolling: the top box takes what it needs, the tiles share the rest */
-.scr.hub{height:100dvh;min-height:0;overflow:hidden}
+.scr.hub{height:var(--vh100,100dvh);min-height:0;overflow:hidden}
 .scr.hub>*{flex-shrink:0}
 .hub-tiles{flex:1 1 0 !important;min-height:0;display:grid;grid-template-rows:minmax(0,1.65fr) minmax(0,1fr);gap:12px}
 .hub-tiles .v3-two{min-height:0;height:100%}
@@ -862,7 +862,7 @@ html[data-theme="dark"] .c-start{--c:#A9D98E}html[data-theme="dark"] .c-career{-
 .nbk-hist[open] summary .ic{transform:rotate(-90deg)}
 .nbk-hist[open]>*+*{margin-top:10px}
 /* Results: one screen, no page scroll. Each step scrolls inside itself only if it must. */
-.scr.rw-donescr{height:100dvh;min-height:0;overflow:hidden}
+.scr.rw-donescr{height:var(--vh100,100dvh);min-height:0;overflow:hidden}
 .rw-donescr>*{flex-shrink:0}
 .rw-donescr .rw-slides{flex:1 1 0;min-height:0}
 .rw-donescr .rw-slide{overflow-y:auto;justify-content:flex-start;padding-top:4px}
@@ -1187,7 +1187,7 @@ html[data-theme="dark"] .tk-ex small.st{color:#F5C27A}
 .tk-ex::-webkit-scrollbar{display:none}
 .tk-ex button{flex-shrink:0}
 .tk-ex.scroll{-webkit-mask-image:linear-gradient(#000 calc(100% - 24px),transparent);mask-image:linear-gradient(#000 calc(100% - 24px),transparent)}
-.tk-scr{height:100dvh;max-height:100dvh}.tk-scr .tk-body{min-height:0}
+.tk-scr{height:var(--vh100,100dvh);max-height:var(--vh100,100dvh)}.tk-scr .tk-body{min-height:0}
 
 .tk-watch,.tk-hero{flex-shrink:0}
 .st-app{width:100%;height:100%;border-radius:12px;object-fit:cover;display:block}
@@ -1319,7 +1319,7 @@ html[data-theme="dark"] .cl-good .cl-k{color:var(--p)}
 .nb-fit .nbk-mini b{font-size:calc(15px*var(--s))}
 
 /* Onboarding stories */
-.ob{min-height:100dvh;height:100dvh;display:flex;flex-direction:column;padding:calc(14px + env(safe-area-inset-top)) 22px calc(22px + env(safe-area-inset-bottom));background:var(--bg);color:var(--ink);overflow:hidden;user-select:none}
+.ob{min-height:var(--vh100,100dvh);height:var(--vh100,100dvh);display:flex;flex-direction:column;padding:calc(14px + env(safe-area-inset-top)) 22px calc(22px + env(safe-area-inset-bottom));background:var(--bg);color:var(--ink);overflow:hidden;user-select:none}
 .ob-bars{display:flex;gap:6px;margin-top:6px;flex-shrink:0}
 .ob-bars i{flex:1;height:4px;border-radius:2px;background:var(--line);overflow:hidden;position:relative}
 .ob-bars i b{position:absolute;inset:0;width:0;background:var(--ink)}
@@ -1750,6 +1750,10 @@ function openWhatsNew(){
 }
 
 // ── Boot ───────────────────────────────────────────────────────────────────
+// iOS home-screen apps can report 100dvh shorter than the real screen; measure it ourselves
+function _setVH(){try{const h=(window.visualViewport&&window.visualViewport.height>0?Math.max(window.visualViewport.height,window.innerHeight):window.innerHeight);document.documentElement.style.setProperty('--vh100',Math.round(h)+'px');}catch(e){}}
+_setVH();['resize','orientationchange','pageshow'].forEach(ev=>window.addEventListener(ev,()=>{_setVH();setTimeout(_setVH,250);}));
+try{window.visualViewport&&window.visualViewport.addEventListener('resize',_setVH);}catch(e){}
 function boot(){
   load();
   if(typeof _syInit==='function')_syInit();
