@@ -1750,9 +1750,19 @@ function openWhatsNew(){
 }
 
 // ── Boot ───────────────────────────────────────────────────────────────────
-// iOS home-screen apps can report 100dvh shorter than the real screen; measure it ourselves
-function _setVH(){try{const h=(window.visualViewport&&window.visualViewport.height>0?Math.max(window.visualViewport.height,window.innerHeight):window.innerHeight);document.documentElement.style.setProperty('--vh100',Math.round(h)+'px');}catch(e){}}
-_setVH();['resize','orientationchange','pageshow'].forEach(ev=>window.addEventListener(ev,()=>{_setVH();setTimeout(_setVH,250);}));
+// iOS home-screen apps can report the screen height wrong at launch (it fixes itself after a drag).
+// Measure the real viewport with a fixed full-screen probe, and keep re-measuring until it settles.
+let _vhProbe=null;
+function _setVH(){try{
+  if(!_vhProbe){_vhProbe=document.createElement('div');_vhProbe.style.cssText='position:fixed;top:0;bottom:0;left:0;width:0;visibility:hidden;pointer-events:none';document.documentElement.appendChild(_vhProbe);}
+  const h=Math.max(_vhProbe.offsetHeight||0,window.innerHeight||0,window.visualViewport?window.visualViewport.height:0);
+  const cur=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--vh100'))||0;
+  if(Math.abs(h-cur)>1){document.documentElement.style.setProperty('--vh100',Math.round(h)+'px');window.scrollTo(0,0);}
+}catch(e){}}
+_setVH();[60,250,600,1200,2500].forEach(ms=>setTimeout(_setVH,ms));
+['resize','orientationchange','pageshow','focus'].forEach(ev=>window.addEventListener(ev,()=>{_setVH();setTimeout(_setVH,250);}));
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){_setVH();setTimeout(_setVH,300);}});
+document.addEventListener('touchstart',function _t(){_setVH();setTimeout(_setVH,200);},{passive:true});
 try{window.visualViewport&&window.visualViewport.addEventListener('resize',_setVH);}catch(e){}
 function boot(){
   load();
