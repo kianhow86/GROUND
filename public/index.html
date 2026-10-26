@@ -1759,7 +1759,11 @@ function _setVH(){try{
   const cur=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--vh100'))||0;
   if(Math.abs(h-cur)>1){document.documentElement.style.setProperty('--vh100',Math.round(h)+'px');window.scrollTo(0,0);}
 }catch(e){}}
-_setVH();[60,250,600,1200,2500].forEach(ms=>setTimeout(_setVH,ms));
+// A drag fixes it on iOS, so do a tiny drag ourselves right after launch
+function _vhNudge(){try{const b=document.body;if(!b)return;const prev=b.style.minHeight;b.style.minHeight='calc(100% + 2px)';window.scrollTo(0,1);requestAnimationFrame(()=>{window.scrollTo(0,0);b.style.minHeight=prev;_setVH();});}catch(e){}}
+_setVH();[60,250,600,1200,2500].forEach(ms=>setTimeout(_setVH,ms));[120,700,1500].forEach(ms=>setTimeout(_vhNudge,ms));
+// Owner only: show the measured heights for a few seconds at launch, to diagnose phones
+setTimeout(()=>{try{if(!(S.aiConfig&&S.aiConfig.ownerKey))return;const d=document.createElement('div');const vv=window.visualViewport;d.style.cssText='position:fixed;left:8px;bottom:8px;z-index:999;background:#000;color:#0f0;font:11px/1.4 monospace;padding:6px 8px;border-radius:8px;opacity:.85;pointer-events:none';d.textContent='vh '+getComputedStyle(document.documentElement).getPropertyValue('--vh100')+' · probe '+(_vhProbe&&_vhProbe.offsetHeight)+' · inner '+window.innerHeight+' · vv '+(vv?Math.round(vv.height):'-')+' · screen '+screen.height+' · doc '+document.documentElement.clientHeight+' · standalone '+(navigator.standalone?'yes':'no');document.body.appendChild(d);setTimeout(()=>d.remove(),8000);}catch(e){}},1800);
 ['resize','orientationchange','pageshow','focus'].forEach(ev=>window.addEventListener(ev,()=>{_setVH();setTimeout(_setVH,250);}));
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){_setVH();setTimeout(_setVH,300);}});
 document.addEventListener('touchstart',function _t(){_setVH();setTimeout(_setVH,200);},{passive:true});
