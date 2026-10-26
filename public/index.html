@@ -830,6 +830,7 @@ html[data-theme="dark"] .c-start{--c:#A9D98E}html[data-theme="dark"] .c-career{-
 .rp-more summary .ic{margin-left:auto;transform:rotate(90deg);color:var(--ink-3);transition:transform .2s}
 .rp-more[open] summary .ic{transform:rotate(-90deg)}
 .rp-more[open]{display:flex;flex-direction:column;gap:10px}
+.rp-more .g-grid2+.g-kick{margin-top:16px}
 /* Readability floor: nothing important below ~13px, stronger contrast for second-language readers */
 .sub{font-size:14.5px}
 .small{font-size:13px;color:var(--ink-2)}
@@ -1444,6 +1445,10 @@ html[data-theme="dark"] .ob-ver .m{color:#A9D98E}
 @media (max-height:740px){.tk-ico{width:46px;height:46px;padding:5px;border-radius:12px}.tk-hero{width:min(32%,110px);padding:10px;border-radius:20px}}
 .tk-hero-k{padding:0;background:#0E1115;width:min(50%,180px);border-radius:30px}
 @media (max-height:740px){.tk-hero-k{width:min(36%,120px);border-radius:22px}}
+.lib-topic{position:relative}
+.lib-art{position:absolute;top:12px;right:12px;width:min(38%,96px);aspect-ratio:1;border-radius:22px;background:#0E1115;object-fit:cover}
+.rw-surprise .lib-art{width:min(22%,96px)}
+@media (max-height:740px){.lib-art{width:min(32%,72px);border-radius:16px}}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -4965,9 +4970,11 @@ function renderReal(app){
     const g=RW.pickOpen&&RW_GOALS.find(x=>x.k===RW.pickOpen);
     if(!g){
       h+=gBar('Practice a talk','hub');
-      h+='<div class="lib-grid rw-topics rw-tiles">'+RW_GOALS.map(x=>'<button class="lib-topic '+GP[x.k]+'" data-goal="'+x.k+'"><b>'+x.t+'</b><span>'+(PRACTICE_SITS[x.k]||[]).length+' situations'+'</span></button>').join('')+
-        '<button class="lib-topic p-yellow" data-go="pitch"><b>Pitch it</b><span>Build, run, face the room</span></button>'+
-        '<button class="lib-topic lib-tk rw-surprise" data-act="surprise"'+(RW.loadingScene?' disabled':'')+'><b>'+(RW.loadingScene?'K is picking…':'Surprise me')+'</b><span>K picks one</span></button></div>';
+      const GA={job:'walk-away',client:'give-to-get',disagree:'two-good-options',work:'good-question',people:'labeling',pitch:'monroe',surprise:'point'};
+      const ga=k=>(window.PRACTICE_ART&&typeof TOOL_K!=='undefined'&&TOOL_K[GA[k]])?'<img class="lib-art" src="'+TOOL_K[GA[k]]+'" alt="">':'';
+      h+='<div class="lib-grid rw-topics rw-tiles has-art">'+RW_GOALS.map(x=>'<button class="lib-topic '+GP[x.k]+'" data-goal="'+x.k+'">'+ga(x.k)+'<b>'+x.t+'</b><span>'+(PRACTICE_SITS[x.k]||[]).length+' situations'+'</span></button>').join('')+
+        '<button class="lib-topic p-yellow" data-go="pitch">'+ga('pitch')+'<b>Pitch it</b><span>Build, run, face the room</span></button>'+
+        '<button class="lib-topic lib-tk rw-surprise" data-act="surprise"'+(RW.loadingScene?' disabled':'')+'>'+ga('surprise')+'<b>'+(RW.loadingScene?'K is picking…':'Surprise me')+'</b><span>K picks one</span></button></div>';
     }else{
       h+=gBar('Practice a talk','rw-pickback');
       const L=PRACTICE_SITS[g.k]||[],dn=_casesDone();
