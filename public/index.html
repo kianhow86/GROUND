@@ -1784,7 +1784,7 @@ function _wireSlides(root){
   if(nx)nx.addEventListener('click',()=>sl.scrollTo({left:(cur()+1)*sl.clientWidth,behavior:'smooth'}));
 }
 function wireCommon(root){
-  root.querySelectorAll('[data-go]').forEach(b=>{if(b.__wired)return;b.__wired=true;b.addEventListener('click',()=>{const v=b.dataset.go;if(v==='back'){goBack();}else go(v);});});
+  root.querySelectorAll('[data-go]').forEach(b=>{if(b.__wired)return;b.__wired=true;b.addEventListener('click',()=>{const v=b.dataset.go;if(v==='back'){goBack();}else if(v==='tk-back'){closeSheet();if(V.tkTool)V.tkTool=null;else V.tkFam=null;render();}else go(v);});});
   root.querySelectorAll('[data-tech]').forEach(b=>{if(b.__wired)return;b.__wired=true;b.addEventListener('click',e=>{e.stopPropagation();openTechnique(b.dataset.tech);});});
   root.querySelectorAll('[data-whatsnew]').forEach(b=>{if(b.__wired)return;b.__wired=true;b.addEventListener('click',openWhatsNew);});
 }
@@ -3256,7 +3256,6 @@ function renderLibrary(app){
   }
   h+='</main>';
   app.innerHTML=h;wireCommon(app);
-  app.querySelectorAll('[data-go="tk-back"]').forEach(b=>{b.removeAttribute('data-go');b.addEventListener('click',()=>{if(V.tkTool){V.tkTool=null;}else V.tkFam=null;render();});});
   app.querySelectorAll('[data-fam]').forEach(b=>b.addEventListener('click',()=>{const f=TK_FAM.find(x=>x.k===b.dataset.fam);_growTile(b,()=>{V.tkFam=f.k;render();});}));
   app.querySelectorAll('[data-tool]').forEach(b=>b.addEventListener('click',()=>{V.tkTool=b.dataset.tool;render();}));
   app.querySelectorAll('[data-case]').forEach(b=>b.addEventListener('click',()=>openCase(b.dataset.case)));
