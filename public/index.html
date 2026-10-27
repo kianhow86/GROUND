@@ -1119,8 +1119,9 @@ p,.sub,.small,.g-why,.rw-kw,.ch-re,.ch-kr p,.ch-path p,.rw-scene{text-wrap:prett
 .dk-stack .dk-card[aria-hidden="true"]{box-shadow:none}
 .dk-stack .dk-card[aria-hidden="false"]{box-shadow:0 18px 40px -18px rgba(0,0,0,.45)}
 
-.askk{display:flex;align-items:center;gap:8px;height:44px;padding:0 14px 0 6px;border-radius:999px;background:#8FD3F0;color:#06202B;font-weight:800;font-size:14px}
-.askk .kav{width:32px;height:32px}
+.dk-tools .askk i.k{background:transparent;width:30px;height:30px;overflow:hidden;border-radius:50%}
+.dk-tools .askk .kav{width:30px;height:30px}
+.dk-tools .askk .kav img{width:100%;height:100%;object-fit:cover}
 .dk-stack .dk-card[aria-hidden="true"] > *{opacity:0}
 
 /* Ask K page */
@@ -1476,6 +1477,10 @@ html[data-theme="dark"] .ob-ver .m{color:#A9D98E}
 .ob-sheet{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 6px}
 .ob-sent .btn-pri{background:var(--ink);color:var(--bg)}
 @media (max-height:740px){.ob-line{font-size:26px}.ob-pick{font-size:21px}.ob-hint{margin-top:16px}.ob-line2{font-size:22px}.ob-str .g-chip{min-height:40px;font-size:12.5px}}
+/* Ask K: the one tile with a glowing rim */
+.dk-tools .askk{border-color:rgba(150,132,230,.75);box-shadow:0 0 0 1px rgba(150,132,230,.45),0 0 16px 2px rgba(150,132,230,.4);animation:askk-glow 2.8s ease-in-out infinite}
+@keyframes askk-glow{0%,100%{box-shadow:0 0 0 1px rgba(150,132,230,.45),0 0 16px 2px rgba(150,132,230,.4)}50%{box-shadow:0 0 0 1px rgba(150,132,230,.7),0 0 26px 6px rgba(150,132,230,.55)}}
+@media (prefers-reduced-motion:reduce){.dk-tools .askk{animation:none}}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -3481,14 +3486,14 @@ function _dkOpen(c){
   if(c.kind==='quick'){QA.q=c.q;QA.ctx=c.cx;QA.goal=c.gk;QA.phase='q';QA.take=null;QA.notes=null;QA.strong=null;go('quick');}
 }
 function openAskK(){
-  openSheet('<div class="sug-k" style="margin-bottom:4px">'+kav()+'<div><small>Ask K</small><p style="font-size:20px;font-weight:800;line-height:1.25">What’s coming up, or what just happened?</p></div></div><textarea id="desk-text" class="g-answer" rows="5" placeholder="Paste their message, or describe the conversation…">'+escHtml(V.deskText||'')+'</textarea><button class="g-cta" data-act="dk-ask">Help me with this<span class="ar">'+ic('arrow','s')+'</span></button>',
+  openSheet('<div class="sug-k" style="margin-bottom:4px">'+kav()+'<div><small>Ask K</small><p style="font-size:20px;font-weight:800;line-height:1.25">What happened, or what’s coming up?</p></div></div><textarea id="desk-text" class="g-answer" rows="5" placeholder="Tell me in your own words. Got their message? Paste it here.">'+escHtml(V.deskText||'')+'</textarea><button class="g-cta" data-act="dk-ask">Help me with this<span class="ar">'+ic('arrow','s')+'</span></button>',
     {wire:sh=>{const t=sh.querySelector('#desk-text');t.addEventListener('input',()=>{V.deskText=t.value;});setTimeout(()=>t.focus(),80);sh.querySelector('[data-act="dk-ask"]').addEventListener('click',()=>{V.deskText=t.value;closeSheet();deskRead();});}});
 }
 function renderHub(app){
   let h='<main class="scr hub dk">';
-  h+='<div class="top"><div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div><div class="ibtns"><button class="ibtn ib-set" data-go="settings" aria-label="Settings">'+ic('settings')+'</button><button class="askk" data-act="askk">'+kav()+'<span>'+(V.deskBusy?'Reading…':'Ask K')+'</span></button></div></div>';
+  h+='<div class="top"><div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div><div class="ibtns"><button class="ibtn ib-set" data-go="settings" aria-label="Settings">'+ic('settings')+'</button></div></div>';
   h+='<div class="dk-stack" id="dk-deck"></div>';
-  h+='<div class="dk-tools"><button data-go="reply"><i class="p-lav">'+ic('reply','s')+'</i>Reply</button><button data-go="real"><i class="p-teal">'+ic('talk','s')+'</i>Practice</button><button data-go="library"><i class="p-green">'+ic('book','s')+'</i>Toolkit</button><button data-go="notebook"><i class="p-yellow">'+ic('list','s')+'</i>Notes</button></div>';
+  h+='<div class="dk-tools"><button class="askk" data-act="askk"><i class="k">'+kav()+'</i>'+(V.deskBusy?'Reading…':'Ask K')+'</button><button data-go="real"><i class="p-teal">'+ic('talk','s')+'</i>Practice</button><button data-go="library"><i class="p-green">'+ic('book','s')+'</i>Toolkit</button><button data-go="notebook"><i class="p-yellow">'+ic('list','s')+'</i>Notes</button></div>';
   h+='</main>';
   app.innerHTML=h;
   app.querySelector('[data-act="askk"]').addEventListener('click',()=>{if(!V.deskBusy)openAskK();});
@@ -3542,8 +3547,8 @@ try{let _hf;window.addEventListener('resize',()=>{clearTimeout(_hf);_hf=setTimeo
 // ── First visit: a three-step tour of the hub ──
 const HUB_TOUR=[
   {sel:'#dk-deck',t:'Your deck',b:'One card at a time, picked for you. Swipe for the next: practice, read, choose, quick answer, and around again. New cards every day.'},
-  {sel:'.askk',t:'Ask K',b:'Something coming up, or something just happened? Tell K in your own words. K reads it and takes you to the right tool.'},
-  {sel:'.dk-tools',t:'Everything else',b:'Reply to a message, practice a talk, the Toolkit, and your notes. Settings sit at the top.'}
+  {sel:'.askk',t:'Ask K',b:'Something coming up, or something just happened? Tell K in your own words, or paste their message. K reads it and takes you to the right tool: a reply, advice, or practice.'},
+  {sel:'.dk-tools',t:'Everything else',b:'Practice a talk, the Toolkit, and your notes. Settings sit at the top.'}
 ];
 function hubTour(i){
   document.querySelectorAll('.tour').forEach(e=>e.remove());
