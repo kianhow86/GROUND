@@ -1651,6 +1651,10 @@ html[data-theme="dark"] .ob-ver .m{color:#A9D98E}
 @keyframes vm-shake{0%,100%{translate:0 0}25%{translate:-3px 0}75%{translate:3px 0}}
 .vn-k-nervous.vn-char img{animation:vn-idle 1.4s ease-in-out infinite}
 @media (prefers-reduced-motion:reduce){.vn-mark,.vn-mark svg,.vn-char img{animation:none!important}}
+
+.ob-br-r{display:flex;align-items:center;gap:6px}
+.snd-btn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--ink-3);border:1px solid var(--line)}
+.snd-btn svg{width:18px;height:18px}.snd-btn.on{color:var(--ink)}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -1955,6 +1959,7 @@ function render(){
   const app=document.getElementById('app');
   if(!app)return;
   closeSheet();
+  if(typeof sndSync==='function')sndSync();
   if(!S.onboarded&&V.view!=='owner'){return renderOnboarding(app);}
   const R={cast:renderCast,hub:renderHub,reply:renderReply,real:renderReal,pitch:renderPitch,quick:renderQuick,settings:renderSettings,notebook:renderNotebook,advice:renderAdvice,library:renderLibrary,case:renderCase,'nb-entry':renderNbEntry,sync:renderSync,owner:renderOwner,ask:renderAsk,choose:renderChoose,askk:renderAskK};
   const fn=R[V.view]||renderHub;
@@ -3741,6 +3746,31 @@ function moveLearnIn(t){const cs=_tkCases(t);return cs.length?cs[0].title.replac
 function moveLearn(t,how){if(!TECHNIQUES[t]||moveLearned(t))return false;_moves()[t]={at:new Date().toISOString(),how:String(how||'').slice(0,200),scen:RW.scenario};save();return true;}
 // For K's review: the moves it may recognise
 function movesForReview(){return Object.keys(TECHNIQUES).map(k=>k+' = '+TECHNIQUES[k].title+(TECHNIQUES[k].tag?': '+TECHNIQUES[k].tag:'')).join('\n');}
+// ═══ Sound: music and stingers. Off until the person taps; follows the iOS silent switch; never plays while the mic is open. ═══
+const SND={ctx:null,gain:null,src:null,cur:'',buf:{},want:'',unlocked:false};
+const SND_TRACKS={title:{files:['art/audio/title.m4a','art/audio/title.mp3'],loop:[15.5,28.5],vol:.8}};
+function sndOn(){return S.sound!==false;}
+function _sndCtx(){if(SND.ctx)return SND.ctx;const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;
+  try{if(navigator.audioSession)navigator.audioSession.type='ambient';}catch(e){}
+  SND.ctx=new C();SND.gain=SND.ctx.createGain();SND.gain.gain.value=0;SND.gain.connect(SND.ctx.destination);return SND.ctx;}
+async function _sndLoad(k){if(SND.buf[k])return SND.buf[k];const t=SND_TRACKS[k],ctx=_sndCtx();if(!t||!ctx)return null;
+  for(const f of t.files){try{const r=await fetch(f);if(!r.ok)continue;const ab=await r.arrayBuffer();SND.buf[k]=await new Promise((res,rej)=>ctx.decodeAudioData(ab,res,rej));return SND.buf[k];}catch(e){}}
+  return null;}
+function _sndFade(to,secs){const g=SND.gain;if(!g)return;const now=SND.ctx.currentTime;g.gain.cancelScheduledValues(now);g.gain.setValueAtTime(g.gain.value,now);g.gain.linearRampToValueAtTime(to,now+secs);}
+// What should be playing right now
+async function sndPlay(k){SND.want=k;if(!sndOn()||!SND.unlocked){return;}
+  if(SND.cur===k&&SND.src)return;const ctx=_sndCtx();if(!ctx)return;if(ctx.state==='suspended')try{await ctx.resume();}catch(e){}
+  const b=await _sndLoad(k);if(!b||SND.want!==k)return;
+  sndStop(0.4,true);const t=SND_TRACKS[k],s=ctx.createBufferSource();s.buffer=b;if(t.loop){s.loop=true;s.loopStart=t.loop[0];s.loopEnd=Math.min(t.loop[1],b.duration);}
+  s.connect(SND.gain);s.start();SND.src=s;SND.cur=k;_sndFade(t.vol||.8,1.2);}
+function sndStop(secs,keepWant){if(!keepWant)SND.want='';const s=SND.src;if(!s)return;SND.src=null;SND.cur='';const f=secs==null?1.2:secs;_sndFade(0,f);setTimeout(()=>{try{s.stop();}catch(e){}},f*1000+50);}
+function sndToggle(){S.sound=!sndOn();save();if(!sndOn())sndStop(.4,true);else{SND.unlocked=true;if(SND.want)sndPlay(SND.want);}return sndOn();}
+// The first tap anywhere unlocks audio (browsers require it)
+['pointerdown','keydown'].forEach(ev=>document.addEventListener(ev,()=>{if(SND.unlocked)return;SND.unlocked=true;const c=_sndCtx();if(c&&c.state==='suspended')c.resume();if(SND.want)sndPlay(SND.want);},{capture:true}));
+document.addEventListener('visibilitychange',()=>{if(!SND.ctx)return;if(document.hidden)SND.ctx.suspend();else if(SND.src)SND.ctx.resume();});
+// Which track belongs to the screen we're on
+function sndSync(){if(!S.onboarded)sndPlay('title');else if(SND.cur==='title'||SND.want==='title')sndStop(2);}
+function sndBtnHtml(){return '<button class="snd-btn'+(sndOn()?' on':'')+'" data-act="snd" aria-label="Sound">'+(sndOn()?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/><path d="M17 9l5 6M22 9l-5 6"/></svg>')+'</button>';}
 // ═══════════════════════════════════════════════════════════════════════════
 // HUB (home): K's line, Help me reply · Practice a talk, Pitch it, the streak
 // strip with Quick answer, last session, the quiet usage line.
@@ -4123,13 +4153,14 @@ function renderIntro(app){
     ['Three questions, and K knows where to start.','Your name, where you are now, and what’s hardest.']];
   let h='<main class="ob'+(reduce?' ob-still':'')+'" data-n="'+n+'">';
   h+='<div class="ob-bars"'+(n===3?' style="visibility:hidden"':'')+'>'+[0,1,2].map(i=>'<i class="'+(i<n?'d':i===n?'p':'')+'"><b></b></i>').join('')+'</div>';
-  h+='<div class="ob-brand"><span><b>GROUND</b> · BY KIAN HOW</span>'+(n<3?'<button data-act="ob-skip">Skip</button>':'')+'</div>';
+  h+='<div class="ob-brand"><span><b>GROUND</b> · BY KIAN HOW</span><span class="ob-br-r">'+sndBtnHtml()+(n<3?'<button data-act="ob-skip">Skip</button>':'')+'</span></div>';
   h+='<div class="ob-vis">'+VIS[n]+'</div>';
   h+='<div class="ob-txt"><h1>'+H[n][0]+'</h1><p>'+H[n][1]+'</p></div>';
   h+=n===2?gCta('Get started','ob-next'):n===3?gCta('Let’s go','ob-go'):'<div class="ob-tap">Tap to continue</div>';
   h+='</main>';
   app.innerHTML=h;
   const root=app.querySelector('.ob');
+  {const sb=app.querySelector('[data-act="snd"]');if(sb){sb.addEventListener('pointerdown',e=>e.stopPropagation());sb.addEventListener('click',e=>{e.stopPropagation();const on=sndToggle();sb.classList.toggle('on',on);sb.innerHTML=(new DOMParser().parseFromString(sndBtnHtml(),'text/html').body.firstChild||sb).innerHTML;});}}
   const goTo=k=>{_introClear();V.obSlide=Math.max(0,Math.min(3,k));render();};
   if(n<2&&!reduce)_introT.push(setTimeout(()=>goTo(n+1),5200));
   root.addEventListener('click',e=>{if(e.target.closest('button,a'))return;if(n>=3)return;const x=e.clientX/window.innerWidth;goTo(x<.3?n-1:n+1);});
