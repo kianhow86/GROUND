@@ -42,6 +42,7 @@ const DAILY_LIMITS = {
   "focus-brief": 2,
   "nb-note":     6,
   "case-adapt":  30,
+  "world":       6,
   "desk-route":  30,
   "desk-advice": 15,
   "advice-follow": 30,
