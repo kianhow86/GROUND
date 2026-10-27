@@ -1509,6 +1509,8 @@ html[data-theme="dark"] .ob-ver .m{color:#A9D98E}
 .vn-box{position:relative;margin:12px;padding:14px 16px 16px;border-radius:18px;background:rgba(10,12,16,.82);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(8px);color:#fff;min-height:96px}
 .vn-box small{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--p);margin-bottom:6px}
 .vn-line{font-size:19px;font-weight:700;line-height:1.35;min-height:52px}
+.vn-line.more::after{content:"▸";position:absolute;right:16px;bottom:12px;opacity:.8;animation:vn-blink 1s steps(2) infinite;font-size:18px}
+.vn-box{max-height:46%;overflow:hidden}
 .vn-play .vn-line::after{content:"▍";opacity:.6;animation:vn-blink 1s steps(2) infinite}
 @keyframes vn-blink{50%{opacity:0}}
 .vn-box .think i{background:#fff}
@@ -3501,6 +3503,11 @@ const W={p:null,err:null};
 function _worldKey(){const p=_P();return [(S.rwField||'').trim(),p.stage||'',(p.role||'').trim(),String(p.problem||'').trim().slice(0,200)].join('|');}
 function _worldWanted(){const p=_P();return !!((S.rwField||'').trim()||(p.role||'').trim()||String(p.problem||'').trim());}
 function _worldFresh(){return !!(S.world&&S.world.key===_worldKey()&&Array.isArray(S.world.cast)&&S.world.cast.length);}
+// A world built before the cast had pictures: ask K which look fits each person (one small call), names stay
+async function worldLooks(){const w=S.world;if(!w||!_aiOn()||!w.cast.length||w.cast.every(c=>c.look))return;if(W.lp)return W.lp;
+  W.lp=(async()=>{const sys='Match each person to the picture that fits them best. Reply with JSON only: {"looks":[a number 1-10 per person, in the same order, each number at most once]}\nLOOKS: '+LOOKS.map(l=>l.id+' = '+l.d).join('; ');
+    const raw=await callCoach(sys,'PEOPLE:\n'+w.cast.map((c,i)=>(i+1)+'. '+c.name+', '+c.role+(c.detail?' ('+c.detail+')':'')).join('\n'),{maxTokens:80,featureId:'world',noLang:true});
+    const j=_jsonFrom(raw);const used=new Set();w.cast.forEach((c,i)=>{let l=parseInt(j.looks&&j.looks[i],10);if(!(l>=1&&l<=10)||used.has(l)){l=_lookHash(c.name);while(used.has(l))l=l%10+1;}c.look=l;used.add(l);});save();})().catch(()=>{}).finally(()=>{W.lp=null;});return W.lp;}
 // The world as text for K's prompts. Empty when there is none.
 function worldText(){if(!_worldFresh())return '';const w=S.world;
   return 'THEIR WORLD (use these people and this kind of work, so every scene feels like their life):\n'+w.summary+'\nPeople: '+w.cast.map(c=>c.name+' ('+c.role+(c.detail?'; '+c.detail:'')+')').join('; ')+'\nWork they get asked to do: '+w.work.join('; ')+(w.money?'\nHow money comes up for them: '+w.money:'');}
@@ -5070,7 +5077,7 @@ async function _rwAfterTurn(r){
   if(RW.fuErr&&_aiOn()){RW.fuLoading=false;RW.closing='';RW.notes=renderAIError(RW.fuErr,'rw-retry');showToast(_isLimitErr(RW.fuErr)?'Today’s allowance is used up.':'K lost the connection.','warn');return _rwFinish();}
   if(q&&q.end){RW.fuLoading=false;RW.closing=q.t||'';return _rwFinish();}
   const wait=1200-(Date.now()-t0);if(wait>0)await new Promise(res=>setTimeout(res,wait));
-  RW.fuQ=q||_rwBankFu();RW.fuLoading=false;
+  RW.fuQ=_noDash(q||_rwBankFu());RW.fuLoading=false;
   if(RW.phase==='turn'&&V.view==='real'){render();if(RW.mode!=='type')rwSpeakLine();}
 }
 function _rwFinish(){
@@ -5097,7 +5104,7 @@ async function _rwDecide(){
   const grounding='GROUNDING RULES (strict): every "quote" and "said" must be the speaker’s EXACT words, copied character for character from the tagged turn you name, 3 to 15 words, the shortest phrase that makes the point. Never paraphrase, never fix their grammar, never combine words from two turns. If you cannot find exact words for a point, leave that point out.';
   const improveRule='"improve": up to 2 moments that cost them most, each {"turn":"answer|fu1|fu2|fu3","said":"exact words","try":"a better line they could actually say, spoken, under 30 words","why":"one sentence on why it would help'+(cl?', tied to the outcome or your hidden brief':'')+', naming the principle (e.g. give to get, warm then firm, know your lowest, two good options, bottom line first, STAR)"}.';
   const sys=cl
-    ?'You are the client in a negotiation practice role-play. Who you are: '+(RW.who||'a client')+'.\nYour hidden brief, which the speaker never knew: '+(RW.secret?RW.secret.t:'none')+'\n\nThe conversation is over. Decide honestly, in character, as a real client with that brief would, based only on what the speaker actually said. Holding firm with good reasons and warmth often wins; caving fast can make you doubt them; rudeness or vagueness loses you.\n'+ended+'\n'+agreed+'\n'+grounding+'\n'+voice+'\nReply with JSON only, no markdown:\n{"decision":"deal"|"think"|"walk","say":"what you say to end the conversation, one short spoken sentence, in character","terms":"the deal in a few words if decision is deal (price or terms agreed), else empty","why":[up to 3 of {"turn":"answer|fu1|fu2|fu3","quote":"exact words","effect":"+" or "-","reason":"one sentence: how that line moved you toward or away from yes, consistent with your hidden brief"}],"secret":"one or two plain sentences, first person as the client, revealing your hidden brief with a concrete figure where it applies, ending with how it shaped this outcome, e.g. \'My launch is in three weeks. I needed you more than I let on.\'",'+improveRule+',"could":{"from":"how it ended, a few words, e.g. ¥5,500","to":"the likely better outcome if they had made those changes, a few words, e.g. ¥6,500"}}'
+    ?'You are the client in a negotiation practice role-play. Who you are: '+(RW.who||'a client')+'.\nYour hidden brief, which the speaker never knew: '+(RW.secret?RW.secret.t:'none')+'\nWhen you reveal the brief in "secret", tell only what is true AND consistent with the transcript. Never say something was said or happened if it is not in the transcript (if you never mentioned a competitor, do not call it a bluff; say you had no other option lined up instead).\n\nThe conversation is over. Decide honestly, in character, as a real client with that brief would, based only on what the speaker actually said. Holding firm with good reasons and warmth often wins; caving fast can make you doubt them; rudeness or vagueness loses you.\n'+ended+'\n'+agreed+'\n'+grounding+'\n'+voice+'\nReply with JSON only, no markdown:\n{"decision":"deal"|"think"|"walk","say":"what you say to end the conversation, one short spoken sentence, in character","terms":"the deal in a few words if decision is deal (price or terms agreed), else empty","why":[up to 3 of {"turn":"answer|fu1|fu2|fu3","quote":"exact words","effect":"+" or "-","reason":"one sentence: how that line moved you toward or away from yes, consistent with your hidden brief"}],"secret":"one or two plain sentences, first person as the client, revealing your hidden brief with a concrete figure where it applies, ending with how it shaped this outcome, e.g. \'My launch is in three weeks. I needed you more than I let on.\'",'+improveRule+',"could":{"from":"how it ended, a few words, e.g. ¥5,500","to":"the likely better outcome if they had made those changes, a few words, e.g. ¥6,500"}}'
     :'You are the other person in a speaking-practice role-play ('+sc.name+'). Who you are: '+(RW.who||RW_ROLE[RW.scenario]||'the other person')+'.\nThe conversation is over. React honestly, the way that real person would, based only on what the speaker actually said: '+(RW_VERDICT_Q[RW.scenario]||'how did it land with you?')+'\nIF YOU AGREED SOMETHING: if by the end you and the speaker settled a concrete plan or next step (a date, a smaller first step, a trade), it is not “maybe”. It is “yes” if the plan moved toward what the speaker wanted, even partly. Use “maybe” only when nothing was settled. Put any catch the speaker accepted (a deadline, extra work) in “say” and in “improve”, not in the verdict.\nThen, as K the coach, find the moments where better words would have changed your reaction.\n'+ended+'\n'+grounding+'\n'+voice+'\nReply with JSON only, no markdown: {"verdict":"yes"|"maybe"|"no","say":"what you say or think at the end, one short spoken sentence, in character","why":[up to 3 of {"turn":"answer|fu1|fu2|fu3","quote":"exact words","effect":"+" or "-","reason":"one sentence: how that line changed your reaction"}],'+improveRule+',"could":{"from":"how it ended, a few words","to":"the likely better outcome, a few words"}}';
   let j=null;
   for(let a=0;a<2&&!j;a++){try{const raw=await callCoach(sys+RW_STT_NOTE,m+(a?'\n\nYour last reply was not valid JSON. Reply again with compact valid JSON only, nothing else.':''),{maxTokens:cl?1100:700,noLang:true,featureId:'rw-turn',grace:true});j=_jsonFrom(raw);}catch(e){j=null;}}
@@ -5111,7 +5118,7 @@ async function _rwDecide(){
     const could=j.could&&j.could.from&&j.could.to?{from:String(j.could.from).slice(0,80),to:String(j.could.to).slice(0,80)}:null;
     if(!cl)return {verdict:['yes','maybe','no'].includes(j.verdict)?j.verdict:'maybe',say:String(j.say||'').slice(0,200),why:clean(j.why),improve:clean(j.improve),could};
     if(!['deal','think','walk'].includes(j.decision))return null;
-    return {decision:j.decision,say:String(j.say||'').slice(0,200),terms:String(j.terms||'').slice(0,80),secret:String(j.secret||'').slice(0,360),why:clean(j.why),improve:clean(j.improve),could};
+    return {decision:j.decision,say:_noDash(String(j.say||'').slice(0,200)),terms:String(j.terms||'').slice(0,80),secret:_noDash(String(j.secret||'').slice(0,360)),why:clean(j.why),improve:clean(j.improve),could};
   }catch(e){return null;}
 }
 async function rwAnalyze(){
@@ -5288,7 +5295,7 @@ function renderReal(app){
         const played=RW._vnPlayed===line;
         h+='<div class="vn'+(played?' vn-done':' vn-play')+(wait?' vn-wait':'')+' vn-set-'+_vnSet()+'">'+_vnBg()+
            '<div class="vn-char vn-'+_vnMood(line)+'"><img src="'+_vnChar(_vnMood(line))+'" alt=""></div>'+
-           '<div class="vn-box"><small>'+escHtml(name)+'</small>'+(wait?'<div class="think"><i></i><i></i><i></i></div>':'<div class="vn-line" id="vn-line" data-full="'+escHtml(line)+'">'+(played?escHtml(line):'')+'</div>')+(RW.rec?'<div class="rw-recbar"><span class="rw-dot"></span><span id="rw-live">Listening · 0:00</span></div>':'')+'</div></div>';
+           '<div class="vn-box"><small>'+escHtml(name)+'</small>'+(wait?'<div class="think"><i></i><i></i><i></i></div>':'<div class="vn-line" id="vn-line" data-full="'+escHtml(line)+'">'+(played?escHtml(_vnPages(line).slice(-1)[0]):'')+'</div>')+(RW.rec?'<div class="rw-recbar"><span class="rw-dot"></span><span id="rw-live">Listening · 0:00</span></div>':'')+'</div></div>';
         h+='<div class="vn-ctl'+(played?'':' vn-hid')+'">'+_rwModeSwitch()+'<div class="g-wave'+(RW.rec?' big':'')+'" id="rw-wave" style="justify-content:center;--ink:var(--ink)">'+'<i></i>'.repeat(RW.rec?22:14)+'</div>';
       }else{
       h+=_rwModeSwitch();
@@ -5346,10 +5353,14 @@ function renderReal(app){
   app.innerHTML=h;
   if(ph==='done')app.querySelectorAll('.rw-slide').forEach(sl=>{const b=sl.querySelector('.rw-sbody');if(b)_fillZoom([b],()=>sl.scrollHeight<=sl.clientHeight);});
   const on=(s,f)=>{const el=app.querySelector(s);if(el)el.addEventListener('click',f);};
-  {const vl=app.querySelector('.vn.vn-play #vn-line');if(vl){const full=vl.dataset.full||'',ctl=app.querySelector('.vn-ctl'),vn=vl.closest('.vn');let i=0,t=null;
-    const done=()=>{clearTimeout(t);vl.textContent=full;RW._vnPlayed=full;vn.classList.remove('vn-play');vn.classList.add('vn-done');if(ctl)ctl.classList.remove('vn-hid');};
-    const tick=()=>{i+=1;vl.textContent=full.slice(0,i);if(i>=full.length){setTimeout(done,350);return;}t=setTimeout(tick,/[.,!?…]/.test(full[i-1])?140:28);};
-    t=setTimeout(tick,900);vn.addEventListener('click',done,{once:true});}}
+  {const vn=app.querySelector('.vn');if(vn){const box=vn.querySelector('.vn-box'),ch=vn.querySelector('.vn-char'),ln=vn.querySelector('.vn-line');if(ln&&(ln.dataset.full||ln.textContent).length>150)ln.classList.add('long');if(box&&ch)ch.style.bottom=(box.offsetHeight+16)+'px';}}
+  {const vl=app.querySelector('.vn.vn-play #vn-line');if(vl){const full=vl.dataset.full||'',ctl=app.querySelector('.vn-ctl'),vn=vl.closest('.vn');
+    // Long lines come in pages, like a game: the box stays one size, you tap for the next page
+    const pages=_vnPages(full);let pg=0,i=0,t=null,typing=true;
+    const finish=()=>{clearTimeout(t);vl.textContent=pages[pages.length-1];vl.classList.remove('more');RW._vnPlayed=full;vn.classList.remove('vn-play');vn.classList.add('vn-done');if(ctl)ctl.classList.remove('vn-hid');};
+    const showPage=()=>{i=0;typing=true;vl.classList.remove('more');const cur=pages[pg];const tick=()=>{i+=1;vl.textContent=cur.slice(0,i);if(i>=cur.length){typing=false;if(pg<pages.length-1)vl.classList.add('more');else setTimeout(finish,350);return;}t=setTimeout(tick,/[.,!?…]/.test(cur[i-1])?140:28);};t=setTimeout(tick,pg?150:900);};
+    vn.addEventListener('click',()=>{if(typing){clearTimeout(t);i=pages[pg].length;vl.textContent=pages[pg];typing=false;if(pg<pages.length-1)vl.classList.add('more');else finish();return;}if(pg<pages.length-1){pg++;showPage();}else finish();});
+    showPage();}}
   on('[data-act="rw-adapt-retry"]',()=>{const c=_case(RW._adCase);if(!c)return;delete CW.err[_caseWorldKey(c.id)];W.err=null;caseToPractice(c);});
   on('[data-act="rw-adapt-orig"]',()=>{const c=_case(RW._adCase);if(!c)return;caseToPractice(c,{orig:true});});
   app.querySelectorAll('[data-goal]').forEach(b=>b.addEventListener('click',()=>{RW.goal=b.dataset.goal;const g=RW_GOALS.find(x=>x.k===RW.goal);if(!g.items.includes(RW.scenario))RW.scenario=g.items[0];_rwOpenTopic(b,g.k);}));
@@ -5402,6 +5413,8 @@ function _rwOpenTopic(tile,k){
 // The scene, kept on the speaking card: who, the job or the moment, your numbers, your goal
 const RW_CTX_ON=false; // scene panel on the speaking card: waiting for approval
 // ── The stage: a game-style scene for the turn (prototype) ──
+function _vnPages(t){const max=130;const sents=String(t||'').match(/[^.!?…]+[.!?…]*[”"]?\s*/g)||[String(t||'')];const out=[];let cur='';sents.forEach(x=>{if((cur+x).trim().length>max&&cur){out.push(cur.trim());cur=x;}else cur+=x;});if(cur.trim())out.push(cur.trim());return out.length?out:[String(t||'')];}
+function _noDash(t){return String(t||'').replace(/\s*[—–]\s*/g,(m,o,str)=>{const after=str.slice(o+m.length,o+m.length+1);return /[A-Z“"]/.test(after)?'. ':', ';});}
 function _vnOn(){return S.vn!==false&&RW.mode!=='live';}
 function _vnSet(){const k=RW.scenario,stu=_P().stage==='student';return {interview:'office',tough:stu?'studio':'office',conflict:'corridor',meeting:'room',disagree:'room',feedback:stu?'studio':'room',sayno:'room',smalltalk:'cafe',intro:'event',pitch:'stage',proposal:'shop',bargain:'cafe',difficult:'shop',ground:'shop'}[k]||'office';}
 function _vnBg(){const k=_vnSet();return '<div class="vn-bg"><img src="'+SETS[k]+'" alt=""></div>';}
@@ -5410,7 +5423,7 @@ function _vnMood(line){const t=String(line||'').toLowerCase();if(!t)return 'neut
   if(/\b(great|perfect|deal|thanks|thank you|fair|works for me|okay,? that|sounds good|fine,? let|love)\b/.test(t))return 'pleased';
   if(/\b(no\b|not\b|can.t|still|too (much|high|expensive)|hm+|but\b|why\b|disappoint|unfortunately|sorry)/.test(t))return 'unhappy';
   return 'neutral';}
-function _vnChar(mood){return castArt(lookFor(_rwName()),mood||'neutral');}
+function _vnChar(mood){if(_worldFresh()&&S.world.cast.some(c=>!c.look))worldLooks().then(()=>{if(V.view==='real')render();});return castArt(lookFor(_rwName()),mood||'neutral');}
 // What happened with each person in their world, for the cast screen
 function _castLog(){if(!S.castLog||typeof S.castLog!=='object')S.castLog={};return S.castLog;}
 function _castNote(name,main,sub){if(!name)return;const L=_castLog();L[name.split(' · ')[0].trim()]={when:new Date().toISOString(),main,sub:sub||'',scen:RW.scenario};const ks=Object.keys(L);if(ks.length>40)delete L[ks[0]];save();}
