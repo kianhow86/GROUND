@@ -1548,6 +1548,40 @@ html[data-theme="dark"] .ob-ver .m{color:#A9D98E}
 .cast .cast-last.none{background:transparent;border:1px dashed var(--line);color:var(--ink-3)}
 .cast-sum{font-size:15px;line-height:1.45;color:var(--ink-2);margin-top:-4px}
 .vn-ghost{visibility:hidden}.vn-ghost+.vn-line{position:absolute;left:16px;right:16px}
+
+/* ── Intro visuals: one card size for all four, game frames ── */
+.ob .ob-vis{padding:0;margin:18px 0 0}
+.obv{position:relative;width:100%;height:100%;border-radius:26px;overflow:hidden;background:#0d0f14;box-shadow:0 20px 44px rgba(0,0,0,.45)}
+.obv-sel{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:8px;background:transparent;box-shadow:none;border-radius:0}
+.obt{position:relative;border-radius:20px;overflow:hidden;border:1.5px solid rgba(255,255,255,.12);background:#0d0f14}
+.obt.on{border-color:#7FE0E0;box-shadow:0 0 18px rgba(127,224,224,.45)}
+.obt-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.5) saturate(.9)}
+.obt-ch{position:absolute;left:50%;top:8%;bottom:46px;height:auto;max-height:calc(92% - 46px);transform:translateX(-50%);aspect-ratio:2/3;object-fit:contain;object-position:bottom;filter:drop-shadow(0 8px 12px rgba(0,0,0,.6))}
+.obt span{position:absolute;left:0;right:0;bottom:0;height:46px;display:flex;flex-direction:column;justify-content:center;align-items:center;background:rgba(8,10,14,.82);border-top:1px solid rgba(255,255,255,.08)}
+.obt b{font-size:14px;font-weight:800;color:#fff;line-height:1.1}.obt small{font-size:12.5px;font-weight:700;color:rgba(255,255,255,.6);margin-top:2px}
+.obv-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:35% 50%}
+.obv-ch{position:absolute;right:6%;top:9%;height:52%;aspect-ratio:2/3;object-fit:contain;object-position:bottom;filter:drop-shadow(0 14px 18px rgba(0,0,0,.5))}
+.obv-box{position:absolute;left:12px;right:12px;bottom:78px;padding:12px 14px;border-radius:16px;background:rgba(10,12,16,.86);border:1px solid rgba(255,255,255,.12);color:#fff}
+.obv-box small{display:block;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#7FE0E0}.obv-box b{display:block;font-size:18px;font-weight:700;line-height:1.3;margin-top:4px}
+.obv-mic{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);width:50px;height:50px;border-radius:50%;background:#E54B5B;border:5px solid rgba(229,75,91,.35);display:grid;place-items:center;box-shadow:0 0 24px rgba(229,75,91,.55)}.obv-mic i{width:14px;height:14px;border-radius:4px;background:#fff}
+.obv-win .obv-bg{filter:brightness(.5)}
+.obv-win .obv-ch{top:auto;bottom:86px;height:50%}
+.obv-stamp{position:absolute;left:30%;top:20%;transform:translate(-50%,-50%) rotate(-8deg);border:4px solid #A9D98E;border-radius:12px;padding:8px 18px;text-align:center;color:#A9D98E;background:rgba(10,12,16,.4)}
+.obv-stamp b{display:block;font-size:38px;font-weight:900;line-height:1;text-transform:uppercase}.obv-stamp span{display:block;font-size:13.5px;font-weight:800;color:#fff;margin-top:4px}
+.obv-new{position:absolute;left:12px;right:12px;bottom:12px;height:64px;display:flex;align-items:center;gap:12px;padding:0 14px 0 8px;border-radius:18px;background:rgba(10,12,16,.9);border:1.5px solid #7FE0E0;box-shadow:0 0 24px rgba(127,224,224,.4);color:#fff}
+.obv-new img{width:48px;height:48px}.obv-new small{display:block;font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#7FE0E0}.obv-new b{display:block;font-size:20px;font-weight:900}
+.obv-k .obv-bg{filter:brightness(.55)}
+.obv-k .obv-ch{left:50%;right:auto;transform:translateX(-50%);top:5%;height:40%;aspect-ratio:1}
+.obv-inv{position:absolute;left:12px;right:12px;bottom:12px;display:flex;flex-direction:column;gap:8px}
+.obv-inv>div{display:flex;gap:12px;align-items:center;padding:11px 12px;border-radius:16px;background:rgba(10,12,16,.88);border:1px solid rgba(255,255,255,.12);color:#fff}
+.obv-inv i{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-style:normal;font-weight:900;font-size:16px;background:#1f2229;border:1.5px solid rgba(127,224,224,.6);color:#7FE0E0;flex-shrink:0}
+.obv-inv b{display:block;font-size:15.5px}.obv-inv small{display:block;font-size:13.5px;color:rgba(255,255,255,.68);line-height:1.3}
+@media (max-height:740px){.ob .ob-vis{margin-top:12px}.obt span{height:40px}.obt-ch{bottom:40px}.obt small{display:none}.obv-box b{font-size:16px}.obv-inv>div{padding:8px 10px}.obv-inv small{display:none}.obv-inv i{width:32px;height:32px}.obv-stamp b{font-size:30px}.obv-new{height:54px}.obv-new img{width:40px;height:40px}.obv-new b{font-size:17px}.obv-win .obv-ch{bottom:72px}}
+.ob .ob-txt{margin-top:22px}
+.ob .ob-tap,.ob .g-cta{height:58px;margin-top:20px}
+@media (max-height:740px){.ob .ob-txt{margin-top:16px}.ob .ob-tap,.ob .g-cta{height:52px;margin-top:14px}}
+.obv-k .obv-bg{object-position:70% 50%}
+.ob-brand{min-height:36px}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -3996,11 +4030,13 @@ function renderIntro(app){
   _introClear();
   const n=V.obSlide||0,reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   const wave=(k,c)=>'<span class="ob-side'+(c?' '+c:'')+'">'+[30,60,40,80,50].slice(k).concat([30,60,40,80,50].slice(0,k)).map(x=>'<i style="--h:'+x+'px"></i>').join('')+'</span>';
+  const S_=k=>(typeof SETS!=='undefined'?SETS[k]:''),C_=(n,m)=>(typeof castArt==='function'?castArt(n,m):'');
+  const tile=(set,n,m,t,sub,on)=>'<div class="obt'+(on?' on':'')+'"><img class="obt-bg" src="'+S_(set)+'" alt=""><img class="obt-ch" src="'+C_(n,m)+'" alt=""><span><b>'+t+'</b><small>'+sub+'</small></span></div>';
   const VIS=[
-    '<div class="ob-fan"><div class="ob-c p-pink" style="--t:rotate(-12deg) translate(-70px,20px)"><small>Disagree</small><b>Your boss hands you one more project</b><span>Choose →</span></div><div class="ob-c p-lav" style="--t:rotate(10deg) translate(70px,10px)"><small>Interview</small><b>“Why you, over people just as good?”</b><span>Quick answer →</span></div><div class="ob-c p-teal" style="--t:translateY(-10px)"><small>Practice</small><b>They ask for a discount</b><span>Play this round →</span></div></div>',
-    wave(0)+'<div class="ob-phone"><div class="ob-pc"><small>Lena says</small><b>“Can you do it for ¥5,000?”</b><div class="ob-rec"><i></i>Listening · 0:07 · 12 words</div><div class="ob-wav">'+[8,18,26,14,22,10,24,16,28,12,20,8].map(x=>'<i style="--h:'+x+'px"></i>').join('')+'</div></div><div class="ob-mic"><i></i></div></div>'+wave(2,'r'),
-    '<div class="ob-ver"><small>How Lena took it</small><div class="m">Deal</div><div class="s">at ¥7,000, two labels</div><div class="ob-fix">'+kav()+'<p><b>One fix:</b> you explained your price before she pushed. Say the number, then stop.</p></div></div>',
-    '<div class="ob-priv"><div><i class="p-teal">'+ic('check','s')+'</i><span><b>No sign-up</b><small>No account, no email, no password.</small></span></div><div><i class="p-lav">'+ic('phone','s')+'</i><span><b>Stays on your phone</b><small>Your notebook lives here, not on our server.</small></span></div><div><i class="p-org">'+kav()+'</i><span><b>K is AI, on Kian’s method</b><small>Practice, not professional advice.</small></span></div></div>'
+    '<div class="obv obv-sel">'+tile('shop',5,'unhappy','The client','pays you',1)+tile('room',9,'unhappy','The boss','above you')+tile('office',4,'neutral','The interviewer','decides on you')+tile('studio',6,'unhappy','The teammate','beside you')+'</div>',
+    '<div class="obv obv-scene"><img class="obv-bg" src="'+S_('cafe')+'" alt=""><img class="obv-ch" src="'+C_(1,'unhappy')+'" alt=""><div class="obv-box"><small>Priya</small><b>“Can you do better on the price?”</b></div><div class="obv-mic"><i></i></div></div>',
+    '<div class="obv obv-scene obv-win"><img class="obv-bg" src="'+S_('cafe')+'" alt=""><img class="obv-ch" src="'+C_(1,'pleased')+'" alt=""><div class="obv-stamp"><b>Deal</b><span>¥700, two revisions</span></div><div class="obv-new"><img src="'+(typeof TOOL_ICON!=='undefined'?TOOL_ICON['give-to-get']:'')+'" alt=""><span><small>New move</small><b>Give to get</b></span></div></div>',
+    '<div class="obv obv-scene obv-k"><img class="obv-bg" src="'+S_('stage')+'" alt=""><img class="obv-ch" src="'+(typeof CAT_K!=='undefined'?CAT_K.thumbs:'')+'" alt=""><div class="obv-inv"><div><i>'+ic('check','s')+'</i><span><b>No sign-up</b><small>No account, no email, no password.</small></span></div><div><i>'+ic('phone','s')+'</i><span><b>Stays on your phone</b><small>Your notebook lives here, not on a server.</small></span></div><div><i>K</i><span><b>K is AI, on Kian’s method</b><small>Practice, not professional advice.</small></span></div></div></div>'
   ];
   const H=[['Practice the conversations that decide your career.','Price talks, pushy clients, interviews, a boss who won’t listen.'],
     ['Say it out loud. K&nbsp;plays the other side.','A real person, reacting to what you actually say. Type if you can’t talk.'],
