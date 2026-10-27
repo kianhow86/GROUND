@@ -3210,12 +3210,30 @@ function _adaptWho(){const p=_P(),f=(S.rwField||'').trim(),r=(p.role||'').trim()
   if(!f&&!r&&!pr)return '';
   return [f?'Their field: '+f:'',r?'Their role: '+r:'',p.stage?'Career stage: '+_label(STAGES,p.stage):'',pr?'In their words, their biggest problem: "'+pr.slice(0,200)+'"':''].filter(Boolean).join('\n');}
 function _adaptKey(id,who){let h=0;for(const ch of id+'|'+who)h=(h*31+ch.charCodeAt(0))|0;return id+':'+(h>>>0).toString(36);}
+// What must not change when a case is set in someone's world
+function _caseInvariant(c){
+  const p=c.practice||{},scen=p.scen||'',money=['bargain','ground','difficult','proposal'].includes(scen)||c.cat==='client';
+  let t='WHAT MUST STAY THE SAME: the situation is "'+c.title+'". The lesson is: '+c.principle+' Who holds the power, what is at stake, and what the speaker has to do stay exactly as they are.';
+  if(money)t+='\nTHIS IS A MONEY CONVERSATION. The speaker is being PAID for work, and the other person is the one paying. Keep it about a price, with concrete numbers in yuan (¥) sized to their world. A student is still being paid: a classmate’s film with a small budget, a café, a game jam with a prize, a tutoring gig. A free favor, a grade, a group project or "more space" is NOT this scene. Never turn a price into anything else.';
+  if('pos' in p)t+='\n"pos" keeps this exact shape, numbers only: "¥X. Lowest you’ll accept: ¥Y".';
+  return t;
+}
 async function _caseAdapt(c,item,line,key,who){
-  const sys='You adapt a practice scene so it happens in the person’s own world. Keep exactly the same situation, tension, power balance, the other person’s attitude, and what the speaker must handle. Change only the surface: what the work is, who the other person is (a first name and what they do), and the details, so it fits the person below. If the scene already fits their world, return it unchanged. If their field is unclear, choose something close to what they told you. Keep it universal: no country-specific details. Plain, simple American English, short sentences, about the same length as the original. Keep [[double brackets]] around the same key moment. "line" is what the other person says first; "k" (if given) is the model answer a coach would say back: adapt it to the new details but keep its technique, structure and length. If given, "cm" is the moment as written on the case page (keep its [[double brackets]] around the same key moment) and "cf" is how it feels, one short line in second person. Reply ONLY with compact JSON using exactly the keys you were given.\n\nTHE PERSON:\n'+who+(typeof worldText==='function'&&worldText()?'\n\n'+worldText():'');
+  const sys='You adapt a practice scene so it happens in the person’s own world. Change only the surface: what the work is, who the other person is (a first name and what they do), and the details, so it fits the person below. Keep the same tension, the same power balance, the other person’s attitude, and what the speaker must handle. If the scene already fits their world, return it unchanged. Keep it universal: no country-specific details. Plain, simple American English, short sentences, about the same length as the original. Keep [[double brackets]] around the same key moment. "line" is what the other person says first; "k" (if given) is the model answer a coach would say back: adapt it to the new details but keep its technique, structure and length. If given, "cm" is the moment as written on the case page (keep its [[double brackets]] around the same key moment) and "cf" is how it feels, one short line in second person; keep "cf" unchanged unless it no longer fits. Reply ONLY with compact JSON using exactly the keys you were given.\n\n'+_caseInvariant(c)+'\n\nTHE PERSON:\n'+who+(typeof worldText==='function'&&worldText()?'\n\n'+worldText():'');
   const src=Object.assign({},item,{line},c.k?{k:c.k}:{});
-  const raw=await Promise.race([callCoach(sys,JSON.stringify(src),{maxTokens:420,featureId:'case-adapt',noLang:true}),new Promise((_,rej)=>setTimeout(()=>rej(new Error('slow')),9000))]);
-  const j=_jsonFrom(raw);if(!j)throw new Error('bad');
-  const out={};for(const k of Object.keys(src)){const v=typeof j[k]==='string'?j[k].trim():'';if(!v)throw new Error('missing '+k);out[k]=v;}
+  const money=/¥/.test(JSON.stringify(src));
+  const check=j=>{const out={};for(const k of Object.keys(src)){const v=typeof j[k]==='string'?j[k].trim():'';if(!v)throw new Error('missing '+k);out[k]=v;}
+    if(src.cm&&/\[\[/.test(src.cm)&&!/\[\[.+\]\]/.test(out.cm))throw new Error('lost the key moment');
+    if(money&&!/¥\s?\d/.test(out.line+' '+(out.scene||'')+' '+(out.cm||'')+' '+(out.pos||'')))throw new Error('no price in a price scene');
+    if(src.pos&&!/^¥\s?[\d,]+\.\s*Lowest you’ll accept:\s*¥\s?[\d,]+\.?$/.test(out.pos.replace(/'/g,'’')))throw new Error('bad position');
+    return out;};
+  let out=null,err=null;
+  for(let t=0;t<2&&!out;t++){
+    try{const raw=await Promise.race([callCoach(sys+(t?'\n\nYour last answer changed the situation or dropped the price. Keep it a price conversation with ¥ numbers.':''),JSON.stringify(src),{maxTokens:460,featureId:'case-adapt',noLang:true}),new Promise((_,rej)=>setTimeout(()=>rej(new Error('K took too long')),12000))]);
+      const j=_jsonFrom(raw);if(!j)throw new Error('K gave an answer the app couldn’t use');out=check(j);}
+    catch(e){err=e;if(_isLimitErr(e)||_isOfflineErr(e))break;}
+  }
+  if(!out)throw err||new Error('K gave an answer the app couldn’t use');
   if(!S.caseAdapt||typeof S.caseAdapt!=='object')S.caseAdapt={};
   const ks=Object.keys(S.caseAdapt);if(ks.length>60)delete S.caseAdapt[ks[0]];
   S.caseAdapt[key]=out;save();return out;
@@ -3413,7 +3431,7 @@ async function worldEnsure(){
   return W.p;
 }
 // Does this case need to be set in their world, and is it already?
-function _caseWorldKey(id){return _adaptKey(id,_adaptWho()+'|'+(_worldFresh()?S.world.made:''));}
+function _caseWorldKey(id){return _adaptKey(id,'v2|'+_adaptWho()+'|'+(_worldFresh()?S.world.made:''));}
 function caseInWorld(c){const k=_caseWorldKey(c.id);return (S.caseAdapt&&S.caseAdapt[k])||null;}
 function caseNeedsWorld(c){return _worldWanted()&&_aiOn()&&!caseInWorld(c);}
 // The case as the reader should see it: adapted when we have it, original otherwise
@@ -3433,6 +3451,39 @@ async function caseSetInWorld(c){
     Object.keys(item).forEach(x=>{if(!item[x])delete item[x];});
     const out=await _caseAdapt(c,Object.assign({cm:c.moment,cf:c.feel||''},item),p.line||'',k2,_adaptWho());
     return out;
+  })().catch(e=>{CW.err[key]=e;throw e;}).finally(()=>{delete CW.busy[key];});
+  return CW.busy[key];
+}
+
+// ── Choose, set in their world: the scene, the line, what each option says and how they answer ──
+function chooseInWorld(id){const k=_caseWorldKey('ch:'+id);return (S.chooseAdapt&&S.chooseAdapt[k])||null;}
+function chooseNeedsWorld(id){return _worldWanted()&&_aiOn()&&!chooseInWorld(id);}
+function chooseView(id){const c=CHOOSE[id],a=chooseInWorld(id);if(!c||!a)return c;
+  return Object.assign({},c,{them:a.them,scene:a.scene,to:a.to,line:a.line,o:c.o.map((o,i)=>Object.assign({},o,a.o[i]||{}))});}
+async function chooseSetInWorld(id){
+  const key=_caseWorldKey('ch:'+id);if(CW.busy[key])return CW.busy[key];
+  CW.busy[key]=(async()=>{
+    await worldEnsure();
+    const c=CHOOSE[id],cs=_case(id);
+    const src={them:c.them,scene:c.scene,to:c.to,line:c.line,o:c.o.map(o=>({say:o.say,re:o.re,why:o.why,cost:o.cost,when:o.when}))};
+    const money=/¥/.test(JSON.stringify(src));
+    const sys='You adapt a four-way choice scene so it happens in the person’s own world. Change only the surface: who the other person is (first name and what they do), what the work is, the details, the numbers. Keep the same tension, the same power balance, and what the speaker must handle. "scene" is 3 short lines; a line starting with "!" is the sting and keeps its "!". "to" introduces who speaks; "line" is what they say (may be empty if the original is empty). Each option "say" is what the speaker might say or do, in the same style and length as the original, and "re" is how the other person reacts. "why", "cost" and "when" are the coach’s notes on that option: keep them word for word, changing ONLY names, jobs and numbers that no longer fit. Keep every option’s meaning exactly: option 1 stays option 1. Plain, simple American English. No country-specific details.'+(cs?'\n\n'+_caseInvariant(cs):money?'\n\nTHIS IS A MONEY CONVERSATION. The speaker is being paid for work. Keep it about a price with concrete ¥ numbers sized to their world. A student is still being paid (a classmate’s film with a small budget, a café, a game jam). Never turn a price into anything else.':'')+(cs&&caseInWorld(cs)?'\n\nTHIS SCENE IS ALREADY SET IN THEIR WORLD FOR PRACTICE AS: '+JSON.stringify(caseInWorld(cs))+'\nUse the same person, the same work and the same numbers.':'')+'\nReply ONLY with compact JSON with exactly these keys: {"them","scene":[3 strings],"to","line","o":[{"say","re","why","cost","when"} x'+c.o.length+']}\n\nTHE PERSON:\n'+_adaptWho()+(worldText()?'\n\n'+worldText():'');
+    const check=j=>{if(!j||!Array.isArray(j.scene)||j.scene.length!==3||!Array.isArray(j.o)||j.o.length!==c.o.length)throw new Error('K gave an answer the app couldn’t use');
+      const out={them:String(j.them||'').trim(),scene:j.scene.map(x=>String(x).trim()),to:String(j.to||'').trim(),line:String(j.line||'').trim(),o:j.o.map(o=>({say:String(o.say||'').trim(),re:String(o.re||'').trim(),why:String(o.why||'').trim(),cost:String(o.cost||'').trim(),when:String(o.when||'').trim()}))};
+      if(!out.them||out.scene.some(x=>!x)||out.o.some(o=>!o.say||!o.re||!o.why||!o.cost||!o.when))throw new Error('K gave an answer the app couldn’t use');
+      if(c.line&&!out.line)throw new Error('K gave an answer the app couldn’t use');
+      if(money&&!/¥\s?\d/.test(JSON.stringify(out)))throw new Error('no price in a price scene');
+      return out;};
+    let out=null,err=null;
+    for(let t=0;t<2&&!out;t++){
+      try{const raw=await Promise.race([callCoach(sys+(t?'\n\nYour last answer changed the situation or dropped the price. Keep every option’s meaning and the ¥ numbers.':''),JSON.stringify(src),{maxTokens:1200,featureId:'case-adapt',noLang:true}),new Promise((_,rej)=>setTimeout(()=>rej(new Error('K took too long')),14000))]);
+        out=check(_jsonFrom(raw));}
+      catch(e){err=e;if(_isLimitErr(e)||_isOfflineErr(e))break;}
+    }
+    if(!out)throw err;
+    if(!S.chooseAdapt||typeof S.chooseAdapt!=='object')S.chooseAdapt={};
+    const ks=Object.keys(S.chooseAdapt);if(ks.length>30)delete S.chooseAdapt[ks[0]];
+    S.chooseAdapt[key]=out;save();return out;
   })().catch(e=>{CW.err[key]=e;throw e;}).finally(()=>{delete CW.busy[key];});
   return CW.busy[key];
 }
@@ -5740,7 +5791,20 @@ function _chScene(c){
 }
 function _chOpt(o,i,cls){return '<button class="ch-opt'+(cls?' '+cls:'')+'" data-pick="'+i+'"><b>'+CH_L[i]+'</b><span>'+escHtml(o.say)+'</span></button>';}
 function renderChoose(app){
-  const c=CHOOSE[CH.id];if(!c){go('library');return;}
+  const c0=CHOOSE[CH.id];if(!c0){go('library');return;}
+  V.chOrig=V.chOrig||{};
+  const needs=!V.chOrig[CH.id]&&chooseNeedsWorld(CH.id),wkey=_caseWorldKey('ch:'+CH.id),werr=CW.err[wkey];
+  if(needs&&!werr&&!CW.busy[wkey]){chooseSetInWorld(CH.id).then(()=>{if(V.view==='choose'&&CH.id)render();}).catch(()=>{if(V.view==='choose')render();});}
+  if(needs){
+    let h='<main class="scr p-teal ch-scr">'+gBar('Choose','real');
+    if(werr)h+=renderAIError(werr,'ch-world-retry')+'<div class="push"></div><button class="link case-peek" data-act="ch-orig">Use the original instead →</button>';
+    else h+=kWritingHtml('K is setting this in your world…','Same choice, your kind of work.');
+    h+='</main>';app.innerHTML=h;wireCommon(app);
+    const r=app.querySelector('[data-act="ch-world-retry"]');if(r)r.addEventListener('click',()=>{delete CW.err[wkey];W.err=null;render();});
+    const o=app.querySelector('[data-act="ch-orig"]');if(o)o.addEventListener('click',()=>{V.chOrig[CH.id]=true;render();});
+    return;
+  }
+  const c=V.chOrig[CH.id]?c0:chooseView(CH.id);
   let h='<main class="scr p-teal ch-scr">'+gBar('Choose','real');
   if(CH.step==='pick'||CH.pick==null){
     h+=_chScene(c)+'<div class="g-kick ch-q">Which is closest to you?</div><div class="ch-opts">'+c.o.map((o,i)=>_chOpt(o,i)).join('')+'</div>';
