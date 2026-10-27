@@ -1455,6 +1455,27 @@ html[data-theme="dark"] .ob-ver .m{color:#A9D98E}
 .ch-path p small{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--chc);margin-right:6px;vertical-align:1px}
 .ch-allsub{font-size:calc(14px*var(--k));margin-top:4px}
 .ch-nosub .ch-allsub{display:none}
+
+/* Onboarding as a sentence: no card, the sentence sits on the page */
+.ob-sent{justify-content:flex-start;gap:14px;margin-bottom:0}
+.ob-card{flex:1;display:flex;flex-direction:column;justify-content:center;padding:10px 4px;color:var(--ink)}
+.ob-line{font-size:30px;font-weight:900;letter-spacing:-.03em;line-height:1.5}
+.ob-blank{display:inline-block;font:inherit;color:inherit;background:transparent;border:0;border-bottom:3px solid var(--ink-3);border-radius:0;padding:0 4px;outline:none;min-width:90px;max-width:100%;vertical-align:baseline}
+.ob-blank::placeholder{color:var(--ink-3);font-weight:700;opacity:.7}
+.ob-blank:focus{border-bottom-color:var(--ink)}
+.ob-pick{display:inline-flex;align-items:center;gap:4px;background:var(--card);border:1px solid var(--line);color:inherit;border-radius:999px;padding:2px 12px 2px 14px;font:inherit;font-size:24px;line-height:1.3;vertical-align:middle;max-width:100%;white-space:normal;text-align:left;box-shadow:var(--shadow)}
+.ob-pick i{font-style:normal;font-size:13px;opacity:.55}
+.ob-pick.empty{color:var(--ink-3);font-weight:700}
+.ob-hint{margin-top:24px;font-size:13.5px;line-height:1.4;color:var(--ink-3);font-weight:600}
+.ob-card2{justify-content:center;gap:16px}
+.ob-line2{font-size:26px;line-height:1.3}
+.ob-list{border-bottom:3px solid var(--ink-3);padding:0 4px}.ob-list.empty{color:var(--ink-3);font-weight:700}
+.ob-str .g-chip{min-height:44px;padding:8px 6px;font-size:13.5px}
+.ob-prob{flex:0 1 180px;min-height:70px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:16px;padding:12px 14px;font-size:15px;resize:none;box-shadow:var(--shadow)}
+.ob-prob::placeholder{color:var(--ink-3)}
+.ob-sheet{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 6px}
+.ob-sent .btn-pri{background:var(--ink);color:var(--bg)}
+@media (max-height:740px){.ob-line{font-size:26px}.ob-pick{font-size:21px}.ob-hint{margin-top:16px}.ob-line2{font-size:22px}.ob-str .g-chip{min-height:40px;font-size:12.5px}}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -3763,19 +3784,20 @@ function renderOnboarding(app){
     h+='<p class="small push center-t">You can change this any time in Settings.</p><button class="btn btn-pri" data-act="next">Continue</button>';
   }else if(step===1){
     h+=top(true);
-    h+='<div class="obq"><div class="obq-h"><h1 class="h1">About you</h1><p class="sub">So K’s examples sound like your life, not a textbook.</p></div>';
-    h+='<div class="obq-s"><label class="lab" for="ob-name">First name</label><input class="inp" id="ob-name" placeholder="What should K call you?" value="'+escHtml(p.name||'')+'"></div>';
-    const chip=(k,t,sm)=>'<button class="g-chip'+(p.stage===k?' on':'')+'" data-stage="'+k+'">'+(sm?'<small>'+sm+'</small>':'')+'<span>'+t+'</span></button>';
-    h+='<div class="obq-s"><div class="lab">Where are you now?</div><div class="obq-g3">'+chip('student','Student')+chip('jobhunt','First job hunt')+chip('switch','Switching careers')+'</div><div class="obq-g4">'+chip('early','0–2 yrs','Working')+chip('mid','3–5 yrs','Working')+chip('senior','6+ yrs','Working')+chip('freelance','business','Own')+'</div></div>';
-    h+='<div class="obq-s"><label class="lab" for="ob-field">What do you do, or study?</label><input class="inp" id="ob-field" placeholder="Music, 2nd year · Game audio freelancer" value="'+escHtml(S.rwField||'')+'"></div>';
-    h+='<div class="obq-s"><div class="lab">Age</div><div class="obq-g5">'+AGES.map(a=>'<button class="g-chip'+(p.age===a?' on':'')+'" data-age="'+escHtml(a)+'">'+escHtml(a)+'</button>').join('')+'</div></div></div>';
-    h+='<button class="btn btn-pri" data-act="next">Continue</button>';
+    const stg=p.stage||'',SP={student:['a student','studying'],jobhunt:['looking for my first job','in'],early:['working, 0–2 years','in'],mid:['working, 3–5 years','in'],senior:['working, 6+ years','in'],freelance:['freelance','doing'],switch:['changing careers','into']};
+    const sp=SP[stg]||['',''];
+    const blank=(id,val,ph,max)=>'<input class="ob-blank" id="'+id+'" maxlength="'+max+'" placeholder="'+escHtml(ph)+'" value="'+escHtml(val||'')+'" autocomplete="off" autocapitalize="words">';
+    const pick=(k,val,ph)=>'<button class="ob-pick'+(val?'':' empty')+'" data-pick="'+k+'">'+escHtml(val||ph)+' <i>▾</i></button>';
+    h+='<div class="obq ob-sent"><div class="ob-card"><div class="ob-line">I’m '+blank('ob-name',p.name,'your name',40)+',<br>'+pick('stage',sp[0],'where I am now')+',<br>'+(sp[1]?escHtml(sp[1])+' ':'')+blank('ob-field',S.rwField,stg==='student'?'music, 2nd year':'game audio',60)+',<br>and I’m '+pick('age',p.age,'my age')+'.</div>'+
+      '<p class="ob-hint">Tap a word to change it. K uses this so the examples sound like your life, not a textbook.</p></div>'+
+      '<button class="btn btn-pri" data-act="next">Continue</button></div>';
   }else{
     h+=top(true);
-    h+='<div class="obq"><div class="obq-h"><h1 class="h1">What’s hardest for you?</h1><p class="sub">Pick any. K will push you there first.</p></div>';
-    h+='<div class="obq-s"><div class="obq-g3 obq-str">'+STRUGGLES.map(x=>'<button class="g-chip'+((p.struggles||[]).includes(x[0])?' on':'')+'" data-str="'+escHtml(x[0])+'">'+escHtml(x[1])+'</button>').join('')+'</div></div>';
-    h+='<div class="obq-s obq-grow"><label class="lab" for="ob-prob">In your own words <span style="text-transform:none;letter-spacing:0;font-weight:600">(optional)</span></label><textarea class="g-answer" id="ob-prob" placeholder="e.g. Clients always ask for a discount and I say yes too fast.">'+escHtml(p.problem||'')+'</textarea></div></div>';
-    h+='<button class="btn btn-pri" data-act="done">Done</button>';
+    const sel=(p.struggles||[]).map(k=>_label(STRUGGLES,k).toLowerCase()),list=sel.length?sel.length===1?sel[0]:sel.slice(0,-1).join(', ')+' and '+sel[sel.length-1]:'';
+    h+='<div class="obq ob-sent"><div class="ob-card ob-card2"><div class="ob-line ob-line2">Hardest for me is <span class="ob-list'+(list?'':' empty')+'">'+escHtml(list||'tap below')+'</span></div>'+
+      '<div class="obq-g3 obq-str ob-str">'+STRUGGLES.map(x=>'<button class="g-chip'+((p.struggles||[]).includes(x[0])?' on':'')+'" data-str="'+escHtml(x[0])+'">'+escHtml(x[1])+'</button>').join('')+'</div>'+
+      '<textarea class="g-answer ob-prob" id="ob-prob" placeholder="'+(p.stage==='student'?'What’s coming up that you’re not ready for? (optional)':'In your own words. What keeps going wrong? (optional)')+'">'+escHtml(p.problem||'')+'</textarea></div>'+
+      '<button class="btn btn-pri" data-act="done">Done</button></div>';
   }
   h+='</main>';
   app.innerHTML=h;
@@ -3791,7 +3813,10 @@ function renderOnboarding(app){
   {const q=app.querySelector('.obq');if(q)_fillZoom([q],()=>document.scrollingElement.scrollHeight<=window.innerHeight&&![...q.querySelectorAll('.obq-g5 .g-chip,.obq-g4 .g-chip span')].some(e=>e.scrollHeight>e.clientHeight+2||e.getClientRects().length>1&&e.matches('span')),1.12);}
   wireChips(app,'stage',()=>p.stage,v=>p.stage=v,false,_profTouch);
   wireChips(app,'age',()=>p.age,v=>p.age=v);
-  wireChips(app,'str',()=>p.struggles,v=>p.struggles=v,true,_profTouch);
+  wireChips(app,'str',()=>p.struggles,v=>p.struggles=v,true,()=>{_profTouch();const el=app.querySelector('.ob-list');if(el){const sel=(p.struggles||[]).map(k=>_label(STRUGGLES,k).toLowerCase()),list=sel.length?sel.length===1?sel[0]:sel.slice(0,-1).join(', ')+' and '+sel[sel.length-1]:'';el.textContent=list||'tap below';el.classList.toggle('empty',!list);}});
+  app.querySelectorAll('.ob-blank').forEach(i=>{const fit=()=>{const m=app.querySelector('#ob-measure')||(()=>{const d=document.createElement('span');d.id='ob-measure';d.className='ob-blank';d.style.cssText='position:fixed;top:0;left:0;visibility:hidden;white-space:pre;width:auto;pointer-events:none';app.appendChild(d);return d;})();m.style.font=getComputedStyle(i).font;m.style.letterSpacing=getComputedStyle(i).letterSpacing;m.textContent=i.value||i.placeholder;i.style.width=Math.min(m.offsetWidth+6,app.clientWidth-80)+'px';};i.addEventListener('input',fit);fit();});
+  app.querySelectorAll('[data-pick]').forEach(b=>b.addEventListener('click',()=>{keep();const k=b.dataset.pick;const items=k==='stage'?STAGES:AGES.map(a=>[a,a]);const cur=k==='stage'?p.stage:p.age;
+    openSheet('<div class="kick" style="margin:0">'+(k==='stage'?'Where are you now?':'How old are you?')+'</div><div class="ob-sheet">'+items.map(x=>'<button class="g-chip'+(cur===x[0]?' on':'')+'" data-v="'+escHtml(x[0])+'">'+escHtml(x[1])+'</button>').join('')+'</div>',{wire:sh=>sh.querySelectorAll('[data-v]').forEach(c=>c.addEventListener('click',()=>{if(k==='stage')p.stage=c.dataset.v;else p.age=c.dataset.v;_profTouch();save();closeSheet();render();}))});}));
 }
 
 // ── Settings home: card rows, like TM Companion ───────────────────────────
