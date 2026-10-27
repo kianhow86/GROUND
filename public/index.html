@@ -1963,7 +1963,9 @@ async function callCoach(systemPrompt,userMessage,opts){
   if(data.text)return data.text;
   throw new Error('Backend response missing text');
 }
-function _jsonFrom(raw){const s=String(raw||'').replace(/```json|```/g,'');const m=s.match(/\{[\s\S]*\}/);return JSON.parse(m?m[0]:s);}
+function _jsonFrom(raw){const s=String(raw||'').replace(/```json|```/g,'').trim();const m=s.match(/\{[\s\S]*\}/);
+  try{return JSON.parse(m?m[0]:s);}
+  catch(e){console.warn('K did not answer in JSON:',s.slice(0,400));const err=new Error('K didn’t answer in the shape the app needs. K said: “'+s.slice(0,90).replace(/\s+/g,' ')+(s.length>90?'…':'')+'”');err.raw=s;throw err;}}
 function _isLimitErr(e){return /^limit:/.test(String(e&&e.message||e));}
 function _isOfflineErr(e){const m=String(e&&e.message||e);return navigator.onLine===false||/fetch|network|Failed to reach/i.test(m);}
 function _errDetail(e){const m=String(e&&e.message||e||'').replace(/sk-[A-Za-z0-9_-]+/g,'…');return m?'<p class="small center-t" style="opacity:.7;max-width:300px;margin:6px auto 0;word-break:break-word">Detail: '+escHtml(m.slice(0,160))+'</p>':'';}
