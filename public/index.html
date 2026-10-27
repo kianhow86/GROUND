@@ -3767,7 +3767,7 @@ function renderOnboarding(app){
     h+='<div class="obq-s"><label class="lab" for="ob-name">First name</label><input class="inp" id="ob-name" placeholder="What should K call you?" value="'+escHtml(p.name||'')+'"></div>';
     const chip=(k,t,sm)=>'<button class="g-chip'+(p.stage===k?' on':'')+'" data-stage="'+k+'">'+(sm?'<small>'+sm+'</small>':'')+'<span>'+t+'</span></button>';
     h+='<div class="obq-s"><div class="lab">Where are you now?</div><div class="obq-g3">'+chip('student','Student')+chip('jobhunt','First job hunt')+chip('switch','Switching careers')+'</div><div class="obq-g4">'+chip('early','0–2 yrs','Working')+chip('mid','3–5 yrs','Working')+chip('senior','6+ yrs','Working')+chip('freelance','business','Own')+'</div></div>';
-    h+='<div class="obq-s"><div class="lab">Your field</div><div class="obq-g3 obq-f">'+FIELDS.map(f=>'<button class="g-chip'+(S.rwField===f[0]?' on':'')+'" data-field="'+escHtml(f[0])+'">'+ic(f[1],'s')+'<span>'+escHtml(f[0].replace('Business & finance','Business').replace('Sales & marketing','Sales'))+'</span></button>').join('')+'</div></div>';
+    h+='<div class="obq-s"><label class="lab" for="ob-field">What do you do, or study?</label><input class="inp" id="ob-field" placeholder="Music, 2nd year · Game audio freelancer" value="'+escHtml(S.rwField||'')+'"></div>';
     h+='<div class="obq-s"><div class="lab">Age</div><div class="obq-g5">'+AGES.map(a=>'<button class="g-chip'+(p.age===a?' on':'')+'" data-age="'+escHtml(a)+'">'+escHtml(a)+'</button>').join('')+'</div></div></div>';
     h+='<button class="btn btn-pri" data-act="next">Continue</button>';
   }else{
@@ -3780,7 +3780,7 @@ function renderOnboarding(app){
   h+='</main>';
   app.innerHTML=h;
   const on=(s,f)=>{const el=app.querySelector(s);if(el)el.addEventListener('click',f);};
-  const keep=()=>{const nm=app.querySelector('#ob-name');if(nm)p.name=nm.value.trim().slice(0,40);const pr=app.querySelector('#ob-prob'),pc=app.querySelector('#ob-price'),lw=app.querySelector('#ob-low');if(pr)p.problem=pr.value.trim();if(pc)S.rwPrice=pc.value.trim();if(lw)S.rwLowest=lw.value.trim();save();};
+  const keep=()=>{const nm=app.querySelector('#ob-name');if(nm)p.name=nm.value.trim().slice(0,40);const fd=app.querySelector('#ob-field');if(fd)S.rwField=fd.value.trim().slice(0,60);const pr=app.querySelector('#ob-prob'),pc=app.querySelector('#ob-price'),lw=app.querySelector('#ob-low');if(pr)p.problem=pr.value.trim();if(pc)S.rwPrice=pc.value.trim();if(lw)S.rwLowest=lw.value.trim();save();};
   const finish=()=>{keep();S.onboarded=true;S.whatsNew=APP_VERSION;save();V.obStep=0;go('hub');};
   on('[data-act="skip"]',finish);
   on('[data-act="next"]',()=>{keep();V.obStep=step+1;render();});
