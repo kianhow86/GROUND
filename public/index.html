@@ -4337,7 +4337,7 @@ async function rpDraft(tone){
     RP.guard=guard?{asked,lowest}:null;
     _countReply();
     S.lastReply={text:RP.text,who:RP.who,want:RP.want,draft:RP.draft,at:new Date().toISOString()};save();
-    nbAdd({cat:'reply',title:_kShort(RP.text,80),sub:RP_WHO.find(w=>w[0]===RP.who)[1]+' · '+RP_WANT.find(w=>w[0]===RP.want)[1],fix:why[0]?why[0].technique+': '+why[0].why:'',worked:'',fb:'',_noNote:true,extra:{html:'<div class="g-block p-lav"><div class="g-kick">Sent this</div><div class="g-draft">'+escHtml(draft)+'</div></div>'+(why.length?'<div class="g-card tight">'+why.map((w,i)=>'<div class="g-row top"><span class="g-num">'+(i+1)+'</span><span class="t"><span class="q">“'+escHtml(w.quote)+'”</span><span class="w">'+escHtml(w.why)+'</span></span></div>').join('')+'</div>':'')}});
+    nbAdd({cat:'reply',title:_kShort(RP.text,80),sub:[(RP_WHO.find(w=>w[0]===RP.who)||[])[1],(RP_WANT.find(w=>w[0]===RP.want)||[])[1]].filter(Boolean).join(' · ')||'K’s read',fix:why[0]?why[0].technique+': '+why[0].why:'',worked:'',fb:'',_noNote:true,extra:{html:'<div class="g-block p-lav"><div class="g-kick">Sent this</div><div class="g-draft">'+escHtml(draft)+'</div></div>'+(why.length?'<div class="g-card tight">'+why.map((w,i)=>'<div class="g-row top"><span class="g-num">'+(i+1)+'</span><span class="t"><span class="q">“'+escHtml(w.quote)+'”</span><span class="w">'+escHtml(w.why)+'</span></span></div>').join('')+'</div>':'')}});
     RP.step='reply';
   }catch(e){RP.err=e;RP.step='error';}
   RP.loading=false;render();
