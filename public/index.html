@@ -1043,7 +1043,7 @@ html[data-theme="light"] .sc-cat{color:var(--pd)}html[data-theme="light"] .sc-ca
 .ch-k{padding:calc(17px*var(--k)) 18px}
 .ch-kh{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
 .ch-kr{margin-top:calc(11px*var(--k))}
-.ch-kr small{display:block;font-size:calc(10.5px*var(--k));font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.ch-kr small{display:block;font-size:max(11.5px,calc(11.5px*var(--k)));font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
 .ch-kr p{font-size:calc(15.5px*var(--k));font-weight:600;line-height:1.42;margin-top:3px}
 .ch-allh{font-size:calc(24px*var(--k));margin-top:2px}
 .ch-all{display:flex;flex-direction:column;gap:calc(10px*var(--k))}
@@ -1453,7 +1453,7 @@ html[data-theme="dark"] .ob-ver .m{color:#A9D98E}
 .rw-tiles.has-art .rw-surprise b{font-size:24px}.rw-tiles.has-art .rw-surprise span{font-size:15px}
 .rw-surprise .lib-art{width:auto;height:100%;bottom:-6%;right:6%}
 @media (max-height:740px){.lib-art{width:40%;bottom:-6%;right:4%}.rw-tiles.has-art .lib-topic{padding-top:10px}.rw-tiles.has-art .rw-surprise b{font-size:21px}.rw-surprise .lib-art{height:104%;width:auto}}
-.ch-path p small{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--chc);margin-right:6px;vertical-align:1px}
+.ch-path p small{display:inline-block;font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--chc);margin-right:6px;vertical-align:1px}
 .ch-allsub{font-size:calc(14px*var(--k));margin-top:4px}
 .ch-nosub .ch-allsub{display:none}
 
@@ -1594,7 +1594,7 @@ html[data-theme="dark"] .ob-ver .m{color:#A9D98E}
 .rw-eq{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:6px;padding:10px 6px 9px;border-radius:16px;background:var(--card);border:1.5px solid var(--line);color:var(--ink);text-align:center}
 .rw-eq img{width:36px;height:36px;border-radius:10px;background:#14161B;padding:3px;flex-shrink:0}
 .rw-eq b{font-size:13.5px;font-weight:800;line-height:1.2;text-wrap:balance}
-.rw-eq small{position:absolute;top:-7px;right:6px;font-size:10.5px;font-weight:800;padding:1px 6px;border-radius:999px;background:#7FE0E0;color:#06201F}
+.rw-eq small{position:absolute;top:-8px;right:6px;font-size:11.5px;font-weight:800;padding:1px 6px;border-radius:999px;background:#7FE0E0;color:#06201F}
 .rw-eq.on{border-color:#7FE0E0;background:rgba(127,224,224,.12);box-shadow:0 0 14px rgba(127,224,224,.3)}
 .vn-new{position:absolute;left:12px;right:12px;bottom:12px;display:flex;align-items:center;gap:12px;padding:10px 14px 10px 10px;border-radius:18px;background:rgba(10,12,16,.92);border:1.5px solid #7FE0E0;box-shadow:0 0 24px rgba(127,224,224,.4);color:#fff;animation:vn-rise .5s cubic-bezier(.2,1.2,.3,1) 1.1s both}
 @keyframes vn-rise{0%{opacity:0;transform:translateY(24px) scale(.96)}100%{opacity:1;transform:none}}
@@ -1656,6 +1656,43 @@ html[data-theme="dark"] .ob-ver .m{color:#A9D98E}
 .snd-btn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--ink-3);border:1px solid var(--line)}
 .snd-btn svg{width:18px;height:18px}.snd-btn.on{color:var(--ink)}
 .vn-snd{position:absolute;top:12px;right:12px;z-index:3;background:rgba(10,12,16,.6);border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.6)}.vn-snd.on{color:#fff}
+
+/* small phones: the hardest-for-me step fits */
+@media (max-height:740px){.ob-card2{gap:12px}.ob-prob{flex:0 1 110px;min-height:60px}.ob-line2{font-size:21px}}
+
+/* ── Tour v2: the hub in miniature ── */
+main.hub{transition:transform .5s cubic-bezier(.3,1,.4,1),border-radius .5s}
+main.hub.tour-mini{transform:scale(.62) translateY(-10%);transform-origin:50% 40%;border-radius:36px;box-shadow:0 0 0 2px rgba(255,255,255,.12),0 30px 60px rgba(0,0,0,.6);pointer-events:none;overflow:hidden}
+main.hub.tour-grow{transition:transform .65s cubic-bezier(.2,1.1,.3,1)}
+.tour2{background:transparent}
+.tour2 .tour-hole{box-shadow:0 0 0 9999px rgba(5,6,10,.72);border-radius:16px;transition:all .45s cubic-bezier(.3,1,.4,1)}
+.tour2 .tour-hole::after{border-radius:20px}
+.tour-top{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top) + 18px);margin:0 auto;max-width:var(--app-w);padding:0 20px;display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:800;letter-spacing:.18em;color:rgba(235,235,245,.6);z-index:3}
+.tour-top b{color:#fff}.tour-top .tour-skip{letter-spacing:0;color:rgba(235,235,245,.7)}
+.tour-k{position:absolute;z-index:4;filter:drop-shadow(0 10px 18px rgba(0,0,0,.6));transition:left .45s,top .45s}
+.tour-bub{position:absolute;z-index:5;background:#F4F4F6;color:#0B0C10;border-radius:20px;padding:14px 16px;box-shadow:0 14px 30px rgba(0,0,0,.45);transition:left .45s,top .45s}
+.tour-bub b{display:block;font-size:18px;font-weight:900;letter-spacing:-.02em}.tour-bub p{font-size:15px;line-height:1.4;margin-top:4px;color:#2a2d34;text-wrap:pretty}
+.tour2.step .tour-bub,.tour2.step .tour-k{animation:tour-pop .4s cubic-bezier(.2,1.4,.4,1) both}
+.tour2.step .tour-bub{animation-delay:.12s}
+@keyframes tour-pop{0%{opacity:0;transform:translateY(10px) scale(.94)}100%{opacity:1;transform:none}}
+.tour-foot{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 22px);margin:0 auto;max-width:var(--app-w);padding:0 20px;display:flex;align-items:center;justify-content:space-between;z-index:5}
+.tour-dots{display:flex;gap:6px}.tour-dots i{width:22px;height:4px;border-radius:2px;background:rgba(255,255,255,.22)}.tour-dots i.on{background:#fff}
+.tour2 .tour-next{font-size:16px;padding:14px 26px}
+.tour2.out{opacity:0;transition:opacity .4s}
+@media (prefers-reduced-motion:reduce){main.hub{transition:none}.tour2 *{animation:none!important;transition:none!important}}
+
+/* tour v3: isolate one part, fade the rest */
+main.hub.tour-mini{transition:transform .55s cubic-bezier(.3,1,.4,1),box-shadow .4s,opacity .4s;animation:tour-in .6s ease both}
+@keyframes tour-in{0%{opacity:0}100%{opacity:1}}
+main.hub.tour-iso{box-shadow:none;background:transparent}
+main.hub .tour-dim{opacity:0!important;transition:opacity .45s ease}
+main.hub.tour-mini *{transition:opacity .45s ease}
+.tour2 .tour-k,.tour2 .tour-bub{transition:opacity .3s ease}
+.tour2 .tour-k.hide,.tour2 .tour-bub.hide{opacity:0;animation:none}
+.tour2 .tour-k:not(.hide){animation:tour-pop .45s cubic-bezier(.2,1.4,.4,1) both}
+.tour2 .tour-bub:not(.hide){animation:tour-pop .45s cubic-bezier(.2,1.4,.4,1) .12s both}
+.tour2{background:rgba(5,6,10,.0)}
+body:has(.tour2) {background:#07080B}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -1960,6 +1997,7 @@ function render(){
   const app=document.getElementById('app');
   if(!app)return;
   closeSheet();
+  if(V.view!=='hub'){document.querySelectorAll('.tour').forEach(t=>t.remove());}
   if(typeof sndSync==='function')sndSync();
   if(!S.onboarded&&V.view!=='owner'){return renderOnboarding(app);}
   const R={cast:renderCast,hub:renderHub,reply:renderReply,real:renderReal,pitch:renderPitch,quick:renderQuick,settings:renderSettings,notebook:renderNotebook,advice:renderAdvice,library:renderLibrary,case:renderCase,'nb-entry':renderNbEntry,sync:renderSync,owner:renderOwner,ask:renderAsk,choose:renderChoose,askk:renderAskK};
@@ -3914,7 +3952,7 @@ function renderHub(app){
   app.querySelector('[data-act="askk"]').addEventListener('click',()=>{if(!V.deskBusy)openAskK();});
   _deckWire(app.querySelector('#dk-deck'));
   _kTakeRefresh();
-  if(S.onboarded&&!S.tourDone)setTimeout(()=>{if(V.view==='hub'&&!document.getElementById('sheet'))hubTour(0);},450);
+  if(S.onboarded&&!S.tourDone)setTimeout(()=>{if(V.view==='hub'&&!document.getElementById('sheet')&&!document.querySelector('.tour'))hubTour(0);},350);
 }
 // Three cards on screen (front + two peeking). Drag left = next, right = back, tap the edge = next.
 function _deckWire(st){
@@ -3959,27 +3997,62 @@ function _hubFit(){
 }
 try{let _hf;window.addEventListener('resize',()=>{clearTimeout(_hf);_hf=setTimeout(()=>{if(V.view==='hub')_hubFit();},120);});}catch(e){}
 
-// ── First visit: a three-step tour of the hub ──
+// ── First visit: the hub shrinks into a miniature, K says hello, then lifts out each part on its own ──
 const HUB_TOUR=[
-  {sel:'#dk-deck',t:'Your deck',b:'One card at a time, picked for you. Swipe for the next: practice, read, choose, quick answer, and around again. New cards every day.'},
-  {sel:'.askk',t:'Ask K',b:'Something coming up, or something just happened? Tell K in your own words, or paste their message. K reads it and takes you to the right tool: a reply, advice, or practice.'},
-  {sel:'.dk-tools',t:'Everything else',b:'Practice a talk, the Toolkit, and your notes. Settings sit at the top.'}
+  {sel:null,t:'Welcome to your hub',b:'This is home. Four things worth knowing, and you’re ready.',pose:'invite'},
+  {sel:'#dk-deck',t:'Your deck',b:'One card a day, picked for you. Practice it, read it, or pick your answer. Swipe for the next.',pose:'up',fit:.62},
+  {sel:'.dk-tools .askk',t:'Ask K',b:'Something coming up, or a message you don’t know how to answer? Tell me. I’ll take you to the right tool.',pose:'left',fit:1.6},
+  {sel:'.dk-tools',t:'Everything else',b:'Practice a talk, your Toolkit of moves, and your notes. It all lives down here.',pose:'squat',fit:1},
+  {sel:'.ib-set',t:'Settings',b:'Your profile, your notes on you, and your data. Up here, out of the way.',pose:'up',fit:2}
 ];
+function _tourEnd(t,m){S.tourDone=true;save();if(t){t.classList.add('out');setTimeout(()=>t.remove(),450);}
+  if(m){m.querySelectorAll('.tour-dim').forEach(e=>e.classList.remove('tour-dim'));m.classList.remove('tour-iso');m.style.transform='';m.classList.add('tour-grow');m.classList.remove('tour-mini');setTimeout(()=>m.classList.remove('tour-grow'),800);}}
+// Fade everything in the hub except the part (and the boxes that hold it)
+function _tourIsolate(m,el){m.querySelectorAll('.tour-dim').forEach(e=>e.classList.remove('tour-dim'));if(!el)return;
+  let n=el;while(n&&n!==m){const p=n.parentElement;if(!p)break;[...p.children].forEach(c=>{if(c!==n)c.classList.add('tour-dim');});n=p;}}
 function hubTour(i){
-  document.querySelectorAll('.tour').forEach(e=>e.remove());
-  const st=HUB_TOUR[i],el=st&&document.querySelector(st.sel);
-  if(!st||!el){S.tourDone=true;save();return;}
-  const r=el.getBoundingClientRect(),pad=10,last=i===HUB_TOUR.length-1,col=(document.querySelector('main.scr')||document.body).getBoundingClientRect(),colL=col.left,colW=col.width;
-  const t=document.createElement('div');t.className='tour';
-  const below=r.top+r.height/2<window.innerHeight/2;
-  t.innerHTML='<div class="tour-hole" style="left:'+(r.left-pad)+'px;top:'+(r.top-pad)+'px;width:'+(r.width+pad*2)+'px;height:'+(r.height+pad*2)+'px"></div>'+
-    '<div class="tour-card" style="left:'+(colL+18)+'px;width:'+(colW-36)+'px;'+(below?'top:'+Math.min(r.bottom+pad+14,window.innerHeight-230)+'px':'bottom:'+Math.min(window.innerHeight-r.top+pad+14,window.innerHeight-230)+'px')+'">'+
-    '<div class="tour-n">'+(i+1)+' of '+HUB_TOUR.length+'</div><b>'+escHtml(st.t)+'</b><p>'+escHtml(st.b)+'</p>'+
-    '<div class="tour-row"><button class="tour-skip"'+(last?' style="visibility:hidden"':'')+'>Skip</button><button class="tour-next">'+(last?'Got it':'Next')+'</button></div></div>';
-  document.body.appendChild(t);
-  const end=()=>{t.remove();S.tourDone=true;save();};
-  t.querySelector('.tour-skip').addEventListener('click',end);
-  t.querySelector('.tour-next').addEventListener('click',()=>{if(last)end();else hubTour(i+1);});
+  const m=document.querySelector('main.hub');if(!m){S.tourDone=true;save();return;}
+  let t=document.querySelector('.tour');
+  if(!t){t=document.createElement('div');t.className='tour tour2';t.innerHTML='<div class="tour-top"><span><b>GROUND</b> · A QUICK TOUR</span><button class="tour-skip">Skip</button></div><img class="tour-k" alt=""><div class="tour-bub"><b></b><p></p></div><div class="tour-foot"><div class="tour-dots">'+HUB_TOUR.map(()=>'<i></i>').join('')+'</div><button class="tour-next">Next</button></div>';
+    document.body.appendChild(t);m.classList.add('tour-mini');
+    t.querySelector('.tour-skip').addEventListener('click',()=>_tourEnd(t,m));}
+  const st=HUB_TOUR[i];if(!st){_tourEnd(t,m);return;}
+  const el=st.sel?document.querySelector(st.sel):null;if(st.sel&&!el){_tourEnd(t,m);return;}
+  const last=i===HUB_TOUR.length-1;
+  t.querySelectorAll('.tour-dots i').forEach((d,k)=>d.classList.toggle('on',k===i));
+  const nx=t.querySelector('.tour-next');nx.textContent=last?'Got it':i===0?'Show me':'Next';nx.onclick=()=>{if(last)_tourEnd(t,m);else hubTour(i+1);};
+  const k=t.querySelector('.tour-k'),bub=t.querySelector('.tour-bub');k.classList.add('hide');bub.classList.add('hide');
+  const W=window.innerWidth,H=window.innerHeight,cw=Math.min(W,parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--app-w'))||430),cl=(W-cw)/2;
+  // Lift the part out: measure it in the real hub, then move and scale the whole hub so the part lands centre stage
+  if(el){
+    const keep=m.style.transition;m.style.transition='none';const tf=m.style.transform;m.style.transform='none';m.classList.remove('tour-mini');
+    const M=m.getBoundingClientRect(),R=el.getBoundingClientRect();m.classList.add('tour-mini');m.style.transform=tf;void m.offsetWidth;m.style.transition=keep;
+    const maxW=cw-48,maxH=H*.36;let sc=Math.min(st.fit||1,maxW/R.width,maxH/R.height);
+    const cx=R.left-M.left+R.width/2,cy=R.top-M.top+R.height/2;
+    const Dx=st.pose==='left'?cl+cw*.38:cl+cw/2,Dy=st.pose==='squat'?H*.52:st.sel==='#dk-deck'?H*.36:H*.34;
+    m.classList.add('tour-iso');m.style.transformOrigin='0 0';m.style.transform='translate('+(Dx-M.left-sc*cx)+'px,'+(Dy-M.top-sc*cy)+'px) scale('+sc+')';
+    _tourIsolate(m,el);
+  }else{m.classList.remove('tour-iso');m.style.transform='';m.style.transformOrigin='';_tourIsolate(m,null);}
+  setTimeout(()=>{
+    const r=el?el.getBoundingClientRect():m.getBoundingClientRect();
+    k.src=(typeof ART!=='undefined'?ART:'art/')+'kpose/'+st.pose+'.webp';bub.querySelector('b').textContent=st.t;bub.querySelector('p').textContent=st.b;
+    const kw=Math.min(150,cw*.38),kh=kw*540/480;let kx,ky;
+    if(!el){kx=cl+cw-kw-4;ky=Math.min(r.bottom-kh*.55,H-kh-96);}
+    else if(st.pose==='squat'){kx=r.left+r.width*.6-kw/2;ky=r.top-kh+3;}
+    else if(st.pose==='left'){kx=Math.min(r.right+6,cl+cw-kw-4);ky=r.top+r.height/2-kh*.24;}
+    else if(st.sel==='#dk-deck'){kx=cl+6;ky=r.bottom-kh*.42;}
+    else{kx=Math.max(cl+6,r.left-kw*.78);ky=r.bottom+4;}
+    Object.assign(k.style,{width:kw+'px',left:kx+'px',top:ky+'px'});
+    // bubble: below the part when there is room, else beside K
+    bub.style.width=(cw-32)+'px';const bh=bub.offsetHeight||120;let bx=cl+16,by;
+    if(!el){bub.style.width=(cw-kw-20)+'px';by=r.bottom+10;}
+    else if(st.pose==='squat')by=r.bottom+18;
+    else if(st.sel==='#dk-deck'){bub.style.width=(cw-kw-20)+'px';bx=kx+kw-6;by=ky+kh*.4;}
+    else by=Math.max(r.bottom,ky+kh)+14;
+    by=Math.max(70,Math.min(by,H-(bub.offsetHeight||bh)-100));
+    Object.assign(bub.style,{left:bx+'px',top:by+'px'});
+    k.classList.remove('hide');bub.classList.remove('hide');
+  },i===0?650:560);
 }
 // ═══════════════════════════════════════════════════════════════════════════
 // Onboarding (3 steps, skippable) · Settings · codes · monthly limit sheet ·
@@ -4168,7 +4241,7 @@ function renderIntro(app){
     '<div class="obv obv-sel">'+tile('shop',5,'unhappy','The client','pays you',1)+tile('room',9,'unhappy','The boss','above you')+tile('office',4,'neutral','The interviewer','decides on you')+tile('studio',6,'unhappy','The teammate','beside you')+'</div>',
     '<div class="obv obv-scene"><img class="obv-bg" src="'+S_('cafe')+'" alt=""><img class="obv-ch" src="'+C_(1,'unhappy')+'" alt=""><div class="obv-box"><small>Priya</small><b>“Can you do better on the price?”</b></div><div class="obv-mic"><i></i></div></div>',
     '<div class="obv obv-scene obv-win"><img class="obv-bg" src="'+S_('cafe')+'" alt=""><img class="obv-ch" src="'+C_(1,'pleased')+'" alt=""><div class="obv-stamp"><b>Deal</b><span>¥700, two revisions</span></div><div class="obv-new"><img src="'+(typeof TOOL_ICON!=='undefined'?TOOL_ICON['give-to-get']:'')+'" alt=""><span><small>New move</small><b>Give to get</b></span></div></div>',
-    '<div class="obv obv-scene obv-k"><img class="obv-bg" src="'+S_('stage')+'" alt=""><img class="obv-ch" src="'+(typeof CAT_K!=='undefined'?CAT_K.thumbs:'')+'" alt=""><div class="obv-inv"><div><i>'+ic('check','s')+'</i><span><b>No sign-up</b><small>No account, no email, no password.</small></span></div><div><i>'+ic('phone','s')+'</i><span><b>Stays on your phone</b><small>Your notebook lives here, not on a server.</small></span></div><div><i>K</i><span><b>K is AI, on Kian’s method</b><small>Practice, not professional advice.</small></span></div></div></div>'
+    '<div class="obv obv-scene obv-k"><img class="obv-bg" src="'+S_('stage')+'" alt=""><img class="obv-ch" src="'+(typeof ART!=='undefined'?ART:'art/')+'kpose/arms.webp" alt=""><div class="obv-inv"><div><i>'+ic('check','s')+'</i><span><b>No sign-up</b><small>No account, no email, no password.</small></span></div><div><i>'+ic('phone','s')+'</i><span><b>Stays on your phone</b><small>Your notebook lives here, not on a server.</small></span></div><div><i>K</i><span><b>K is AI, on Kian’s method</b><small>Practice, not professional advice.</small></span></div></div></div>'
   ];
   const H=[['Practice the conversations that decide your career.','Price talks, pushy clients, interviews, a boss who won’t listen.'],
     ['Say it out loud. K&nbsp;plays the other side.','A real person, reacting to what you actually say. Type if you can’t talk.'],
@@ -5627,7 +5700,7 @@ function _vnMood(line){const t=String(line||'').toLowerCase();if(!t)return 'neut
 // What K tagged, or a guess from the words: face, the mark by their head, and how close they stand
 const VN_EMO={calm:['neutral','',1],pleased:['pleased','sparkle',1.04],doubtful:['unhappy','question',.97],annoyed:['unhappy','anger',1.08],angry:['unhappy','anger2',1.16],impatient:['unhappy','steam',1.1],nervous:['unhappy','sweat',.94],surprised:['neutral','shock',1.06],confused:['neutral','question',1],disappointed:['unhappy','gloom',.92]};
 function _vnEmo(line){let k=(RW.moodFor===line&&RW.fuMood)||'';
-  if(!k){const t=String(line||'').toLowerCase();k=/\b(what\?!|seriously|excuse me|how dare|unacceptable|ridiculous)\b|!{2,}/.test(t)?'angry':/\b(great|perfect|deal|thanks|thank you|works for me|sounds good|love)\b/.test(t)?'pleased':/\b(hm+|not sure|why\b|really\?)/.test(t)?'doubtful':/\b(still|too (much|high|expensive)|can.t|no\b|but\b)/.test(t)?'annoyed':/\b(disappoint|unfortunately|sorry)\b/.test(t)?'disappointed':'calm';}
+  if(!k){const t=String(line||'').toLowerCase();const first=line===RW.question&&!(RW.convo||[]).length;k=/\b(what\?!|seriously|excuse me|how dare|unacceptable|ridiculous)\b|!{2,}/.test(t)?'angry':/\b(great|perfect|deal|thanks|thank you|works for me|sounds good|love)\b/.test(t)?'pleased':/\b(hm+|not sure|why\b|really\?|can you do better|lower|discount)/.test(t)?'doubtful':!first&&/\b(still|too (much|high|expensive)|can.t)\b/.test(t)?'annoyed':/\b(disappoint|unfortunately|sorry)\b/.test(t)?'disappointed':'calm';}
   return Object.assign({k},{face:VN_EMO[k][0],mark:VN_EMO[k][1],size:VN_EMO[k][2]});}
 function _vnMarkHtml(m){if(!m)return '';const S={
   sparkle:'<svg viewBox="0 0 60 60"><path d="M30 4l4 14 14 4-14 4-4 14-4-14-14-4 14-4z" fill="#FFE08A"/><path d="M50 30l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="#FFF3C4"/><path d="M12 40l1.5 4.5 4.5 1.5-4.5 1.5L12 52l-1.5-4.5L6 46l4.5-1.5z" fill="#FFF3C4"/></svg>',
