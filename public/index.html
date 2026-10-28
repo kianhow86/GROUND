@@ -1509,7 +1509,7 @@ html[data-theme="dark"] .ob-ver .m{color:#A9D98E}
 .vn-box{position:relative;margin:12px;padding:14px 16px 16px;border-radius:18px;background:rgba(10,12,16,.82);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(8px);color:#fff;min-height:96px}
 .vn-box small{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--p);margin-bottom:6px}
 .vn-line{font-size:19px;font-weight:700;line-height:1.35;min-height:52px}
-.vn-line.more::after{content:"▸";position:absolute;right:16px;bottom:12px;opacity:.8;animation:vn-blink 1s steps(2) infinite;font-size:18px}
+.vn-line.more::after{content:none}
 .vn-box{max-height:46%;overflow:hidden}
 .vn-play .vn-line::after{content:"▍";opacity:.6;animation:vn-blink 1s steps(2) infinite}
 @keyframes vn-blink{50%{opacity:0}}
@@ -1717,6 +1717,14 @@ main:has(.vn) .g-answer{flex:0 0 auto;height:96px;min-height:96px}
 
 .obv-hi{position:absolute;left:auto;top:14px;z-index:3;white-space:nowrap;background:#F4F4F6;color:#0B0C10;font-size:16px;font-weight:800;line-height:1.3;padding:10px 14px;border-radius:16px 16px 16px 4px;box-shadow:0 10px 24px rgba(0,0,0,.45);font-size:15px;animation:tour-pop .45s cubic-bezier(.2,1.4,.4,1) .5s both}
 @media (max-height:740px){.obv-hi{font-size:14px;padding:8px 12px}}
+
+/* tap for more: a small pill at the bottom right of the box */
+.vn-box.has-more{padding-bottom:30px}
+.vn-box.has-more::after{content:"Tap ▾";position:absolute;right:12px;bottom:9px;font-size:12px;font-weight:800;letter-spacing:.06em;color:#0B0C10;background:#7FE0E0;padding:3px 9px;border-radius:999px;animation:vn-nudge 1.1s ease-in-out infinite}
+@keyframes vn-nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(3px)}}
+.vn-play .vn-line::after{content:"";display:inline-block;width:2px;height:1em;background:currentColor;opacity:.5;margin-left:2px;vertical-align:-2px;animation:vn-blink 1s steps(2) infinite}
+.vn-line.more::after{content:none!important}
+@media (prefers-reduced-motion:reduce){.vn-box.has-more::after{animation:none}}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -5659,9 +5667,9 @@ function renderReal(app){
     const pages=_vnPages(full);let pg=0,i=0,t=null,typing=true;
     const ghost=document.createElement('div');ghost.className='vn-line vn-ghost';ghost.textContent=pages.reduce((a,b)=>a.length>=b.length?a:b,'');vl.parentNode.insertBefore(ghost,vl);vl.style.top=ghost.offsetTop+'px';
     {const box=vn.querySelector('.vn-box'),ch=vn.querySelector('.vn-char');if(box&&ch)ch.style.bottom=(box.offsetHeight+16)+'px';}
-    const finish=()=>{clearTimeout(t);vl.textContent=pages[pages.length-1];vl.classList.remove('more');RW._vnPlayed=full;vn.classList.remove('vn-play');vn.classList.add('vn-done');if(ctl)ctl.classList.remove('vn-hid');};
-    const showPage=()=>{i=0;typing=true;vl.classList.remove('more');const cur=pages[pg];const tick=()=>{i+=1;vl.textContent=cur.slice(0,i);if(i>=cur.length){typing=false;if(pg<pages.length-1)vl.classList.add('more');else setTimeout(finish,350);return;}t=setTimeout(tick,/[.,!?…]/.test(cur[i-1])?140:28);};t=setTimeout(tick,pg?150:900);};
-    vn.addEventListener('click',()=>{if(typing){clearTimeout(t);i=pages[pg].length;vl.textContent=pages[pg];typing=false;if(pg<pages.length-1)vl.classList.add('more');else finish();return;}if(pg<pages.length-1){pg++;showPage();}else finish();});
+    const finish=()=>{clearTimeout(t);vl.textContent=pages[pages.length-1];vl.classList.remove('more');vl.closest('.vn-box').classList.remove('has-more');RW._vnPlayed=full;vn.classList.remove('vn-play');vn.classList.add('vn-done');if(ctl)ctl.classList.remove('vn-hid');};
+    const showPage=()=>{i=0;typing=true;vl.classList.remove('more');vl.closest('.vn-box').classList.remove('has-more');const cur=pages[pg];const tick=()=>{i+=1;vl.textContent=cur.slice(0,i);if(i>=cur.length){typing=false;if(pg<pages.length-1)(vl.classList.add('more'),vl.closest('.vn-box').classList.add('has-more'));else setTimeout(finish,350);return;}t=setTimeout(tick,/[.,!?…]/.test(cur[i-1])?140:28);};t=setTimeout(tick,pg?150:900);};
+    vn.addEventListener('click',()=>{if(typing){clearTimeout(t);i=pages[pg].length;vl.textContent=pages[pg];typing=false;if(pg<pages.length-1)(vl.classList.add('more'),vl.closest('.vn-box').classList.add('has-more'));else finish();return;}if(pg<pages.length-1){pg++;showPage();}else finish();});
     showPage();}}
   on('[data-act="rw-adapt-retry"]',()=>{const c=_case(RW._adCase);if(!c)return;delete CW.err[_caseWorldKey(c.id)];W.err=null;caseToPractice(c);});
   on('[data-act="rw-adapt-orig"]',()=>{const c=_case(RW._adCase);if(!c)return;caseToPractice(c,{orig:true});});
