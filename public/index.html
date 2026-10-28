@@ -1725,6 +1725,23 @@ main:has(.vn) .g-answer{flex:0 0 auto;height:96px;min-height:96px}
 .vn-play .vn-line::after{content:"";display:inline-block;width:2px;height:1em;background:currentColor;opacity:.5;margin-left:2px;vertical-align:-2px;animation:vn-blink 1s steps(2) infinite}
 .vn-line.more::after{content:none!important}
 @media (prefers-reduced-motion:reduce){.vn-box.has-more::after{animation:none}}
+/* scene art on the practice tiles: two people per tile, so give them room */
+.rw-tiles.has-art .lib-topic:not(.rw-surprise) .lib-art{height:62%;width:auto;max-width:88%;right:3%;bottom:0}
+@media (max-height:740px){.rw-tiles.has-art .lib-topic:not(.rw-surprise) .lib-art{height:58%;width:auto;right:3%;bottom:0}}
+.rw-tiles.has-art [data-goal=client] .lib-art{height:53%!important}
+@media (max-height:740px){.rw-tiles.has-art [data-goal=client] .lib-art{height:49%!important}}
+
+/* practice tiles: painted scene on top, a band of the tile colour with the title underneath */
+.rw-tiles .lib-scene{background-size:cover;background-position:center 18%;background-repeat:no-repeat;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:0!important}
+.rw-tiles .lib-scene>b{position:relative;display:block;margin-top:auto!important;width:100%;background:var(--p);color:var(--pi);padding:11px 16px 12px;font-size:17.5px!important;line-height:1.1;white-space:nowrap;letter-spacing:-.02em}
+@media (max-width:380px){.rw-tiles .lib-scene>b{font-size:16.5px!important}}
+@media (max-height:740px){.rw-tiles .lib-scene>b{padding:8px 14px 9px}.rw-tiles .lib-scene{background-position:center 14%}}
+
+.rw-tiles .rw-surprise-scene{background-size:cover!important;background-position:center 30%!important;background-repeat:no-repeat;overflow:hidden;border:0!important;position:relative}
+.rw-tiles .rw-surprise-scene::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,8,18,.78) 0%,rgba(10,8,18,.45) 42%,transparent 62%);pointer-events:none}
+.rw-tiles .rw-surprise-scene>b,.rw-tiles .rw-surprise-scene>span{position:relative;color:#fff!important}
+.rw-tiles .rw-surprise-scene>span{opacity:.82}
+@media (max-height:740px){.rw-tiles .rw-surprise-scene{background-position:center 8%!important}}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -3789,7 +3806,7 @@ function renderCast(app){
 const ART='art/';
 const TOOL_ICON={};['aab','anchoring','bottom-line-first','buffer','give-to-get','good-question','know-your-lowest','labeling','monroe','pivot','pppp','prep','rule-of-3','star','subtraction','their-problem','two-good-options','walk-away','warm-then-firm'].forEach(k=>TOOL_ICON[k]=ART+'icons/'+k+'.webp');
 const TOOL_K={};['give-to-get','know-your-lowest','buffer','anchoring','walk-away','labeling','two-good-options','good-question','prep','monroe','pppp','rule-of-3','star','subtraction','their-problem','pivot','warm-then-firm','bottom-line-first','aab','point'].forEach(k=>TOOL_K[k]=ART+'k/'+k+'.webp');
-const CAT_K={};['job','client','disagree','work','people','pitch','surprise','thumbs'].forEach(k=>CAT_K[k]=ART+'k/cat-'+k+'.webp');
+const CAT_K={};['job','client','disagree','work','people','pitch','surprise','thumbs'].forEach(k=>CAT_K[k]=ART+'k/cat2-'+k+'.webp');
 // The cast: ten looks, three faces each. K picks a look for each person in someone's world.
 const LOOKS=[
   {id:1,d:'woman, early 20s, ponytail, denim jacket, backpack: a student'},
@@ -5541,9 +5558,9 @@ function renderReal(app){
     if(!g){
       h+=gBar('Practice a talk','hub');
       const ga=k=>(typeof CAT_K!=='undefined'&&CAT_K[k])?'<img class="lib-art" src="'+CAT_K[k]+'" alt="">':'';
-      h+='<div class="lib-grid rw-topics rw-tiles has-art">'+RW_GOALS.map(x=>'<button class="lib-topic '+GP[x.k]+'" data-goal="'+x.k+'">'+ga(x.k)+'<b>'+x.t+'</b><span>'+(PRACTICE_SITS[x.k]||[]).length+' situations'+'</span></button>').join('')+
-        '<button class="lib-topic p-yellow" data-go="pitch">'+ga('pitch')+'<b>Pitch it</b><span>Build, run, face the room</span></button>'+
-        '<button class="lib-topic lib-tk rw-surprise" data-act="surprise"'+(RW.loadingScene?' disabled':'')+'>'+ga('surprise')+'<b>'+(RW.loadingScene?'K is picking…':'Surprise me')+'</b><span>K picks one</span></button></div>';
+      h+='<div class="lib-grid rw-topics rw-tiles has-art">'+RW_GOALS.map(x=>'<button class="lib-topic lib-scene '+GP[x.k]+'" data-goal="'+x.k+'" style="background-image:url('+ART+'k/tile-'+x.k+'.webp)"><b>'+x.t.replace('<br>',' ')+'</b></button>').join('')+
+        '<button class="lib-topic lib-scene p-yellow" data-go="pitch" style="background-image:url('+ART+'k/tile-pitch.webp)"><b>Pitch it</b></button>'+
+        '<button class="lib-topic lib-tk rw-surprise rw-surprise-scene" data-act="surprise" style="background-image:url('+ART+'k/tile-surprise.webp)"'+(RW.loadingScene?' disabled':'')+'><b>'+(RW.loadingScene?'K is picking…':'Surprise me')+'</b><span>K picks one</span></button></div>';
     }else{
       h+=gBar('Practice a talk','rw-pickback');
       const L=PRACTICE_SITS[g.k]||[],dn=_casesDone();
