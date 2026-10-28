@@ -2203,7 +2203,10 @@ function boot(){
   render();
   // What's new no longer pops up on its own; it lives in Settings › About
   if(S.onboarded&&S.whatsNew!==APP_VERSION){S.whatsNew=APP_VERSION;save();}
-  window.addEventListener('hashchange',()=>{const h2=(location.hash||'').replace('#','');if(VIEW_FOR_HASH[h2]&&VIEW_FOR_HASH[h2]!==V.view){V.view=VIEW_FOR_HASH[h2];render();}});
+  window.addEventListener('hashchange',()=>{const h2=(location.hash||'').replace('#','');
+    // A pasted #owner=… or #fresh link in an already-open app changes only the hash, so handle it here too
+    if(/^owner=/.test(h2)||h2==='fresh'){if(typeof _ownerLink==='function')_ownerLink();V.view=h2==='fresh'?'hub':'owner';render();return;}
+    if(VIEW_FOR_HASH[h2]&&VIEW_FOR_HASH[h2]!==V.view){V.view=VIEW_FOR_HASH[h2];render();}});
 }
 window.render=render;
 document.addEventListener('DOMContentLoaded',boot);
@@ -2408,7 +2411,14 @@ async function ownerCodes(method,body){
   return j;
 }
 // Owner link: …/#owner=<OWNER_KEY> turns on unlimited AI on this device; #owner=off turns it off.
-function _ownerLink(){try{const m=(location.hash||'').match(/owner=([^&]+)/);if(!m)return;history.replaceState(null,'',location.pathname+location.search+'#owner');
+// Test link: …/#fresh turns this phone into a brand-new free user (owner mode off, no Pro, new device id,
+// today's counts and the taster reset, intro shown again). The notebook is kept.
+function _freshLink(){try{if(!/^#fresh$/.test(location.hash||''))return false;history.replaceState(null,'',location.pathname+location.search);
+  S.aiConfig=S.aiConfig||{};delete S.aiConfig.ownerKey;delete S.pro;delete S.tasterAt;delete S.tasterOn;delete S.tasterPick;
+  const u=S.usage||{};delete u.pday;u.pr=0;u.quick=0;S.onboarded=false;S.tourDone=false;
+  try{localStorage.removeItem('grd-client-token');}catch(e){}
+  save();setTimeout(()=>{try{showToast('Fresh start: you’re a new free user on this phone');}catch(e){}},900);return true;}catch(e){return false;}}
+function _ownerLink(){if(_freshLink())return;try{const m=(location.hash||'').match(/owner=([^&]+)/);if(!m)return;history.replaceState(null,'',location.pathname+location.search+'#owner');
   S.aiConfig=S.aiConfig||{};const k=decodeURIComponent(m[1]);if(k==='off')delete S.aiConfig.ownerKey;else S.aiConfig.ownerKey=k;save();
   setTimeout(()=>{try{showToast(k==='off'?'Owner mode off on this device':'Owner mode on: no limits on this device');}catch(e){}},900);}catch(e){}}
 // ═══════════════════════════════════════════════════════════════════════════
