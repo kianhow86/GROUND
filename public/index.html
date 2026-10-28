@@ -1570,8 +1570,13 @@ html[data-theme="dark"] .ob-ver .m{color:#A9D98E}
 .obv-stamp b{display:block;font-size:38px;font-weight:900;line-height:1;text-transform:uppercase}.obv-stamp span{display:block;font-size:13.5px;font-weight:800;color:#fff;margin-top:4px}
 .obv-new{position:absolute;left:12px;right:12px;bottom:12px;height:64px;display:flex;align-items:center;gap:12px;padding:0 14px 0 8px;border-radius:18px;background:rgba(10,12,16,.9);border:1.5px solid #7FE0E0;box-shadow:0 0 24px rgba(127,224,224,.4);color:#fff}
 .obv-new img{width:48px;height:48px}.obv-new small{display:block;font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#7FE0E0}.obv-new b{display:block;font-size:20px;font-weight:900}
-.obv-k .obv-bg{filter:brightness(.55)}
-.obv-k .obv-ch{left:50%;right:auto;transform:translateX(-50%);top:5%;height:40%;aspect-ratio:1}
+.obv-k .obv-bg{filter:brightness(.62)}
+/* K on the stage floor: the floor line sits at 52% of the card, he stands on it under the spot */
+.obv-k{container-type:inline-size}
+.obv-k .obv-bg{height:auto;bottom:auto;top:calc(100% - 196px - 165cqw);object-fit:fill}
+.obv-k .obv-ch{left:auto;right:10%;transform:none;top:auto;bottom:178px;height:calc(100% - 226px);max-height:300px;aspect-ratio:480/540;object-fit:contain;object-position:bottom;filter:drop-shadow(0 10px 16px rgba(0,0,0,.55));z-index:2}
+.obv-k .obv-shadow{position:absolute;right:14%;bottom:170px;width:32%;height:18px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.65),transparent);z-index:1}
+.obv-k .obv-spot{position:absolute;right:-6%;top:-12%;width:66%;height:72%;background:radial-gradient(48% 62% at 55% 62%,rgba(255,226,170,.32),transparent 70%);z-index:1;pointer-events:none}
 .obv-inv{position:absolute;left:12px;right:12px;bottom:12px;display:flex;flex-direction:column;gap:8px}
 .obv-inv>div{display:flex;gap:12px;align-items:center;padding:11px 12px;border-radius:16px;background:rgba(10,12,16,.88);border:1px solid rgba(255,255,255,.12);color:#fff}
 .obv-inv i{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-style:normal;font-weight:900;font-size:16px;background:#1f2229;border:1.5px solid rgba(127,224,224,.6);color:#7FE0E0;flex-shrink:0}
@@ -1580,7 +1585,6 @@ html[data-theme="dark"] .ob-ver .m{color:#A9D98E}
 .ob .ob-txt{margin-top:22px}
 .ob .ob-tap,.ob .g-cta{height:58px;margin-top:20px}
 @media (max-height:740px){.ob .ob-txt{margin-top:16px}.ob .ob-tap,.ob .g-cta{height:52px;margin-top:14px}}
-.obv-k .obv-bg{object-position:70% 50%}
 .ob-brand{min-height:36px}
 
 /* ── Moves ── */
@@ -1690,9 +1694,29 @@ main.hub.tour-mini *{transition:opacity .45s ease}
 .tour2 .tour-k,.tour2 .tour-bub{transition:opacity .3s ease}
 .tour2 .tour-k.hide,.tour2 .tour-bub.hide{opacity:0;animation:none}
 .tour2 .tour-k:not(.hide){animation:tour-pop .45s cubic-bezier(.2,1.4,.4,1) both}
-.tour2 .tour-bub:not(.hide){animation:tour-pop .45s cubic-bezier(.2,1.4,.4,1) .12s both}
+.tour2 .tour-bub:not(.hide){animation:tour-pop .45s cubic-bezier(.2,1.4,.4,1) both}
 .tour2{background:rgba(5,6,10,.0)}
 body:has(.tour2) {background:#07080B}
+
+.obv-inv2{gap:6px}
+.obv-inv2>div{padding:9px 12px;gap:12px}
+.obv-inv2 i{width:32px;height:32px;border-radius:10px}
+.obv-inv2 b{font-size:15px;font-weight:800}
+@media (max-height:740px){.obv-k .obv-bg{top:calc(100% - 172px - 165cqw)}.obv-k .obv-ch{bottom:156px;height:calc(100% - 196px)}.obv-k .obv-shadow{bottom:148px}.obv-inv2>div{padding:7px 10px}.obv-inv2 i{width:28px;height:28px}.obv-inv2 b{font-size:14px}}
+
+.rw-alt{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:40px;padding:0 4px}
+.rw-alt .link{display:inline-flex;align-items:center;gap:6px;font-size:14.5px;font-weight:700;color:var(--ink-2)}
+.rw-alt .link:only-child{margin:0 auto}
+.vn-ctl{flex:0 0 auto}
+main:has(.vn) .g-answer{flex:0 0 auto;height:96px;min-height:96px}
+@media (max-height:740px){main:has(.vn) .g-answer{height:76px;min-height:76px}}
+.vn-ctl .vn-nowave{display:none}
+
+.obv-k2{background:radial-gradient(80% 60% at 50% 30%,#3a2a24,#0c0a10 70%)}
+.obv-k2 .obv-bg{position:absolute;inset:auto;object-fit:cover;filter:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+
+.obv-hi{position:absolute;left:auto;top:14px;z-index:3;white-space:nowrap;background:#F4F4F6;color:#0B0C10;font-size:16px;font-weight:800;line-height:1.3;padding:10px 14px;border-radius:16px 16px 16px 4px;box-shadow:0 10px 24px rgba(0,0,0,.45);font-size:15px;animation:tour-pop .45s cubic-bezier(.2,1.4,.4,1) .5s both}
+@media (max-height:740px){.obv-hi{font-size:14px;padding:8px 12px}}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -4000,7 +4024,7 @@ try{let _hf;window.addEventListener('resize',()=>{clearTimeout(_hf);_hf=setTimeo
 // ── First visit: the hub shrinks into a miniature, K says hello, then lifts out each part on its own ──
 const HUB_TOUR=[
   {sel:null,t:'Welcome to your hub',b:'This is home. Four things worth knowing, and you’re ready.',pose:'invite'},
-  {sel:'#dk-deck',t:'Your deck',b:'One card a day, picked for you. Practice it, read it, or pick your answer. Swipe for the next.',pose:'up',fit:.62},
+  {sel:'#dk-deck',t:'Your deck',b:'Cards picked for you, fresh every day. Practice one, read one, or pick your answer. Swipe for the next.',pose:'up',fit:.62},
   {sel:'.dk-tools .askk',t:'Ask K',b:'Something coming up, or a message you don’t know how to answer? Tell me. I’ll take you to the right tool.',pose:'left',fit:1.6},
   {sel:'.dk-tools',t:'Everything else',b:'Practice a talk, your Toolkit of moves, and your notes. It all lives down here.',pose:'squat',fit:1},
   {sel:'.ib-set',t:'Settings',b:'Your profile, your notes on you, and your data. Up here, out of the way.',pose:'up',fit:2}
@@ -4015,6 +4039,7 @@ function hubTour(i){
   let t=document.querySelector('.tour');
   if(!t){t=document.createElement('div');t.className='tour tour2';t.innerHTML='<div class="tour-top"><span><b>GROUND</b> · A QUICK TOUR</span><button class="tour-skip">Skip</button></div><img class="tour-k" alt=""><div class="tour-bub"><b></b><p></p></div><div class="tour-foot"><div class="tour-dots">'+HUB_TOUR.map(()=>'<i></i>').join('')+'</div><button class="tour-next">Next</button></div>';
     document.body.appendChild(t);m.classList.add('tour-mini');
+    t._img={};HUB_TOUR.forEach(x=>{const im=new Image();im.src=(typeof ART!=='undefined'?ART:'art/')+'kpose/'+x.pose+'.webp';t._img[x.pose]=im;});
     t.querySelector('.tour-skip').addEventListener('click',()=>_tourEnd(t,m));}
   const st=HUB_TOUR[i];if(!st){_tourEnd(t,m);return;}
   const el=st.sel?document.querySelector(st.sel):null;if(st.sel&&!el){_tourEnd(t,m);return;}
@@ -4051,7 +4076,8 @@ function hubTour(i){
     else by=Math.max(r.bottom,ky+kh)+14;
     by=Math.max(70,Math.min(by,H-(bub.offsetHeight||bh)-100));
     Object.assign(bub.style,{left:bx+'px',top:by+'px'});
-    k.classList.remove('hide');bub.classList.remove('hide');
+    const pre=t._img&&t._img[st.pose];const show=()=>{k.classList.remove('hide');bub.classList.remove('hide');};
+    (pre&&pre.decode?pre.decode():Promise.resolve()).then(()=>k.decode?k.decode():0).catch(()=>{}).then(show);
   },i===0?650:560);
 }
 // ═══════════════════════════════════════════════════════════════════════════
@@ -4241,10 +4267,10 @@ function renderIntro(app){
     '<div class="obv obv-sel">'+tile('shop',5,'unhappy','The client','pays you',1)+tile('room',9,'unhappy','The boss','above you')+tile('office',4,'neutral','The interviewer','decides on you')+tile('studio',6,'unhappy','The teammate','beside you')+'</div>',
     '<div class="obv obv-scene"><img class="obv-bg" src="'+S_('cafe')+'" alt=""><img class="obv-ch" src="'+C_(1,'unhappy')+'" alt=""><div class="obv-box"><small>Priya</small><b>“Can you do better on the price?”</b></div><div class="obv-mic"><i></i></div></div>',
     '<div class="obv obv-scene obv-win"><img class="obv-bg" src="'+S_('cafe')+'" alt=""><img class="obv-ch" src="'+C_(1,'pleased')+'" alt=""><div class="obv-stamp"><b>Deal</b><span>¥700, two revisions</span></div><div class="obv-new"><img src="'+(typeof TOOL_ICON!=='undefined'?TOOL_ICON['give-to-get']:'')+'" alt=""><span><small>New move</small><b>Give to get</b></span></div></div>',
-    '<div class="obv obv-scene obv-k"><img class="obv-bg" src="'+S_('stage')+'" alt=""><img class="obv-ch" src="'+(typeof ART!=='undefined'?ART:'art/')+'kpose/arms.webp" alt=""><div class="obv-inv"><div><i>'+ic('check','s')+'</i><span><b>No sign-up</b><small>No account, no email, no password.</small></span></div><div><i>'+ic('phone','s')+'</i><span><b>Stays on your phone</b><small>Your notebook lives here, not on a server.</small></span></div><div><i>K</i><span><b>K is AI, on Kian’s method</b><small>Practice, not professional advice.</small></span></div></div></div>'
+    '<div class="obv obv-scene obv-k obv-k2"><img class="obv-bg" src="'+(typeof ART!=='undefined'?ART:'art/')+'sets/kstage.webp" alt=""><div class="obv-hi">Hi, I’m K.<br>Let’s get you ready.</div><div class="obv-inv obv-inv2"><div><i>'+ic('check','s')+'</i><b>No sign-up, no account</b></div><div><i>'+ic('phone','s')+'</i><b>Your notes stay on your phone</b></div><div><i>K</i><b>K is AI. Practice, not advice.</b></div></div></div>'
   ];
   const H=[['Practice the conversations that decide your career.','Price talks, pushy clients, interviews, a boss who won’t listen.'],
-    ['Say it out loud. K&nbsp;plays the other side.','A real person, reacting to what you actually say. Type if you can’t talk.'],
+    ['Say it out loud. The other side talks back.','A real person, reacting to what you actually say. Type if you can’t talk.'],
     ['Get told what worked, and the one thing to fix.','Coached the way Kian has coached for twenty years.'],
     ['Three questions, and K knows where to start.','Your name, where you are now, and what’s hardest.']];
   let h='<main class="ob'+(reduce?' ob-still':'')+'" data-n="'+n+'">';
@@ -4256,6 +4282,8 @@ function renderIntro(app){
   h+='</main>';
   app.innerHTML=h;
   const root=app.querySelector('.ob');
+  // K's stage: scale the picture so he stands whole above the promises
+  {const box=app.querySelector('.obv-k2'),bg=box&&box.querySelector('.obv-bg'),inv=box&&box.querySelector('.obv-inv');if(box&&bg&&inv){const fit=()=>{const W=box.clientWidth,H=box.clientHeight,P=inv.offsetHeight+16;const hiE=box.querySelector('.obv-hi'),hiH=hiE?hiE.offsetHeight:0;let h=Math.max(1.25*W,0),fitH=Math.min((H-P-10)/0.69,(H-P-22-hiH)/0.66);if(h>fitH)h=fitH;const w=h/1.25;Object.assign(bg.style,{width:w+'px',height:h+'px',left:((W-w)/2)+'px',top:(H-P-4-0.80*h)+'px'});const hi=box.querySelector('.obv-hi');if(hi){const L=(W-w)/2,T=H-P-4-0.80*h;Object.assign(hi.style,{left:Math.min(W-hi.offsetWidth-10,L+0.45*w)+'px',top:Math.max(6,T+0.14*h-hi.offsetHeight-6)+'px'});}};fit();setTimeout(fit,60);}}
   {const sb=app.querySelector('[data-act="snd"]');if(sb){sb.addEventListener('pointerdown',e=>e.stopPropagation());sb.addEventListener('click',e=>{e.stopPropagation();const on=sndToggle();sb.classList.toggle('on',on);sb.innerHTML=(new DOMParser().parseFromString(sndBtnHtml(),'text/html').body.firstChild||sb).innerHTML;});}}
   const goTo=k=>{_introClear();V.obSlide=Math.max(0,Math.min(3,k));render();};
   if(n<2&&!reduce)_introT.push(setTimeout(()=>goTo(n+1),5200));
@@ -5555,7 +5583,7 @@ function renderReal(app){
         h+='<div class="vn'+(played?' vn-done':' vn-play')+(wait?' vn-wait':'')+' vn-set-'+_vnSet()+'">'+_vnBg()+(SND_ON&&SND_SET[_vnSet()]?sndBtnHtml().replace('snd-btn','snd-btn vn-snd'):'')+
            (()=>{const e=_vnEmo(line);return '<div class="vn-char vn-'+e.face+' vn-k-'+e.k+'" style="--vs:'+e.size+'"><img src="'+_vnChar(e.face)+'" alt="">'+(wait?'':_vnMarkHtml(e.mark))+'</div>';})()+
            '<div class="vn-box"><small>'+escHtml(name)+'</small>'+(wait?'<div class="think"><i></i><i></i><i></i></div>':'<div class="vn-line" id="vn-line" data-full="'+escHtml(line)+'">'+(played?escHtml(_vnPages(line).slice(-1)[0]):'')+'</div>')+(RW.rec?'<div class="rw-recbar"><span class="rw-dot"></span><span id="rw-live">Listening · 0:00</span></div>':'')+'</div></div>';
-        h+='<div class="vn-ctl'+(played?'':' vn-hid')+'">'+_rwModeSwitch()+'<div class="g-wave'+(RW.rec?' big':'')+'" id="rw-wave" style="justify-content:center;--ink:var(--ink)">'+'<i></i>'.repeat(RW.rec?22:14)+'</div>';
+        h+='<div class="vn-ctl'+(played?'':' vn-hid')+'">'+'<div class="g-wave'+(RW.rec?'':' vn-nowave')+''+(RW.rec?' big':'')+'" id="rw-wave" style="justify-content:center;--ink:var(--ink)">'+'<i></i>'.repeat(RW.rec?22:14)+'</div>';
       }else{
       h+=_rwModeSwitch();
       h+='<div class="g-block" style="flex:1;display:flex;flex-direction:column"><div class="rowx"><span class="g-kick">'+escHtml(name)+(inFu?' says':' says')+'</span>'+(ttsOk()&&!wait?'<button class="g-chip soft" style="margin-left:auto;min-height:36px" data-act="play">'+ic('play','s')+'Play again</button>':'')+'</div>'+
@@ -5569,7 +5597,8 @@ function renderReal(app){
       }else{
         h+='<div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:6px 0 4px"><button class="g-mic'+(RW.rec?' rec':'')+'" data-act="'+(RW.rec?'stop':'rec')+'" aria-label="'+(RW.rec?'Stop':'Tap to answer')+'"'+(wait?' disabled':'')+'>'+ic('mic')+'</button><span class="small" style="font-weight:700">'+(RW.rec?'Listening… tap when you’re done':'Tap to answer')+'</span></div>';
       }
-      if(inFu&&!RW.rec)h+='<button class="g-ghost" data-act="end">End here · get K’s notes</button>';
+      if(_vnOn()&&!RW.rec)h+='<div class="rw-alt"><button class="link" data-mode="'+(RW.mode==='type'?'turns':'type')+'">'+(RW.mode==='type'?ic('mic','s')+'Speak instead':ic('keyboard','s')+'Type instead')+'</button>'+(inFu?'<button class="link" data-act="end">End here · get K’s notes</button>':'')+'</div>';
+      else if(inFu&&!RW.rec)h+='<button class="g-ghost" data-act="end">End here · get K’s notes</button>';
       if(_vnOn())h+='</div>';
     }
   }else if(ph==='done'){
