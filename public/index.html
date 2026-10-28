@@ -1655,6 +1655,7 @@ html[data-theme="dark"] .ob-ver .m{color:#A9D98E}
 .ob-br-r{display:flex;align-items:center;gap:6px}
 .snd-btn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--ink-3);border:1px solid var(--line)}
 .snd-btn svg{width:18px;height:18px}.snd-btn.on{color:var(--ink)}
+.vn-snd{position:absolute;top:12px;right:12px;z-index:3;background:rgba(10,12,16,.6);border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.6)}.vn-snd.on{color:#fff}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -2813,6 +2814,7 @@ function _recordSfx(starting){
     o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+0.3);setTimeout(()=>{try{ac.close();}catch(e){}},500);}catch(e){}
 }
 async function recStart(opts){
+  if(typeof sndHold==='function')sndHold(true);
   opts=opts||{};
   if(REC.active)await recStop();
   Object.assign(REC,{active:true,elapsed:0,transcript:'',words:0,chunks:[],mr:null,stream:null,sr:null,onTick:opts.onTick||null,maxSecs:opts.maxSecs||0,level:0,micOk:false,_peak:0});
@@ -2850,6 +2852,7 @@ function recLevelLoop(el){
     requestAnimationFrame(tick);})();
 }
 function recStop(){
+  if(typeof sndHold==='function')setTimeout(()=>sndHold(false),400);
   return new Promise(resolve=>{
     if(!REC.active){resolve({elapsed:REC.elapsed,transcript:REC.transcript,words:REC.words,blob:null});return;}
     REC.active=false;_recordSfx(false);
@@ -2917,7 +2920,9 @@ async function speak(text,opts){
   opts=opts||{};
   if(!TTS.on||!text)return false;
   TTS._stopped=false;
+  if(typeof sndDuck==='function')sndDuck(true);
   try{return await _cloudSpeak(_stripQ(text),opts);}catch(e){if(TTS._stopped){TTS._stopped=false;return false;}}
+  finally{if(typeof sndDuck==='function')sndDuck(false);}
   return false; // no robotic fallback: if the natural voice isn't available, stay text-only
 }
 function _deviceSpeak(text,opts){
@@ -3747,14 +3752,21 @@ function moveLearn(t,how){if(!TECHNIQUES[t]||moveLearned(t))return false;_moves(
 // For K's review: the moves it may recognise
 function movesForReview(){return Object.keys(TECHNIQUES).map(k=>k+' = '+TECHNIQUES[k].title+(TECHNIQUES[k].tag?': '+TECHNIQUES[k].tag:'')).join('\n');}
 // ═══ Sound: music and stingers. Off until the person taps; follows the iOS silent switch; never plays while the mic is open. ═══
+// Shelved for now: flip to true to bring the music back
+const SND_ON=false;
 const SND={ctx:null,gain:null,src:null,cur:'',buf:{},want:'',unlocked:false};
-const SND_TRACKS={title:{files:['art/audio/title.m4a','art/audio/title.mp3'],loop:[15.5,28.5],vol:.8}};
+const SND_TRACKS={title:{files:['art/audio/title.m4a','art/audio/title.mp3'],loop:[15.5,28.5],vol:.8},
+  cafe:{files:['art/audio/cafe.m4a','art/audio/cafe.mp3'],loop:[0,9999],vol:.7}};
+// Which bed plays in which room. Rooms without their own track stay quiet for now.
+const SND_SET={cafe:'cafe'};
 function sndOn(){return S.sound!==false;}
 function _sndCtx(){if(SND.ctx)return SND.ctx;const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;
   try{if(navigator.audioSession)navigator.audioSession.type='ambient';}catch(e){}
   SND.ctx=new C();SND.gain=SND.ctx.createGain();SND.gain.gain.value=0;SND.gain.connect(SND.ctx.destination);return SND.ctx;}
-async function _sndLoad(k){if(SND.buf[k])return SND.buf[k];const t=SND_TRACKS[k],ctx=_sndCtx();if(!t||!ctx)return null;
-  for(const f of t.files){try{const r=await fetch(f);if(!r.ok)continue;const ab=await r.arrayBuffer();SND.buf[k]=await new Promise((res,rej)=>ctx.decodeAudioData(ab,res,rej));return SND.buf[k];}catch(e){}}
+SND.ab={};
+function sndPrefetch(k){const t=SND_TRACKS[k];if(!t||SND.buf[k]||SND.ab[k])return;SND.ab[k]=(async()=>{for(const f of t.files){try{const r=await fetch(f);if(r.ok){const ab=await r.arrayBuffer();try{const c=_sndCtx();if(c){SND.buf[k]=await new Promise((res,rej)=>{const pr=c.decodeAudioData(ab.slice(0),res,rej);if(pr&&pr.catch)pr.catch(()=>{});});return;}}catch(e){}}}catch(e){}}})();}
+async function _sndLoad(k){if(SND.buf[k])return SND.buf[k];if(SND.ab[k]){await SND.ab[k];if(SND.buf[k])return SND.buf[k];}const t=SND_TRACKS[k],ctx=_sndCtx();if(!t||!ctx)return null;
+  for(const f of t.files){try{const r=await fetch(f);if(!r.ok)continue;const ab=await r.arrayBuffer();SND.buf[k]=await new Promise((res,rej)=>{const pr=ctx.decodeAudioData(ab,res,rej);if(pr&&pr.catch)pr.catch(()=>{});});return SND.buf[k];}catch(e){}}
   return null;}
 function _sndFade(to,secs){const g=SND.gain;if(!g)return;const now=SND.ctx.currentTime;g.gain.cancelScheduledValues(now);g.gain.setValueAtTime(g.gain.value,now);g.gain.linearRampToValueAtTime(to,now+secs);}
 // What should be playing right now
@@ -3764,12 +3776,19 @@ async function sndPlay(k){SND.want=k;if(!sndOn()||!SND.unlocked){return;}
   sndStop(0.4,true);const t=SND_TRACKS[k],s=ctx.createBufferSource();s.buffer=b;if(t.loop){s.loop=true;s.loopStart=t.loop[0];s.loopEnd=Math.min(t.loop[1],b.duration);}
   s.connect(SND.gain);s.start();SND.src=s;SND.cur=k;_sndFade(t.vol||.8,1.2);}
 function sndStop(secs,keepWant){if(!keepWant)SND.want='';const s=SND.src;if(!s)return;SND.src=null;SND.cur='';const f=secs==null?1.2:secs;_sndFade(0,f);setTimeout(()=>{try{s.stop();}catch(e){}},f*1000+50);}
-function sndToggle(){S.sound=!sndOn();save();if(!sndOn())sndStop(.4,true);else{SND.unlocked=true;if(SND.want)sndPlay(SND.want);}return sndOn();}
+function sndToggle(){_sndUnlock();S.sound=!sndOn();save();if(!sndOn())sndStop(.4,true);else{SND.unlocked=true;if(SND.want)sndPlay(SND.want);}return sndOn();}
 // The first tap anywhere unlocks audio (browsers require it)
-['pointerdown','keydown'].forEach(ev=>document.addEventListener(ev,()=>{if(SND.unlocked)return;SND.unlocked=true;const c=_sndCtx();if(c&&c.state==='suspended')c.resume();if(SND.want)sndPlay(SND.want);},{capture:true}));
+// iPhone only counts a tap once the finger lifts, and wants a sound started inside that tap: play one silent sample
+function _sndUnlock(){if(!SND_ON)return;const c=_sndCtx();if(!c)return;try{if(c.state!=='running')c.resume();const b=c.createBuffer(1,1,22050),s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0);}catch(e){}
+  if(!SND.unlocked){SND.unlocked=true;if(SND.want)sndPlay(SND.want);}}
+['touchend','pointerup','click','keydown'].forEach(ev=>document.addEventListener(ev,_sndUnlock,{capture:true,passive:true}));
 document.addEventListener('visibilitychange',()=>{if(!SND.ctx)return;if(document.hidden)SND.ctx.suspend();else if(SND.src)SND.ctx.resume();});
 // Which track belongs to the screen we're on
-function sndSync(){if(!S.onboarded)sndPlay('title');else if(SND.cur==='title'||SND.want==='title')sndStop(2);}
+function sndBedFor(){if(V.view!=='real'||!['brief','turn','done'].includes(RW.phase)||RW.mode==='live')return '';const set=typeof _vnSet==='function'?_vnSet():'';return SND_SET[set]||'';}
+function sndSync(){if(!SND_ON)return;if(!S.onboarded){sndPrefetch('title');sndPlay('title');return;}const b=sndBedFor();if(b){sndPrefetch(b);sndPlay(b);}else if(SND.cur||SND.want)sndStop(1.5);}
+// Their voice: the music steps back. Your mic: the music stops, so K hears you and not the score.
+function sndDuck(on){if(!SND.src||!SND.cur)return;const v=(SND_TRACKS[SND.cur]||{}).vol||.8;_sndFade(on?v*.3:v,on?.25:.9);}
+function sndHold(on){const c=SND.ctx;if(!c||!SND.src)return;if(on){_sndFade(0,.12);setTimeout(()=>{if(SND.held)c.suspend();},140);SND.held=true;}else if(SND.held){SND.held=false;c.resume();_sndFade((SND_TRACKS[SND.cur]||{}).vol||.8,.9);}}
 function sndBtnHtml(){return '<button class="snd-btn'+(sndOn()?' on':'')+'" data-act="snd" aria-label="Sound">'+(sndOn()?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/><path d="M17 9l5 6M22 9l-5 6"/></svg>')+'</button>';}
 // ═══════════════════════════════════════════════════════════════════════════
 // HUB (home): K's line, Help me reply · Practice a talk, Pitch it, the streak
@@ -4153,7 +4172,7 @@ function renderIntro(app){
     ['Three questions, and K knows where to start.','Your name, where you are now, and what’s hardest.']];
   let h='<main class="ob'+(reduce?' ob-still':'')+'" data-n="'+n+'">';
   h+='<div class="ob-bars"'+(n===3?' style="visibility:hidden"':'')+'>'+[0,1,2].map(i=>'<i class="'+(i<n?'d':i===n?'p':'')+'"><b></b></i>').join('')+'</div>';
-  h+='<div class="ob-brand"><span><b>GROUND</b> · BY KIAN HOW</span><span class="ob-br-r">'+sndBtnHtml()+(n<3?'<button data-act="ob-skip">Skip</button>':'')+'</span></div>';
+  h+='<div class="ob-brand"><span><b>GROUND</b> · BY KIAN HOW</span><span class="ob-br-r">'+(SND_ON?sndBtnHtml():'')+(n<3?'<button data-act="ob-skip">Skip</button>':'')+'</span></div>';
   h+='<div class="ob-vis">'+VIS[n]+'</div>';
   h+='<div class="ob-txt"><h1>'+H[n][0]+'</h1><p>'+H[n][1]+'</p></div>';
   h+=n===2?gCta('Get started','ob-next'):n===3?gCta('Let’s go','ob-go'):'<div class="ob-tap">Tap to continue</div>';
@@ -5201,13 +5220,16 @@ async function _rwFollowup(allowEnd){
     for(let i=0;i<2;i++){
       try{
         const raw=await callCoach(sys,msg,{maxTokens:110,noLang:true,featureId:'rw-turn',grace:true});
-        let t=String(raw||'').replace(/```/g,'').replace(/\*\*|__/g,'').split(/\n\s*\n/)[0].replace(/\s*\n\s*/g,' ').trim();
-        const mt=t.match(/\[(calm|pleased|doubtful|annoyed|angry|impatient|nervous|surprised|confused|disappointed)\]/i);RW.fuMood=mt?mt[1].toLowerCase():'';t=t.replace(/\[(calm|pleased|doubtful|annoyed|angry|impatient|nervous|surprised|confused|disappointed)\]\s*/ig,'').trim();
+        // The mood tag comes first, sometimes on its own line: take it out before anything else
+        let t=String(raw||'').replace(/```/g,'').replace(/\*\*|__/g,'');
+        const mt=t.match(/\[(calm|pleased|doubtful|annoyed|angry|impatient|nervous|surprised|confused|disappointed)\]/i);RW.fuMood=mt?mt[1].toLowerCase():'';
+        t=t.replace(/\[(?!END\])[a-z ]{2,20}\]\s*/ig,'').replace(/^\s*\(?(mood|tone)\s*:[^)\n]*\)?\s*/i,'').trim();
+        t=t.split(/\n\s*\n/)[0].replace(/\s*\n\s*/g,' ').trim();
         const isEnd=/\[END\]/i.test(t);t=t.replace(/\s*\[END\]\s*/ig,' ').trim();
         if(isEnd&&(allowEnd||rude))return {end:true,t};
         t=t.replace(/^(?:interviewer|investor|colleague|chair|client|you|them|me|面试官|对方|客户)\s*[:：]\s*/i,'').replace(/^["“'「『]+|["”'」』]+$/g,'').trim();
         const ends=(t.match(/[.!?。！？]/g)||[]).length;
-        if(t.length>=4&&t.length<=240&&ends<=3&&!/✅|🎯|💡|🏗|ONE THING|THE THREAD|WHAT WORKED/i.test(t))return t;
+        if(t.length>=4&&t.length<=320&&ends<=4&&!/✅|🎯|💡|🏗|ONE THING|THE THREAD|WHAT WORKED/i.test(t))return t;
       }catch(e){RW.fuErr=e;break;}
     }
     if(!RW.fuErr)RW.fuErr=new Error('K gave a line the app couldn’t use');
@@ -5264,7 +5286,7 @@ async function _rwDecide(){
     ?'You are the client in a negotiation practice role-play. Who you are: '+(RW.who||'a client')+'.\nYour hidden brief, which the speaker never knew: '+(RW.secret?RW.secret.t:'none')+'\nWhen you reveal the brief in "secret", tell only what is true AND consistent with the transcript. Never say something was said or happened if it is not in the transcript (if you never mentioned a competitor, do not call it a bluff; say you had no other option lined up instead).\n\nThe conversation is over. Decide honestly, in character, as a real client with that brief would, based only on what the speaker actually said. Holding firm with good reasons and warmth often wins; caving fast can make you doubt them; rudeness or vagueness loses you.\n'+ended+'\n'+agreed+'\n'+grounding+'\n'+voice+'\nReply with JSON only, no markdown:\n{"decision":"deal"|"think"|"walk","say":"what you say to end the conversation, one short spoken sentence, in character","terms":"the deal in a few words if decision is deal (price or terms agreed), else empty","why":[up to 3 of {"turn":"answer|fu1|fu2|fu3","quote":"exact words","effect":"+" or "-","reason":"one sentence: how that line moved you toward or away from yes, consistent with your hidden brief"}],"secret":"two short sentences, under 45 words in total, first person as the client, revealing your hidden brief with a concrete figure where it applies, ending with how it shaped this outcome, e.g. \'My launch is in three weeks. I needed you more than I let on.\'",'+improveRule+kRule+usedRule+',"could":{"from":"how it ended, a few words, e.g. ¥5,500","to":"the likely better outcome if they had made those changes, a few words, e.g. ¥6,500"}}\n\nMOVES (ids for "used"):\n'+movesForReview()
     :'You are the other person in a speaking-practice role-play ('+sc.name+'). Who you are: '+(RW.who||RW_ROLE[RW.scenario]||'the other person')+'.\nThe conversation is over. React honestly, the way that real person would, based only on what the speaker actually said: '+(RW_VERDICT_Q[RW.scenario]||'how did it land with you?')+'\nIF YOU AGREED SOMETHING: if by the end you and the speaker settled a concrete plan or next step (a date, a smaller first step, a trade), it is not “maybe”. It is “yes” if the plan moved toward what the speaker wanted, even partly. Use “maybe” only when nothing was settled. Put any catch the speaker accepted (a deadline, extra work) in “say” and in “improve”, not in the verdict.\nThen, as K the coach, find the moments where better words would have changed your reaction.\n'+ended+'\n'+grounding+'\n'+voice+'\nReply with JSON only, no markdown: {"verdict":"yes"|"maybe"|"no","say":"what you say or think at the end, one short spoken sentence, in character","why":[up to 3 of {"turn":"answer|fu1|fu2|fu3","quote":"exact words","effect":"+" or "-","reason":"one sentence: how that line changed your reaction"}],'+improveRule+kRule+usedRule+',"could":{"from":"how it ended, a few words","to":"the likely better outcome, a few words"}}\n\nMOVES (ids for "used"):\n'+movesForReview();
   let j=null;
-  for(let a=0;a<2&&!j;a++){try{const raw=await callCoach(sys+RW_STT_NOTE,m+(a?'\n\nYour last reply was not valid JSON. Reply again with compact valid JSON only, nothing else.':''),{maxTokens:cl?1100:700,noLang:true,featureId:'rw-turn',grace:true});j=_jsonFrom(raw);}catch(e){j=null;}}
+  for(let a=0;a<2&&!j;a++){try{const raw=await callCoach(sys+RW_STT_NOTE,m+(a?'\n\nYour last reply was not valid JSON. Reply again with compact valid JSON only, nothing else.':''),{maxTokens:cl?1700:1200,noLang:true,featureId:'rw-turn',grace:true});j=_jsonFrom(raw);}catch(e){j=null;}}
   try{
     if(!j)return null;
     // Never let the internal turn tags reach the screen
@@ -5291,7 +5313,7 @@ async function rwAnalyze(){
   if(RW.convo.length>1){msg+='THE CONVERSATION:\n';RW.convo.forEach((t,i)=>{msg+=(i?(RW.scenario==='ground'?'The client (push '+i+')':'The other person (follow-up '+i+')'):'The opening prompt')+': "'+t.q+'"\nThe speaker ('+fmtMs(t.elapsed*1000)+', '+t.words+' words): '+(t.a||'(no audio captured)')+'\n\n';});}
   else msg+='Transcript:\n'+(RW.transcript||'(no audio captured)')+'\n\nDuration: '+fmtMs(RW.elapsed*1000)+' ('+RW.words+' words)';
   try{
-    if(!_rwTooShort()&&!RW.decision&&!RW.review){const r=await _rwDecide();if(_rw.grp==='client')RW.decision=r;else RW.review=r||{improve:[]};if(V.view==='real'&&RW.phase==='done')render();}
+    if(!_rwTooShort()&&!RW.decision&&!RW.review){const r=await _rwDecide();RW.decideErr=!r;if(_rw.grp==='client')RW.decision=r;else RW.review=r;if(V.view==='real'&&RW.phase==='done')render();}
     const d=RW.decision||RW.review;
     if(d){msg+='\n\nHOW IT ENDED (the speaker sees this on a card above your notes, so do not repeat it): '+(d.decision?'the client '+({deal:'agreed'+(d.terms?' ('+d.terms+')':''),think:'said they would think about it',walk:'walked away'})[d.decision]+'. What the client was hiding: '+(d.secret||''):(RW_VERDICT_H[RW.scenario]||RW_VERDICT_H.meeting)[d.verdict||'maybe'])+'\nUse this where it sharpens the diagnosis. One mention at most.';}
     msg+=nbContext('real');
@@ -5318,7 +5340,7 @@ async function rwStartRec(){
   const ok=await recStart({onTick:r=>{const t=document.getElementById('rw-timer');if(t)t.textContent=fmtMs(r.elapsed*1000);
     const lv=document.getElementById('rw-live');if(lv){REC._peak=Math.max(REC._peak||0,r.level||0);const dead=r.elapsed>=4&&(REC._peak||0)<0.04&&!r.words;lv.textContent=dead?'I can’t hear anything. Check your mic, or switch to Type.':'Listening · '+fmtMs(r.elapsed*1000)+(r.words?' · '+r.words+(r.words===1?' word':' words')+' heard':'');lv.classList.toggle('dead',dead);}/* no live transcript on screen: it pulls your eyes off the conversation */
     if(RW.mode==='live'&&r.elapsed>=6&&r.transcript&&r.level<0.06){REC._quiet=(REC._quiet||0)+1;if(REC._quiet>=3){REC._quiet=0;rwStopRec();}}else REC._quiet=0;},maxSecs:180,onMax:()=>rwStopRec()});
-  if(!ok){RW.rec=false;render();showToast('I can’t reach your microphone. Check the browser’s mic permission, or switch to Type.','warn');return;}
+  if(!ok){if(typeof sndHold==='function')sndHold(false);RW.rec=false;render();showToast('I can’t reach your microphone. Check the browser’s mic permission, or switch to Type.','warn');return;}
   recLevelLoop(document.getElementById('rw-wave'));
 }
 async function rwStopRec(){if(!RW.rec)return;RW.rec=false;const r=await recStop();if(!r.words&&r.elapsed<0.8){render();showToast('That was very short. Tap, speak, then tap again.','warn');return;}_rwAfterTurn(r);}
@@ -5453,7 +5475,7 @@ function renderReal(app){
       h+=gBar(_rwShort(),'rw-restart',_rwDots());
       if(_vnOn()){
         const played=RW._vnPlayed===line;
-        h+='<div class="vn'+(played?' vn-done':' vn-play')+(wait?' vn-wait':'')+' vn-set-'+_vnSet()+'">'+_vnBg()+
+        h+='<div class="vn'+(played?' vn-done':' vn-play')+(wait?' vn-wait':'')+' vn-set-'+_vnSet()+'">'+_vnBg()+(SND_ON&&SND_SET[_vnSet()]?sndBtnHtml().replace('snd-btn','snd-btn vn-snd'):'')+
            (()=>{const e=_vnEmo(line);return '<div class="vn-char vn-'+e.face+' vn-k-'+e.k+'" style="--vs:'+e.size+'"><img src="'+_vnChar(e.face)+'" alt="">'+(wait?'':_vnMarkHtml(e.mark))+'</div>';})()+
            '<div class="vn-box"><small>'+escHtml(name)+'</small>'+(wait?'<div class="think"><i></i><i></i><i></i></div>':'<div class="vn-line" id="vn-line" data-full="'+escHtml(line)+'">'+(played?escHtml(_vnPages(line).slice(-1)[0]):'')+'</div>')+(RW.rec?'<div class="rw-recbar"><span class="rw-dot"></span><span id="rw-live">Listening · 0:00</span></div>':'')+'</div></div>';
         h+='<div class="vn-ctl'+(played?'':' vn-hid')+'">'+_rwModeSwitch()+'<div class="g-wave'+(RW.rec?' big':'')+'" id="rw-wave" style="justify-content:center;--ink:var(--ink)">'+'<i></i>'.repeat(RW.rec?22:14)+'</div>';
@@ -5479,7 +5501,7 @@ function renderReal(app){
     if(busy)h+=kWritingHtml('K is taking notes…',_rwIsClient()?'And '+name+' is deciding.':'Working out how it landed.');else if(false)h+='<div class="g-card" style="display:flex;flex-direction:column;gap:14px"><div class="g-k">'+kav()+'<div><b style="font-size:15px">K is listening back</b><div class="small" style="margin-top:2px">'+(_rwIsClient()?'And '+escHtml(name)+' is deciding.':'Working out how it landed.')+'</div></div></div><div class="stack" style="gap:9px"><div class="sk w9"></div><div class="sk w7"></div><div class="sk w8"></div></div></div>';
     else{
       const slides=_rwEndSlides();
-      if(_vnOn()&&RW._stamp!==RW.transcript){
+      if(_vnOn()&&RW._stamp!==RW.transcript&&(RW.decision&&RW.decision.decision||RW.review)){
         const d=RW.decision,r=RW.review;let main='',sub='',tone='maybe',say='';
         if(d&&d.decision){const H={deal:['Deal',d.terms||'you have a deal','yes'],think:['Maybe','still thinking','maybe'],walk:['No deal','not this time','no']}[d.decision]||['Maybe','still thinking','maybe'];main=H[0];sub=H[1];tone=H[2];say=d.say||'';}
         else if(r){const vk=['yes','maybe','no'].includes(r.verdict)?r.verdict:'maybe',hd=(RW_VERDICT_H[RW.scenario]||RW_VERDICT_H.meeting)[vk];main=hd[0];sub=hd[1];tone=vk;say=r.say||'';}
@@ -5505,7 +5527,7 @@ function renderReal(app){
         h+='<div class="rw-nav"><div class="rw-sdots">'+slides.map((_,i)=>'<i'+(i?'':' class="on"')+'></i>').join('')+'</div><button class="rw-next" data-act="rw-next">Next'+ic('arrow','s')+'</button></div>';
       }else{
         if(slides.length)h+=slides[0].h;
-        if(!RW.decision&&!RW.review&&!RW.loading){h+=RW.notes&&/ai-err/.test(RW.notes)?RW.notes:'<div class="g-card"><div class="g-q">'+(_rwTooShort()?'I didn’t catch enough to judge that one.':'No verdict this time.')+'</div><p class="sub">'+(_rwTooShort()?'Say a few full sentences and I’ll tell you how it landed.':'Open K’s full notes for the details.')+'</p></div>';}
+        if(!RW.decision&&!RW.review&&!RW.loading){h+=RW.notes&&/ai-err/.test(RW.notes)?RW.notes:'<div class="g-card" style="margin:auto 0;text-align:center;padding:28px 22px"><div class="g-q">'+(_rwTooShort()?'I didn’t catch enough to judge that one.':'K couldn’t judge this round.')+'</div><p class="sub">'+(_rwTooShort()?'Say a few full sentences and I’ll tell you how it landed.':'Something went wrong on K’s side, not yours. Your conversation is saved.')+'</p>'+(_rwTooShort()?'':'<button class="g-chip dark" data-act="rw-redecide" style="margin-top:12px">Try again</button>')+'</div>';}
         h+='<div class="push"></div>'+endCta;
       }
     }
@@ -5522,6 +5544,8 @@ function renderReal(app){
     {const kids=[...m.children],pi=kids.findIndex(e=>e.classList.contains('push'));const els=kids.slice(0,pi<0?kids.length:pi).filter(e=>!e.matches('.g-bar'));_fillZoom(els,()=>!over(),1.12);}}
   if(ph==='done')app.querySelectorAll('.rw-slide').forEach(sl=>{const b=sl.querySelector('.rw-sbody');if(b)_fillZoom([b],()=>sl.scrollHeight<=sl.clientHeight);});
   const on=(s,f)=>{const el=app.querySelector(s);if(el)el.addEventListener('click',f);};
+  on('[data-act="rw-redecide"]',async()=>{RW.loading=true;render();const r=await _rwDecide();RW.loading=false;RW.decideErr=!r;if(_rwIsClient())RW.decision=r;else RW.review=r;render();});
+  {const sb=app.querySelector('.vn [data-act="snd"]');if(sb)sb.addEventListener('click',e=>{e.stopPropagation();const on=sndToggle();sb.classList.toggle('on',on);sb.innerHTML=(new DOMParser().parseFromString(sndBtnHtml(),'text/html').body.firstChild||sb).innerHTML;});}
   app.querySelectorAll('[data-equip]').forEach(b=>b.addEventListener('click',()=>{const t=b.dataset.equip;RW.equip=RW.equip===t?'':t;app.querySelectorAll('[data-equip]').forEach(x=>x.classList.toggle('on',x.dataset.equip===RW.equip));}));
   {const vn=app.querySelector('.vn');if(vn){const box=vn.querySelector('.vn-box'),ch=vn.querySelector('.vn-char'),ln=vn.querySelector('.vn-line'),nw=vn.querySelector('.vn-new');if(nw&&box)box.style.marginBottom=(nw.offsetHeight+24)+'px';if(ln&&(ln.dataset.full||ln.textContent).length>150)ln.classList.add('long');if(box&&ch)ch.style.bottom=(box.offsetHeight+16)+'px';}}
   {const vl=app.querySelector('.vn.vn-play #vn-line');if(vl){const full=vl.dataset.full||'',ctl=app.querySelector('.vn-ctl'),vn=vl.closest('.vn');
