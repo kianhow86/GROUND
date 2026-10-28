@@ -1742,6 +1742,87 @@ main:has(.vn) .g-answer{flex:0 0 auto;height:96px;min-height:96px}
 .rw-tiles .rw-surprise-scene>b,.rw-tiles .rw-surprise-scene>span{position:relative;color:#fff!important}
 .rw-tiles .rw-surprise-scene>span{opacity:.82}
 @media (max-height:740px){.rw-tiles .rw-surprise-scene{background-position:center 8%!important}}
+/* ═══ Plans: Lite and Pro ═══ */
+.wm .tier{margin-left:8px;display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;font-size:10.5px;font-weight:900;letter-spacing:.1em;border:1px solid var(--line);color:var(--ink-3);font-style:normal;vertical-align:middle}
+.wm .tier.pro{background:#F2CE6B;color:#2A1E00;border-color:#F2CE6B}
+.dk-tools.three{grid-template-columns:repeat(3,1fr)}
+.dk-tools button.glow{border:2px solid #7FE0E0;box-shadow:0 0 18px rgba(127,224,224,.3)}
+.dk-tools button.gopro{background:#F2CE6B;color:#2A1E00;border-color:#F2CE6B}
+.dk-tools button.gopro i{background:#2A1E00;color:#F2CE6B}
+.pw-pill{margin-left:auto;display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:999px;font-size:13px;font-weight:800;background:var(--card);border:1px solid var(--line);color:var(--ink);white-space:nowrap;flex-shrink:0}
+.pw-pill i{width:8px;height:8px;border-radius:50%;background:#7FE0E0;display:inline-block}
+.pw-pill.pass i{background:#F2CE6B}
+.g-bar .pw-pill{margin-left:auto}
+.pro-tag{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 9px;border-radius:999px;background:#F2CE6B;color:#2A1E00;font-size:11.5px;font-weight:900;letter-spacing:.06em;white-space:nowrap}
+.lib-scene .pro-tag.lk,.rw-surprise .pro-tag.lk{position:absolute;top:10px;right:10px;z-index:3;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.lib-topic.locked{filter:saturate(.5) brightness(.75)}
+.rw-slide.rw-locked{position:relative}
+.blurx{filter:blur(6px);opacity:.55;pointer-events:none;user-select:none}
+.lock-over{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:24px;z-index:5;background:linear-gradient(180deg,rgba(11,12,16,0) 0%,rgba(11,12,16,.75) 30%,rgba(11,12,16,.92) 100%)}
+html[data-theme="light"] .lock-over{background:linear-gradient(180deg,rgba(245,246,250,0) 0%,rgba(245,246,250,.8) 30%,rgba(245,246,250,.95) 100%)}
+.lock-over b{font-size:19px;font-weight:900;color:var(--ink);line-height:1.2}
+.lock-over span{font-size:14.5px;color:var(--ink2);line-height:1.4;max-width:280px}
+.lock-over .pw-btn{padding:0 26px;margin-top:4px}
+.pw-btn{height:54px;border-radius:999px;border:0;font-size:16px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;color:inherit;width:100%}
+.pw-btn.pp{background:#FFC43A;color:#0B1E4A}
+.pw-btn.wx{background:#1AAD19;color:#fff}
+.pw-btn.gold{background:#F2CE6B;color:#2A1E00}
+.pw-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pw-fine{font-size:12.5px;color:var(--ink2);text-align:center;line-height:1.4}
+.pw-fine .link{font-size:inherit;text-decoration:underline;display:inline;padding:0;min-height:0}
+.pw-k{display:flex;gap:14px;align-items:flex-end}
+.pw-k img{width:92px;height:auto;flex-shrink:0;margin-bottom:-4px}
+.pw-k h2{font-size:21px;line-height:1.15;font-weight:900;letter-spacing:-.02em;margin:0 0 4px;text-wrap:balance}
+.pw-k p{margin:0;font-size:15px;line-height:1.4;color:var(--ink2)}
+.pw-pass{border-radius:22px;padding:16px 18px;background:#0F1A1C;border:1.5px solid #7FE0E0;color:#fff;display:flex;flex-direction:column;gap:10px}
+.pw-pass .top{display:flex;align-items:baseline;justify-content:space-between}
+.pw-pass .top b{font-size:18px;font-weight:900}
+.pw-pass .top span{font-size:22px;font-weight:900;color:#7FE0E0}
+.pw-pass .top span small{font-size:14px;color:rgba(255,255,255,.6);font-weight:700}
+.pw-pass ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.pw-pass li{font-size:14.5px;line-height:1.35;display:flex;gap:8px;color:rgba(255,255,255,.88)}
+.pw-pass li:before{content:"✓";color:#7FE0E0;font-weight:900}
+.pw-row{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-radius:18px;background:var(--card);border:1px solid var(--line)}
+.pw-row b{font-size:15.5px}.pw-row span{font-size:14px;color:var(--ink2)}
+.pw-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pw-head .h2{margin:0}
+.pw-tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--bg);border-radius:999px;padding:4px;gap:4px}
+.pw-tabs button{height:40px;border-radius:999px;display:grid;place-items:center;font-weight:800;font-size:14.5px;color:var(--ink2);background:transparent;border:0}
+.pw-tabs button.on{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+.pw-steps{display:flex;flex-direction:column;gap:12px}
+.pw-step{display:flex;gap:12px;align-items:flex-start}
+.pw-step .n{width:28px;height:28px;border-radius:50%;background:#7FE0E0;color:#06201F;font-weight:900;display:grid;place-items:center;flex-shrink:0;font-size:14px}
+.pw-step b{display:block;font-size:15.5px}
+.pw-step span{font-size:14px;color:var(--ink2);line-height:1.4}
+.pw-qr{display:block;width:150px;height:150px;border-radius:14px;background:#fff;margin-top:10px;object-fit:contain}
+.welcome{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px}
+.welcome img{width:150px;height:auto}
+.welcome h2{font-size:26px;font-weight:900;margin:0;letter-spacing:-.02em}
+.welcome p{margin:0;font-size:15px;color:var(--ink2);line-height:1.45;max-width:300px}
+.ob-lite-link{display:block;width:100%;text-align:center;font-size:14px;font-weight:700;color:var(--ink2);text-decoration:underline;margin-top:10px;background:none;border:0;padding:8px}
+/* the Pro page */
+.pro-pg{display:flex;flex-direction:column;gap:16px}
+.pro-hero{display:flex;align-items:flex-end;gap:12px;margin-top:-4px;flex-shrink:0}
+.pro-hero img{width:112px;height:auto;flex-shrink:0;margin-bottom:-6px}
+.pro-hero .t small{display:inline-flex;height:20px;align-items:center;padding:0 8px;border-radius:999px;background:#F2CE6B;color:#2A1E00;font-size:10.5px;font-weight:900;letter-spacing:.1em}
+.pro-hero .t h1{font-size:27px;line-height:1.08;font-weight:900;letter-spacing:-.03em;margin:8px 0 4px}
+.pro-hero .t p{margin:0;font-size:13.5px;color:var(--ink2);line-height:1.35}
+.pro-list{display:flex;flex-direction:column;justify-content:space-evenly;flex:1;min-height:0;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:4px 16px}
+.pro-list>div{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);flex:1}
+.pro-list>div:last-child{border-bottom:0}
+.pro-list i{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;background:var(--p);color:var(--pi);flex-shrink:0}
+.pro-list .pro-rt{display:flex;flex-direction:column;min-width:0}
+.pro-list b{font-size:15.5px;display:block;line-height:1.2}
+.pro-list .pro-rt>span{font-size:13.5px;color:var(--ink2)}
+.pro-have{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:16px;background:color-mix(in srgb,#F2CE6B 14%,var(--card));border:1px solid #F2CE6B;font-size:13.5px;line-height:1.4;flex-shrink:0}
+.pro-have .ic{color:#B8921A;flex-shrink:0;margin-top:2px}
+.pro-have b{display:block;font-size:15px}
+.up-plans{display:grid;grid-template-columns:1fr 1fr;gap:10px;flex-shrink:0}
+.up-plan{border-radius:18px;padding:11px 14px;border:1.5px solid var(--line);background:var(--card);position:relative;text-align:left;color:var(--ink)}
+.up-plan.on{border-color:#F2CE6B;background:color-mix(in srgb,#F2CE6B 12%,var(--card))}
+.up-plan b{display:block;font-size:21px;font-weight:900}.up-plan span{font-size:13px;color:var(--ink2)}
+.up-plan small{position:absolute;top:-9px;right:12px;font-size:10.5px;font-weight:900;color:#2A1E00;background:#F2CE6B;border-radius:999px;padding:2px 8px}
+@media (max-height:740px){.pro-hero img{width:70px}.pro-hero .t h1{font-size:23px}.pro-list>div{padding:6px 0}.pro-list .pro-rt>span{display:none}.pro-pg{gap:10px}.pw-btn{height:48px}.up-plan{padding:8px 12px}.up-plan b{font-size:18px}.pw-k img{width:76px}.welcome img{width:120px}}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -2027,13 +2108,16 @@ async function copyText(t){
 }
 
 // ── Router ─────────────────────────────────────────────────────────────────
-const HASH_FOR_VIEW={cast:'people',hub:'home',reply:'reply',real:'practice',pitch:'pitch',quick:'quick',settings:'settings',notebook:'notebook',library:'library',sync:'sync',owner:'owner'};
+const HASH_FOR_VIEW={cast:'people',hub:'home',reply:'reply',real:'practice',pitch:'pitch',quick:'quick',settings:'settings',notebook:'notebook',library:'library',sync:'sync',owner:'owner',pro:'pro'};
 const VIEW_FOR_HASH=Object.fromEntries(Object.entries(HASH_FOR_VIEW).map(([v,h])=>[h,v]));
 function _stopAll(){try{if(typeof REC!=='undefined'&&REC.active)recStop();}catch(e){}try{speakStop();}catch(e){}
   try{if(typeof QA!=='undefined'){clearInterval(QA._iv);QA.rec=false;if(QA.phase==='think'||QA.phase==='rec')QA.phase='q';}}catch(e){}
   try{if(typeof RW!=='undefined')RW.rec=false;if(typeof PI!=='undefined'){if(PI.rec&&PI.phase==='run'){PI.run=null;PI.phase=PI.parts?'build':'setup';}PI.rec=false;}}catch(e){}}
+// Pro-only screens, for Lite: the sheet instead of the screen
+const PRO_VIEWS={reply:'reply',pitch:'pitch',library:'library',notebook:'notebook',cast:'cast','nb-entry':'notebook',advice:'askk',ask:'askk',askk:'askk'};
 function go(view,extra){
   closeSheet();
+  if(typeof _isLite==='function'&&_isLite()&&PRO_VIEWS[view]&&S.onboarded){if(typeof openPlanSheet==='function')openPlanSheet(PRO_VIEWS[view]);return;}
   if(view!==V.view)_stopAll();
   if(view==='settings'&&V.view!=='settings'){V.setPage='';V._spFromHub=false;}
   if(view==='library'&&V.view!=='case'&&V.view!=='library')V.libTopic='';
@@ -2049,7 +2133,8 @@ function render(){
   if(V.view!=='hub'){document.querySelectorAll('.tour').forEach(t=>t.remove());}
   if(typeof sndSync==='function')sndSync();
   if(!S.onboarded&&V.view!=='owner'){return renderOnboarding(app);}
-  const R={cast:renderCast,hub:renderHub,reply:renderReply,real:renderReal,pitch:renderPitch,quick:renderQuick,settings:renderSettings,notebook:renderNotebook,advice:renderAdvice,library:renderLibrary,case:renderCase,'nb-entry':renderNbEntry,sync:renderSync,owner:renderOwner,ask:renderAsk,choose:renderChoose,askk:renderAskK};
+  if(typeof _isLite==='function'&&_isLite()&&PRO_VIEWS[V.view]){V.view='hub';}
+  const R={cast:renderCast,hub:renderHub,reply:renderReply,real:renderReal,pitch:renderPitch,quick:renderQuick,settings:renderSettings,notebook:renderNotebook,advice:renderAdvice,library:renderLibrary,case:renderCase,'nb-entry':renderNbEntry,sync:renderSync,owner:renderOwner,ask:renderAsk,choose:renderChoose,askk:renderAskK,pro:renderPro};
   const fn=R[V.view]||renderHub;
   fn(app);
   _noOrphans(app);
@@ -2079,6 +2164,7 @@ function wireCommon(root){
   root.querySelectorAll('[data-go]').forEach(b=>{if(b.__wired)return;b.__wired=true;b.addEventListener('click',()=>{const v=b.dataset.go;if(v==='back'){goBack();}else if(v==='tk-back'){closeSheet();if(V.tkTool)V.tkTool=null;else V.tkFam=null;render();}else go(v);});});
   root.querySelectorAll('[data-tech]').forEach(b=>{if(b.__wired)return;b.__wired=true;b.addEventListener('click',e=>{e.stopPropagation();openTechnique(b.dataset.tech);});});
   root.querySelectorAll('[data-whatsnew]').forEach(b=>{if(b.__wired)return;b.__wired=true;b.addEventListener('click',openWhatsNew);});
+  root.querySelectorAll('[data-act="see-pro"]').forEach(b=>{if(b.__wired)return;b.__wired=true;b.addEventListener('click',()=>{closeSheet();if(typeof openPro==='function')openPro();});});
 }
 function goBack(){if(V._back){const b=V._back;V._back=null;go(b);}else go('hub');}
 function openWhatsNew(){
@@ -2110,6 +2196,7 @@ function boot(){
   load();
   if(typeof _syInit==='function')_syInit();
   if(typeof _ownerLink==='function')_ownerLink();
+  if(typeof planSync==='function'&&S.onboarded)setTimeout(planSync,1500);
   const h=(location.hash||'').replace('#','');
   if(h==='owner'||/^owner=/.test(h))V.view='owner';
   else if(VIEW_FOR_HASH[h])V.view=VIEW_FOR_HASH[h];
@@ -2198,6 +2285,7 @@ async function callCoach(systemPrompt,userMessage,opts){
   if(!opts.noLang)systemPrompt=String(systemPrompt||'')+_coachLangLine();
   const cfg=S.aiConfig||{};
   if(!cfg.enabled)throw new Error('AI features are off. Turn them on in Settings.');
+  if(typeof _planAllows==='function'&&!_planAllows(opts.featureId||'default')){const e=new Error('plan:pro_only');e.plan=true;throw e;}
   const _cjkOut=/^(zh|zh-TW|yue|ja|ko)$/.test(S.coachLang||'')||(S.coachLang||'auto')==='auto'&&/[぀-ヿ㐀-鿿가-힯]/.test(String(userMessage||''));
   const maxTokens=Math.round((opts.maxTokens||1024)*(_cjkOut?2.2:1));
   let model=cfg.ownerKey&&cfg.model?cfg.model:'claude-sonnet-4-6';
@@ -2212,12 +2300,16 @@ async function callCoach(systemPrompt,userMessage,opts){
       return resp.json();
     }
     const endpoint=cfg.endpoint||'/.netlify/functions/ai';
-    const resp=await fetch(endpoint,{method:'POST',headers:_aiHeaders({'content-type':'application/json','x-feature-id':opts.featureId||'default',...(opts.grace?{'x-grace':'1'}:{})}),
+    const fid=opts.featureId||'default',inPractice=(fid==='rw-turn'||fid==='rw-eval')&&typeof _practiceId==='function'&&typeof RW!=='undefined'&&/^(turn|done|better)$/.test(RW.phase||''),taster=typeof _tasterOn==='function'&&_tasterOn();
+    const resp=await fetch(endpoint,{method:'POST',headers:_aiHeaders({'content-type':'application/json','x-feature-id':fid,...(opts.grace?{'x-grace':'1'}:{}),...(inPractice?{'x-practice-id':_practiceId()}:{}),...(taster?{'x-taster':'1'}:{})}),
       body:JSON.stringify(Object.assign({model,max_tokens:mt,system:systemPrompt,messages:[{role:'user',content:userMessage}]},_tools))});
     const rt=resp.headers.get('x-client-token');if(rt&&rt!==_clientToken())localStorage.setItem('grd-client-token',rt);
     ['x-usage-day','x-usage-month','x-limit-day','x-limit-month'].forEach(k=>{const v=resp.headers.get(k);if(v)localStorage.setItem('grd-'+k.slice(2),v);});
-    if(resp.status===429){
+    const tierH=resp.headers.get('x-tier');if(tierH==='lite'&&S.pro&&typeof _proUntil==='function'&&_proUntil()>Date.now()&&!(S.aiConfig&&S.aiConfig.ownerKey)){/* the server says the pass has ended */delete S.pro;save();}
+    if(resp.status===403||resp.status===429){
       let d={};try{d=await resp.json();}catch(e){}
+      if(/^(pro_only|practice_limit|free_paused|practice_long)$/.test(d.error||'')){const e=new Error('plan:'+d.error);e.plan=true;e.status=resp.status;throw e;}
+      if(resp.status===403){const e=new Error('Backend 403');e.status=403;throw e;}
       if(d.error==='daily_limit_reached')throw new Error('limit:day:'+d.used+'/'+d.limit);
       if(d.error==='monthly_limit_reached')throw new Error('limit:month:'+d.used+'/'+d.limit);
       const e=new Error('limit:rate');e.status=429;throw e;
@@ -2226,7 +2318,7 @@ async function callCoach(systemPrompt,userMessage,opts){
     return resp.json();
   };
   // Busy or timed-out server, dropped connection: wait a moment and try once more before telling the person.
-  const _transient=e=>!_isLimitErr(e)&&(/^(500|502|503|504|529)$/.test(String(e.status))||/overloaded|Failed to fetch|NetworkError|Load failed|network/i.test(String(e&&e.message)));
+  const _transient=e=>!_isLimitErr(e)&&!e.plan&&(/^(500|502|503|504|529)$/.test(String(e.status))||/overloaded|Failed to fetch|NetworkError|Load failed|network/i.test(String(e&&e.message)));
   let mt=maxTokens,data=null;
   for(let a=0;a<3;a++){
     try{data=await _send(mt);}
@@ -2286,15 +2378,17 @@ function _jsonFields(raw,keys){const s=String(raw||'');const out={};let ok=0;
   keys.forEach(k=>{const re=new RegExp('"'+k+'"\\s*:\\s*"([\\s\\S]*?)"\\s*(?=,\\s*"(?:'+keys.join('|')+')"\\s*:|\\}\\s*$)');const m=s.match(re);if(m){out[k]=m[1].replace(/\\"/g,'"').replace(/\\n/g,' ').trim();ok++;}});
   return ok?out:null;}
 function _isLimitErr(e){return /^limit:/.test(String(e&&e.message||e));}
+function _isPlanErr(e){return /^plan:/.test(String(e&&e.message||e));}
 function _isOfflineErr(e){const m=String(e&&e.message||e);return navigator.onLine===false||/fetch|network|Failed to reach/i.test(m);}
 function _errDetail(e){const m=String(e&&e.message||e||'').replace(/sk-[A-Za-z0-9_-]+/g,'…');return m?'<p class="small center-t" style="opacity:.7;max-width:300px;margin:6px auto 0;word-break:break-word">Detail: '+escHtml(m.slice(0,160))+'</p>':'';}
 function renderAIError(err,retryAction){
   const msg=String(err&&err.message||err||'Something went wrong.');
   let title='K couldn’t answer',body='',badge='',btn='';
-  if(_isLimitErr(err)){title='You’ve used today’s allowance';body=/month/.test(msg)?'This month’s allowance is used up. It starts again on '+_nextMonthLabel()+'.':'It comes back at midnight. If I’ve sent you a code, enter it in Settings.';badge='<div class="badge g">'+ic('clock','l')+'</div>';btn='<button class="g-chip" data-go="settings">Open Settings</button>';}
+  if(_isPlanErr(err)){const k=String(err.message).slice(5);title=k==='pro_only'?'That’s in Ground Pro':k==='free_paused'?'Free practice is full this month':k==='practice_long'?'That practice ran long':'That’s today’s practice done';body=k==='pro_only'?'Scenes in your world, every note from K, and more.':k==='free_paused'?'The free spots open again on '+_nextMonthLabel()+'.':k==='practice_long'?'Start a new one and keep going.':'More tomorrow. Pro gets five a day.';badge='<div class="badge g">'+ic('lock','l')+'</div>';btn='<button class="g-chip dark" data-act="see-pro">See Ground Pro</button>';}
+  else if(_isLimitErr(err)){title='You’ve used today’s allowance';body=/month/.test(msg)?'This month’s allowance is used up. It starts again on '+_nextMonthLabel()+'.':'It comes back at midnight. If I’ve sent you a code, enter it in Settings.';badge='<div class="badge g">'+ic('clock','l')+'</div>';btn='<button class="g-chip" data-go="settings">Open Settings</button>';}
   else if(_isOfflineErr(err)){title='No connection';body='K needs the internet. Check your connection and try again.';badge='<div class="badge err">'+ic('warn','l')+'</div>';if(retryAction)btn='<button class="g-chip dark" data-act="'+retryAction+'">Try again</button>';}
   else{title='Something went wrong';body='K didn’t answer. It isn’t anything you did. Try again in a moment.';badge='<div class="badge err">'+ic('warn','l')+'</div>';if(retryAction)btn='<button class="g-chip dark" data-act="'+retryAction+'">Try again</button>';}
-  return '<div class="g-card ai-err">'+badge+'<div class="g-q">'+escHtml(title)+'</div><p class="sub">'+escHtml(body)+'</p>'+(_isLimitErr(err)?'':_errDetail(err))+btn+'</div>';
+  return '<div class="g-card ai-err">'+badge+'<div class="g-q">'+escHtml(title)+'</div><p class="sub">'+escHtml(body)+'</p>'+(_isLimitErr(err)||_isPlanErr(err)?'':_errDetail(err))+btn+'</div>';
 }
 // ── Codes: redeem on the server, bound to this device token ───────────────
 async function redeemCode(code){
@@ -2302,7 +2396,7 @@ async function redeemCode(code){
   const endpoint=(cfg.endpoint||'/.netlify/functions/ai').replace(/\/ai$/,'/codes');
   const r=await fetch(endpoint,{method:'POST',headers:_aiHeaders({'content-type':'application/json'}),body:JSON.stringify({code})});
   let j={};try{j=await r.json();}catch(e){}
-  if(r.ok&&j.ok){S.credits=(S.credits||0)+(j.sessions||0);S.codes=(S.codes||[]).concat([{code:j.code,sessions:j.sessions,at:new Date().toISOString()}]).slice(-20);save();return {ok:true,sessions:j.sessions};}
+  if(r.ok&&j.ok){S.credits=(S.credits||0)+(j.sessions||0);if(j.until){S.pro={until:j.until,code:j.code};}S.codes=(S.codes||[]).concat([{code:j.code,sessions:j.sessions,days:j.days||0,at:new Date().toISOString()}]).slice(-20);save();return {ok:true,sessions:j.sessions,days:j.days||0,until:j.until||null};}
   return {ok:false,reason:j.error||('server_'+r.status)};
 }
 async function ownerCodes(method,body){
@@ -2528,6 +2622,7 @@ function nbContext(cat){
 // K's progress note (one small AI call every few sessions)
 async function _nbMaybeNote(force){
   if(!_nbOn()||!_aiOn())return;
+  if(typeof _isLite==='function'&&_isLite())return;
   if(_nbMaybeNote._busy)return;
   const nb=_nb(),all=_nbEntries().filter(e=>e.fix||e.worked);
   const last=nb.notes[0];
@@ -3534,6 +3629,7 @@ function openCase(id){const c=_case(id);if(!c)return;_casesSeen()[c.id]=new Date
 // Fit a case's practice scene to the person's own world (their field, role, or what they told K). Saved per case.
 function _adaptWho(){const p=_P(),f=(S.rwField||'').trim(),r=(p.role||'').trim(),pr=String(p.problem||'').trim();
   if(!f&&!r&&!pr)return '';
+  if(typeof _isLite==='function'&&_isLite()&&!(typeof _tasterOn==='function'&&_tasterOn()))return '';
   return [f?'Their field: '+f:'',r?'Their role: '+r:'',p.stage?'Career stage: '+_label(STAGES,p.stage):'',pr?'In their words, their biggest problem: "'+pr.slice(0,200)+'"':''].filter(Boolean).join('\n');}
 function _adaptKey(id,who){let h=0;for(const ch of id+'|'+who)h=(h*31+ch.charCodeAt(0))|0;return id+':'+(h>>>0).toString(36);}
 // What must not change when a case is set in someone's world
@@ -3546,7 +3642,7 @@ function _caseInvariant(c){
 }
 async function _caseAdapt(c,item,line,key,who){
   const sys='You adapt a practice scene so it happens in the person’s own world. Change only the surface: what the work is, who the other person is (a first name and what they do), and the details, so it fits the person below. Keep the same tension, the same power balance, the other person’s attitude, and what the speaker must handle. If the scene already fits their world, return it unchanged. Keep it universal: no country-specific details. Plain, simple American English, short sentences, about the same length as the original. Keep [[double brackets]] around the same key moment. "line" is what the other person says first; "k" (if given) is the model answer a coach would say back: adapt it to the new details but keep its technique, structure and length. If given, "cm" is the moment as written on the case page (keep its [[double brackets]] around the same key moment) and "cf" is how it feels, one short line in second person; keep "cf" unchanged unless it no longer fits. Reply ONLY with compact JSON on one line, no line breaks inside values, using exactly the keys you were given. Inside values never use straight double quotes; for spoken words use curly quotes “like this”.\n\n'+_caseInvariant(c)+'\n\nTHE PERSON:\n'+who+(typeof worldText==='function'&&worldText()?'\n\n'+worldText():'');
-  const src=Object.assign({},item,{line},c.k?{k:c.k}:{});
+  const src=Object.assign({},item,{line},c.k?{k:c.k}:{});Object.keys(src).forEach(k=>{if(src[k]==null||String(src[k]).trim()==='')delete src[k];});
   const money=/¥/.test(JSON.stringify(src));
   // A value that swallowed the next key means the JSON was broken: reject it and ask again
   const clean=v=>String(v).trim().replace(/^"+|"+$/g,'').replace(/"([^"]*)"/g,'“$1”').trim();
@@ -3738,7 +3834,7 @@ function openYesCheck(){
 // S.world = {key, summary, cast:[{name,role,detail}], work:[...], money, made}
 const W={p:null,err:null};
 function _worldKey(){const p=_P();return [(S.rwField||'').trim(),p.stage||'',(p.role||'').trim(),String(p.problem||'').trim().slice(0,200)].join('|');}
-function _worldWanted(){const p=_P();return !!((S.rwField||'').trim()||(p.role||'').trim()||String(p.problem||'').trim());}
+function _worldWanted(){if(typeof _isLite==='function'&&_isLite()&&!(typeof _tasterOn==='function'&&_tasterOn()))return false;const p=_P();return !!((S.rwField||'').trim()||(p.role||'').trim()||String(p.problem||'').trim());}
 function _worldFresh(){return !!(S.world&&S.world.key===_worldKey()&&Array.isArray(S.world.cast)&&S.world.cast.length);}
 // A world built before the cast had pictures: ask K which look fits each person (one small call), names stay
 async function worldLooks(){const w=S.world;if(!w||!_aiOn()||!w.cast.length||w.cast.every(c=>c.look))return;if(W.lp)return W.lp;
@@ -3875,6 +3971,150 @@ function moveLearnIn(t){const cs=_tkCases(t);return cs.length?cs[0].title.replac
 function moveLearn(t,how){if(!TECHNIQUES[t]||moveLearned(t))return false;_moves()[t]={at:new Date().toISOString(),how:String(how||'').slice(0,200),scen:RW.scenario};save();return true;}
 // For K's review: the moves it may recognise
 function movesForReview(){return Object.keys(TECHNIQUES).map(k=>k+' = '+TECHNIQUES[k].title+(TECHNIQUES[k].tag?': '+TECHNIQUES[k].tag:'')).join('\n');}
+// ═══ Plans: Ground Lite (free, generic) and Ground Pro (paid, set in your world) ═══
+// S.pro = {until:ISO, code} once a Pro code is entered. The server is the judge; this is what the app shows.
+// Lite gets: 1 generic practice a day (plus one taster set in their world, ever), Quick answer (3 a day), the daily deck.
+const PLAN_ON=true;
+const PRO_PRICE={m:'$15',q:'$36',mCny:'¥98',qCny:'¥238',qPerMo:'$12'};
+const PAY_LINKS={paypalM:'https://www.paypal.me/kianhow/15',paypalQ:'https://www.paypal.me/kianhow/36',wechatQr:'art/wechat-pay.png'};
+const LITE_PRACTICE_DAY=1,PRO_PRACTICE_DAY=5,LITE_QUICK_DAY=3;
+function _proUntil(){const p=S.pro;if(!p||!p.until)return 0;const t=Date.parse(p.until);return isFinite(t)?t:0;}
+function _isPro(){if(!PLAN_ON)return true;if(S.aiConfig&&S.aiConfig.ownerKey)return true;return _proUntil()>Date.now();}
+function _isLite(){return !_isPro();}
+function _proDaysLeft(){return Math.max(0,Math.ceil((_proUntil()-Date.now())/86400000));}
+function _proEndsLabel(){const t=_proUntil();return t?_usDate(new Date(t)):'';}
+// Today's practice count on this device (the server keeps the real one; this is what the pill shows)
+function _pday(){const u=_usage(),d=_dayKey();if(u.pday!==d){u.pday=d;u.pr=0;u.quick=0;}return u;}
+function _practicesToday(){return _pday().pr||0;}
+function _practiceLimit(){return _isPro()?PRO_PRACTICE_DAY:LITE_PRACTICE_DAY;}
+function _practicesLeft(){if(S.aiConfig&&S.aiConfig.ownerKey)return 99;return Math.max(0,_practiceLimit()-_practicesToday());}
+function _countPractice(){const u=_pday();u.pr=(u.pr||0)+1;save();}
+function _quickLeft(){if(_isPro()||(S.aiConfig&&S.aiConfig.ownerKey))return 99;return Math.max(0,LITE_QUICK_DAY-(_pday().quick||0));}
+function _countQuick(){const u=_pday();u.quick=(u.quick||0)+1;save();}
+// The taster: one practice set in their world, for Lite, ever
+function _tasterUsed(){return !!S.tasterAt;}
+function _tasterOn(){return _isLite()&&!!S.tasterOn&&!_tasterUsed();}
+// A practice id for the server: every call inside one practice carries it, so the practice is counted once
+function _newPracticeId(){RW._pid='p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);return RW._pid;}
+function _practiceId(){return RW._pid||_newPracticeId();}
+// Which features each plan may use. Lite calls for anything else are stopped here, before the server.
+const PRO_FEATURES=['reply-draft','rw-eval','pitch-build','pitch-notes','nb-note','desk-route','desk-advice','advice-follow','ask-q','world','case-adapt'];
+function _planAllows(featureId){if(_isPro())return true;if(PRO_FEATURES.includes(featureId))return _tasterOn()&&(featureId==='world'||featureId==='case-adapt');return true;}
+function _isPlanErr(e){return /^plan:/.test(String(e&&e.message||e));}
+// Pill text for the top of Practice
+function _planPill(){if(S.aiConfig&&S.aiConfig.ownerKey)return '';const n=_practicesToday(),L=_practiceLimit();
+  if(_isPro())return '<span class="pw-pill pass"><i></i>Pro · '+Math.min(n,L)+' of '+L+' today</span>';
+  const left=Math.max(0,L-n);return '<span class="pw-pill"><i></i>'+(left?left+' free today':'0 free today')+'</span>';}
+// Tier badge next to the logo on the hub
+function _tierBadge(){if(!PLAN_ON||(S.aiConfig&&S.aiConfig.ownerKey))return '';return _isPro()?'<em class="tier pro">PRO</em>':'<em class="tier">LITE</em>';}
+// Ask the server whether this device is Pro (after a reinstall, or when the pass may have been extended elsewhere)
+async function planSync(){
+  try{const cfg=S.aiConfig||{};const ep=(cfg.endpoint||'/.netlify/functions/ai').replace(/\/ai$/,'/codes');
+    const r=await fetch(ep,{headers:_aiHeaders({})});if(!r.ok)return;const j=await r.json();
+    if(j&&j.until){S.pro=Object.assign({},S.pro||{},{until:j.until});save();}
+    else if(j&&j.until===null&&S.pro&&_proUntil()<Date.now()){delete S.pro;save();}
+  }catch(e){}
+}
+// ── Screens ──
+function _proRow(c,icon,t,s){return '<div><i class="'+c+'">'+ic(icon,'s')+'</i><span class="pro-rt"><b>'+t+'</b><span>'+s+'</span></span></div>';}
+function renderPro(app){
+  const q=V.proPlan!=='m';
+  let h='<main class="scr pro-pg">'+gBar('Ground Pro',V._proBack||'hub');
+  h+='<div class="pro-hero"><img src="'+ART+'kpose/thumb.webp" alt=""><div class="t"><small>PRO</small><h1>'+(_isPro()?'You’re on Pro.':'Practice built around your life.')+'</h1><p>'+(_isPro()?_proDaysLeft()+' days left, ends '+escHtml(_proEndsLabel())+'. A new code extends it.':'Coached by Kian How. 20 years across games, film and music.')+'</p></div></div>';
+  h+='<div class="pro-list">'+
+    _proRow('p-teal','talk','Scenes set in your world','Your field, your people, your numbers')+
+    _proRow('p-lav','check','5 practices a day','Plus every note from K, and your moves')+
+    _proRow('p-pink','mic','Characters talk back','They say their lines out loud')+
+    _proRow('p-org','reply','Ask K and Help me reply','For the real conversation tomorrow')+
+    _proRow('p-yellow','pitch','Pitch it','Build it, run it, face the room')+
+    _proRow('p-blue','list','Notes that track you','K tells you how you’re changing')+'</div>';
+  h+='<div class="up-plans"><button class="up-plan'+(q?'':' on')+'" data-plan="m"><b>'+PRO_PRICE.m+'</b><span>30 days</span></button><button class="up-plan'+(q?' on':'')+'" data-plan="q"><small>BEST VALUE</small><b>'+PRO_PRICE.q+'</b><span>90 days · '+PRO_PRICE.qPerMo+'/mo</span></button></div>';
+  h+='<div class="pw-btns"><button class="pw-btn pp" data-act="pay-pp">PayPal</button><button class="pw-btn wx" data-act="pay-wx">WeChat Pay</button></div>';
+  h+='<div class="pw-fine">One payment, no auto-renew. Have a code? <button class="link" data-act="pro-code">Enter it</button></div>';
+  h+='</main>';
+  app.innerHTML=h;
+  app.querySelectorAll('[data-plan]').forEach(b=>b.addEventListener('click',()=>{V.proPlan=b.dataset.plan;render();}));
+  const on=(s,f)=>{const el=app.querySelector(s);if(el)el.addEventListener('click',f);};
+  on('[data-act="pay-pp"]',()=>openPaySheet('pp'));
+  on('[data-act="pay-wx"]',()=>openPaySheet('wx'));
+  on('[data-act="pro-code"]',()=>openCodeSheet());
+}
+function openPro(back){V._proBack=back||V.view||'hub';if(!V.proPlan)V.proPlan='q';go('pro');}
+function _planLabel(){return V.proPlan==='m'?'30 days':'90 days';}
+function _planUsd(){return V.proPlan==='m'?PRO_PRICE.m:PRO_PRICE.q;}
+function _planCny(){return V.proPlan==='m'?PRO_PRICE.mCny:PRO_PRICE.qCny;}
+function openPaySheet(how){
+  const pp=how!=='wx';
+  const link=V.proPlan==='m'?PAY_LINKS.paypalM:PAY_LINKS.paypalQ;
+  let h='<div class="pw-head"><h2 class="h2" style="font-size:21px">'+(pp?'Pay with PayPal':'Pay with WeChat')+'</h2><span class="pro-tag">'+escHtml(_planLabel())+' · '+(pp?_planUsd():_planCny())+'</span></div>';
+  h+='<div class="pw-tabs"><button class="'+(pp?'on':'')+'" data-how="pp">PayPal</button><button class="'+(pp?'':'on')+'" data-how="wx">WeChat Pay</button></div>';
+  h+='<div class="pw-steps">';
+  if(pp)h+='<div class="pw-step"><span class="n">1</span><div><b>Pay '+_planUsd()+' on PayPal</b><span>The button opens PayPal with the amount filled in. Add your email in the note.</span></div></div>';
+  else h+='<div class="pw-step"><span class="n">1</span><div><b>Scan and pay '+_planCny()+'</b><span>Put your email in the payment note so I can reach you.</span><img class="pw-qr" src="'+PAY_LINKS.wechatQr+'" alt="WeChat Pay QR code"></div></div>';
+  h+='<div class="pw-step"><span class="n">2</span><div><b>I email you a code</b><span>Usually within a few hours.</span></div></div>';
+  h+='<div class="pw-step"><span class="n">3</span><div><b>Enter it here</b><span>Pro starts straight away.</span></div></div></div>';
+  if(pp)h+='<a class="pw-btn pp" href="'+escHtml(link)+'" target="_blank" rel="noopener">Open PayPal · '+_planUsd()+'</a>';
+  h+='<div class="fieldset"><label class="lab">Have a code?</label>'+codeFieldHtml('pay-code')+'</div>';
+  openSheet(h,{wire:sh=>{wireCodeField(sh,'pay-code',()=>{closeSheet();_afterPro();});sh.querySelectorAll('[data-how]').forEach(b=>b.addEventListener('click',()=>openPaySheet(b.dataset.how)));}});
+}
+function openCodeSheet(){
+  openSheet('<h2 class="h2" style="font-size:21px">Enter your code</h2><p class="sub">The code from my email. Each code works on one phone.</p><div class="fieldset">'+codeFieldHtml('pro-code')+'</div>',
+    {wire:sh=>{wireCodeField(sh,'pro-code',()=>{closeSheet();_afterPro();});const i=sh.querySelector('#pro-code');if(i)setTimeout(()=>i.focus(),100);}});
+}
+// After a Pro code lands: welcome, then the profile questions Lite skipped
+function _afterPro(){
+  if(!_isPro()){render();return;}
+  const need=!(_P().stage||S.rwField);
+  const days=_proDaysLeft();
+  openSheet('<div class="welcome"><img src="'+ART+'kpose/cheer.webp" alt=""><span class="pro-tag">PRO · '+days+' DAYS</span><h2>Welcome to Pro.</h2><p>'+(need?'Three quick questions and every scene is set in your world: your field, your people, your numbers.':'Every scene is now set in your world. Five practices a day, and every note from K.')+'</p></div>'+
+    '<button class="pw-btn gold" data-act="pro-start">'+(need?'Tell K about you':'Let’s go')+'</button>',
+    {wire:sh=>{sh.querySelector('[data-act="pro-start"]').addEventListener('click',()=>{closeSheet();if(need){V.obStep=1;V._obPro=true;S.onboarded=false;render();}else go('hub');});}});
+}
+// ── Limit sheets ──
+function openPlanSheet(kind,extra){
+  extra=extra||{};
+  const pose=k=>'<img src="'+ART+'kpose/'+k+'.webp" alt="">';
+  const passCard='<div class="pw-pass"><div class="top"><b>Ground Pro</b><span>'+PRO_PRICE.m+' <small>/ 30 days</small></span></div><ul><li>Scenes set in your world</li><li>5 practices a day, every note from K</li><li>One payment. No auto-renew.</li></ul></div>';
+  let h='',wire=null;
+  if(kind==='practice'&&_isPro()){
+    h='<div class="pw-k">'+pose('cheer')+'<div><h2>Five today. That’s a real workout.</h2><p>Practice opens again tomorrow. Let it sink in tonight.</p></div></div>'+
+      '<div class="pw-row"><div><b>Your pass</b><br><span>'+_proDaysLeft()+' days left</span></div><span>Ends '+escHtml(_proEndsLabel())+'</span></div>'+
+      '<button class="btn btn-sec" data-go-nb>Read your notes</button>';
+    wire=sh=>{sh.querySelector('[data-go-nb]').addEventListener('click',()=>{closeSheet();go('notebook');});};
+  }else if(kind==='practice'){
+    h='<div class="pw-k">'+pose('shrug')+'<div><h2>That’s today’s free practice.</h2><p>Another one tomorrow. With Pro: five a day, set in your own world.</p></div></div>'+
+      '<button class="pw-btn gold" data-act="see-pro">See Ground Pro</button><button class="btn btn-sec" data-act="go-quick">Try a Quick answer instead</button>';
+  }else if(kind==='quick'){
+    h='<div class="pw-k">'+pose('shrug')+'<div><h2>That’s today’s three Quick answers.</h2><p>More tomorrow. Pro gets fifteen a day.</p></div></div>'+
+      '<button class="pw-btn gold" data-act="see-pro">See Ground Pro</button><button class="btn btn-sec" data-close>OK</button>';
+  }else if(kind==='paused'){
+    h='<div class="pw-k">'+pose('wait')+'<div><h2>Free practice is full this month.</h2><p>So many people practised that the free spots ran out. They open again on '+escHtml(_nextMonthLabel())+'.</p></div></div>'+passCard+
+      '<button class="pw-btn gold" data-act="see-pro">See Ground Pro</button>';
+  }else{ // pro-only feature
+    const F={reply:['Help me reply is in Pro.','K drafts the message for the real conversation.'],askk:['Ask K is in Pro.','Describe what’s coming up and K takes you to the right tool.'],pitch:['Pitch it is in Pro.','Build it, run it, face the room.'],library:['The Toolkit is in Pro.','Every move, and K checks when you use one.'],notebook:['The notebook is in Pro.','K keeps notes on how you’re changing.'],surprise:['Surprise me is in Pro.','K writes a brand-new scene each time.'],cast:['People is in Pro.','The cast in your world.'],voice:['Voices are in Pro.','The other side says their lines out loud.']}[kind]||['That’s in Pro.',''];
+    h='<div class="pw-k">'+pose('invite')+'<div><h2>'+F[0]+'</h2><p>'+F[1]+'</p></div></div>'+passCard+
+      '<button class="pw-btn gold" data-act="see-pro">See Ground Pro</button><button class="btn btn-sec" data-close>Not now</button>';
+  }
+  openSheet(h,{wire:sh=>{const a=sh.querySelector('[data-act="see-pro"]');if(a)a.addEventListener('click',()=>{closeSheet();openPro();});const g=sh.querySelector('[data-act="go-quick"]');if(g)g.addEventListener('click',()=>{closeSheet();go('quick');});if(wire)wire(sh);}});
+}
+// A plan error from the server, turned into the right sheet. Returns true when it was handled.
+function handlePlanErr(e){
+  const m=String(e&&e.message||e||'');
+  if(/^plan:pro_only/.test(m)){openPlanSheet('feature');return true;}
+  if(/^plan:practice_limit/.test(m)){openPlanSheet('practice');return true;}
+  if(/^plan:free_paused/.test(m)){openPlanSheet('paused');return true;}
+  if(/^plan:practice_long/.test(m)){showToast('That practice ran long. Start a new one.','warn');return true;}
+  return false;
+}
+// The taster offer, after a Lite user's first generic practice
+function openTasterSheet(){
+  if(!_isLite()||_tasterUsed()||!_aiOn())return false;
+  const h='<div class="pw-k">'+'<img src="'+ART+'kpose/invite.webp" alt="">'+'<div><h2>Want one set in your actual work?</h2><p>Tell me what you do. Your next practice is built around it. This one’s on me.</p></div></div>'+
+    '<div class="fieldset"><input class="inp" id="taste-field" maxlength="60" placeholder="e.g. music student, 2nd year" autocomplete="off"></div>'+
+    '<button class="pw-btn gold" data-act="taste-go">Build my scene</button><button class="btn btn-sec" data-close>Not now</button>';
+  openSheet(h,{wire:sh=>{const i=sh.querySelector('#taste-field');sh.querySelector('[data-act="taste-go"]').addEventListener('click',()=>{const v=(i.value||'').trim();if(!v){i.focus();i.classList.add('bad');return;}S.rwField=v.slice(0,60);S.tasterOn=true;save();closeSheet();S.tasterPick=true;RW.phase='setup';RW.pickOpen=null;go('real');showToast('Pick a scene. This one is set in your world.');});}});
+  return true;
+}
 // ═══ Sound: music and stingers. Off until the person taps; follows the iOS silent switch; never plays while the mic is open. ═══
 // Shelved for now: flip to true to bring the music back
 const SND_ON=false;
@@ -4026,12 +4266,13 @@ function openAskK(){
 }
 function renderHub(app){
   let h='<main class="scr hub dk">';
-  h+='<div class="top"><div class="wm"><b>Ground</b><i></i><small>by Kian How</small></div><div class="ibtns"><button class="ibtn ib-set" data-go="settings" aria-label="Settings">'+ic('settings')+'</button></div></div>';
+  h+='<div class="top"><div class="wm"><b>Ground</b><i></i><small>by Kian How</small>'+(typeof _tierBadge==='function'?_tierBadge():'')+'</div><div class="ibtns"><button class="ibtn ib-set" data-go="settings" aria-label="Settings">'+ic('settings')+'</button></div></div>';
   h+='<div class="dk-stack" id="dk-deck"></div>';
-  h+='<div class="dk-tools"><button class="askk" data-act="askk"><i class="k">'+kav()+'</i>'+(V.deskBusy?'Reading…':'Ask K')+'</button><button data-go="real"><i class="p-teal">'+ic('talk','s')+'</i>Practice</button><button data-go="library"><i class="p-green">'+ic('book','s')+'</i>Toolkit</button><button data-go="notebook"><i class="p-yellow">'+ic('list','s')+'</i>Notes</button></div>';
+  if(typeof _isLite==='function'&&_isLite())h+='<div class="dk-tools three"><button class="glow" data-go="real"><i class="p-teal">'+ic('talk','s')+'</i>Practice</button><button data-go="quick"><i class="p-lav">'+ic('mic','s')+'</i>Quick answer</button><button class="gopro" data-act="gopro"><i>'+ic('arrow','s')+'</i>Get Pro</button></div>';
+  else h+='<div class="dk-tools"><button class="askk" data-act="askk"><i class="k">'+kav()+'</i>'+(V.deskBusy?'Reading…':'Ask K')+'</button><button data-go="real"><i class="p-teal">'+ic('talk','s')+'</i>Practice</button><button data-go="library"><i class="p-green">'+ic('book','s')+'</i>Toolkit</button><button data-go="notebook"><i class="p-yellow">'+ic('list','s')+'</i>Notes</button></div>';
   h+='</main>';
   app.innerHTML=h;
-  app.querySelector('[data-act="askk"]').addEventListener('click',()=>{if(!V.deskBusy)openAskK();});
+  {const ak=app.querySelector('[data-act="askk"]');if(ak)ak.addEventListener('click',()=>{if(!V.deskBusy)openAskK();});const gp=app.querySelector('[data-act="gopro"]');if(gp)gp.addEventListener('click',()=>openPro('hub'));}
   _deckWire(app.querySelector('#dk-deck'));
   _kTakeRefresh();
   if(S.onboarded&&!S.tourDone)setTimeout(()=>{if(V.view==='hub'&&!document.getElementById('sheet')&&!document.querySelector('.tour'))hubTour(0);},350);
@@ -4080,7 +4321,13 @@ function _hubFit(){
 try{let _hf;window.addEventListener('resize',()=>{clearTimeout(_hf);_hf=setTimeout(()=>{if(V.view==='hub')_hubFit();},120);});}catch(e){}
 
 // ── First visit: the hub shrinks into a miniature, K says hello, then lifts out each part on its own ──
-const HUB_TOUR=[
+const HUB_TOUR_LITE=[
+  {sel:null,t:'Welcome to your hub',b:'This is home. Three things worth knowing, and you’re ready.',pose:'invite'},
+  {sel:'#dk-deck',t:'Your deck',b:'Cards picked for you, fresh every day. Practice one, read one, or pick your answer. Swipe for the next.',pose:'up',fit:.62},
+  {sel:'.dk-tools',t:'Practice and Quick answer',b:'One practice a day, free. Quick answer for the question you keep getting. Pro is where the scenes get set in your own world.',pose:'squat',fit:1},
+  {sel:'.ib-set',t:'Settings',b:'Your notes on you, and your data. Up here, out of the way.',pose:'up'}
+];
+const HUB_TOUR_PRO=[
   {sel:null,t:'Welcome to your hub',b:'This is home. Four things worth knowing, and you’re ready.',pose:'invite'},
   {sel:'#dk-deck',t:'Your deck',b:'Cards picked for you, fresh every day. Practice one, read one, or pick your answer. Swipe for the next.',pose:'up',fit:.62},
   {sel:'.dk-tools .askk',t:'Ask K',b:'Something coming up, or a message you don’t know how to answer? Tell me. I’ll take you to the right tool.',pose:'left',fit:1.6},
@@ -4093,11 +4340,12 @@ function _tourEnd(t,m){S.tourDone=true;save();if(t){t.classList.add('out');setTi
 function _tourIsolate(m,el){m.querySelectorAll('.tour-dim').forEach(e=>e.classList.remove('tour-dim'));if(!el)return;
   let n=el;while(n&&n!==m){const p=n.parentElement;if(!p)break;[...p.children].forEach(c=>{if(c!==n)c.classList.add('tour-dim');});n=p;}}
 function hubTour(i){
+  const HUB_TOUR=(typeof _isLite==='function'&&_isLite())?HUB_TOUR_LITE:HUB_TOUR_PRO;
   const m=document.querySelector('main.hub');if(!m){S.tourDone=true;save();return;}
   let t=document.querySelector('.tour');
   if(!t){t=document.createElement('div');t.className='tour tour2';t.innerHTML='<div class="tour-top"><span><b>GROUND</b> · A QUICK TOUR</span><button class="tour-skip">Skip</button></div><img class="tour-k" alt=""><div class="tour-bub"><b></b><p></p></div><div class="tour-foot"><div class="tour-dots">'+HUB_TOUR.map(()=>'<i></i>').join('')+'</div><button class="tour-next">Next</button></div>';
     document.body.appendChild(t);m.classList.add('tour-mini');
-    t._img={};HUB_TOUR.forEach(x=>{const im=new Image();im.src=(typeof ART!=='undefined'?ART:'art/')+'kpose/'+x.pose+'.webp';t._img[x.pose]=im;});
+    t._img={};HUB_TOUR_PRO.concat(HUB_TOUR_LITE).forEach(x=>{const im=new Image();im.src=(typeof ART!=='undefined'?ART:'art/')+'kpose/'+x.pose+'.webp';t._img[x.pose]=im;});
     t.querySelector('.tour-skip').addEventListener('click',()=>_tourEnd(t,m));}
   const st=HUB_TOUR[i];if(!st){_tourEnd(t,m);return;}
   const el=st.sel?document.querySelector(st.sel):null;if(st.sel&&!el){_tourEnd(t,m);return;}
@@ -4165,7 +4413,7 @@ function wireCodeField(root,id,after){
     btn.disabled=true;btn.textContent='…';
     const r=await redeemCode(code);
     btn.disabled=false;btn.textContent='Use';
-    if(r.ok){inp.classList.add('ok');msg.innerHTML='<div class="note ok" role="status" style="margin-top:10px">'+ic('check','s')+'<div><b>Code accepted.</b><span>'+r.sessions+' practice sessions added. Enjoy them.</span></div></div>';if(after)setTimeout(after,900);return;}
+    if(r.ok){inp.classList.add('ok');msg.innerHTML='<div class="note ok" role="status" style="margin-top:10px">'+ic('check','s')+'<div><b>Code accepted.</b><span>'+(r.days?'Ground Pro for '+r.days+' days. Enjoy it.':r.sessions+' practice sessions added. Enjoy them.')+'</span></div></div>';if(after)setTimeout(after,900);return;}
     inp.classList.add('bad');
     const R={used:['This code is already used on another phone.','Each code works on one phone. If it’s yours, message me.','err'],expired:['This code has ended.','Message me and I’ll send you a new one.','warn'],not_found:['I don’t recognize that code.','Check each letter and try again.','err']};
     const x=R[r.reason]||(/^server|fetch/.test(r.reason)?['Couldn’t check the code.','Check your connection and try again.','warn']:R.not_found);
@@ -4217,7 +4465,7 @@ function renderOwner(app){
   const tab=V.ownTab||'all',codes=V._ownCodes||[];
   const n=x=>codes.filter(c=>x==='all'||(x==='unused'?c.status==='unused':c.status!=='unused')).length;
   h+='<div class="card stack" style="gap:12px"><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">'+
-     '<div class="fieldset"><label class="lab" for="ow-s">Sessions</label><input class="inp" id="ow-s" type="number" inputmode="numeric" value="'+TOPUP.sessions+'"></div>'+
+     '<div class="fieldset"><label class="lab" for="ow-s">Pro days</label><select class="inp" id="ow-s"><option value="30">30 · $15</option><option value="90" selected>90 · $36</option><option value="7">7 · trial</option><option value="365">365 · a year</option></select></div>'+
      '<div class="fieldset"><label class="lab" for="ow-n">How many</label><input class="inp" id="ow-n" type="number" inputmode="numeric" value="5"></div>'+
      '<div class="fieldset"><label class="lab" for="ow-e">Ends after</label><input class="inp" id="ow-e" type="number" inputmode="numeric" value="30" placeholder="days"></div></div>'+
      '<button class="btn btn-pri" data-act="make"'+(V._ownBusy?' disabled':'')+'>'+(V._ownBusy==='make'?'Making…':'Make codes')+'</button>'+(V._ownErr?'<div class="note err">'+ic('warn','s')+'<div>'+escHtml(V._ownErr)+'</div></div>':'')+'</div>';
@@ -4225,7 +4473,7 @@ function renderOwner(app){
   const list=codes.filter(c=>tab==='all'||(tab==='unused'?c.status==='unused':c.status!=='unused'));
   if(V._ownBusy==='load')h+='<p class="quiet">Loading…</p>';
   else if(!list.length)h+='<div class="empty"><p>No codes '+(tab==='all'?'yet':'here')+'. Make some above.</p></div>';
-  else h+='<div class="list">'+list.map(c=>{const d=x=>x?new Date(x).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';const sub=c.status==='used'?'Used '+d(c.usedAt)+' · one phone':c.status==='expired'?'Ended '+d(c.expires)+' · never used':c.sessions+' sessions'+(c.expires?' · ends '+d(c.expires):'');
+  else h+='<div class="list">'+list.map(c=>{const d=x=>x?new Date(x).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';const sub=c.status==='used'?'Used '+d(c.usedAt)+' · one phone':c.status==='expired'?'Ended '+d(c.expires)+' · never used':(c.days?'Pro · '+c.days+' days':c.sessions+' sessions')+(c.expires?' · use by '+d(c.expires):'');
      return '<div class="row"><span class="rt"><b class="code">'+escHtml(c.code)+'</b><span>'+escHtml(sub)+'</span></span><span class="st '+(c.status==='unused'?'un':c.status==='used'?'us':'ex')+'">'+(c.status==='unused'?'Unused':c.status==='used'?'Used':'Ended')+'</span><button class="ocopy" data-copy="'+escHtml(c.code)+'" aria-label="Copy code">'+ic('copy','s')+'</button></div>';}).join('')+'</div>';
   // Home suggestions: which version gets people started (anonymous counts)
   {const sx=V._sugStats;const n=(o,k)=>(o&&o[k])||0;const rate=(o,v)=>{const s=n(o,v+'_shown'),tp=n(o,v+'_tap');return s?Math.round(tp/s*100)+'%':'–';};
@@ -4244,9 +4492,9 @@ function renderOwner(app){
   app.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{V.ownTab=b.dataset.tab;render();}));
   app.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',async()=>{await copyText(b.dataset.copy);showToast('Copied '+b.dataset.copy,'check');}));
   app.querySelector('[data-act="make"]').addEventListener('click',async()=>{
-    const s=+app.querySelector('#ow-s').value||TOPUP.sessions,k=+app.querySelector('#ow-n').value||1,e=+app.querySelector('#ow-e').value||0;
+    const s=+app.querySelector('#ow-s').value||30,k=+app.querySelector('#ow-n').value||1,e=+app.querySelector('#ow-e').value||0;
     V._ownBusy='make';V._ownErr=null;render();
-    try{const r=await ownerCodes('PUT',{sessions:s,count:Math.min(50,k),days:e});V._ownCodes=r.codes||[];}catch(err){V._ownErr='Couldn’t make codes: '+err.message;}
+    try{const r=await ownerCodes('PUT',{sessions:0,passDays:s,count:Math.min(50,k),days:e});V._ownCodes=r.codes||[];}catch(err){V._ownErr='Couldn’t make codes: '+err.message;}
     V._ownBusy=null;render();
   });
   app.querySelector('[data-act="stats"]').addEventListener('click',async()=>{
@@ -4330,13 +4578,14 @@ function renderIntro(app){
   const H=[['Practice the conversations that decide your career.','Price talks, pushy clients, interviews, a boss who won’t listen.'],
     ['Say it out loud. The other side talks back.','A real person, reacting to what you actually say. Type if you can’t talk.'],
     ['Get told what worked, and the one thing to fix.','Coached the way Kian has coached for twenty years.'],
-    ['Three questions, and K knows where to start.','Your name, where you are now, and what’s hardest.']];
+    (typeof PLAN_ON!=='undefined'&&PLAN_ON)?['No questions. Jump straight in.','Free to use. Go Pro when you want practice set in your own world.']:['Three questions, and K knows where to start.','Your name, where you are now, and what’s hardest.']];
   let h='<main class="ob'+(reduce?' ob-still':'')+'" data-n="'+n+'">';
   h+='<div class="ob-bars"'+(n===3?' style="visibility:hidden"':'')+'>'+[0,1,2].map(i=>'<i class="'+(i<n?'d':i===n?'p':'')+'"><b></b></i>').join('')+'</div>';
   h+='<div class="ob-brand"><span><b>GROUND</b> · BY KIAN HOW</span><span class="ob-br-r">'+(SND_ON?sndBtnHtml():'')+(n<3?'<button data-act="ob-skip">Skip</button>':'')+'</span></div>';
   h+='<div class="ob-vis">'+VIS[n]+'</div>';
   h+='<div class="ob-txt"><h1>'+H[n][0]+'</h1><p>'+H[n][1]+'</p></div>';
-  h+=n===2?gCta('Get started','ob-next'):n===3?gCta('Let’s go','ob-go'):'<div class="ob-tap">Tap to continue</div>';
+  const lite=(typeof PLAN_ON!=='undefined'&&PLAN_ON)&&!(typeof _isPro==='function'&&_isPro());
+  h+=n===2?gCta('Get started','ob-next'):n===3?(lite?gCta('Start free','ob-go')+'<button class="ob-lite-link" data-act="ob-code">I have a Pro code</button>':gCta('Let’s go','ob-go')):'<div class="ob-tap">Tap to continue</div>';
   h+='</main>';
   app.innerHTML=h;
   const root=app.querySelector('.ob');
@@ -4349,7 +4598,8 @@ function renderIntro(app){
   const on=(s,f)=>{const el=app.querySelector(s);if(el)el.addEventListener('click',e=>{e.stopPropagation();f();});};
   on('[data-act="ob-skip"]',()=>goTo(3));
   on('[data-act="ob-next"]',()=>goTo(3));
-  on('[data-act="ob-go"]',()=>{_introClear();V.obSlide=0;V.obStep=1;render();});
+  on('[data-act="ob-go"]',()=>{_introClear();V.obSlide=0;if(lite){S.onboarded=true;S.whatsNew=APP_VERSION;save();V.obStep=0;go('hub');return;}V.obStep=1;render();});
+  on('[data-act="ob-code"]',()=>{_introClear();openSheet('<h2 class="h2" style="font-size:21px">Enter your Pro code</h2><p class="sub">The code from my email. Each code works on one phone.</p><div class="fieldset">'+codeFieldHtml('ob-pro-code')+'</div>',{wire:sh=>{wireCodeField(sh,'ob-pro-code',()=>{closeSheet();V.obSlide=0;V.obStep=1;render();});}});});
   _fillZoom([app.querySelector('.ob-txt')],()=>document.scrollingElement.scrollHeight<=window.innerHeight,1);
 }
 function renderOnboarding(app){
@@ -4385,10 +4635,10 @@ function renderOnboarding(app){
   app.innerHTML=h;
   const on=(s,f)=>{const el=app.querySelector(s);if(el)el.addEventListener('click',f);};
   const keep=()=>{const nm=app.querySelector('#ob-name');if(nm)p.name=nm.value.trim().slice(0,40);const fd=app.querySelector('#ob-field');if(fd)S.rwField=fd.value.trim().slice(0,60);const pr=app.querySelector('#ob-prob'),pc=app.querySelector('#ob-price'),lw=app.querySelector('#ob-low');if(pr)p.problem=pr.value.trim();if(pc)S.rwPrice=pc.value.trim();if(lw)S.rwLowest=lw.value.trim();save();};
-  const finish=()=>{keep();S.onboarded=true;S.whatsNew=APP_VERSION;save();V.obStep=0;go('hub');};
+  const finish=()=>{keep();S.onboarded=true;S.whatsNew=S.whatsNew||APP_VERSION;const pro=V._obPro;V._obPro=false;save();V.obStep=0;go('hub');if(pro)setTimeout(()=>{try{showToast('Every scene is now set in your world.');}catch(e){}},600);};
   on('[data-act="skip"]',finish);
   on('[data-act="next"]',()=>{keep();V.obStep=step+1;render();});
-  on('[data-act="prev"]',()=>{keep();V.obStep=Math.max(1,step-1);if(step===1){V.obStep=0;V.obSlide=3;}render();});
+  on('[data-act="prev"]',()=>{keep();V.obStep=Math.max(1,step-1);if(step===1){if(V._obPro){V._obPro=false;S.onboarded=true;save();V.obStep=0;go('hub');return;}V.obStep=0;V.obSlide=3;}render();});
   on('[data-act="done"]',finish);
   app.querySelectorAll('[data-goal]').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.goal;S.goals=S.goals||[];const i=S.goals.indexOf(k);if(i>=0)S.goals.splice(i,1);else S.goals.push(k);save();b.classList.toggle('on');}));
   app.querySelectorAll('[data-field]').forEach(b=>b.addEventListener('click',()=>{S.rwField=S.rwField===b.dataset.field?'':b.dataset.field;save();app.querySelectorAll('[data-field]').forEach(x=>x.classList.toggle('on',x.dataset.field===S.rwField));}));
@@ -4409,7 +4659,7 @@ function renderSettings(app){
   const u=_usage(),th=(window.__themePref?window.__themePref():'system'),done=_profileDone();
   let h='<main class="scr" style="--gap:12px"><div class="bar"><button class="ibtn r" data-go="hub" aria-label="Back">'+ic('back')+'</button><h1 class="h1 xl" style="font-size:30px">Settings</h1></div>';
   h+=_stRow('coaching',ic('quick'),'#C2457A','Coaching',[_coachLang().id==='auto'?'Auto':_coachLang().label,_nbOn()?'Remembers past sessions':'Memory off',S.aiConfig&&S.aiConfig.enabled?'AI on':'AI off'].join(' · '));
-  h+=_stRow('usage',ic('clock'),'#0E8C8C','Usage & codes',PAYWALL_ON?S.credits+' sessions left':'This month: '+u.sessions+' sessions · replies today: '+u.replies);
+  h+=_stRow('usage',ic('clock'),'#0E8C8C',(typeof PLAN_ON!=='undefined'&&PLAN_ON)?'Plan & codes':'Usage & codes',(typeof PLAN_ON!=='undefined'&&PLAN_ON)?((S.aiConfig&&S.aiConfig.ownerKey)?'Owner · no limits':_isPro()?'Ground Pro · '+_proDaysLeft()+' days left':'Ground Lite · free'):PAYWALL_ON?S.credits+' sessions left':'This month: '+u.sessions+' sessions · replies today: '+u.replies);
   h+=_stRow('look',ic('settings'),'#1F7FA8','Appearance',{light:'Light',dark:'Dark',system:'Same as phone'}[th]||'Same as phone');
   h+=_stRow('sync',ic('sync'),'#2E7D4F','Sync',_syStatus().on?_syStatus().line:'Use your notebook on your phone and computer');
   h+=_stRow('data',ic('book'),'#C2681B','Your data','Notebook · '+_nbEntries().length+' sessions · start over');
@@ -4463,12 +4713,15 @@ function renderSettingsPage(app,sp){
     h+='<div class="sect">Memory</div><div class="list"><button class="row" data-act="mem"><span class="rt"><b>K remembers my sessions</b><span>K reads your last notes before coaching you again.</span></span><span class="rv">'+(_nbOn()?'On':'Off')+'</span></button>'+
        (VOICE_ON?'<button class="row" data-act="tts"><span class="rt"><b>The other side speaks out loud</b><span>When you practice by speaking, you hear their lines.</span></span><span class="rv">'+(S.ttsOff?'Off':'On')+'</span></button>':'')+'</div>';
   }else if(sp==='usage'){
+    if(typeof PLAN_ON!=='undefined'&&PLAN_ON){const own=!!(S.aiConfig&&S.aiConfig.ownerKey);
+      h+='<div class="list"><button class="row" data-act="plan"><span class="rt"><b>'+(own?'Owner':_isPro()?'Ground Pro':'Ground Lite')+'</b><span>'+(own?'No limits on this device':_isPro()?_proDaysLeft()+' days left · ends '+escHtml(_proEndsLabel()):'1 practice a day, generic scenes · Pro sets them in your world')+'</span></span><span class="rv">'+(own?'':_isPro()?'Extend':'Get Pro')+'</span>'+ic('chev','s chev')+'</button>'+
+        '<div class="row"><span class="rt"><b>Practice today</b></span><span class="rv">'+Math.min(_practicesToday(),_practiceLimit())+' of '+_practiceLimit()+'</span></div></div>';}
     h+='<div class="list">';
     if(PAYWALL_ON)h+='<button class="row" data-act="bal"><span class="rt"><b>Sessions left</b><span>Top up any time</span></span><span class="rv">'+S.credits+'</span>'+ic('chev','s chev')+'</button>';
     else h+='<div class="row"><span class="rt"><b>This month</b><span>Starts again on '+escHtml(_nextMonthLabel())+'</span></span><span class="rv">'+u.sessions+' practice '+(u.sessions===1?'session':'sessions')+'</span></div>';
     h+='<div class="row"><span class="rt"><b>Replies today</b></span><span class="rv">'+u.replies+'</span></div></div>';
     h+='<div class="sect">Have a code?</div><div class="card stack" style="gap:10px"><p class="sub">If I’ve sent you a code, enter it here.</p>'+codeFieldHtml('set-code')+'</div>';
-    if((S.codes||[]).length)h+='<div class="sect">Codes used here</div><div class="list">'+S.codes.slice().reverse().map(c=>'<div class="row"><span class="rt"><b class="code">'+escHtml(c.code)+'</b><span>'+escHtml(new Date(c.at).toLocaleDateString('en-US',{month:'short',day:'numeric'}))+'</span></span><span class="rv">+'+c.sessions+'</span></div>').join('')+'</div>';
+    if((S.codes||[]).length)h+='<div class="sect">Codes used here</div><div class="list">'+S.codes.slice().reverse().map(c=>'<div class="row"><span class="rt"><b class="code">'+escHtml(c.code)+'</b><span>'+escHtml(new Date(c.at).toLocaleDateString('en-US',{month:'short',day:'numeric'}))+'</span></span><span class="rv">'+(c.days?'Pro · '+c.days+' days':'+'+c.sessions)+'</span></div>').join('')+'</div>';
   }else if(sp==='look'){
     const th=(window.__themePref?window.__themePref():'system');
     h+='<div class="seg3" role="radiogroup" aria-label="Theme"><button data-theme="light"'+(th==='light'?' class="on"':'')+'>Light</button><button data-theme="dark"'+(th==='dark'?' class="on"':'')+'>Dark</button><button data-theme="system"'+(th==='system'?' class="on"':'')+'>Same as phone</button></div>';
@@ -4508,6 +4761,7 @@ function renderSettingsPage(app,sp){
   app.querySelectorAll('[data-theme]').forEach(b=>b.addEventListener('click',()=>{S.theme=b.dataset.theme;save();window.__applyTheme(b.dataset.theme);render();}));
   // Data
   on('[data-act="exp"]',()=>nbExport());
+  on('[data-act="plan"]',()=>openPro('settings'));
   on('[data-act="clr"]',()=>{if(confirm('Clear everything in K’s notebook on this device? Your profile stays. This can’t be undone.')){nbClear();render();}});
   on('[data-act="reset"]',()=>{if(confirm('Start over? This clears your profile, notebook, settings and codes on this device.')){try{localStorage.removeItem(STORAGE_KEY);localStorage.removeItem('ground-theme');}catch(e){}location.hash='';location.reload();}});
 }
@@ -4625,7 +4879,7 @@ function deskGo(route){
     V._rpRestore=false;go('reply');rpDraft();return;
   }
   if(route==='practice'){
-    if(!_canStartSession()){openLimitSheet('month');return;}
+    if(typeof PLAN_ON!=='undefined'&&PLAN_ON){if(_practicesLeft()<=0){openPlanSheet('practice');return;}}else if(!_canStartSession()){openLimitSheet('month');return;}
     let k=TT_REAL[r.scenario]?r.scenario:_deskGuess(text).scenario;
     RW.scenario=k;RW.goal=_rwGoalOf(k).k;RW.tougher=false;_rwResetConvo();RW.fromReply=null;RW.fromCase=null;RW.prevFix='';
     RW.context=text.slice(0,400);
@@ -5477,6 +5731,7 @@ async function rwAnalyze(){
   else msg+='Transcript:\n'+(RW.transcript||'(no audio captured)')+'\n\nDuration: '+fmtMs(RW.elapsed*1000)+' ('+RW.words+' words)';
   try{
     if(!_rwTooShort()&&!RW.decision&&!RW.review){const r=await _rwDecide();RW.decideErr=!r;if(_rw.grp==='client')RW.decision=r;else RW.review=r;if(V.view==='real'&&RW.phase==='done')render();}
+    if(typeof _isLite==='function'&&_isLite()){RW.notes='';RW.loading=false;if(V.view==='real'&&(RW.phase==='done'||RW.phase==='better'))render();return;}
     const d=RW.decision||RW.review;
     if(d){msg+='\n\nHOW IT ENDED (the speaker sees this on a card above your notes, so do not repeat it): '+(d.decision?'the client '+({deal:'agreed'+(d.terms?' ('+d.terms+')':''),think:'said they would think about it',walk:'walked away'})[d.decision]+'. What the client was hiding: '+(d.secret||''):(RW_VERDICT_H[RW.scenario]||RW_VERDICT_H.meeting)[d.verdict||'maybe'])+'\nUse this where it sharpens the diagnosis. One mention at most.';}
     msg+=nbContext('real');
@@ -5496,7 +5751,7 @@ async function rwAnalyze(){
   if(V.view==='real'&&(RW.phase==='done'||RW.phase==='better'))render();
 }
 // ── Voice: the other side speaks, you answer ──────────────────────────────
-async function rwSpeakLine(){if(RW.mode==='type'||!ttsOk())return;const line=RW.fuQ||RW.question;const who=(RW.brief&&(RW.brief.c||RW.brief.who))||RW_ROLE[RW.scenario]||'the other person';
+async function rwSpeakLine(){if(RW.mode==='type'||!ttsOk()||(typeof _isLite==='function'&&_isLite()))return;const line=RW.fuQ||RW.question;const who=(RW.brief&&(RW.brief.c||RW.brief.who))||RW_ROLE[RW.scenario]||'the other person';
   await speak(line,{voice:ttsVoiceFor(who+RW.scenario),style:'You are '+who+(RW.persona?', '+RW.persona:'')+', speaking in a real conversation. Stay in character, a little guarded.'});if(RW.mode==='live'&&RW.phase==='turn'&&!RW.rec)rwStartRec();}
 async function rwStartRec(){
   if(RW.rec)return;RW.rec=true;RW.elapsed=0;render();
@@ -5589,16 +5844,17 @@ function renderReal(app){
     const GP={client:'p-teal',job:'p-lav',disagree:'p-pink',work:'p-org',people:'p-blue'};
     const g=RW.pickOpen&&RW_GOALS.find(x=>x.k===RW.pickOpen);
     if(!g){
-      h+=gBar('Practice a talk','hub');
+      h+=gBar('Practice a talk','hub').replace('</div>',(typeof _planPill==='function'?_planPill():'')+'</div>');
+      const lite=typeof _isLite==='function'&&_isLite(),lk=lite?'<span class="pro-tag lk">PRO</span>':'';
       const ga=k=>(typeof CAT_K!=='undefined'&&CAT_K[k])?'<img class="lib-art" src="'+CAT_K[k]+'" alt="">':'';
       h+='<div class="lib-grid rw-topics rw-tiles has-art">'+RW_GOALS.map(x=>'<button class="lib-topic lib-scene '+GP[x.k]+'" data-goal="'+x.k+'" style="background-image:url('+ART+'k/tile-'+x.k+'.webp)"><b>'+x.t.replace('<br>',' ')+'</b></button>').join('')+
-        '<button class="lib-topic lib-scene p-yellow" data-go="pitch" style="background-image:url('+ART+'k/tile-pitch.webp)"><b>Pitch it</b></button>'+
-        '<button class="lib-topic lib-tk rw-surprise rw-surprise-scene" data-act="surprise" style="background-image:url('+ART+'k/tile-surprise.webp)"'+(RW.loadingScene?' disabled':'')+'><b>'+(RW.loadingScene?'K is picking…':'Surprise me')+'</b><span>K picks one</span></button></div>';
+        '<button class="lib-topic lib-scene p-yellow'+(lite?' locked':'')+'" data-go="pitch" style="background-image:url('+ART+'k/tile-pitch.webp)">'+lk+'<b>Pitch it</b></button>'+
+        '<button class="lib-topic lib-tk rw-surprise rw-surprise-scene'+(lite?' locked':'')+'" data-act="surprise" style="background-image:url('+ART+'k/tile-surprise.webp)"'+(RW.loadingScene?' disabled':'')+'>'+lk+'<b>'+(RW.loadingScene?'K is picking…':'Surprise me')+'</b><span>K picks one</span></button></div>';
     }else{
       h+=gBar('Practice a talk','rw-pickback');
       const L=PRACTICE_SITS[g.k]||[],dn=_casesDone();
       h+='<div class="rw-sec '+GP[g.k]+'"><div class="rw-sech"><b>'+escHtml(g.t)+'</b><span>'+L.length+' situations · swipe up for more</span></div><div class="rw-secl">'+
-        '<button class="rw-any" data-anyof="'+g.k+'"'+(RW.loadingScene?' disabled':'')+'><span>'+(RW.loadingScene?'K is writing one…':'Any situation · K makes one up')+'</span>'+(RW.loadingScene?'<span class="think"><i></i><i></i><i></i></span>':ic('shuffle','s'))+'</button>'+
+        ((typeof _isLite==='function'&&_isLite())?'':'<button class="rw-any" data-anyof="'+g.k+'"'+(RW.loadingScene?' disabled':'')+'><span>'+(RW.loadingScene?'K is writing one…':'Any situation · K makes one up')+'</span>'+(RW.loadingScene?'<span class="think"><i></i><i></i><i></i></span>':ic('shuffle','s'))+'</button>')+
         L.map((x,i)=>'<button data-px="'+i+'"'+(RW.loadingScene?' disabled':'')+'><span>'+escHtml(x.t)+'</span>'+(dn['px-'+g.k+'-'+i]?ic('check','s'):ic('arrow','s'))+'</button>').join('')+'</div></div>';
     }
     if(!_aiOn())h+='<p class="small center-t">AI is off or you’re offline, so scenes come from the built-in set.</p>';
@@ -5620,7 +5876,7 @@ function renderReal(app){
     if(RW.prevFix)h+='<div class="g-block p-lav"><div class="g-kick">Last time, K said</div><div style="font-size:16px;font-weight:700;line-height:1.35">'+escHtml(_kShort(RW.prevFix,200))+'</div></div>';
     if(RW.fromReply)h+='<div class="g-card tight"><div class="g-row"><span class="t"><b>Their message</b><span>'+escHtml(_kShort(RW.question,160))+'</span></span></div>'+(RW.fromReply.reply?'<div class="g-row"><span class="t"><b>You replied</b><span>'+escHtml(_kShort(RW.fromReply.reply,160))+'</span></span></div>':'')+'</div>';
     if(cl&&RW.secret)h+='<div class="g-alert rw-secret" style="display:flex;gap:10px;align-items:flex-start"><span style="color:#C4AEFF;margin-top:1px;display:flex">'+ic('lock','s')+'</span><div><b style="font-size:14.5px">'+escHtml(name)+' has a secret.</b> <span class="sub">Ask good questions to find it.</span></div></div>';
-    {const ct=RW.fromCase&&RW.fromCase.tech,fam=ct?_tkFamOf(ct).tools:[],opts=[ct].concat(Object.keys(_moves()).sort((a,b)=>((fam.includes(b)?1:0)-(fam.includes(a)?1:0))||(_moves()[b].at||'').localeCompare(_moves()[a].at||''))).filter((x,i,a)=>x&&TECHNIQUES[x]&&a.indexOf(x)===i).slice(0,3);
+    if(!(typeof _isLite==='function'&&_isLite())){const ct=RW.fromCase&&RW.fromCase.tech,fam=ct?_tkFamOf(ct).tools:[],opts=[ct].concat(Object.keys(_moves()).sort((a,b)=>((fam.includes(b)?1:0)-(fam.includes(a)?1:0))||(_moves()[b].at||'').localeCompare(_moves()[a].at||''))).filter((x,i,a)=>x&&TECHNIQUES[x]&&a.indexOf(x)===i).slice(0,3);
      if(opts.length){if(RW.equip===undefined)RW.equip=ct&&TECHNIQUES[ct]?ct:'';
        h+='<div class="rw-equip"><div class="g-kick">Try a move <span>K checks if you used it</span></div><div class="rw-eqs">'+opts.map(t=>'<button class="rw-eq'+(RW.equip===t?' on':'')+(moveLearned(t)?'':' new')+'" data-equip="'+t+'"><img src="'+(TOOL_ICON[t]||'')+'" alt=""><b>'+escHtml(TECHNIQUES[t].title)+'</b>'+(moveLearned(t)?'':'<small>New</small>')+'</button>').join('')+'</div></div>';}}
     h+='<div class="push"></div>'+_rwModeSwitch(true)+gCta('Start','start');
@@ -5670,7 +5926,7 @@ function renderReal(app){
         if(d&&d.decision){const H={deal:['Deal',d.terms||'you have a deal','yes'],think:['Maybe','still thinking','maybe'],walk:['No deal','not this time','no']}[d.decision]||['Maybe','still thinking','maybe'];main=H[0];sub=H[1];tone=H[2];say=d.say||'';}
         else if(r){const vk=['yes','maybe','no'].includes(r.verdict)?r.verdict:'maybe',hd=(RW_VERDICT_H[RW.scenario]||RW_VERDICT_H.meeting)[vk];main=hd[0];sub=hd[1];tone=vk;say=r.say||'';}
         _castNote(name,main,sub);
-        const dd=d||r||{};if(RW._learnedFor!==RW.transcript){RW._learnedFor=RW.transcript;RW._newMoves=(dd.used||[]).filter(t=>moveLearn(t,dd.usedq));}
+        const dd=d||r||{};if(RW._learnedFor!==RW.transcript){RW._learnedFor=RW.transcript;RW._newMoves=(typeof _isLite==='function'&&_isLite())?[]:(dd.used||[]).filter(t=>moveLearn(t,dd.usedq));}
         const nm=(RW._newMoves||[])[0],eq=RW.equip&&TECHNIQUES[RW.equip]?RW.equip:'';
         const card=nm?'<div class="vn-new"><img src="'+(TOOL_ICON[nm]||'')+'" alt=""><span><small>New move</small><b>'+escHtml(TECHNIQUES[nm].title)+'</b>'+(dd.usedq?'<em>“'+escHtml(_kShort(dd.usedq,70))+'”</em>':'')+'</span></div>'
           :eq&&dd.equipped?'<div class="vn-new vn-eq-'+dd.equipped+'"><img src="'+(TOOL_ICON[eq]||'')+'" alt=""><span><small>'+({yes:'You used it',partly:'Almost',no:'Not this time'}[dd.equipped])+'</small><b>'+escHtml(TECHNIQUES[eq].title)+'</b>'+(dd.equipnote?'<em>'+escHtml(_kShort(dd.equipnote,90))+'</em>':'')+'</span></div>':'';
@@ -5685,9 +5941,10 @@ function renderReal(app){
         return;
       }
       const notesOk=RW.notes&&!/ai-err/.test(RW.notes)&&typeof RW.notes==='string'&&!_nbRetry(RW.notes);
-      const endCta=workCardHtml((TT_REAL[RW.scenario]||{}).name?String(TT_REAL[RW.scenario].name).toLowerCase():'')+gCta('Done','rw-finish',{icon:'check'})+'<div class="rw-endlinks"><button class="link" data-act="again">Run it again</button>'+(notesOk||_rwxTurns().length?'<button class="link" data-act="rw-notes">'+ic('book','s')+'K’s full notes</button>':'')+'</div>';
+      const endCta=workCardHtml((TT_REAL[RW.scenario]||{}).name?String(TT_REAL[RW.scenario].name).toLowerCase():'')+gCta('Done','rw-finish',{icon:'check'})+'<div class="rw-endlinks"><button class="link" data-act="again">Run it again</button>'+((notesOk||_rwxTurns().length)&&!(typeof _isLite==='function'&&_isLite())?'<button class="link" data-act="rw-notes">'+ic('book','s')+'K’s full notes</button>':'')+'</div>';
+      const liteLock=typeof _isLite==='function'&&_isLite();
       if(slides.length>1){
-        h+='<div class="rw-slides" id="rw-slides">'+slides.map((s,i)=>'<section class="rw-slide"><div class="rw-step">'+(i+1)+' of '+slides.length+' · '+escHtml(s.k)+'</div><div class="rw-sbody">'+s.h+'</div>'+(i===slides.length-1?'<div class="rw-end">'+endCta+'</div>':'')+'</section>').join('')+'</div>';
+        h+='<div class="rw-slides" id="rw-slides">'+slides.map((s,i)=>'<section class="rw-slide'+(liteLock&&i>0?' rw-locked':'')+'"><div class="rw-step">'+(i+1)+' of '+slides.length+' · '+escHtml(s.k)+(liteLock&&i>0?' · Pro':'')+'</div><div class="rw-sbody'+(liteLock&&i>0?' blurx':'')+'">'+s.h+'</div>'+(liteLock&&i>0?'<div class="lock-over"><span class="pro-tag">PRO</span><b>'+(slides.length-1)+' more note'+(slides.length>2?'s':'')+' from K</b><span>What to say instead, in K’s words.</span><button class="pw-btn gold" data-act="see-pro">See Ground Pro</button></div>':'')+(i===slides.length-1?'<div class="rw-end">'+endCta+'</div>':'')+'</section>').join('')+'</div>';
         h+='<div class="rw-nav"><div class="rw-sdots">'+slides.map((_,i)=>'<i'+(i?'':' class="on"')+'></i>').join('')+'</div><button class="rw-next" data-act="rw-next">Next'+ic('arrow','s')+'</button></div>';
       }else{
         if(slides.length)h+=slides[0].h;
@@ -5729,14 +5986,17 @@ function renderReal(app){
   app.querySelectorAll('[data-go="rw-pickback"]').forEach(b=>{b.removeAttribute('data-go');b.addEventListener('click',()=>{RW.pickOpen=null;render();});});
   app.querySelectorAll('[data-scen]').forEach(b=>b.addEventListener('click',()=>{if(RW.loadingScene)return;RW.scenario=b.dataset.scen;RW.tougher=false;RW.fromReply=null;RW.fromCase=null;rwFetchScene();}));
   on('[data-act="rw-scene-retry"]',()=>{RW.sceneErr=null;rwFetchScene();});
-  on('[data-act="surprise"]',()=>{if(RW.loadingScene)return;const all=RW_GOALS.flatMap(g=>g.items);RW.scenario=_pick(all);RW.goal=_rwGoalOf(RW.scenario).k;RW.tougher=false;RW.fromReply=null;RW.fromCase=null;rwFetchScene();});
+  on('[data-act="surprise"]',()=>{if(RW.loadingScene)return;if(typeof _isLite==='function'&&_isLite()){openPlanSheet('surprise');return;}const all=RW_GOALS.flatMap(g=>g.items);RW.scenario=_pick(all);RW.goal=_rwGoalOf(RW.scenario).k;RW.tougher=false;RW.fromReply=null;RW.fromCase=null;rwFetchScene();});
   app.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.mode;if(m==='live'&&!LIVE_ON){showToast('Live calls are coming. Speak works today.','info');return;}if(RW.rec)return;RW.mode=m;render();if(ph==='turn'&&m!=='type')rwSpeakLine();}));
   on('[data-act="get"]',()=>{RW.tougher=false;RW.fromReply=null;rwFetchScene();});
   on('[data-act="shuffle"]',()=>{const g=RW_GOALS.find(x=>x.k===RW.goal);RW.scenario=_pick(g.items);RW.tougher=false;RW.fromReply=null;rwFetchScene();});
   app.querySelectorAll('[data-go="rw-setup"],[data-go="rw-restart"]').forEach(b=>{b.removeAttribute('data-go');b.addEventListener('click',async()=>{if(RW.rec)await recStop();speakStop();RW.rec=false;_rwResetConvo();RW.phase='setup';RW.question='';RW.fromReply=null;if(RW.loadingScene){RW.loadingScene=false;RW._adTok=(RW._adTok||0)+1;}render();});});
   app.querySelectorAll('[data-go="rw-done"]').forEach(b=>{b.removeAttribute('data-go');b.addEventListener('click',()=>{RW.phase='done';render();});});
   {const hn=app.querySelector('.ch-hint');if(hn&&document.scrollingElement.scrollHeight>window.innerHeight+1)hn.remove();}
-  on('[data-act="start"]',()=>{if(RW.mode==='choose'&&RW.fromCase&&chHas(RW.fromCase.id)){openChoose(RW.fromCase.id);return;}if(!_canStartSession()){openLimitSheet('month');return;}RW.phase='turn';RW.rec=false;render();if(RW.mode!=='type')rwSpeakLine();});
+  on('[data-act="start"]',()=>{if(RW.mode==='choose'&&RW.fromCase&&chHas(RW.fromCase.id)){openChoose(RW.fromCase.id);return;}
+    if(typeof PLAN_ON!=='undefined'&&PLAN_ON){const taster=_tasterOn();if(!taster&&_practicesLeft()<=0){openPlanSheet('practice');return;}_newPracticeId();RW._liteRun=_isLite();if(taster){RW._taster=true;S.tasterAt=new Date().toISOString();S.tasterOn=false;save();}else{RW._taster=false;_countPractice();}}
+    else if(!_canStartSession()){openLimitSheet('month');return;}
+    RW.phase='turn';RW.rec=false;render();if(RW.mode!=='type')rwSpeakLine();});
   on('[data-act="play"]',()=>rwSpeakLine());
   on('[data-act="rec"]',()=>{speakStop();rwStartRec();});
   on('[data-act="stop"]',()=>rwStopRec());
@@ -5755,7 +6015,7 @@ function renderReal(app){
     if(nx)nx.addEventListener('click',()=>sl.scrollTo({left:(cur()+1)*sl.clientWidth,behavior:'smooth'}));}
   on('[data-act="rw-case"]',()=>{if(RW.fromCase&&RW.fromCase.id){V.caseOpen=RW.fromCase.id;openCase(RW.fromCase.id);}});
   on('[data-act="again"]',()=>{_rwResetConvo();RW.phase='brief';render();});
-  on('[data-act="rw-finish"]',()=>{_rwResetConvo();RW.phase='setup';RW.question='';RW.fromCase=null;render();});
+  on('[data-act="rw-finish"]',()=>{const offer=RW._liteRun&&!RW._taster;_rwResetConvo();RW.phase='setup';RW.question='';RW.fromCase=null;render();if(offer&&typeof openTasterSheet==='function')setTimeout(openTasterSheet,350);});
   on('[data-act="tougher"]',()=>{RW.tougher=true;RW.fromReply=null;rwFetchScene();});
   on('[data-act="new"]',()=>{RW.phase='setup';RW.question='';RW.fromReply=null;render();});
   on('[data-act="rw-retry"]',()=>{RW.loading=true;RW.notes=null;render();rwAnalyze();});
@@ -5869,7 +6129,8 @@ async function piBuild(opts){
 }
 // ── Run: cue cards against the clock ──────────────────────────────────────
 async function piRunStart(){
-  if(!_canStartSession()){openLimitSheet('month');return;}
+  if(typeof PLAN_ON!=='undefined'&&PLAN_ON){if(_isLite()){openPlanSheet('pitch');return;}if(_practicesLeft()<=0){openPlanSheet('practice');return;}}
+  else if(!_canStartSession()){openLimitSheet('month');return;}
   PI.run={card:0,elapsed:0,done:false};PI.take=null;PI.notes=null;PI.phase='run';PI.rec=true;render();
   const ok=await recStart({onTick:r=>{PI.run.elapsed=r.elapsed;const t=document.getElementById('pi-timer');if(t){t.textContent=fmtMs(r.elapsed*1000);t.style.color=r.elapsed>PI.mins*60?'var(--err)':'';}},maxSecs:PI.mins*60+120,onMax:()=>piRunStop()});
   if(!ok){showToast('I can’t reach your microphone. Check the browser’s mic permission.','warn');}
@@ -5881,7 +6142,7 @@ async function piRunStop(){
   PI.take={transcript:r.transcript||'',words:r.words||0,elapsed:r.elapsed||0,blob:r.blob};
   PI.phase='notes';PI.notesLoading=true;render();
   await recWhisper(PI.take);
-  _countSession();
+  _countSession();if(typeof _countPractice==='function')_countPractice();
   piNotes();
 }
 function _piFillers(t){const m=String(t||'').match(PI_FILLERS)||[];return m.length;}
@@ -5910,9 +6171,10 @@ function _piNotesHtml(){
 }
 // ── Face the room ─────────────────────────────────────────────────────────
 async function piRoomStart(){
-  if(!_canStartSession()){openLimitSheet('month');return;}
+  if(typeof PLAN_ON!=='undefined'&&PLAN_ON){if(_isLite()){openPlanSheet('pitch');return;}if(_practicesLeft()<=0){openPlanSheet('practice');return;}}
+  else if(!_canStartSession()){openLimitSheet('month');return;}
   PI.qa=[];PI.qIdx=0;PI.panelQ=null;PI.verdict=null;PI.phase='room';PI.rec=false;render();
-  _countSession();
+  _countSession();if(typeof _countPractice==='function')_countPractice();
   piNextQuestion();
 }
 async function piNextQuestion(){
@@ -6115,7 +6377,8 @@ function _qaPick(shuffle){
   QA.goal=it.g;QA.q=it.q;QA.ctx=it.ctx||'';
 }
 async function qaStart(){
-  if(!_canStartSession()){openLimitSheet('month');return;}
+  if(typeof PLAN_ON!=='undefined'&&PLAN_ON){if(_quickLeft()<=0){openPlanSheet('quick');return;}}
+  else if(!_canStartSession()){openLimitSheet('month');return;}
   qaRecord();
 }
 async function qaRecord(){
@@ -6128,7 +6391,7 @@ async function qaStop(){
   if(!QA.rec)return;QA.rec=false;
   const r=await recStop();QA.take={transcript:r.transcript||'',words:r.words||0,elapsed:r.elapsed||0,blob:r.blob};
   QA.phase='notes';QA.loading=true;QA.notes=null;QA.strong=null;render();
-  await recWhisper(QA.take);_ttMarkSeen(QA.q);_countSession();
+  await recWhisper(QA.take);_ttMarkSeen(QA.q);_countSession();if(typeof _countQuick==='function')_countQuick();
   qaNotes();
 }
 async function qaNotes(){
@@ -6377,8 +6640,8 @@ function renderChoose(app){
   on('[data-act="ch-all"]',()=>{CH.step='all';render();});
   on('[data-act="ch-done"]',()=>{RW.phase='setup';RW.question='';RW.fromCase=null;go('real');});
   app.querySelectorAll('[data-act="ch-say"]').forEach(b=>b.addEventListener('click',()=>{
-    if(!_canStartSession()){openLimitSheet('month');return;}
-    const cs=_case(CH.id);if(cs)caseToPractice(cs,{noAdapt:true});RW.mode='turns';RW.phase='turn';RW.rec=false;go('real');rwSpeakLine();}));
+    if(typeof PLAN_ON!=='undefined'&&PLAN_ON){if(_practicesLeft()<=0){openPlanSheet('practice');return;}}else if(!_canStartSession()){openLimitSheet('month');return;}
+    const cs=_case(CH.id);if(cs)caseToPractice(cs,{noAdapt:true});if(typeof PLAN_ON!=='undefined'&&PLAN_ON){_newPracticeId();RW._liteRun=_isLite();RW._taster=false;_countPractice();}RW.mode='turns';RW.phase='turn';RW.rec=false;go('real');rwSpeakLine();}));
 }
 // One screen: tighten step by step if the content is too tall for this phone
 function _chFit(app){const m=app.querySelector('main');if(!m)return;

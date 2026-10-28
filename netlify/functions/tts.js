@@ -8,6 +8,7 @@
 // Limit: TTS_DAILY_LIMIT lines per device per day (default 150). Owner: no limit.
 // ═══════════════════════════════════════════════════════════════════════════
 const { getStore, connectLambda } = require("@netlify/blobs");
+const plan = require("../lib/plan");
 const VOICES = ["alloy", "ash", "ballad", "coral", "echo", "fable", "nova", "onyx", "sage", "shimmer", "verse"];
 
 exports.handler = async (event) => {
@@ -33,6 +34,8 @@ exports.handler = async (event) => {
   const token = String(event.headers["x-client-token"] || "").slice(0, 40);
   if (!owner) {
     if (!/^grd_[a-z0-9]{8,}$/.test(token)) return json(401, { error: "no_token" });
+    // Characters' voices are a Pro feature.
+    if ((await plan.tierOf(event, token)) !== "pro") return json(403, { error: "pro_only" });
     try {
       const store = getStore("ground-usage");
       const day = new Date().toISOString().slice(0, 10);

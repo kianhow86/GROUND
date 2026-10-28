@@ -31,6 +31,7 @@
 // ═══════════════════════════════════════════════════════════════════════════
 
 const { getStore, connectLambda } = require("@netlify/blobs");
+const plan = require("../lib/plan");
 
 const DAILY_LIMITS = {
   "reply-draft": 10,
@@ -117,9 +118,9 @@ exports.handler = async (event) => {
 
   const corsHeaders = {
     "Access-Control-Allow-Origin": corsOrigin,
-    "Access-Control-Allow-Headers": "Content-Type, X-Client-Token, X-Feature-Id, X-Owner-Key, X-Grace",
+    "Access-Control-Allow-Headers": "Content-Type, X-Client-Token, X-Feature-Id, X-Owner-Key, X-Grace, X-Practice-Id, X-Taster",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-    "Access-Control-Expose-Headers": "X-Client-Token, X-Usage-Day, X-Usage-Month"
+    "Access-Control-Expose-Headers": "X-Client-Token, X-Usage-Day, X-Usage-Month, X-Tier"
   };
 
   if (event.httpMethod === "OPTIONS") {
@@ -192,6 +193,10 @@ exports.handler = async (event) => {
   const _ownerKey = process.env.OWNER_KEY || "";
   const _isOwner = !!_ownerKey && (event.headers["x-owner-key"] || "").trim() === _ownerKey;
 
+  // Pro gets a far bigger monthly ceiling: 5 practices a day is ~1,200 calls a month.
+  const tier = _isOwner ? "pro" : await plan.tierOf(event, token);
+  const monthlyLimit = tier === "pro" ? 2500 : MONTHLY_LIMIT;
+
   // ── Rate limit check via Netlify Blobs ──
   let dayUsage = 0, monthUsage = 0;
   let store;
@@ -231,7 +236,7 @@ exports.handler = async (event) => {
       };
     }
 
-    if (!_isOwner && monthUsage >= MONTHLY_LIMIT + grace) {
+    if (!_isOwner && monthUsage >= monthlyLimit + grace) {
       return {
         statusCode: 429,
         headers: {
@@ -252,6 +257,63 @@ exports.handler = async (event) => {
   } catch (blobErr) {
     // If Blobs is unavailable, log and continue — don't block the user
     console.error("Blob store unavailable:", blobErr.message);
+  }
+
+  // ── Plans: Lite (free) and Pro ──
+  // Lite: generic practice, 1 a day (plus one "your world" taster, ever), Quick answer, nothing else.
+  // Pro: 5 practices a day and every feature. A practice is counted once, by the X-Practice-Id the app
+  // sends with every call inside it, and a single practice is capped in size.
+  const practiceId = String(event.headers["x-practice-id"] || "").replace(/[^a-zA-Z0-9]/g, "").slice(0, 24);
+  const wantTaster = (event.headers["x-taster"] || "") === "1";
+  const LITE_OK = { "quick-eval": 6, "focus-brief": 2, "rw-turn": 40 };
+  const TASTER_OK = { "world": 4, "case-adapt": 4 };
+  const deny = (status, error, extra) => ({
+    statusCode: status,
+    headers: { ...corsHeaders, "content-type": "application/json", "X-Client-Token": token, "X-Tier": tier },
+    body: JSON.stringify({ error, tier, ...(extra || {}) })
+  });
+  let tasterUsed = false, tasterKey = "taster:" + token;
+  if (!_isOwner && store) {
+    try { tasterUsed = !!(await store.get(tasterKey)); } catch (e) {}
+  }
+  if (tier === "lite" && !_isOwner) {
+    const tasterCall = wantTaster && !tasterUsed && (TASTER_OK[featureId] || featureId === "rw-turn");
+    if (!(featureId in LITE_OK) && !tasterCall) return deny(403, "pro_only", { feature: featureId });
+    if (featureId === "rw-turn" && !practiceId) return deny(403, "pro_only", { feature: featureId });
+    if (TASTER_OK[featureId] && dayUsage >= TASTER_OK[featureId]) return deny(429, "daily_limit_reached", { feature: featureId });
+    if (LITE_OK[featureId] && featureId !== "rw-turn" && dayUsage >= LITE_OK[featureId] + grace) return deny(429, "daily_limit_reached", { feature: featureId, used: dayUsage, limit: LITE_OK[featureId] });
+  }
+  if ((featureId === "rw-turn" || featureId === "rw-eval") && practiceId && store && !_isOwner) {
+    const day = new Date().toISOString().slice(0, 10);
+    const pk = "prac:" + token + ":" + day;
+    let rec = { ids: [], n: {} };
+    try { const raw = await store.get(pk); if (raw) rec = { ids: [], n: {}, ...JSON.parse(raw) }; } catch (e) {}
+    if (!rec.ids.includes(practiceId)) {
+      // A new practice is starting.
+      if (tier === "lite" && await plan.freePaused()) return deny(429, "free_paused");
+      const isTaster = tier === "lite" && wantTaster && !tasterUsed;
+      const limit = tier === "pro" ? 5 : 1;
+      const counted = rec.ids.filter(id => !(rec.taster && rec.taster === id)).length;
+      if (!isTaster && counted >= limit) return deny(429, "practice_limit", { used: counted, limit });
+      if (tier === "lite") {
+        // Soft cap per network, so clearing the browser for fresh free tries runs out.
+        const ip = String(event.headers["x-nf-client-connection-ip"] || event.headers["client-ip"] || "").replace(/[^0-9a-fA-F:.]/g, "").slice(0, 45);
+        if (ip) {
+          const ik = "ipprac:" + ip + ":" + day;
+          let ipn = 0;
+          try { ipn = parseInt((await store.get(ik)) || "0", 10) || 0; } catch (e) {}
+          if (ipn >= 10) return deny(429, "practice_limit", { used: counted, limit });
+          try { await store.set(ik, String(ipn + 1)); } catch (e) {}
+        }
+      }
+      rec.ids.push(practiceId);
+      if (isTaster) { rec.taster = practiceId; try { await store.set(tasterKey, new Date().toISOString()); } catch (e) {} }
+    }
+    rec.n[practiceId] = (rec.n[practiceId] || 0) + 1;
+    if (rec.n[practiceId] > 18) return deny(429, "practice_long");
+    try { await store.set(pk, JSON.stringify(rec)); } catch (e) {}
+  } else if (tier === "lite" && !_isOwner && LITE_OK[featureId] && featureId !== "rw-turn" && await plan.freePaused()) {
+    return deny(429, "free_paused");
   }
 
   // ── Parse request body ──
@@ -463,7 +525,8 @@ exports.handler = async (event) => {
       "X-Usage-Day":     String(dayUsage + 1),
       "X-Usage-Month":   String(monthUsage + 1),
       "X-Limit-Day":     String(dailyLimit),
-      "X-Limit-Month":   String(MONTHLY_LIMIT)
+      "X-Limit-Month":   String(MONTHLY_LIMIT),
+      "X-Tier":          tier
     },
     body: responseText
   };

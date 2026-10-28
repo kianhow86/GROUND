@@ -7,6 +7,7 @@
 // Codes look like GRD-7KQ2-M9 and live in Netlify Blobs store "ground-codes".
 // ═══════════════════════════════════════════════════════════════════════════
 const { getStore, connectLambda } = require("@netlify/blobs");
+const plan = require("../lib/plan");
 const ALPH = "ABCDEFGHJKMNPQRSTVWXYZ23456789"; // no 0/O, 1/I/L, U
 function mint() { let s = ""; for (let i = 0; i < 6; i++) s += ALPH[Math.floor(Math.random() * ALPH.length)]; return "GRD-" + s.slice(0, 4) + "-" + s.slice(4); }
 function cors(origin) {
@@ -44,14 +45,28 @@ exports.handler = async (event) => {
     if (st === "expired") return reply(410, { error: "expired", expires: c.expires });
     c.usedBy = token; c.usedAt = new Date().toISOString();
     await store.set("code:" + norm, JSON.stringify(c));
+    // A Pro pass: extend from the current pass end if one is still running, else from now.
+    let until = null;
+    if (c.days) {
+      const cur = await plan.proUntil(token);
+      const base = cur > Date.now() ? cur : Date.now();
+      until = new Date(base + c.days * 86400000).toISOString();
+      await store.set("pass:" + token, JSON.stringify({ until, code: norm, at: c.usedAt }));
+    }
     // Note the credit against the device too, so a reinstall can be reconciled by hand
     try { const raw = await store.get("dev:" + token); const d = raw ? JSON.parse(raw) : { codes: [] }; d.codes.push({ code: norm, sessions: c.sessions, at: c.usedAt }); await store.set("dev:" + token, JSON.stringify(d)); } catch (e) {}
-    return reply(200, { ok: true, code: norm, sessions: c.sessions });
+    return reply(200, { ok: true, code: norm, sessions: c.sessions, days: c.days || 0, until });
+  }
+  if (event.httpMethod === "GET" && !isOwner) {
+    // The device asks: am I Pro? {until} or {until:null}
+    const u = await plan.proUntil(token);
+    return reply(200, { until: u > 0 ? new Date(u).toISOString() : null, pro: u > Date.now() });
   }
   if (!isOwner) return reply(404, { error: "not_found" });
   if (event.httpMethod === "PUT") {
     let body = {}; try { body = JSON.parse(event.body || "{}"); } catch (e) { return reply(400, { error: "bad_json" }); }
-    const sessions = Math.max(1, Math.min(500, parseInt(body.sessions, 10) || 30));
+    const sessions = Math.max(0, Math.min(500, parseInt(body.sessions, 10) || 0));
+    const passDays = Math.max(0, Math.min(365, parseInt(body.passDays, 10) || 0));
     const count = Math.max(1, Math.min(50, parseInt(body.count, 10) || 1));
     const days = Math.max(0, Math.min(365, parseInt(body.days, 10) || 0));
     const expires = days ? new Date(Date.now() + days * 86400000).toISOString() : null;
@@ -60,7 +75,7 @@ exports.handler = async (event) => {
     for (let i = 0; i < count; i++) {
       let code = mint(); let guard = 0;
       while (index.includes(code) && guard++ < 20) code = mint();
-      const c = { code, sessions, expires, made: new Date().toISOString(), usedBy: null, usedAt: null };
+      const c = { code, sessions, days: passDays, expires, made: new Date().toISOString(), usedBy: null, usedAt: null };
       await store.set("code:" + code, JSON.stringify(c));
       index.unshift(code); made.push(c);
     }
