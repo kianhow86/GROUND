@@ -267,6 +267,14 @@ exports.handler = async (event) => {
   }
 
   const { model: _clientModel, max_tokens, system, messages } = body;
+  // Structured answers: the app may ask for one forced tool ("answer") so the reply comes back as a parsed object.
+  let toolsPart = {};
+  if (Array.isArray(body.tools) && body.tools.length === 1 && body.tools[0] && body.tools[0].name === "answer" && body.tools[0].input_schema && body.tools[0].input_schema.type === "object") {
+    toolsPart = {
+      tools: [{ name: "answer", description: String(body.tools[0].description || "Give your answer.").slice(0, 300), input_schema: body.tools[0].input_schema }],
+      tool_choice: { type: "tool", name: "answer" }
+    };
+  }
 
   // ── Model enforcement ──
   // Default: lock everyone to Sonnet 4.6 (cost control for pooled backend).
@@ -372,31 +380,43 @@ exports.handler = async (event) => {
     };
   }
 
-  let anthropicResp;
-  try {
-    anthropicResp = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "content-type":      "application/json",
-        "anthropic-version": "2023-06-01",
-        "x-api-key":         apiKey
-      },
-      body: JSON.stringify({
-        model:      model      || "claude-sonnet-4-6",
-        max_tokens: max_tokens || 1024,
-        system:     system     || "",
-        messages
-      })
-    });
-  } catch (fetchErr) {
-    return {
-      statusCode: 502,
-      headers: corsHeaders,
-      body: JSON.stringify({ error: "Failed to reach Anthropic: " + fetchErr.message })
-    };
+  let anthropicResp, responseText = "";
+  const _t0 = Date.now();
+  // One quick retry when Anthropic is busy (overloaded / 5xx), but only while there is time left before the function times out.
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      anthropicResp = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "content-type":      "application/json",
+          "anthropic-version": "2023-06-01",
+          "x-api-key":         apiKey
+        },
+        body: JSON.stringify({
+          model:      model      || "claude-sonnet-4-6",
+          max_tokens: Math.min(max_tokens || 1024, 4096),
+          system:     system     || "",
+          messages,
+          ...toolsPart
+        })
+      });
+    } catch (fetchErr) {
+      if (attempt === 0 && Date.now() - _t0 < 3000) { await new Promise(r => setTimeout(r, 400)); continue; }
+      return {
+        statusCode: 502,
+        headers: corsHeaders,
+        body: JSON.stringify({ error: "Failed to reach Anthropic: " + fetchErr.message })
+      };
+    }
+    responseText = await anthropicResp.text();
+    const busy = anthropicResp.status === 529 || anthropicResp.status === 500 || anthropicResp.status === 503;
+    if (busy && attempt === 0 && Date.now() - _t0 < 3000) {
+      console.error(`[retry] feature=${featureId} status=${anthropicResp.status}`);
+      await new Promise(r => setTimeout(r, 500));
+      continue;
+    }
+    break;
   }
-
-  const responseText = await anthropicResp.text();
 
   if (!anthropicResp.ok) {
     return {

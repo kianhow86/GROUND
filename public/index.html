@@ -2201,30 +2201,63 @@ async function callCoach(systemPrompt,userMessage,opts){
   const _cjkOut=/^(zh|zh-TW|yue|ja|ko)$/.test(S.coachLang||'')||(S.coachLang||'auto')==='auto'&&/[぀-ヿ㐀-鿿가-힯]/.test(String(userMessage||''));
   const maxTokens=Math.round((opts.maxTokens||1024)*(_cjkOut?2.2:1));
   let model=cfg.ownerKey&&cfg.model?cfg.model:'claude-sonnet-4-6';
-  if(cfg.mode==='direct'){
-    if(!cfg.apiKey)throw new Error('API key missing. Add yours in Settings.');
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true','x-api-key':cfg.apiKey},
-      body:JSON.stringify({model:opts.model||cfg.model||'claude-sonnet-4-6',max_tokens:maxTokens,system:systemPrompt,messages:[{role:'user',content:userMessage}]})});
-    if(!resp.ok){const t=await resp.text().catch(()=>resp.statusText);throw new Error('API error '+resp.status+': '+t.slice(0,200));}
-    const data=await resp.json();if(!data.content||!data.content[0]||!data.content[0].text)throw new Error('Unexpected API response shape');
-    return data.content[0].text;
+  // JSON answers go through a forced tool call, so the API hands back a real object instead of text we have to parse.
+  const _tools=opts.json?{tools:[{name:'answer',description:'Give your answer as the object the instructions describe, with exactly the fields asked for.',input_schema:{type:'object'}}],tool_choice:{type:'tool',name:'answer'}}:{};
+  const _send=async(mt)=>{
+    if(cfg.mode==='direct'){
+      if(!cfg.apiKey)throw new Error('API key missing. Add yours in Settings.');
+      const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true','x-api-key':cfg.apiKey},
+        body:JSON.stringify(Object.assign({model:opts.model||cfg.model||'claude-sonnet-4-6',max_tokens:mt,system:systemPrompt,messages:[{role:'user',content:userMessage}]},_tools))});
+      if(!resp.ok){const t=await resp.text().catch(()=>resp.statusText);const e=new Error('API error '+resp.status+': '+t.slice(0,200));e.status=resp.status;throw e;}
+      return resp.json();
+    }
+    const endpoint=cfg.endpoint||'/.netlify/functions/ai';
+    const resp=await fetch(endpoint,{method:'POST',headers:_aiHeaders({'content-type':'application/json','x-feature-id':opts.featureId||'default',...(opts.grace?{'x-grace':'1'}:{})}),
+      body:JSON.stringify(Object.assign({model,max_tokens:mt,system:systemPrompt,messages:[{role:'user',content:userMessage}]},_tools))});
+    const rt=resp.headers.get('x-client-token');if(rt&&rt!==_clientToken())localStorage.setItem('grd-client-token',rt);
+    ['x-usage-day','x-usage-month','x-limit-day','x-limit-month'].forEach(k=>{const v=resp.headers.get(k);if(v)localStorage.setItem('grd-'+k.slice(2),v);});
+    if(resp.status===429){
+      let d={};try{d=await resp.json();}catch(e){}
+      if(d.error==='daily_limit_reached')throw new Error('limit:day:'+d.used+'/'+d.limit);
+      if(d.error==='monthly_limit_reached')throw new Error('limit:month:'+d.used+'/'+d.limit);
+      const e=new Error('limit:rate');e.status=429;throw e;
+    }
+    if(!resp.ok){const b=await resp.text().catch(()=>'');const e=new Error('Backend '+resp.status+(b?': '+b.slice(0,150):''));e.status=resp.status;throw e;}
+    return resp.json();
+  };
+  // Busy or timed-out server, dropped connection: wait a moment and try once more before telling the person.
+  const _transient=e=>!_isLimitErr(e)&&(/^(500|502|503|504|529)$/.test(String(e.status))||/overloaded|Failed to fetch|NetworkError|Load failed|network/i.test(String(e&&e.message)));
+  let mt=maxTokens,data=null;
+  for(let a=0;a<3;a++){
+    try{data=await _send(mt);}
+    catch(e){if(a<2&&_transient(e)){await new Promise(r=>setTimeout(r,700+a*900));continue;}throw e;}
+    const out=_aiOut(data,opts.json);
+    if(out!==null)return out;
+    // Ran out of room mid-answer: ask again with more room, once.
+    if(data&&data.stop_reason==='max_tokens'&&a<2){mt=Math.round(mt*1.7);continue;}
+    break;
   }
-  const endpoint=cfg.endpoint||'/.netlify/functions/ai';
-  const resp=await fetch(endpoint,{method:'POST',headers:_aiHeaders({'content-type':'application/json','x-feature-id':opts.featureId||'default',...(opts.grace?{'x-grace':'1'}:{})}),
-    body:JSON.stringify({model,max_tokens:maxTokens,system:systemPrompt,messages:[{role:'user',content:userMessage}]})});
-  const rt=resp.headers.get('x-client-token');if(rt&&rt!==_clientToken())localStorage.setItem('grd-client-token',rt);
-  ['x-usage-day','x-usage-month','x-limit-day','x-limit-month'].forEach(k=>{const v=resp.headers.get(k);if(v)localStorage.setItem('grd-'+k.slice(2),v);});
-  if(resp.status===429){
-    let d={};try{d=await resp.json();}catch(e){}
-    if(d.error==='daily_limit_reached')throw new Error('limit:day:'+d.used+'/'+d.limit);
-    if(d.error==='monthly_limit_reached')throw new Error('limit:month:'+d.used+'/'+d.limit);
-    throw new Error('limit:rate');
-  }
-  if(!resp.ok){const b=await resp.text().catch(()=>'');throw new Error('Backend '+resp.status+(b?': '+b.slice(0,150):''));}
-  const data=await resp.json();
-  if(data.content&&data.content[0]&&data.content[0].text)return data.content[0].text;
-  if(data.text)return data.text;
+  if(data&&data.stop_reason==='max_tokens'){const er=new Error('K ran out of room before finishing the answer.');throw er;}
   throw new Error('Backend response missing text');
+}
+// Read the answer out of an API response. A tool answer comes back as a JSON string, ready for _jsonFrom.
+function _aiOut(data,json){
+  if(!data)return null;
+  const c=Array.isArray(data.content)?data.content:[];
+  const tu=c.find(b=>b&&b.type==='tool_use');
+  if(tu&&tu.input&&typeof tu.input==='object'){
+    if(json&&data.stop_reason==='max_tokens')return null;
+    let o=tu.input;const ks=Object.keys(o);
+    // Sometimes the object arrives wrapped in one field as a string: unwrap it.
+    if(ks.length===1&&typeof o[ks[0]]==='string'&&/^\s*\{/.test(o[ks[0]])){try{o=JSON.parse(o[ks[0]]);}catch(_){}}
+    else if(ks.length===1&&o[ks[0]]&&typeof o[ks[0]]==='object'&&!Array.isArray(o[ks[0]])&&/^(answer|result|response|output|data)$/.test(ks[0]))o=o[ks[0]];
+    if(!Object.keys(o).length)return null;
+    return JSON.stringify(o);
+  }
+  const t=c.filter(b=>b&&b.type==='text').map(b=>b.text).join('').trim();
+  if(t){if(json&&data.stop_reason==='max_tokens'&&!/\}\s*$/.test(t))return null;return t;}
+  if(data.text)return data.text;
+  return null;
 }
 // K answers in JSON. When the JSON is almost right (a quote inside a value, a line break), repair it rather than fail.
 function _jsonRepair(t){
@@ -2506,7 +2539,7 @@ async function _nbMaybeNote(force){
     const list=all.slice(0,10).map(e=>{const ot=_nbOnTime(e);return '- '+_nbAgo(e.iso)+' · '+NB_CAT_NAME[e.cat]+(e.sub?' ('+e.sub+')':'')+(e.elapsed?' · '+fmtMs(e.elapsed*1000)+(ot===null?'':ot?' on time':' off target'):'')+(e.cat==='reply'?'\n  asked you to draft a reply to: "'+_kShort(e.title,120)+'"':(e.worked?'\n  worked: '+_kShort(e.worked,150):'')+(e.fix?'\n  one thing: '+_kShort(e.fix,170):''));}).join('\n');
     const prev=last&&last.habits?'\nHabits you named last time: '+last.habits.map(h=>h.name).join('; '):'';
     const sys=K_VOICE+"\nYou keep a notebook on one person. Read their recent sessions (newest first) and write a short, organized note.\n"+K_PLAIN+"\nHelp me reply entries are messages they needed help answering, not their own performance: use them only to see which situations keep coming up (being pushed on price, saying no, a difficult boss) and connect that to what they practice.\nPick at most two habits that keep coming up and matter most now. For each habit give:\n- name: an instruction that starts with a verb, 3–6 plain words, e.g. \"Say your price, then stop\", \"Start with your example\", \"Ask before you agree\". Never a vague label.\n- trend: \"up\" if clearly getting better, \"flat\" if it keeps coming back, \"new\" if it only just appeared. Keep a habit from last time if it still applies, so progress is visible.\n- why: one sentence on what you saw, with one specific detail from their sessions.\n- next: one sentence with a concrete action for the next session. If useful, give the exact words they could say.\nKeep every field short: the reader is busy. why under 16 words, next under 22 words. Put the habit that matters most right now first.\nAlso give: practice = the one practice type that would help most with the first habit, exactly one of: interview, pitch, intro, smalltalk, meeting, tough, disagree, conflict, feedback, sayno, proposal, bargain, difficult, ground; pattern = the situation that keeps coming up in their sessions and messages, under 10 words (empty if nothing repeats).\nReply with JSON only: {\"habits\":[{\"name\":\"…\",\"trend\":\"up|flat|new\",\"why\":\"…\",\"next\":\"…\"}],\"practice\":\"…\",\"pattern\":\"…\"}";
-    const raw=await callCoach(sys,'SESSIONS:\n'+list+prev,{maxTokens:520,featureId:'nb-note'});
+    const raw=await callCoach(sys,'SESSIONS:\n'+list+prev,{json:true,maxTokens:520,featureId:'nb-note'});
     const j=_jsonFrom(raw);
     const habits=(j&&Array.isArray(j.habits)?j.habits:[]).filter(h=>h&&h.name&&h.next).slice(0,2).map(h=>({name:String(h.name).replace(/\.$/,'').slice(0,60),trend:/^(up|flat|new)$/.test(h.trend)?h.trend:'new',why:String(h.why||'').slice(0,240),next:String(h.next).slice(0,240)}));
     if(!habits.length)throw new Error('no habits');
@@ -3525,7 +3558,7 @@ async function _caseAdapt(c,item,line,key,who){
     return out;};
   let out=null,err=null;
   for(let t=0;t<2&&!out;t++){
-    try{const raw=await Promise.race([callCoach(sys+(t?'\n\nYour last answer changed the situation or dropped the price. Keep it a price conversation with ¥ numbers.':''),JSON.stringify(src),{maxTokens:900,featureId:'case-adapt',noLang:true}),new Promise((_,rej)=>setTimeout(()=>rej(new Error('K took too long')),12000))]);
+    try{const raw=await Promise.race([callCoach(sys+(t?'\n\nYour last answer changed the situation or dropped the price. Keep it a price conversation with ¥ numbers.':''),JSON.stringify(src),{json:true,maxTokens:900,featureId:'case-adapt',noLang:true}),new Promise((_,rej)=>setTimeout(()=>rej(new Error('K took too long')),12000))]);
       let j=null;try{j=_jsonFrom(raw);}catch(pe){j=_jsonFields(raw,Object.keys(src));if(!j)throw pe;}if(!j)throw new Error('K gave an answer the app couldn’t use');out=check(j);}
     catch(e){err=e;if(_isLimitErr(e)||_isOfflineErr(e))break;}
   }
@@ -3710,7 +3743,7 @@ function _worldFresh(){return !!(S.world&&S.world.key===_worldKey()&&Array.isArr
 // A world built before the cast had pictures: ask K which look fits each person (one small call), names stay
 async function worldLooks(){const w=S.world;if(!w||!_aiOn()||!w.cast.length||w.cast.every(c=>c.look))return;if(W.lp)return W.lp;
   W.lp=(async()=>{const sys='Match each person to the picture that fits them best. Reply with JSON only: {"looks":[a number 1-10 per person, in the same order, each number at most once]}\nLOOKS: '+LOOKS.map(l=>l.id+' = '+l.d).join('; ');
-    const raw=await callCoach(sys,'PEOPLE:\n'+w.cast.map((c,i)=>(i+1)+'. '+c.name+', '+c.role+(c.detail?' ('+c.detail+')':'')).join('\n'),{maxTokens:80,featureId:'world',noLang:true});
+    const raw=await callCoach(sys,'PEOPLE:\n'+w.cast.map((c,i)=>(i+1)+'. '+c.name+', '+c.role+(c.detail?' ('+c.detail+')':'')).join('\n'),{json:true,maxTokens:80,featureId:'world',noLang:true});
     const j=_jsonFrom(raw);const used=new Set();w.cast.forEach((c,i)=>{let l=parseInt(j.looks&&j.looks[i],10);if(!(l>=1&&l<=10)||used.has(l)){l=_lookByRole(c.role)||_lookHash(c.name);while(used.has(l))l=l%10+1;}c.look=l;used.add(l);});save();})().catch(()=>{}).finally(()=>{W.lp=null;});return W.lp;}
 // The world as text for K's prompts. Empty when there is none.
 function worldText(){if(!_worldFresh())return '';const w=S.world;
@@ -3723,7 +3756,7 @@ async function worldEnsure(){
   const key=_worldKey(),who=_adaptWho();
   W.p=(async()=>{
     const sys='You build a small, believable world for a speaking-practice app, from what a person told you about themselves. The app will set every practice scene in this world, so it must feel like their real life: the people they actually deal with, the work they actually get asked to do.\nReply with JSON only, no markdown: {"summary":"what they do and where they are in it, one line, under 20 words","cast":[{"name":"a first name, varied and international, never Lena","role":"what this person is to the speaker, e.g. a client, a boss, a professor, a classmate, a recruiter, a teammate","detail":"one telling detail about them, under 10 words","look":"a number 1-10 from LOOKS, the picture that fits this person best; use each number at most once"}],"work":["three concrete things the speaker gets asked to do, under 8 words each"],"money":"how money usually comes up for them: a quote for a job, a day rate, a grade, a scholarship, an allowance. Under 12 words"}\nThe cast has exactly 4 people and must include: one with money or power over the speaker (a client, boss or professor), one peer (a classmate, teammate or friend), one stranger they might have to impress (a recruiter, a senior, someone at an event). Keep it universal: no country-specific details. Plain American English.\nLOOKS: '+LOOKS.map(l=>l.id+' = '+l.d).join('; ')+'.';
-    const raw=await Promise.race([callCoach(sys,'THE PERSON:\n'+who,{maxTokens:700,featureId:'world',noLang:true}),new Promise((_,rej)=>setTimeout(()=>rej(new Error('K took too long')),14000))]);
+    const raw=await Promise.race([callCoach(sys,'THE PERSON:\n'+who,{json:true,maxTokens:700,featureId:'world',noLang:true}),new Promise((_,rej)=>setTimeout(()=>rej(new Error('K took too long')),14000))]);
     const j=_jsonFrom(raw);if(!j||!Array.isArray(j.cast)||!j.cast.length||!Array.isArray(j.work))throw new Error('K gave an answer the app couldn’t use');
     const w={key,summary:String(j.summary||'').trim(),cast:j.cast.slice(0,5).map(c=>({name:String(c.name||'').trim(),role:String(c.role||'').trim(),detail:String(c.detail||'').trim(),look:Math.max(1,Math.min(10,parseInt(c.look,10)||0))||0})).filter(c=>c.name&&c.role),work:j.work.slice(0,4).map(x=>String(x).trim()).filter(Boolean),money:String(j.money||'').trim(),made:new Date().toISOString()};
     if(!w.cast.length)throw new Error('K gave an answer the app couldn’t use');
@@ -3779,7 +3812,7 @@ async function chooseSetInWorld(id){
       return out;};
     let out=null,err=null;
     for(let t=0;t<2&&!out;t++){
-      try{const raw=await Promise.race([callCoach(sys+(t?'\n\nYour last answer changed the situation or dropped the price. Keep every option’s meaning and the ¥ numbers.':''),JSON.stringify(src),{maxTokens:1600,featureId:'case-adapt',noLang:true}),new Promise((_,rej)=>setTimeout(()=>rej(new Error('K took too long')),14000))]);
+      try{const raw=await Promise.race([callCoach(sys+(t?'\n\nYour last answer changed the situation or dropped the price. Keep every option’s meaning and the ¥ numbers.':''),JSON.stringify(src),{json:true,maxTokens:1600,featureId:'case-adapt',noLang:true}),new Promise((_,rej)=>setTimeout(()=>rej(new Error('K took too long')),14000))]);
         out=check(_jsonFrom(raw));}
       catch(e){err=e;if(_isLimitErr(e)||_isOfflineErr(e))break;}
     }
@@ -4544,7 +4577,7 @@ async function deskRead(){
       'Tools: "advice" (they are asking what to do, something has gone wrong, emotions are high, or they need a plan before any words: choose this whenever they ask for guidance rather than a draft or a rehearsal; it is the safe default), "reply" (they received a message and need to answer it: the text contains or describes what someone said to them, and the answer is written), "practice" (a spoken conversation is coming up or keeps happening: they want to rehearse it with K playing the other person), "pitch" (they must present or pitch something to a group or a decision maker), "quick" (they want a strong short answer to one question they expect to be asked).\n'+
       'Practice scenarios (pick the closest key): '+scenes+'.\n'+
       'Reply with JSON only, no markdown: {"route":"advice|reply|practice|pitch|quick","why":"one short sentence to them, starting with You, saying what you understood (under 18 words)","scenario":"a practice key","who":"who they will talk to: name or role, who they are, one telling detail, under 14 words","moment":"where they are and what is at stake, under 30 words","line":"the first thing the other person will say, spoken, in curly quotes, under 25 words","reply_text":"for reply: the message they received, copied word for word if it is in their text, else empty","rwho":"client|boss|interviewer|new","rwant":"price|no|time|more|fix|well","pitch_line":"for pitch: what they are pitching, in one line","pitch_room":"client|investors|boss|panel","question":"for quick: the question they expect, in curly quotes"}';
-    try{const raw=await callCoach(sys,'THEIR SITUATION:\n'+text,{maxTokens:420,featureId:'desk-route',noLang:true});r=_jsonFrom(raw);if(!DESK_ROUTES[r.route])throw new Error('K gave an answer the app couldn’t use');}catch(e){V.deskBusy=false;V.deskErr=e;render();return;}
+    try{const raw=await callCoach(sys,'THEIR SITUATION:\n'+text,{json:true,maxTokens:420,featureId:'desk-route',noLang:true});r=_jsonFrom(raw);if(!DESK_ROUTES[r.route])throw new Error('K gave an answer the app couldn’t use');}catch(e){V.deskBusy=false;V.deskErr=e;render();return;}
     V.deskBusy=false;render();
   }
   if(!r)r=_deskGuess(text);
@@ -4632,8 +4665,8 @@ async function deskAdvice(){
     (A.asked?'':'\n\nIf you do not know enough to give useful advice (what actually happened, who is involved, what is at stake), do not guess and do not give generic advice: reply with JSON {"need":"one short, specific question to them, under 20 words"} instead, and nothing else.')+
     '\n\nOtherwise reply with JSON only, no markdown: {"read":"what is really going on and what matters most right now, 1–2 sentences, said to them","steps":["3 short steps in order, each starting with a verb, each under 20 words"],"say":"the first words they could actually say or write to open, spoken, under 40 words","avoid":"the one thing not to do, under 18 words","principle":"the principle underneath, 3–8 plain words","case":"the closest library case id, or empty","next":"practice if a spoken conversation is still ahead and worth rehearsing; reply if they need to write a message; none if neither fits (for example the moment has passed and what they need is a plan)","ask":"one short question you would ask them to help better, if something important is missing; else empty","practice":{"scenario":"if next is practice: the closest practice key from: '+Object.keys(TT_REAL).join(', ')+'","who":"who they will talk to, under 12 words","moment":"what is at stake in that conversation, under 25 words","line":"the first thing that person will say to them, spoken, in curly quotes, under 25 words. Never the user\u2019s own words"}}';
   try{
-    const raw=await callCoach(sys,'THEIR SITUATION:\n'+A.text+nbContext('real'),{maxTokens:700,featureId:'desk-advice'});
-    let j;try{j=_jsonFrom(raw);}catch(_){j=_jsonFrom(await callCoach(sys,'THEIR SITUATION:\n'+A.text+'\n\nReply with valid JSON only.',{maxTokens:700,featureId:'desk-advice',grace:true}));}
+    const raw=await callCoach(sys,'THEIR SITUATION:\n'+A.text+nbContext('real'),{json:true,maxTokens:700,featureId:'desk-advice'});
+    let j;try{j=_jsonFrom(raw);}catch(_){j=_jsonFrom(await callCoach(sys,'THEIR SITUATION:\n'+A.text+'\n\nReply with valid JSON only.',{json:true,maxTokens:700,featureId:'desk-advice',grace:true}));}
     if(j&&j.need&&!A.asked&&!j.read){A.need=_clean(j.need);A.loading=false;if(V.view==='advice')render();return;}
     const steps=(Array.isArray(j.steps)?j.steps:[]).map(_clean).filter(Boolean).slice(0,4);
     if(!j.read||!steps.length)throw new Error('Unexpected answer');
@@ -4902,9 +4935,9 @@ async function rpDraft(tone){
   const guard=!!(lowest&&asked&&asked<lowest&&(RP.who==='client'||RP.who==='auto'))&&tone!=='yes';
   let msg='THEIR MESSAGE:\n'+RP.text.trim()+(tone?'\n\nADJUST: the previous draft was "'+RP.draft.draft+'". Write it again '+({warmer:'warmer: more human, more acknowledgement, same position',firmer:'firmer: fewer softeners, the position stated plainly, still polite',shorter:'shorter: cut it to about half, keep the position and the ask',yes:'as a yes: the user has decided to accept their number. Write the best version of saying yes that still gets something back (a deposit, faster payment, a smaller scope), without sulking'})[tone]+'.':'')+(guard?'\n\nNOTE: they are asking for about '+_fmtMoney(asked)+', which is below the user’s lowest ('+S.rwLowest+'). Hold the price and offer a smaller scope.':'')+nbContext('reply');
   try{
-    const raw=await callCoach(_rpSys(),msg,{maxTokens:850,featureId:'reply-draft'});
+    const raw=await callCoach(_rpSys(),msg,{json:true,maxTokens:850,featureId:'reply-draft'});
     let j;try{j=_jsonFrom(raw);if(j&&j.need&&!RP.asked&&!tone){RP.need=_clean(j.need);RP.step='ask';RP.loading=false;render();return;}if(String(j.draft||'').trim().length<20)throw 0;}
-    catch(_){const raw2=await callCoach(_rpSys(),msg+'\n\nYour last answer could not be read. Reply again with valid JSON only, in the exact format asked.',{maxTokens:850,featureId:'reply-draft',grace:true});j=_jsonFrom(raw2);}
+    catch(_){const raw2=await callCoach(_rpSys(),msg+'\n\nYour last answer could not be read. Reply again with valid JSON only, in the exact format asked.',{json:true,maxTokens:850,featureId:'reply-draft',grace:true});j=_jsonFrom(raw2);}
     const draft=String(j.draft||'').trim();if(draft.length<20)throw new Error('short');
     const why=(Array.isArray(j.why)?j.why:[]).map(w=>({quote:String(w.quote||'').trim(),technique:String(w.technique||'').trim(),why:String(w.why||'').trim()})).filter(w=>w.quote&&draft.toLowerCase().includes(w.quote.toLowerCase())).slice(0,4);
     RP.draft={read:_clean(j.read||'').slice(0,320),draft,give:String(j.give||'').slice(0,40),get:String(j.get||'').slice(0,40),why,below:!!j.below_lowest||guard,asked,lowest};
@@ -5292,12 +5325,12 @@ async function rwFetchScene(){
       msg+='\n\nReply with the JSON only.';
       if(!_rwIsClient()){
         const sysS='You write realistic role-play scenes for a speaking-practice app. The speaker will answer out loud, as themselves, to a real person in a real moment. Situation type: '+brief+'\nNever write an abstract, philosophical or hypothetical question. Plain, everyday American English.\nReply with JSON only, no markdown: {"scene":"the situation in 1–2 short, plain sentences, written to the speaker in second person, the way you would explain it to a friend: where they are, who is there, what just happened. Concrete and simple. No poetic or vague phrasing. Under 40 words","who":"who is talking to the speaker: first name or role, who they are, and one telling detail, under 14 words, e.g. \'Wen, your manager · new in the role, wants a quick win\'","moment":"where you are, what just happened and why it matters to the speaker, two plain sentences, under 35 words","line":"exactly what they say to the speaker, the way a real person talks out loud, in curly quotes, under 30 words. It must make sense on its own: name the actual thing (the proposal, the logo, the weekend), never just it, this or that, and include when it matters (by Monday morning, tomorrow)"}';
-        const j=_jsonFrom(await callCoach(sysS,msg,{maxTokens:320,featureId:'rw-turn'}));
+        const j=_jsonFrom(await callCoach(sysS,msg,{json:true,maxTokens:320,featureId:'rw-turn'}));
         const line=String(j.line||'').trim();if(!line||line.length>240||!j.who||!j.moment)throw new Error('scene');
         RW.question=line;RW.source='ai';RW.item={who:String(j.who).slice(0,90),moment:String(j.moment).slice(0,240),scene:String(j.scene||'').slice(0,280)};
       }else{
         const sysB='You write realistic client role-play briefs for a practice app for freelancers and new professionals. Situation type: '+brief+'\nReply with JSON only, no markdown: {"scene":"the situation in 1–2 short, plain sentences, written to the speaker in second person, the way you would explain it to a friend: where they are, who is there, what just happened. Concrete and simple. No poetic or vague phrasing. Under 40 words","client":"First name · who they are, under 8 words, e.g. \'Lena · runs a small tea brand\'","job":"the piece of work, under 10 words","position":"'+(RW_POS_LBL[RW.scenario]||'Your position')+': the speaker’s side, concrete, with ¥ figures where they apply, under 16 words. Vary it: sometimes final and non-negotiable, sometimes a price plus the lowest they will accept (write it as \'Lowest you’ll accept: ¥…\'), sometimes flexible on one thing but not another. Plain words only","line":"the client’s opening words, the way a real person talks out loud, in curly quotes, under 30 words. It must make sense on its own: name the actual work and any number or deadline, never just it or this"}. Use Chinese-market pricing in yuan. Everyday plain English.'+(S.rwPrice?' The speaker’s real price is '+S.rwPrice+(S.rwLowest?' and the lowest they will accept is '+S.rwLowest:'')+': use those numbers as the speaker’s position.':'');
-        const j=_jsonFrom(await callCoach(sysB,msg,{maxTokens:340,featureId:'rw-turn'}));
+        const j=_jsonFrom(await callCoach(sysB,msg,{json:true,maxTokens:340,featureId:'rw-turn'}));
         const line=String(j.line||'').trim();if(!line||line.length>240||!j.client||!j.job||!j.position)throw new Error('brief');
         RW.question=line;RW.source='ai';RW.item={c:String(j.client).slice(0,70),scene:String(j.scene||'').slice(0,280),job:String(j.job).slice(0,90),pos:String(j.position).replace(/^[^:]{0,20}:\s*/,'').slice(0,140)};
       }
@@ -5416,7 +5449,7 @@ async function _rwDecide(){
     ?'You are the client in a negotiation practice role-play. Who you are: '+(RW.who||'a client')+'.\nYour hidden brief, which the speaker never knew: '+(RW.secret?RW.secret.t:'none')+'\nWhen you reveal the brief in "secret", tell only what is true AND consistent with the transcript. Never say something was said or happened if it is not in the transcript (if you never mentioned a competitor, do not call it a bluff; say you had no other option lined up instead).\n\nThe conversation is over. Decide honestly, in character, as a real client with that brief would, based only on what the speaker actually said. Holding firm with good reasons and warmth often wins; caving fast can make you doubt them; rudeness or vagueness loses you.\n'+ended+'\n'+agreed+'\n'+grounding+'\n'+voice+'\nReply with JSON only, no markdown:\n{"decision":"deal"|"think"|"walk","say":"what you say to end the conversation, one short spoken sentence, in character","terms":"the deal in a few words if decision is deal (price or terms agreed), else empty","why":[up to 3 of {"turn":"answer|fu1|fu2|fu3","quote":"exact words","effect":"+" or "-","reason":"one sentence: how that line moved you toward or away from yes, consistent with your hidden brief"}],"secret":"two short sentences, under 45 words in total, first person as the client, revealing your hidden brief with a concrete figure where it applies, ending with how it shaped this outcome, e.g. \'My launch is in three weeks. I needed you more than I let on.\'",'+improveRule+kRule+usedRule+',"could":{"from":"how it ended, a few words, e.g. ¥5,500","to":"the likely better outcome if they had made those changes, a few words, e.g. ¥6,500"}}\n\nMOVES (ids for "used"):\n'+movesForReview()
     :'You are the other person in a speaking-practice role-play ('+sc.name+'). Who you are: '+(RW.who||RW_ROLE[RW.scenario]||'the other person')+'.\nThe conversation is over. React honestly, the way that real person would, based only on what the speaker actually said: '+(RW_VERDICT_Q[RW.scenario]||'how did it land with you?')+'\nIF YOU AGREED SOMETHING: if by the end you and the speaker settled a concrete plan or next step (a date, a smaller first step, a trade), it is not “maybe”. It is “yes” if the plan moved toward what the speaker wanted, even partly. Use “maybe” only when nothing was settled. Put any catch the speaker accepted (a deadline, extra work) in “say” and in “improve”, not in the verdict.\nThen, as K the coach, find the moments where better words would have changed your reaction.\n'+ended+'\n'+grounding+'\n'+voice+'\nReply with JSON only, no markdown: {"verdict":"yes"|"maybe"|"no","say":"what you say or think at the end, one short spoken sentence, in character","why":[up to 3 of {"turn":"answer|fu1|fu2|fu3","quote":"exact words","effect":"+" or "-","reason":"one sentence: how that line changed your reaction"}],'+improveRule+kRule+usedRule+',"could":{"from":"how it ended, a few words","to":"the likely better outcome, a few words"}}\n\nMOVES (ids for "used"):\n'+movesForReview();
   let j=null;
-  for(let a=0;a<2&&!j;a++){try{const raw=await callCoach(sys+RW_STT_NOTE,m+(a?'\n\nYour last reply was not valid JSON. Reply again with compact valid JSON only, nothing else.':''),{maxTokens:cl?1700:1200,noLang:true,featureId:'rw-turn',grace:true});j=_jsonFrom(raw);}catch(e){j=null;}}
+  for(let a=0;a<2&&!j;a++){try{const raw=await callCoach(sys+RW_STT_NOTE,m+(a?'\n\nYour last reply was not valid JSON. Reply again with compact valid JSON only, nothing else.':''),{json:true,maxTokens:cl?1700:1200,noLang:true,featureId:'rw-turn',grace:true});j=_jsonFrom(raw);}catch(e){j=null;}}
   try{
     if(!j)return null;
     // Never let the internal turn tags reach the screen
@@ -5828,7 +5861,7 @@ async function piBuild(opts){
   const sys=K_VOICE+'\n'+K_PLAIN+'\nYou help someone build a spoken pitch using the structure "'+st.name+'" ('+(TECHNIQUES[st.tech]||{}).sum+'). '+K_CLIENT_VIEW.split('\n').slice(0,4).join('\n')+'\nFor each part write ONE line they could actually say out loud (under 18 words, first person, concrete, no jargon) and ONE cue for the cue card (under 10 words: what to do in that part, e.g. "Show the before and after. Name the one feeling."). Keep every number, name and fact from the user’s one-line description; invent nothing beyond plausible specifics they can change. Reply with JSON only: {"parts":[{"name":"'+st.parts.map(p=>p[0]).join('|')+'","line":"…","cue":"…"}]}';
   const msg='Pitch type: '+_piKindLabel()+'\nWho is in the room: '+_piRoomLabel()+'\nTime: '+PI.mins+' minutes\nThe pitch in one line: '+(PI.line||'(not given; pick a realistic example in their field)')+(S.rwField?'\nTheir field: '+S.rwField:'')+(opts.opening?'\n\nWrite ONLY a new, different opening for the first part ("'+PI.parts[0].name+'"); keep the other parts exactly as they are: '+JSON.stringify(PI.parts.map(p=>({name:p.name,line:p.text,cue:p.cue}))):'');
   try{
-    const j=_jsonFrom(await callCoach(sys,msg,{maxTokens:600,featureId:'pitch-build'}));
+    const j=_jsonFrom(await callCoach(sys,msg,{json:true,maxTokens:600,featureId:'pitch-build'}));
     const arr=Array.isArray(j.parts)?j.parts:[];
     PI.parts.forEach((p,i)=>{const a=arr.find(x=>String(x.name||'').toLowerCase()===p.name.toLowerCase())||arr[i];if(a&&(!opts.opening||i===0)){p.text=String(a.line||'').replace(/^["“]|["”]$/g,'').slice(0,160);p.cue=String(a.cue||'').slice(0,80);}});
   }catch(e){PI.err=e;}
@@ -5859,7 +5892,7 @@ async function piNotes(){
   const sys=K_VOICE+'\n'+K_PLAIN+'\n'+K_JUDGE+'\nThe speaker just delivered a pitch out loud ('+_piKindLabel()+', to '+_piRoomLabel().toLowerCase()+', '+PI.mins+' minutes allowed). Here is their plan and the transcript. Judge the delivery against the plan: did the ask land, did they prove it, did they stay inside the time, did fillers or hedging weaken it?\n'+TECH_LIST+'\nGROUNDING: "said" must be the speaker’s EXACT words from the transcript, copied character for character, 4 to 20 words. Never paraphrase.\nReply with JSON only: {"big":{"text":"the one big thing to fix, one or two plain sentences, under 35 words","technique":"title from the list"},"moment":{"said":"exact words","try":"a better line they could say, spoken, under 28 words","why":"one sentence starting with why it helps","technique":"title from the list"},"worked":"one specific thing that worked, quoting them, under 25 words"}';
   const msg='THE PLAN:\n'+_piPitchText()+'\n\nTRANSCRIPT ('+fmtMs(tk.elapsed*1000)+' of '+PI.mins+':00, '+tk.words+' words, about '+wpm+' words per minute):\n'+tk.transcript+nbContext('pitch');
   try{
-    const j=_jsonFrom(await callCoach(sys,msg,{maxTokens:450,featureId:'pitch-notes'}));
+    const j=_jsonFrom(await callCoach(sys,msg,{json:true,maxTokens:450,featureId:'pitch-notes'}));
     const said=String(j.moment&&j.moment.said||'').trim();
     const grounded=said&&_rwxNorm(tk.transcript).includes(_rwxNorm(said));
     PI.notes={big:{text:String(j.big&&j.big.text||'').slice(0,240),tech:techKeyFor(j.big&&j.big.technique)},moment:grounded?{said,try:_stripQ(j.moment.try||''),why:String(j.moment.why||'').replace(/^why:?\s*/i,''),tech:techKeyFor(j.moment.technique)}:null,worked:String(j.worked||'').slice(0,200)};
@@ -5917,7 +5950,7 @@ async function piLanded(){
   const sys=K_VOICE+'\n'+K_PLAIN+'\nThree people heard a pitch and asked questions. You decide, as the room would, how it landed, then as K find the weakest answer and give a better one.\nGROUNDING: "said" must be the speaker’s EXACT words from one answer, copied character for character, 4 to 20 words.\nReply with JSON only: {"verdict":"Yes"|"Yes, with conditions"|"Not yet"|"No","line":"one plain sentence on what the room wants or decided","weakest":{"to":"the question it answered, shortened, under 10 words","said":"exact words","try":"a better answer, spoken, under 30 words, with a concrete number or step where it fits","why":"one sentence","technique":"title from: '+Object.values(TECHNIQUES).map(t=>t.title).join('; ')+'"}}';
   const msg='THE PITCH:\n'+(PI.take&&PI.take.transcript?PI.take.transcript:_piPitchText())+'\n\nQUESTIONS AND ANSWERS:\n'+PI.qa.map(x=>x.who+' ('+x.role+') asked: '+x.q+'\nThe speaker answered: '+(x.a||'(nothing)')).join('\n\n')+nbContext('pitch');
   try{
-    const j=_jsonFrom(await callCoach(sys,msg,{maxTokens:420,featureId:'pitch-notes'}));
+    const j=_jsonFrom(await callCoach(sys,msg,{json:true,maxTokens:420,featureId:'pitch-notes'}));
     const w=j.weakest||{};const said=String(w.said||'').trim();const grounded=said&&PI.qa.some(x=>_rwxNorm(x.a).includes(_rwxNorm(said)));
     PI.verdict={verdict:String(j.verdict||'Not yet').slice(0,40),line:String(j.line||'').slice(0,200),weakest:grounded?{to:String(w.to||'').slice(0,80),said,try:_stripQ(w.try||''),why:String(w.why||''),tech:techKeyFor(w.technique)}:null};
     nbAdd({cat:'pitch',title:'Face the room · '+(PI.line||_piKindLabel()),sub:_piRoomLabel()+' Q&A',elapsed:0,words:PI.qa.reduce((a,x)=>a+x.words,0),fix:PI.verdict.weakest?'To “'+PI.verdict.weakest.to+'”, say: “'+PI.verdict.weakest.try+'”':PI.verdict.line,worked:'',tr:PI.qa.map(x=>x.who+': '+x.q+'\nYou: '+x.a).join('\n\n'),extra:{html:_piLandedHtml()}});
@@ -6106,7 +6139,7 @@ async function qaNotes(){
   const sys=K_VOICE+'\n'+K_PLAIN+'\n'+K_JUDGE+'\n'+view+'\nThe speaker answered one question out loud, on the spot. There is no time limit. Judge the answer by whether the person asking would be satisfied: is the answer clear early, is there one reason or real example, does it end cleanly. Never mention PREP, frameworks, acronyms or timing.\nGROUNDING: every "quote" and "said" must be the speaker’s EXACT words from the transcript, copied character for character, 3 to 15 words. Never paraphrase.\nReply with JSON only: {"worked":{"quote":"exact words","why":"one short sentence on why it worked"},"fix":{"said":"exact words of the weakest moment","try":"a better line they could say, spoken, under 25 words","why":"one or two sentences; plain words only, no acronyms"}}';
   const msg=(QA.ctx?'Situation: '+QA.ctx+'\n':'')+'Question: "'+QA.q+'"\nTranscript ('+fmtMs(tk.elapsed*1000)+', '+tk.words+' words):\n'+tk.transcript+nbContext('quick');
   try{
-    const j=_jsonFrom(await callCoach(sys,msg,{maxTokens:380,featureId:'quick-eval'}));
+    const j=_jsonFrom(await callCoach(sys,msg,{json:true,maxTokens:380,featureId:'quick-eval'}));
     const ok=s=>s&&_rwxNorm(tk.transcript).includes(_rwxNorm(s));
     const w=j.worked||{},f=j.fix||{};
     QA.notes={worked:ok(w.quote)?{quote:String(w.quote),why:String(w.why||'')}:null,fix:ok(f.said)?{said:String(f.said),try:_stripQ(f.try||''),why:String(f.why||'')}:null};
@@ -6198,7 +6231,7 @@ async function askJudge(){
   ASK.loading=true;ASK.err=null;render();
   const sys=K_VOICE+'\n'+K_PLAIN+'\nYou judge ONE question someone asked, by Kian’s standard. No question is stupid; the fear of asking is. A good question: comes from genuine curiosity; ties to something the person actually said (shows they listened); can’t be answered by a quick search; is short and open (how, why, what made you); fits the moment and respects the other person’s time. Find what worked first. Be encouraging and specific.\n\nReply with JSON only: {"verdict":"strong|good|weak","worked":"one short sentence on what worked, quoting a few of their words","fix":"one short sentence on the single change that would make it better (empty if strong)","better":"a better version of their question, in their voice, under 25 words"}';
   try{
-    const raw=await callCoach(sys,'THE MOMENT: '+sc.who+' '+sc.what+'\n\nTHEIR QUESTION: '+q,{maxTokens:300,featureId:'ask-q'});
+    const raw=await callCoach(sys,'THE MOMENT: '+sc.who+' '+sc.what+'\n\nTHEIR QUESTION: '+q,{json:true,maxTokens:300,featureId:'ask-q'});
     const j=_jsonFrom(raw);
     ASK.res={verdict:/strong|good|weak/.test(j.verdict)?j.verdict:'good',worked:_clean(j.worked),fix:_clean(j.fix),better:_clean(j.better)};
   }catch(e){ASK.err=e;ASK.res={offline:true};}
