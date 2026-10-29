@@ -1854,6 +1854,26 @@ main.hub.tour-mini:not(.tour-iso){transform:scale(.5) translateY(-18%)}
 @media (max-height:740px){main.hub.tour-mini:not(.tour-iso){transform:scale(.44) translateY(-22%)}}
 /* if K and the text box ever touch, the text box sits on top */
 .tour-bub{z-index:6}.tour-k{z-index:4}
+/* Last intro screen: K says the promise and gets the whole stage */
+.ob[data-n="3"]{padding-left:0;padding-right:0}
+.ob[data-n="3"] .ob-brand{padding:0 22px}
+.obk-bub{position:relative;z-index:2;margin:12px 22px 0;background:#F4F4F6;color:#0B0C10;border-radius:22px;border-bottom-left-radius:6px;padding:16px 18px;box-shadow:0 10px 30px rgba(0,0,0,.4);flex-shrink:0;animation:ob-in .45s ease both}
+.obk-bub b{display:block;font-size:26px;font-weight:900;letter-spacing:-.03em;line-height:1.1}
+.obk-bub span{display:block;font-size:15px;font-weight:600;line-height:1.42;color:#3C3F47;margin-top:7px;text-wrap:pretty}
+.obk-st{position:relative;flex:1;min-height:0;margin-top:-8px;background-size:cover;background-position:center 28%;animation:ob-in .6s .15s ease both}
+.obk-st:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0B0C10 0%,rgba(11,12,16,0) 14%,rgba(11,12,16,0) 72%,#0B0C10 100%)}
+/* the stage screen stays dark in light mode too */
+.ob[data-n="3"]{background:#0B0C10!important;color:#fff}
+.ob[data-n="3"] .ob-brand{color:rgba(255,255,255,.5)}.ob[data-n="3"] .ob-brand b{color:#fff}
+.ob[data-n="3"] .ob-lite-link{color:rgba(235,235,245,.72)}
+.obk-chips{display:flex;gap:8px;flex-wrap:wrap;padding:0 22px;margin-top:-6px;position:relative;z-index:2;flex-shrink:0}
+.obk-chips span{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);font-size:13px;font-weight:800;color:rgba(255,255,255,.9);white-space:nowrap}
+.obk-chips i{display:flex;color:#7FE0E0}.obk-chips .ic{width:14px;height:14px}
+.ob[data-n="3"] .g-cta{margin:14px 22px 0;width:auto;background:#7FE0E0;color:#06201F}
+.ob[data-n="3"] .g-cta .ar{background:#06201F;color:#7FE0E0}
+.ob[data-n="3"] .ob-lite-link{margin-top:8px}
+@media (max-width:380px){.obk-chips{gap:6px}.obk-chips span{font-size:12px;padding:0 10px;gap:5px}}
+@media (max-height:740px){.obk-bub b{font-size:22px}.obk-bub span{font-size:13.5px}.obk-bub{padding:13px 15px}.obk-chips span:nth-child(3){display:none}.ob[data-n="3"] .g-cta{margin-top:12px}}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -4630,8 +4650,15 @@ function renderIntro(app){
   let h='<main class="ob'+(reduce?' ob-still':'')+'" data-n="'+n+'">';
   h+='<div class="ob-bars"'+(n===3?' style="visibility:hidden"':'')+'>'+[0,1,2].map(i=>'<i class="'+(i<n?'d':i===n?'p':'')+'"><b></b></i>').join('')+'</div>';
   h+='<div class="ob-brand"><span><b>GROUND</b> · BY KIAN HOW</span><span class="ob-br-r">'+(SND_ON?sndBtnHtml():'')+(n<3?'<button data-act="ob-skip">Skip</button>':'')+'</span></div>';
+  if(n===3){
+    // The last screen: K says the promise, and gets the whole stage
+    h+='<div class="obk-bub"><b>Hold your ground.</b><span>A client wants it cheaper. A boss won’t listen. An interviewer asks the hard one. Practice it here, out loud, and walk in ready.</span></div>';
+    h+='<div class="obk-st" style="background-image:url('+(typeof ART!=='undefined'?ART:'art/')+'sets/kstage.webp)"></div>';
+    h+='<div class="obk-chips"><span><i>'+ic('check','s')+'</i>No sign-up</span><span><i>'+ic('check','s')+'</i>Notes stay on your phone</span><span><i>'+ic('check','s')+'</i>K is AI. Practice, not advice.</span></div>';
+  }else{
   h+='<div class="ob-vis">'+VIS[n]+'</div>';
   h+='<div class="ob-txt"><h1>'+H[n][0]+'</h1><p>'+H[n][1]+'</p></div>';
+  }
   const lite=(typeof PLAN_ON!=='undefined'&&PLAN_ON)&&!(typeof _isPro==='function'&&_isPro());
   h+=n===2?gCta('Get started','ob-next'):n===3?(lite?gCta('Start free','ob-go')+'<button class="ob-lite-link" data-act="ob-code">I have a Pro code</button>':gCta('Let’s go','ob-go')):'<div class="ob-tap">Tap to continue</div>';
   h+='</main>';
@@ -4648,7 +4675,7 @@ function renderIntro(app){
   on('[data-act="ob-next"]',()=>goTo(3));
   on('[data-act="ob-go"]',()=>{_introClear();V.obSlide=0;if(lite){S.onboarded=true;S.whatsNew=APP_VERSION;save();V.obStep=0;go('hub');return;}V.obStep=1;render();});
   on('[data-act="ob-code"]',()=>{_introClear();openSheet('<h2 class="h2" style="font-size:21px">Enter your Pro code</h2><p class="sub">The code from my email. Each code works on one phone.</p><div class="fieldset">'+codeFieldHtml('ob-pro-code')+'</div>',{wire:sh=>{wireCodeField(sh,'ob-pro-code',()=>{closeSheet();V.obSlide=0;V.obStep=1;render();});}});});
-  _fillZoom([app.querySelector('.ob-txt')],()=>document.scrollingElement.scrollHeight<=window.innerHeight,1);
+  if(n!==3)_fillZoom([app.querySelector('.ob-txt')],()=>document.scrollingElement.scrollHeight<=window.innerHeight,1);
 }
 function renderOnboarding(app){
   const step=V.obStep||0,N=2,p=_P();
