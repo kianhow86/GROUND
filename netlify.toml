@@ -10,3 +10,9 @@
   [headers.values]
     X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
+
+# Art: let phones keep it, so pictures show at once on return visits
+[[headers]]
+  for = "/art/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"

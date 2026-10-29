@@ -1874,6 +1874,9 @@ main.hub.tour-mini:not(.tour-iso){transform:scale(.5) translateY(-18%)}
 .ob[data-n="3"] .ob-lite-link{margin-top:8px}
 @media (max-width:380px){.obk-chips{gap:6px}.obk-chips span{font-size:12px;padding:0 10px;gap:5px}}
 @media (max-height:740px){.obk-bub b{font-size:22px}.obk-bub span{font-size:13.5px}.obk-bub{padding:13px 15px}.obk-chips span:nth-child(3){display:none}.ob[data-n="3"] .g-cta{margin-top:12px}}
+/* pictures fade in together once all on the screen are ready */
+.ig-hide{opacity:0!important}
+img,[style*="background-image"]{transition:opacity .28s ease}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -2177,6 +2180,19 @@ function go(view,extra){
   const h=HASH_FOR_VIEW[view];
   try{history.replaceState(null,'',location.pathname+location.search+(h&&h!=='home'?'#'+h:''));}catch(e){}
 }
+// Pictures on a screen appear together: any that aren't loaded yet stay hidden until all are ready (or 1.6s pass), then fade in at once.
+let _igTok=0;
+function _imgGate(root){
+  const tok=++_igTok,wait=[];
+  root.querySelectorAll('img').forEach(i=>{if(!i.complete||!i.naturalWidth){if(i.getAttribute('src')){i.classList.add('ig-hide');wait.push(new Promise(r=>{i.addEventListener('load',r,{once:true});i.addEventListener('error',r,{once:true});}));}}});
+  root.querySelectorAll('[style*="background-image"]').forEach(el=>{const m=(el.getAttribute('style')||'').match(/url\(['"]?([^'")]+)['"]?\)/);if(!m||_igSeen.has(m[1]))return;el.classList.add('ig-hide');const im=new Image();wait.push(new Promise(r=>{im.onload=im.onerror=()=>{_igSeen.add(m[1]);r();};}));im.src=m[1];});
+  if(!wait.length)return;
+  Promise.race([Promise.all(wait),new Promise(r=>setTimeout(r,1600))]).then(()=>{if(tok!==_igTok&&!root.isConnected)return;root.querySelectorAll('.ig-hide').forEach(e=>e.classList.remove('ig-hide'));});
+}
+const _igSeen=new Set();
+// Warm the art people will see first, after the app has loaded
+function _artWarm(){const A=(typeof ART!=='undefined'?ART:'art/');const L=['job','client','disagree','work','people','pitch','surprise'].map(k=>A+'k/tile-'+k+'.webp').concat(['office','room','cafe','studio','corridor','event','stage','shop','kstage'].map(k=>A+'sets/'+k+'.webp'),['invite','up','left','squat','think','shrug','cheer','wait','thumb'].map(k=>A+'kpose/'+k+'.webp'));
+  let i=0;const next=()=>{if(i>=L.length)return;const u=L[i++];const im=new Image();im.onload=im.onerror=()=>{_igSeen.add(u);setTimeout(next,30);};im.src=u;};for(let k=0;k<4;k++)next();}
 function render(){
   const app=document.getElementById('app');
   if(!app)return;
@@ -2188,6 +2204,7 @@ function render(){
   const R={cast:renderCast,hub:renderHub,reply:renderReply,real:renderReal,pitch:renderPitch,quick:renderQuick,settings:renderSettings,notebook:renderNotebook,advice:renderAdvice,library:renderLibrary,case:renderCase,'nb-entry':renderNbEntry,sync:renderSync,owner:renderOwner,ask:renderAsk,choose:renderChoose,askk:renderAskK,pro:renderPro};
   const fn=R[V.view]||renderHub;
   fn(app);
+  _imgGate(app);
   _noOrphans(app);
   renderHubPill();
   window.scrollTo(0,0);
@@ -2248,6 +2265,7 @@ function boot(){
   if(typeof _syInit==='function')_syInit();
   if(typeof _ownerLink==='function')_ownerLink();
   if(typeof planSync==='function'&&S.onboarded)setTimeout(planSync,1500);
+  if(document.readyState==='complete')setTimeout(_artWarm,300);else window.addEventListener('load',()=>setTimeout(_artWarm,300),{once:true});
   // Warm the K poses the sheets use, so K is there the moment a sheet opens
   setTimeout(()=>{try{['think','shrug','cheer','wait','invite','thumb'].forEach(k=>{const im=new Image();im.src=(typeof ART!=='undefined'?ART:'art/')+'kpose/'+k+'.webp';});}catch(e){}},1200);
   const h=(location.hash||'').replace('#','');
