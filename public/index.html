@@ -1849,6 +1849,11 @@ main.hub.tour-mini.tour-wait{opacity:0!important;transition:opacity .25s ease!im
 main.hub.tour-mini{transition:transform .55s cubic-bezier(.3,1,.4,1),box-shadow .4s,opacity .5s ease}
 .aim-h p,.pw-k p{text-wrap:balance}
 .aim-h img,.pw-k img{aspect-ratio:480/540;object-fit:contain}
+/* tour: welcome shows a smaller hub so K and the text box fit underneath it */
+main.hub.tour-mini:not(.tour-iso){transform:scale(.5) translateY(-18%)}
+@media (max-height:740px){main.hub.tour-mini:not(.tour-iso){transform:scale(.44) translateY(-22%)}}
+/* if K and the text box ever touch, the text box sits on top */
+.tour-bub{z-index:6}.tour-k{z-index:4}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -4401,7 +4406,8 @@ function hubTour(i){
     const M=m.getBoundingClientRect(),R=el.getBoundingClientRect();m.classList.add('tour-mini');m.style.transform=tf;void m.offsetWidth;m.style.transition=keep;
     const maxW=cw-48,maxH=H*.36;let sc=Math.min(st.fit||1,maxW/R.width,maxH/R.height);
     const cx=R.left-M.left+R.width/2,cy=R.top-M.top+R.height/2;
-    const Dx=st.pose==='left'?cl+cw*.38:cl+cw/2,Dy=st.pose==='squat'?H*.52:st.sel==='#dk-deck'?H*.36:H*.34;
+    if(st.sel==='#dk-deck')sc=Math.min(sc,(H*.30)/R.height);
+    const Dx=st.pose==='left'?cl+cw*.38:cl+cw/2,Dy=st.pose==='squat'?H*.52:st.sel==='#dk-deck'?H*.27:H*.34;
     m.classList.add('tour-iso');m.style.transformOrigin='0 0';m.style.transform='translate('+(Dx-M.left-sc*cx)+'px,'+(Dy-M.top-sc*cy)+'px) scale('+sc+')';
     _tourIsolate(m,el);
   }else{m.classList.remove('tour-iso');m.style.transform='';m.style.transformOrigin='';_tourIsolate(m,null);}
@@ -4410,17 +4416,16 @@ function hubTour(i){
     const r=el?el.getBoundingClientRect():m.getBoundingClientRect();
     k.src=(typeof ART!=='undefined'?ART:'art/')+'kpose/'+st.pose+'.webp';bub.querySelector('b').textContent=st.t;bub.querySelector('p').textContent=st.b;
     const kw=Math.min(150,cw*.38),kh=kw*540/480;let kx,ky;
-    if(!el){kx=cl+cw-kw-4;ky=Math.min(r.bottom-kh*.55,H-kh-96);}
+    // Welcome and the deck: the part on top, then K and the text box side by side underneath, never on top of it
+    if(!el||st.sel==='#dk-deck'){kx=cl+8;ky=Math.min(r.bottom+12,H-kh-92);}
     else if(st.pose==='squat'){kx=r.left+r.width*.6-kw/2;ky=r.top-kh+3;}
     else if(st.pose==='left'){kx=Math.min(r.right+6,cl+cw-kw-4);ky=r.top+r.height/2-kh*.24;}
-    else if(st.sel==='#dk-deck'){kx=cl+6;ky=r.bottom-kh*.42;}
     else{kx=Math.max(cl+6,r.left-kw*.78);ky=r.bottom+4;}
     Object.assign(k.style,{width:kw+'px',left:kx+'px',top:ky+'px'});
     // bubble: below the part when there is room, else beside K
     bub.style.width=(cw-32)+'px';const bh=bub.offsetHeight||120;let bx=cl+16,by;
-    if(!el){bub.style.width=(cw-kw-20)+'px';by=r.bottom+10;}
+    if(!el||st.sel==='#dk-deck'){bub.style.width=(cw-kw-16)+'px';bx=kx+kw-4;by=ky+Math.max(0,(kh-(bub.offsetHeight||bh))*.35);}
     else if(st.pose==='squat')by=r.bottom+18;
-    else if(st.sel==='#dk-deck'){bub.style.width=(cw-kw-20)+'px';bx=kx+kw-6;by=ky+kh*.4;}
     else by=Math.max(r.bottom,ky+kh)+14;
     by=Math.max(70,Math.min(by,H-(bub.offsetHeight||bh)-100));
     Object.assign(bub.style,{left:bx+'px',top:by+'px'});
