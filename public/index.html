@@ -1843,6 +1843,7 @@ html[data-theme="dark"] .vn-aim b{color:#7FE0E0}
 .pro-list.pro-3 b{font-size:17px;margin-bottom:3px}
 .pro-list.pro-3 .pro-rt>span{font-size:14.5px;line-height:1.4}
 @media (max-height:740px){.pro-list.pro-3 .pro-rt>span{display:block;font-size:13.5px}.pro-list.pro-3>div{padding:10px 0}}
+@media (max-height:740px){.sheet .g-k+.sub,.sheet .g-k~.sub{font-size:14.5px!important;line-height:1.5!important}}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -2446,7 +2447,7 @@ function _ownerLink(){if(_freshLink())return;try{const m=(location.hash||'').mat
 // technique library (tap to learn), and K's line for today on the hub.
 // Sources: Kian's book draft, TM Companion's K prompts, the positioning doc.
 // ═══════════════════════════════════════════════════════════════════════════
-const K_VOICE=`You are K, Kian How's voice as a communication coach. Kian is a creative entrepreneur with more than twenty years across music, creative work, coaching and business, in-house and freelance (his projects include Dishonored, Genshin Impact, Wolf Warrior), and years of coaching speakers. K coaches the way Kian does: firm with the diagnosis, warm with the delivery, direct, a little playful, never preachy. Always make them want to go again. Find what genuinely worked before coaching anything. Teach the idea, not a formula: one principle plus one line to say, never a script to memorize.
+const K_VOICE=`You are K, Kian How's voice as a communication coach. Kian makes work, builds tools and guides people: more than twenty years across music, film, games, photography, education and public speaking, in-house, freelance and his own ventures (his projects include Dishonored, Genshin Impact, Wolf Warrior), and years of mentoring people on portfolios, careers, interviews and communication. He doesn't describe himself by one job title; never call him "a composer" or "a musician". K coaches the way Kian does: firm with the diagnosis, warm with the delivery, direct, a little playful, never preachy. Always make them want to go again. Find what genuinely worked before coaching anything. Teach the idea, not a formula: one principle plus one line to say, never a script to memorize.
 
 HOW KIAN TALKS (write like this, not like an assistant):
 - Plain, blunt, practical. He says the thing, then the reason. "The reason is very simple." "Think about this." "In my experience…" "Looking back…"
@@ -4050,7 +4051,7 @@ function _proRow(c,icon,t,s){return '<div><i class="'+c+'">'+ic(icon,'s')+'</i><
 function renderPro(app){
   const q=V.proPlan!=='m';
   let h='<main class="scr pro-pg">'+gBar('Ground Pro',V._proBack||'hub');
-  h+='<div class="pro-hero"><img src="'+ART+'kpose/thumb.webp" alt=""><div class="t"><small>PRO</small><h1>'+(_isPro()?'You’re on Pro.':'Practice built around your life.')+'</h1><p>'+(_isPro()?_proDaysLeft()+' days left, ends '+escHtml(_proEndsLabel())+'. A new code extends it.':'Coached by Kian How. 20 years across games, film and music.')+'</p></div></div>';
+  h+='<div class="pro-hero"><img src="'+ART+'kpose/thumb.webp" alt=""><div class="t"><small>PRO</small><h1>'+(_isPro()?'You’re on Pro.':'Practice built around your life.')+'</h1><p>'+(_isPro()?_proDaysLeft()+' days left, ends '+escHtml(_proEndsLabel())+'. A new code extends it.':'Coached by Kian How. 20+ years making work, building products and guiding people.')+'</p></div></div>';
   h+='<div class="pro-list pro-3">'+
     _proRow('p-teal','talk','Scenes set in your world','Your field, your people, your numbers. Practice the conversation you’re actually about to have.')+
     _proRow('p-lav','check','Every note from K','Five practices a day, what to say instead, and the moves you used.')+
@@ -4584,8 +4585,8 @@ function workMailto(topic){
 function workCardHtml(topic){return '<a class="work-card" href="'+escHtml(workMailto(topic))+'"><span class="wk-av">'+kav()+'</span><span><b>'+(topic?'Work on this with Kian':'Work with Kian')+'</b><small>Coaching and workshops. Send him an email.</small></span>'+ic('arrowne','s')+'</a>';}
 function openWhoIsK(){
   openSheet('<div class="g-k" style="align-items:center">'+kav('l')+'<div><div class="kick" style="margin:0">Who is K?</div><div class="g-h" style="font-size:24px;margin-top:2px">Your coach in Ground</div></div></div>'+
-    '<p class="sub" style="font-size:15.5px;line-height:1.55;color:var(--ink)">K is modeled on <b>Kian How</b>, a creative entrepreneur with more than twenty years across music, creative work, coaching and business: in-house, freelance and his own ventures.</p>'+
-    '<p class="sub" style="font-size:15.5px;line-height:1.55;color:var(--ink)">That means a lot of the conversations most people dread: pricing his work, being pushed for discounts, pitching, managing clients and teams, and coaching others through the same.</p>'+
+    '<p class="sub" style="font-size:15.5px;line-height:1.55;color:var(--ink)">K is modeled on <b>Kian How</b>. He makes work, builds tools and guides people: twenty-plus years across music, film, games, photography, education and public speaking. One job title never explained him well. Ground is one of the tools.</p>'+
+    '<p class="sub" style="font-size:15.5px;line-height:1.55;color:var(--ink)">So he’s had most of the conversations people dread: pricing his work, being pushed for discounts, pitching, and managing clients and teams.</p>'+
     '<p class="sub" style="font-size:15.5px;line-height:1.55;color:var(--ink)">K coaches the way Kian does: honest about what isn’t working, warm about how to fix it, and always with one thing you can say next time.</p>'+
     workCardHtml('')+
     '<button class="g-cta" data-close>Got it<span class="ar">'+ic('check','s')+'</span></button>');
