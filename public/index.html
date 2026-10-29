@@ -1844,6 +1844,11 @@ html[data-theme="dark"] .vn-aim b{color:#7FE0E0}
 .pro-list.pro-3 .pro-rt>span{font-size:14.5px;line-height:1.4}
 @media (max-height:740px){.pro-list.pro-3 .pro-rt>span{display:block;font-size:13.5px}.pro-list.pro-3>div{padding:10px 0}}
 @media (max-height:740px){.sheet .g-k+.sub,.sheet .g-k~.sub{font-size:14.5px!important;line-height:1.5!important}}
+/* tour: K and the text box first, then the featured part fades in */
+main.hub.tour-mini.tour-wait{opacity:0!important;transition:opacity .25s ease!important}
+main.hub.tour-mini{transition:transform .55s cubic-bezier(.3,1,.4,1),box-shadow .4s,opacity .5s ease}
+.aim-h p,.pw-k p{text-wrap:balance}
+.aim-h img,.pw-k img{aspect-ratio:480/540;object-fit:contain}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -2218,6 +2223,8 @@ function boot(){
   if(typeof _syInit==='function')_syInit();
   if(typeof _ownerLink==='function')_ownerLink();
   if(typeof planSync==='function'&&S.onboarded)setTimeout(planSync,1500);
+  // Warm the K poses the sheets use, so K is there the moment a sheet opens
+  setTimeout(()=>{try{['think','shrug','cheer','wait','invite','thumb'].forEach(k=>{const im=new Image();im.src=(typeof ART!=='undefined'?ART:'art/')+'kpose/'+k+'.webp';});}catch(e){}},1200);
   const h=(location.hash||'').replace('#','');
   if(h==='owner'||/^owner=/.test(h))V.view='owner';
   else if(VIEW_FOR_HASH[h])V.view=VIEW_FOR_HASH[h];
@@ -4382,7 +4389,13 @@ function hubTour(i){
   const nx=t.querySelector('.tour-next');nx.textContent=last?'Got it':i===0?'Show me':'Next';nx.onclick=()=>{if(last)_tourEnd(t,m);else hubTour(i+1);};
   const k=t.querySelector('.tour-k'),bub=t.querySelector('.tour-bub');k.classList.add('hide');bub.classList.add('hide');
   const W=window.innerWidth,H=window.innerHeight,cw=Math.min(W,parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--app-w'))||430),cl=(W-cw)/2;
+  // K and the text box come first; the featured part fades in after them
+  const first=!m.classList.contains('tour-wait')&&!t._started;t._started=true;
+  m.classList.add('tour-wait');
+  clearTimeout(t._tw);clearTimeout(t._tw2);
+  t._tw=setTimeout(()=>{
   // Lift the part out: measure it in the real hub, then move and scale the whole hub so the part lands centre stage
+  const keepT=m.style.transition;m.style.transition='none';
   if(el){
     const keep=m.style.transition;m.style.transition='none';const tf=m.style.transform;m.style.transform='none';m.classList.remove('tour-mini');
     const M=m.getBoundingClientRect(),R=el.getBoundingClientRect();m.classList.add('tour-mini');m.style.transform=tf;void m.offsetWidth;m.style.transition=keep;
@@ -4392,7 +4405,8 @@ function hubTour(i){
     m.classList.add('tour-iso');m.style.transformOrigin='0 0';m.style.transform='translate('+(Dx-M.left-sc*cx)+'px,'+(Dy-M.top-sc*cy)+'px) scale('+sc+')';
     _tourIsolate(m,el);
   }else{m.classList.remove('tour-iso');m.style.transform='';m.style.transformOrigin='';_tourIsolate(m,null);}
-  setTimeout(()=>{
+  void m.offsetWidth;m.style.transition=keepT;
+  {
     const r=el?el.getBoundingClientRect():m.getBoundingClientRect();
     k.src=(typeof ART!=='undefined'?ART:'art/')+'kpose/'+st.pose+'.webp';bub.querySelector('b').textContent=st.t;bub.querySelector('p').textContent=st.b;
     const kw=Math.min(150,cw*.38),kh=kw*540/480;let kx,ky;
@@ -4410,9 +4424,10 @@ function hubTour(i){
     else by=Math.max(r.bottom,ky+kh)+14;
     by=Math.max(70,Math.min(by,H-(bub.offsetHeight||bh)-100));
     Object.assign(bub.style,{left:bx+'px',top:by+'px'});
-    const pre=t._img&&t._img[st.pose];const show=()=>{k.classList.remove('hide');bub.classList.remove('hide');};
+    const pre=t._img&&t._img[st.pose];const show=()=>{k.classList.remove('hide');bub.classList.remove('hide');t._tw2=setTimeout(()=>m.classList.remove('tour-wait'),first?700:520);};
     (pre&&pre.decode?pre.decode():Promise.resolve()).then(()=>k.decode?k.decode():0).catch(()=>{}).then(show);
-  },i===0?650:560);
+  }
+  },first?60:280);
 }
 // ═══════════════════════════════════════════════════════════════════════════
 // Onboarding (3 steps, skippable) · Settings · codes · monthly limit sheet ·
@@ -5415,7 +5430,7 @@ const RW_AIMS={
 function _rwAims(){return RW_AIMS[_rwGoalOf(RW.scenario).k]||RW_AIMS.client;}
 function openAimSheet(go){
   const o=_rwAims();
-  openSheet('<div class="aim-h"><img src="'+ART+'kpose/think.webp" alt=""><div><h2>What are you going for?</h2><p>So I judge it against your aim, not mine.</p></div></div><div class="aim-opts">'+o.map((x,i)=>'<button class="aim-opt '+['p-teal','p-pink','p-lav'][i]+'" data-aim="'+i+'"><i>'+ic(x[0],'s')+'</i><span><b>'+escHtml(x[1])+'</b><span>'+escHtml(x[2])+'</span></span></button>').join('')+'</div><button class="aim-ns" data-aim="-1">Not sure. Just start</button>',
+  openSheet('<div class="aim-h"><img src="'+ART+'kpose/think.webp" alt="" onerror="this.remove()"><div><h2>What are you going for?</h2><p>So I judge it against your aim, not mine.</p></div></div><div class="aim-opts">'+o.map((x,i)=>'<button class="aim-opt '+['p-teal','p-pink','p-lav'][i]+'" data-aim="'+i+'"><i>'+ic(x[0],'s')+'</i><span><b>'+escHtml(x[1])+'</b><span>'+escHtml(x[2])+'</span></span></button>').join('')+'</div><button class="aim-ns" data-aim="-1">Not sure. Just start</button>',
     {wire:sh=>{sh.querySelectorAll('[data-aim]').forEach(b=>b.addEventListener('click',()=>{const i=+b.dataset.aim;RW.aim=i>=0?o[i][1]:'';closeSheet();go();}));}});
 }
 const RW_ROLE={interview:'The interviewer',pitch:'Your listener',intro:'The person you meet',smalltalk:'The other person',meeting:'A colleague',tough:'The person asking',disagree:'Your manager',conflict:'Your teammate',feedback:'The person you’re giving feedback to',sayno:'The person asking',proposal:'The client',bargain:'The client',ground:'The client',difficult:'The client'};
