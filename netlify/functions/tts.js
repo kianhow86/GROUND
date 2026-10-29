@@ -14,7 +14,7 @@ const VOICES = ["alloy", "ash", "ballad", "coral", "echo", "fable", "nova", "ony
 exports.handler = async (event) => {
   try { if (typeof connectLambda === "function") connectLambda(event); } catch (e) {}
   const origin = event.headers["origin"] || "";
-  const allowed = ["https://ground.kianhow.com", "https://groundbykianhow.netlify.app", "http://localhost:8888", "http://localhost:3000"];
+  const allowed = ["https://groundbykian.netlify.app", "https://ground.kianhow.com", "https://groundbykianhow.netlify.app", "http://localhost:8888", "http://localhost:3000"];
   const h = { "Access-Control-Allow-Origin": allowed.includes(origin) ? origin : allowed[0], "Access-Control-Allow-Headers": "Content-Type, X-Client-Token, X-Owner-Key", "Access-Control-Allow-Methods": "POST, OPTIONS" };
   const json = (code, o) => ({ statusCode: code, headers: { ...h, "content-type": "application/json" }, body: JSON.stringify(o) });
   if (event.httpMethod === "OPTIONS") return { statusCode: 204, headers: h, body: "" };

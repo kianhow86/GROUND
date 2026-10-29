@@ -1838,6 +1838,11 @@ html[data-theme="light"] .lock-over{background:linear-gradient(180deg,rgba(245,2
 html[data-theme="dark"] .vn-aim b{color:#7FE0E0}
 @media (prefers-color-scheme:dark){html:not([data-theme="light"]) .vn-aim b{color:#7FE0E0}}
 @media (max-height:740px){.aim-h img{width:66px}.aim-opt{min-height:52px;padding:8px 14px}.aim-opt span span{display:none}}
+.pro-list.pro-3>div{padding:14px 0;align-items:center}
+.pro-list.pro-3 i{width:38px;height:38px;border-radius:11px}
+.pro-list.pro-3 b{font-size:17px;margin-bottom:3px}
+.pro-list.pro-3 .pro-rt>span{font-size:14.5px;line-height:1.4}
+@media (max-height:740px){.pro-list.pro-3 .pro-rt>span{display:block;font-size:13.5px}.pro-list.pro-3>div{padding:10px 0}}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -4046,13 +4051,10 @@ function renderPro(app){
   const q=V.proPlan!=='m';
   let h='<main class="scr pro-pg">'+gBar('Ground Pro',V._proBack||'hub');
   h+='<div class="pro-hero"><img src="'+ART+'kpose/thumb.webp" alt=""><div class="t"><small>PRO</small><h1>'+(_isPro()?'You’re on Pro.':'Practice built around your life.')+'</h1><p>'+(_isPro()?_proDaysLeft()+' days left, ends '+escHtml(_proEndsLabel())+'. A new code extends it.':'Coached by Kian How. 20 years across games, film and music.')+'</p></div></div>';
-  h+='<div class="pro-list">'+
-    _proRow('p-teal','talk','Scenes set in your world','Your field, your people, your numbers')+
-    _proRow('p-lav','check','5 practices a day','Plus every note from K, and your moves')+
-    _proRow('p-pink','mic','Characters talk back','They say their lines out loud')+
-    _proRow('p-org','reply','Ask K and Help me reply','For the real conversation tomorrow')+
-    _proRow('p-yellow','pitch','Pitch it','Build it, run it, face the room')+
-    _proRow('p-blue','list','Notes that track you','K tells you how you’re changing')+'</div>';
+  h+='<div class="pro-list pro-3">'+
+    _proRow('p-teal','talk','Scenes set in your world','Your field, your people, your numbers. Practice the conversation you’re actually about to have.')+
+    _proRow('p-lav','check','Every note from K','Five practices a day, what to say instead, and the moves you used.')+
+    _proRow('p-org','reply','K, before the real thing','Ask K what to do, or get help replying to the message in front of you.')+'</div>';
   h+='<div class="up-plans"><button class="up-plan'+(q?'':' on')+'" data-plan="m"><b>'+PRO_PRICE.m+'</b><span>30 days</span></button><button class="up-plan'+(q?' on':'')+'" data-plan="q"><small>BEST VALUE</small><b>'+PRO_PRICE.q+'</b><span>90 days · '+PRO_PRICE.qPerMo+'/mo</span></button></div>';
   h+='<div class="pw-btns"><button class="pw-btn pp" data-act="pay-pp">PayPal</button><button class="pw-btn wx" data-act="pay-wx">WeChat Pay</button></div>';
   h+='<div class="pw-fine">One payment, no auto-renew. Have a code? <button class="link" data-act="pro-code">Enter it</button></div>';
@@ -4116,7 +4118,7 @@ function openPlanSheet(kind,extra){
     h='<div class="pw-k">'+pose('wait')+'<div><h2>Free practice is full this month.</h2><p>So many people practised that the free spots ran out. They open again on '+escHtml(_nextMonthLabel())+'.</p></div></div>'+passCard+
       '<button class="pw-btn gold" data-act="see-pro">See Ground Pro</button>';
   }else{ // pro-only feature
-    const F={reply:['Help me reply is in Pro.','K drafts the message for the real conversation.'],askk:['Ask K is in Pro.','Describe what’s coming up and K takes you to the right tool.'],pitch:['Pitch it is in Pro.','Build it, run it, face the room.'],library:['The Toolkit is in Pro.','Every move, and K checks when you use one.'],notebook:['The notebook is in Pro.','K keeps notes on how you’re changing.'],surprise:['Surprise me is in Pro.','K writes a brand-new scene each time.'],cast:['People is in Pro.','The cast in your world.'],voice:['Voices are in Pro.','The other side says their lines out loud.']}[kind]||['That’s in Pro.',''];
+    const F={reply:['Help me reply is in Pro.','K drafts the message for the real conversation.'],askk:['Ask K is in Pro.','Describe what’s coming up and K takes you to the right tool.'],pitch:['Pitch it is in Pro.','Build it, run it, then take the room’s questions.'],library:['The Toolkit is in Pro.','Every move, and K checks when you use one.'],notebook:['The notebook is in Pro.','K keeps notes on how you’re changing.'],surprise:['Surprise me is in Pro.','K writes a brand-new scene each time.'],cast:['People is in Pro.','The cast in your world.'],voice:['That’s in Pro.','']}[kind]||['That’s in Pro.',''];
     h='<div class="pw-k">'+pose('invite')+'<div><h2>'+F[0]+'</h2><p>'+F[1]+'</p></div></div>'+passCard+
       '<button class="pw-btn gold" data-act="see-pro">See Ground Pro</button><button class="btn btn-sec" data-close>Not now</button>';
   }
@@ -4490,7 +4492,7 @@ function renderOwner(app){
   const tab=V.ownTab||'all',codes=V._ownCodes||[];
   const n=x=>codes.filter(c=>x==='all'||(x==='unused'?c.status==='unused':c.status!=='unused')).length;
   h+='<div class="card stack" style="gap:12px"><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">'+
-     '<div class="fieldset"><label class="lab" for="ow-s">Pro days</label><select class="inp" id="ow-s"><option value="30">30 · $15</option><option value="90" selected>90 · $36</option><option value="7">7 · trial</option><option value="365">365 · a year</option></select></div>'+
+     '<div class="fieldset"><label class="lab" for="ow-s">Pro days</label><select class="inp" id="ow-s"><option value="30">30 days</option><option value="90" selected>90 days</option><option value="7">7 days</option><option value="365">1 year</option></select></div>'+
      '<div class="fieldset"><label class="lab" for="ow-n">How many</label><input class="inp" id="ow-n" type="number" inputmode="numeric" value="5"></div>'+
      '<div class="fieldset"><label class="lab" for="ow-e">Ends after</label><input class="inp" id="ow-e" type="number" inputmode="numeric" value="30" placeholder="days"></div></div>'+
      '<button class="btn btn-pri" data-act="make"'+(V._ownBusy?' disabled':'')+'>'+(V._ownBusy==='make'?'Making…':'Make codes')+'</button>'+(V._ownErr?'<div class="note err">'+ic('warn','s')+'<div>'+escHtml(V._ownErr)+'</div></div>':'')+'</div>';
@@ -4684,6 +4686,7 @@ function renderSettings(app){
   const u=_usage(),th=(window.__themePref?window.__themePref():'system'),done=_profileDone();
   let h='<main class="scr" style="--gap:12px"><div class="bar"><button class="ibtn r" data-go="hub" aria-label="Back">'+ic('back')+'</button><h1 class="h1 xl" style="font-size:30px">Settings</h1></div>';
   h+=_stRow('coaching',ic('quick'),'#C2457A','Coaching',[_coachLang().id==='auto'?'Auto':_coachLang().label,_nbOn()?'Remembers past sessions':'Memory off',S.aiConfig&&S.aiConfig.enabled?'AI on':'AI off'].join(' · '));
+  if(S.aiConfig&&S.aiConfig.ownerKey)h+='<button class="st-row" data-go="owner"><span class="st-ic" style="--c:#B8921A">'+ic('lock')+'</span><span class="st-t"><b>Codes</b><span>Make Pro codes for customers</span></span>'+ic('chev','s chev')+'</button>';
   h+=_stRow('usage',ic('clock'),'#0E8C8C',(typeof PLAN_ON!=='undefined'&&PLAN_ON)?'Plan & codes':'Usage & codes',(typeof PLAN_ON!=='undefined'&&PLAN_ON)?((S.aiConfig&&S.aiConfig.ownerKey)?'Owner · no limits':_isPro()?'Ground Pro · '+_proDaysLeft()+' days left':'Ground Lite · free'):PAYWALL_ON?S.credits+' sessions left':'This month: '+u.sessions+' sessions · replies today: '+u.replies);
   h+=_stRow('look',ic('settings'),'#1F7FA8','Appearance',{light:'Light',dark:'Dark',system:'Same as phone'}[th]||'Same as phone');
   h+=_stRow('sync',ic('sync'),'#2E7D4F','Sync',_syStatus().on?_syStatus().line:'Use your notebook on your phone and computer');

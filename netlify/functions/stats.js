@@ -8,7 +8,7 @@ const { getStore, connectLambda } = require("@netlify/blobs");
 exports.handler = async (event) => {
   try { if (typeof connectLambda === "function") connectLambda(event); } catch (e) {}
   const origin = event.headers["origin"] || "";
-  const allowed = ["https://ground.kianhow.com", "https://groundbykianhow.netlify.app", "http://localhost:8888", "http://localhost:3000"];
+  const allowed = ["https://groundbykian.netlify.app", "https://ground.kianhow.com", "https://groundbykianhow.netlify.app", "http://localhost:8888", "http://localhost:3000"];
   const h = { "Access-Control-Allow-Origin": allowed.includes(origin) ? origin : allowed[0], "Access-Control-Allow-Headers": "Content-Type, X-Owner-Key", "Access-Control-Allow-Methods": "GET, POST, OPTIONS", "content-type": "application/json" };
   if (event.httpMethod === "OPTIONS") return { statusCode: 204, headers: h, body: "" };
   const month = (d) => d.toISOString().slice(0, 7);

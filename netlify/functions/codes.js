@@ -11,7 +11,7 @@ const plan = require("../lib/plan");
 const ALPH = "ABCDEFGHJKMNPQRSTVWXYZ23456789"; // no 0/O, 1/I/L, U
 function mint() { let s = ""; for (let i = 0; i < 6; i++) s += ALPH[Math.floor(Math.random() * ALPH.length)]; return "GRD-" + s.slice(0, 4) + "-" + s.slice(4); }
 function cors(origin) {
-  const allowed = ["https://ground.kianhow.com", "https://groundbykianhow.netlify.app", "http://localhost:8888", "http://localhost:3000"];
+  const allowed = ["https://groundbykian.netlify.app", "https://ground.kianhow.com", "https://groundbykianhow.netlify.app", "http://localhost:8888", "http://localhost:3000"];
   return {
     "Access-Control-Allow-Origin": allowed.includes(origin) ? origin : allowed[0],
     "Access-Control-Allow-Headers": "Content-Type, X-Client-Token, X-Owner-Key",

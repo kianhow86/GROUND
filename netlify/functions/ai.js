@@ -109,6 +109,7 @@ exports.handler = async (event) => {
   // CORS — allow requests from your Netlify domain + localhost dev
   const origin = event.headers["origin"] || "";
   const allowedOrigins = [
+    "https://groundbykian.netlify.app",
     "https://ground.kianhow.com",
     "https://groundbykianhow.netlify.app",
     "http://localhost:8888",
