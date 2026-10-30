@@ -1882,6 +1882,67 @@ img,[style*="background-image"]{transition:opacity .28s ease}
 .rw-tiles .lib-scene::before{content:"";position:absolute;inset:0;background:rgba(11,12,16,.51);pointer-events:none;z-index:0}
 .rw-tiles .lib-scene>b,.rw-tiles .lib-scene>.pro-tag{z-index:1}
 .rw-tiles .rw-surprise-scene::before{background:linear-gradient(90deg,rgba(10,8,18,.78) 0%,rgba(10,8,18,.45) 42%,transparent 62%),rgba(11,12,16,.51)}
+/* ═══ The brief: who you're talking to, on their scene ═══ */
+.bf-bar{gap:12px}
+.bf-bar .bf-tt{display:flex;flex-direction:column;gap:5px;min-width:0;flex:1}
+.bf-bar .bf-tt h1{margin:0;font-size:22px;line-height:1.1}
+.lvp{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:12px;font-weight:800;color:var(--ink);white-space:nowrap}
+.lvp i{display:flex;gap:3px}.lvp i b{width:6px;height:6px;border-radius:50%;background:var(--line)}.lvp i b.on{background:#7FE0E0}
+.bf-bulb{width:44px;height:44px;border-radius:50%;border:0;background:#F2CE6B;color:#2A1E00;display:grid;place-items:center;flex-shrink:0;box-shadow:0 0 16px rgba(242,206,107,.35)}
+.bf-bulb .ic{width:20px;height:20px}
+.bf-card{position:relative;flex:0 0 auto;height:min(42vh,370px);border-radius:26px;overflow:hidden;background-size:cover;background-position:center;isolation:isolate;color:#fff}
+.bf-card:before{content:"";position:absolute;inset:0;background:rgba(11,12,16,.55);z-index:-1}
+.bf-card:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,12,16,.55) 0%,rgba(11,12,16,0) 30%,rgba(11,12,16,0) 55%,rgba(11,12,16,.92) 86%);z-index:-1}
+.bf-pic{position:absolute;right:2%;bottom:96px;height:calc(100% - 110px);width:auto;max-width:62%;object-fit:contain;object-position:bottom;filter:drop-shadow(0 12px 18px rgba(0,0,0,.5))}
+.bf-card:not(:has(.bf-bot)) .bf-pic{bottom:0;height:88%}
+.bf-who{position:absolute;left:18px;top:18px;max-width:46%}
+.bf-who small{font-size:11px;font-weight:900;letter-spacing:.12em;color:#7FE0E0;text-transform:uppercase}
+.bf-who h2{margin:4px 0 0;font-size:30px;font-weight:900;letter-spacing:-.02em;line-height:1;color:#fff}
+.bf-who span{display:block;font-size:14px;color:rgba(255,255,255,.75);margin-top:5px;line-height:1.3}
+.bf-bot{position:absolute;left:0;right:0;bottom:0;padding:0 18px 16px;display:flex;flex-direction:column;gap:10px}
+.bf-nums{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bf-nums div{border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:8px 12px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.bf-nums b{display:block;font-size:10.5px;font-weight:900;letter-spacing:.1em;color:rgba(255,255,255,.6);text-transform:uppercase}
+.bf-nums span{display:block;font-size:20px;font-weight:900;margin-top:1px;color:#fff}
+.bf-pos{font-size:14px;font-weight:700;color:#fff}
+.bf-sec{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13.5px;font-weight:700;color:rgba(255,255,255,.82)}
+.bf-sec .ic{width:15px;height:15px;color:#C4AEFF}
+.bf-txt{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.bf-txt small{display:block;font-size:11px;font-weight:900;letter-spacing:.12em;color:var(--ink-3);margin-bottom:8px;text-transform:uppercase}
+.bf-txt p{margin:0;font-size:clamp(15px,2.55vh,22px);font-weight:700;line-height:1.4}
+.bf-txt em{display:block;margin-top:10px;font-size:clamp(13.5px,1.9vh,16px);color:var(--ink-2)}
+.bf-txt .sting{background:none;color:inherit;box-shadow:inset 0 -.42em 0 rgba(127,224,224,.35)}
+.bf-note{margin-top:10px;padding:10px 12px;border-radius:14px;background:var(--card);border:1px solid var(--line);font-size:14px;line-height:1.4}
+.bf-note b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:2px}
+main.scr:has(.bf-card){gap:14px}
+main.scr:has(.bf-card) .g-mode,main.scr:has(.bf-card) .g-cta{flex-shrink:0}
+main.scr:has(.bf-card) .g-cta{background:#7FE0E0;color:#06201F}
+main.scr:has(.bf-card) .g-cta .ar{background:#06201F;color:#7FE0E0}
+.g-mode button .ic{width:15px;height:15px;margin-right:6px;vertical-align:-2px}
+@media (max-height:740px){.bf-card{height:41vh}.bf-who h2{font-size:25px}.bf-nums span{font-size:17px}.bf-nums div{padding:6px 10px}.bf-pic{bottom:88px;height:calc(100% - 96px)}.bf-bot{gap:8px;padding-bottom:12px}.bf-txt em{display:none}main.scr:has(.bf-card){gap:10px}}
+/* tips sheet */
+.tips-h{display:flex;gap:14px;align-items:flex-end}
+.tips-h img{width:80px;height:auto;flex-shrink:0;margin-bottom:-4px;aspect-ratio:480/540;object-fit:contain}
+.tips-h h2{font-size:22px;font-weight:900;letter-spacing:-.02em;margin:0 0 4px;line-height:1.15}
+.tips-h p{margin:0;font-size:14.5px;color:var(--ink-2);line-height:1.4;text-wrap:balance}
+.tips{border-radius:20px;background:var(--bg);border:1px solid var(--line);padding:4px 16px}
+.tips>div{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);font-size:16px;font-weight:700;line-height:1.38}
+.tips>div:last-child{border-bottom:0}
+.tips>div>b{width:52px;flex-shrink:0;font-size:11.5px;letter-spacing:.1em;margin-top:3px;text-transform:uppercase}
+.tips b.do{color:#4FB86B}.tips b.dont{color:#E06A9A}
+html[data-theme="dark"] .tips b.do{color:#9BE36D}html[data-theme="dark"] .tips b.dont{color:#F4A6C8}
+.tips-mv .g-kick{display:flex;justify-content:space-between;margin-bottom:8px}.tips-mv .g-kick span{font-size:12px;font-weight:700;letter-spacing:0;text-transform:none;color:var(--ink-3)}
+/* level up on the result */
+.vn-lv{align-items:center}
+.vn-lv .lvn{width:44px;height:44px;border-radius:12px;background:#7FE0E0;color:#06201F;display:grid;place-items:center;font-weight:900;font-size:20px;flex-shrink:0}
+/* Toolkit: moves not yet yours */
+.tk-list button.unlearned{opacity:.55}
+.tk-list button.unlearned .tk-ico{filter:grayscale(.6)}
+/* Hub: day one points at Practice; new tools get a dot */
+.dk-tools.day1 button:not(.glow){opacity:.45}
+.dk-tools button{position:relative}
+.dk-tools .newdot:after{content:"";position:absolute;top:8px;right:10px;width:9px;height:9px;border-radius:50%;background:#FF6B6B;box-shadow:0 0 0 2px var(--bg)}
+.bf-who h2.long{font-size:22px;line-height:1.1}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -2490,7 +2551,7 @@ async function ownerCodes(method,body){
 // Test link: …/#fresh turns this phone into a brand-new free user (owner mode off, no Pro, new device id,
 // today's counts and the taster reset, intro shown again). The notebook is kept.
 function _freshLink(){try{if(!/^#fresh$/.test(location.hash||''))return false;history.replaceState(null,'',location.pathname+location.search);
-  S.aiConfig=S.aiConfig||{};delete S.aiConfig.ownerKey;delete S.pro;delete S.tasterAt;delete S.tasterOn;delete S.tasterPick;
+  S.aiConfig=S.aiConfig||{};delete S.aiConfig.ownerKey;delete S.pro;delete S.tasterAt;delete S.tasterOn;delete S.tasterPick;delete S.seenTools;delete S.hubDots;delete S.levels;
   const u=S.usage||{};delete u.pday;u.pr=0;u.quick=0;S.onboarded=false;S.tourDone=false;
   try{localStorage.removeItem('grd-client-token');}catch(e){}
   save();setTimeout(()=>{try{showToast('Fresh start: you’re a new free user on this phone');}catch(e){}},900);return true;}catch(e){return false;}}
@@ -3807,7 +3868,7 @@ function renderLibrary(app){
     h+='<div class="rw-nav"><div class="rw-sdots"><i class="on"></i><i></i><i></i></div><button class="rw-next" data-act="rw-next">Next'+ic('arrow','s')+'</button></div>';
   }else if(fam){
     h='<main class="scr tk-scr">'+gBar('Toolkit','tk-back');
-    h+='<div class="rw-sec '+fam.p+'"><div class="rw-sech"><b>'+escHtml(fam.t)+'</b><span>'+movesCount(fam.tools)+' of '+fam.tools.length+' learned</span><div class="tk-prog">'+fam.tools.map(t=>'<i'+(moveLearned(t)?' class="on"':'')+'></i>').join('')+'</div></div><div class="rw-secl tk-list">'+fam.tools.map(t=>{const x=TECHNIQUES[t];const ico=(typeof TOOL_ICON!=='undefined'&&TOOL_ICON[t])?'<img class="tk-ico" src="'+TOOL_ICON[t]+'" alt="">':'';const L=moveLearned(t);return x?'<button data-tool="'+t+'" class="'+(ico?'has-ico':'')+(L?' learned':' unlearned')+'">'+ico+'<span><b>'+escHtml(x.title)+'</b><small>'+(L?escHtml(x.tag||x.sum):'Learn it in: '+escHtml(moveLearnIn(t)))+'</small></span>'+ic('arrow','s')+'</button>':'';}).join('')+'</div></div>';
+    h+='<div class="rw-sec '+fam.p+'"><div class="rw-sech"><b>'+escHtml(fam.t)+'</b><span>'+movesCount(fam.tools)+' of '+fam.tools.length+' learned</span><div class="tk-prog">'+fam.tools.map(t=>'<i'+(moveLearned(t)?' class="on"':'')+'></i>').join('')+'</div></div><div class="rw-secl tk-list">'+fam.tools.map(t=>{const x=TECHNIQUES[t];const ico=(typeof TOOL_ICON!=='undefined'&&TOOL_ICON[t])?'<img class="tk-ico" src="'+TOOL_ICON[t]+'" alt="">':'';const L=moveLearned(t);return x?'<button data-tool="'+t+'" class="'+(ico?'has-ico':'')+(L?' learned':' unlearned')+'">'+ico+'<span><b>'+escHtml(x.title)+'</b><small>'+(L?escHtml(x.tag||x.sum):'Not yours yet. Use it in a practice.')+'</small></span>'+ic('arrow','s')+'</button>':'';}).join('')+'</div></div>';
   }else{
     h='<main class="scr tk-scr">'+gBar('Toolkit','hub');
     h+='<div class="tk-bands">'+TK_FAM.map((f,i)=>'<button class="tk-band '+f.p+'" data-fam="'+f.k+'"><span><small>0'+(i+1)+' · '+movesCount(f.tools)+' of '+f.tools.length+' learned</small><b>'+escHtml(f.t)+'</b></span>'+ic('arrow')+'</button>').join('')+'</div>';
@@ -4352,10 +4413,11 @@ function renderHub(app){
   h+='<div class="top"><div class="wm"><b>Ground</b><i></i><small>by Kian How</small>'+(typeof _tierBadge==='function'?_tierBadge():'')+'</div><div class="ibtns"><button class="ibtn ib-set" data-go="settings" aria-label="Settings">'+ic('settings')+'</button></div></div>';
   h+='<div class="dk-stack" id="dk-deck"></div>';
   if(typeof _isLite==='function'&&_isLite())h+='<div class="dk-tools three"><button class="glow" data-go="real"><i class="p-teal">'+ic('talk','s')+'</i>Practice</button><button data-go="quick"><i class="p-lav">'+ic('mic','s')+'</i>Quick answer</button><button class="gopro" data-act="gopro"><i>'+ic('arrow','s')+'</i>Get Pro</button></div>';
-  else h+='<div class="dk-tools"><button class="askk" data-act="askk"><i class="k">'+kav()+'</i>'+(V.deskBusy?'Reading…':'Ask K')+'</button><button data-go="real"><i class="p-teal">'+ic('talk','s')+'</i>Practice</button><button data-go="library"><i class="p-green">'+ic('book','s')+'</i>Toolkit</button><button data-go="notebook"><i class="p-yellow">'+ic('list','s')+'</i>Notes</button></div>';
+  else{const d1=_hubDay1();if(d1&&!S.hubDots){S.hubDots=1;S.seenTools={};save();}const nd=k=>!d1&&_hubNew(k)?' newdot':'';h+='<div class="dk-tools'+(d1?' day1':'')+'"><button class="askk'+nd('askk')+'" data-act="askk"><i class="k">'+kav()+'</i>'+(V.deskBusy?'Reading…':'Ask K')+'</button><button data-go="real"'+(d1?' class="glow"':'')+'><i class="p-teal">'+ic('talk','s')+'</i>Practice</button><button data-go="library" class="'+nd('library')+'"><i class="p-green">'+ic('book','s')+'</i>Toolkit</button><button data-go="notebook" class="'+nd('notebook')+'"><i class="p-yellow">'+ic('list','s')+'</i>Notes</button></div>';}
   h+='</main>';
   app.innerHTML=h;
-  {const ak=app.querySelector('[data-act="askk"]');if(ak)ak.addEventListener('click',()=>{if(!V.deskBusy)openAskK();});const gp=app.querySelector('[data-act="gopro"]');if(gp)gp.addEventListener('click',()=>openPro('hub'));}
+  app.querySelectorAll('.dk-tools [data-go]').forEach(b=>b.addEventListener('click',()=>_hubSeen(b.dataset.go),{capture:true}));
+  {const ak=app.querySelector('[data-act="askk"]');if(ak)ak.addEventListener('click',()=>{_hubSeen('askk');if(!V.deskBusy)openAskK();});const gp=app.querySelector('[data-act="gopro"]');if(gp)gp.addEventListener('click',()=>openPro('hub'));}
   _deckWire(app.querySelector('#dk-deck'));
   _kTakeRefresh();
   if(S.onboarded&&!S.tourDone)setTimeout(()=>{if(V.view==='hub'&&!document.getElementById('sheet')&&!document.querySelector('.tour'))hubTour(0);},350);
@@ -4404,6 +4466,12 @@ function _hubFit(){
 try{let _hf;window.addEventListener('resize',()=>{clearTimeout(_hf);_hf=setTimeout(()=>{if(V.view==='hub')_hubFit();},120);});}catch(e){}
 
 // ── First visit: the hub shrinks into a miniature, K says hello, then lifts out each part on its own ──
+// Day one: Practice first. The other tools get a small dot after the first practice, until opened once.
+function _hubHist(){return !!((S.nb&&Array.isArray(S.nb.entries)&&S.nb.entries.length)||(S.usage&&S.usage.sessions));}
+function _hubDay1(){return !_hubHist();}
+// People who already used Ground before this change have seen everything: no dots for them
+function _hubNew(k){if(!S.seenTools){S.seenTools=S.hubDots?{}:{askk:1,library:1,notebook:1,real:1};S.hubDots=1;save();}return !S.seenTools[k];}
+function _hubSeen(k){S.seenTools=S.seenTools||{};if(!S.seenTools[k]){S.seenTools[k]=1;save();}}
 const HUB_TOUR_LITE=[
   {sel:null,t:'Welcome to your hub',b:'This is home. Three things worth knowing, and you’re ready.',pose:'invite'},
   {sel:'#dk-deck',t:'Your deck',b:'Cards picked for you, fresh every day. Practice one, read one, or pick your answer. Swipe for the next.',pose:'up',fit:.62},
@@ -5474,6 +5542,27 @@ const RW_GOALS=[
   {k:'people',t:'People',items:['smalltalk']}
 ];
 function _rwGoalOf(k){return RW_GOALS.find(g=>g.items.includes(k))||RW_GOALS[0];}
+// ── Levels: each scene has three. Clear one (get what you were going for) to open the next. ──
+const _RW_LV=[['Reasonable','They’re open and fair. They push once, then listen.'],['Pushy','They push harder, know the market rate and use it, and give ground slowly.'],['Tough','They’re short on time, have another option (a rival quote, another candidate) and say so, and only move for a real reason.']];
+function _rwLvKey(){return RW.fromCase&&RW.fromCase.id?'c:'+RW.fromCase.id:'s:'+RW.scenario;}
+function _rwLvMax(){const L=S.levels||{};return Math.min(3,(L[_rwLvKey()]||0)+1);}
+function _rwLevel(){const mx=_rwLvMax();if(!RW.level||RW._lvFor!==_rwLvKey()){RW.level=mx;RW._lvFor=_rwLvKey();}return Math.min(RW.level,mx);}
+function _rwLevelLine(){const lv=_rwLevel();return 'DIFFICULTY, level '+lv+' of 3 ('+_RW_LV[lv-1][0]+'): '+_RW_LV[lv-1][1]+' Stay realistic and polite at every level.\n';}
+// Cleared when they got their aim; with no aim, when it went their way
+function _rwLevelCheck(d){if(!d||RW._lvChecked===RW.transcript)return 0;RW._lvChecked=RW.transcript;
+  const ok=RW.aim?/^\s*yes\b/i.test(String(d.aim||'')):(d.decision==='deal'||d.verdict==='yes');
+  if(!ok)return 0;const k=_rwLvKey(),lv=_rwLevel();S.levels=S.levels||{};if((S.levels[k]||0)>=lv)return 0;S.levels[k]=lv;save();if(lv<3){RW.level=lv+1;return lv+1;}return -1;}
+// Tips behind the bulb: Do and Don't from the case, and the move to try
+const _BULB='<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V17h5v-1.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg>';
+function _rwMoveOpts(){if(typeof _isLite==='function'&&_isLite())return [];const ct=RW.fromCase&&RW.fromCase.tech,fam=ct?_tkFamOf(ct).tools:[];
+  return [ct].concat(Object.keys(_moves()).sort((a,b)=>((fam.includes(b)?1:0)-(fam.includes(a)?1:0))||(_moves()[b].at||'').localeCompare(_moves()[a].at||''))).filter((x,i,a)=>x&&TECHNIQUES[x]&&a.indexOf(x)===i).slice(0,3);}
+function _rwTips(){const fc=RW.fromCase||{},ms=_rwMoveOpts();const doT=fc.principle||RW_AIM[RW.scenario]||'',dont=fc.most||'';if(RW.equip===undefined){const ct=fc.tech;RW.equip=ct&&TECHNIQUES[ct]&&ms.includes(ct)?ct:'';}return {doT,dont,ms,has:!!(doT||dont||ms.length)};}
+function openRwTips(){const t=_rwTips(),nm=_rwName();
+  let h='<div class="tips-h"><img src="'+ART+'kpose/think.webp" alt="" onerror="this.remove()"><div><h2>Before you start</h2><p>'+escHtml(t.doT||t.dont?(/^(The|Your|A|An|Someone)\b/.test(nm)?'What I’d keep in mind here.':'What I’d keep in mind with '+nm+'.'):'Pick a move to try. I’ll check if you used it.')+'</p></div></div>';
+  if(t.doT||t.dont)h+='<div class="tips">'+(t.doT?'<div><b class="do">Do</b><span>'+escHtml(t.doT)+'</span></div>':'')+(t.dont?'<div><b class="dont">Don’t</b><span>'+escHtml(t.dont)+'</span></div>':'')+'</div>';
+  if(t.ms.length)h+='<div class="tips-mv"><div class="g-kick">Try a move <span>K checks if you used it</span></div><div class="rw-eqs">'+t.ms.map(x=>'<button class="rw-eq'+(RW.equip===x?' on':'')+(moveLearned(x)?'':' new')+'" data-equip="'+x+'"><img src="'+(TOOL_ICON[x]||'')+'" alt=""><b>'+escHtml(TECHNIQUES[x].title)+'</b>'+(moveLearned(x)?'':'<small>New</small>')+'</button>').join('')+'</div></div>';
+  h+='<button class="g-cta" data-close>Got it<span class="ar">'+ic('check','s')+'</span></button>';
+  openSheet(h,{wire:sh=>{sh.querySelectorAll('[data-equip]').forEach(b=>b.addEventListener('click',()=>{RW.equip=RW.equip===b.dataset.equip?'':b.dataset.equip;sh.querySelectorAll('[data-equip]').forEach(x=>x.classList.toggle('on',x.dataset.equip===RW.equip));}));}});}
 // What the speaker is going for, asked when they tap Start. K judges the result against it.
 const RW_AIMS={
   client:[['money','Hold my price','Keep my number, or close to it'],['people','Keep the client','They stay happy and come back'],['quick','Find out what they need','Ask before you give anything']],
@@ -5734,7 +5823,7 @@ async function _rwFollowup(allowEnd){
     const _conv=['smalltalk','intro'].includes(RW.scenario);
     const who=RW.who?'Who you are: '+RW.who+'. If the scenario names who you are, be that person, with this personality.\n':'';
     const secret=RW.secret?'What only you know (never say it outright): '+RW.secret.t+'\n':'';
-    const tough=RW.tougher?'Be tougher than usual: push harder, give less, stay polite.\n':'';
+    const tough=(RW.tougher?'Be tougher than usual: push harder, give less, stay polite.\n':'')+_rwLevelLine();
     const realTalk='Talk the way people really talk out loud: contractions, plain everyday words, short sentences, sometimes a half sentence. Never sound like an interviewer, a coach or a chatbot. Never say: "That’s fascinating", "That’s great!", "I’d love to hear more", "Tell me more about", "What specifically", "Can you elaborate", "What drew you to", "How did that make you feel", "It sounds like". Don’t repeat their words back as a question. Make every line clear on its own: name the actual thing you mean, never a bare it or this. The transcript is speech-to-text and may have errors: respond to what they meant.';
     const sys=_conv
       ?'You are in a real, casual conversation, playing the other person in a speaking-practice role-play. '+(RW_FU_PERSONA[RW.scenario]||'')+'\n'+who+'\nReply to what they just said the way a real person would: react first (a genuine reaction, agreeing, a laugh, a small bit of your own experience or opinion), then at most one easy question, or no question if sharing fits better. If they asked you something, answer it first, briefly and honestly, in character. If they gave you very little, give a short polite reply that leaves them to carry it. Match their energy.\n'+realTalk+'\nOne or two short sentences, under 25 words. '+langLine+' Reply with only what you say: no name, no label, no quotation marks.\n\nBad (never like this): "That’s fascinating! What specifically drew you to pottery?"\nGood: "Ha, mine’s worse, trust me. First time here?"\nGood: "Oh nice, I’ve always wanted to try that. Is it hard?"'
@@ -5803,7 +5892,7 @@ const RW_STT_NOTE='\n\nThe speaker’s words are speech-to-text and can be garbl
 async function _rwDecide(){
   const sc=TT_REAL[RW.scenario],cl=_rwIsClient();
   const conv=_rwxTurns();const tag=i=>i?'fu'+i:'answer';
-  let m=(RW.aim?'WHAT THE SPEAKER WAS GOING FOR (they chose this before starting): '+RW.aim+'\n':'')+(RW.equip&&TECHNIQUES[RW.equip]?'THE SPEAKER CHOSE TO TRY THIS MOVE: '+TECHNIQUES[RW.equip].title+' ('+(TECHNIQUES[RW.equip].tag||TECHNIQUES[RW.equip].sum)+')\n':'')+'Situation: '+sc.name+_rwBriefText()+'\nOpening: '+RW.question+(RW.context?'\nThe speaker’s own situation: '+RW.context:'')+(RW.fromReply&&RW.fromReply.reply?'\nThe speaker’s written reply before this conversation: '+RW.fromReply.reply:'')+'\n\nTHE CONVERSATION (each of the speaker’s turns is tagged):\n';
+  let m=_rwLevelLine()+(RW.aim?'WHAT THE SPEAKER WAS GOING FOR (they chose this before starting): '+RW.aim+'\n':'')+(RW.equip&&TECHNIQUES[RW.equip]?'THE SPEAKER CHOSE TO TRY THIS MOVE: '+TECHNIQUES[RW.equip].title+' ('+(TECHNIQUES[RW.equip].tag||TECHNIQUES[RW.equip].sum)+')\n':'')+'Situation: '+sc.name+_rwBriefText()+'\nOpening: '+RW.question+(RW.context?'\nThe speaker’s own situation: '+RW.context:'')+(RW.fromReply&&RW.fromReply.reply?'\nThe speaker’s written reply before this conversation: '+RW.fromReply.reply:'')+'\n\nTHE CONVERSATION (each of the speaker’s turns is tagged):\n';
   conv.forEach((t,i)=>{m+=(i?(cl?'The client':'The other person')+' said: ':'Opening: ')+t.q+'\n['+tag(i)+'] The speaker said: '+(t.a||'(nothing)')+'\n';});
   if(RW.aim)m+='\nALSO INCLUDE in your JSON a field "aim": one or two short sentences to the speaker, as the coach, not in character: did they get what they were going for ('+RW.aim+'), judged only by what happened and how it ended. Start with Yes, Not quite, or No. Use their numbers or exact words as the evidence. Never guess their feelings or motives.\n';
   const agreed='IF THEY AGREED: if the speaker’s last answer accepts your offer or terms (even with a small, reasonable change you would accept), the honest result is a deal on those terms. Do not stall on a deal that was already agreed.';
@@ -5981,23 +6070,24 @@ function renderReal(app){
   }else if(ph==='brief'&&RW.adaptErr){
     h+=gBar(_rwShort(),'rw-setup',_rwDots())+renderAIError(RW.adaptErr,'rw-adapt-retry')+'<div class="push"></div><button class="link case-peek" data-act="rw-adapt-orig">Practice the original instead →</button>';
   }else if(ph==='brief'){
-    const b=_rwBriefOk()?RW.brief:null,cl=_rwIsClient();
-    h+=gBar(_rwShort(),'rw-setup',_rwDots());
-    {const cap=s=>String(s||'').replace(/^./,c=>c.toUpperCase());
-     const big=b?(b.c?b.c.replace(' · ',', ')+'. '+cap(RW.persona)+'.':b.who.replace(' · ',', ')):(RW_ROLE[RW.scenario]||'The other person')+(RW.persona?'. '+cap(RW.persona)+'.':'');
-     if(b&&b.scene)h+='<div class="g-block"><div class="g-kick">The scene</div><p class="rw-scene">'+_sting(b.scene)+'</p>'+(RW.fromCase&&RW.fromCase.feel?'<p class="case-feel">'+escHtml(RW.fromCase.feel)+'</p>':'')+'<div class="rw-who">You’re talking to: <b>'+escHtml(String(b.who||b.c).split(' · ')[0])+'</b>'+(b.c&&b.pos?'<br>'+escHtml(RW_POS_LBL[RW.scenario]||'Your position')+': <b>'+escHtml(b.pos)+'</b>':'')+'</div></div>';
-     else h+='<div class="g-block"><div class="g-kick">Who you’re talking to</div><div class="g-big">'+escHtml(big)+'</div>'+(b&&b.who&&b.moment?'<p style="margin-top:8px;font-size:16px;line-height:1.45;font-weight:600">'+_sting(b.moment)+'</p>'+(RW.fromCase&&RW.fromCase.feel?'<p class="case-feel">'+escHtml(RW.fromCase.feel)+'</p>':''):'')+'</div>';
-     if(RW_AIM[RW.scenario]&&!(b&&b.c)&&!RW.fromCase)h+='<div class="g-card tight"><div class="g-row top"><span class="t"><b>Your goal</b><span>'+escHtml(RW_AIM[RW.scenario])+'</span></span></div></div>';}
-    if(b&&b.c&&b.scene){/* price shown inside the scene card */}
-    else if(b&&b.c)h+='<div class="g-card tight"><div class="g-row"><span class="t"><b>'+(RW.source==='desk'?'The situation':'The job')+'</b><span>'+escHtml(b.job)+'</span></span></div>'+(b.pos?'<div class="g-row"><span class="t"><b>'+escHtml(RW_POS_LBL[RW.scenario]||'Your position')+'</b><span>'+escHtml(b.pos)+'</span></span></div>':'')+'</div>';
-    if(RW.fromCase)h+='<div class="g-card tight rw-dodont"><div class="dd do"><b>Do</b><span>'+escHtml(RW.fromCase.principle)+'</span></div>'+(RW.fromCase.most?'<div class="dd dont"><b>Don’t</b><span>'+escHtml(RW.fromCase.most)+'</span></div>':'')+'</div>';
-    if(RW.prevFix)h+='<div class="g-block p-lav"><div class="g-kick">Last time, K said</div><div style="font-size:16px;font-weight:700;line-height:1.35">'+escHtml(_kShort(RW.prevFix,200))+'</div></div>';
-    if(RW.fromReply)h+='<div class="g-card tight"><div class="g-row"><span class="t"><b>Their message</b><span>'+escHtml(_kShort(RW.question,160))+'</span></span></div>'+(RW.fromReply.reply?'<div class="g-row"><span class="t"><b>You replied</b><span>'+escHtml(_kShort(RW.fromReply.reply,160))+'</span></span></div>':'')+'</div>';
-    if(cl&&RW.secret)h+='<div class="g-alert rw-secret" style="display:flex;gap:10px;align-items:flex-start"><span style="color:#C4AEFF;margin-top:1px;display:flex">'+ic('lock','s')+'</span><div><b style="font-size:14.5px">'+escHtml(name)+' has a secret.</b> <span class="sub">Ask good questions to find it.</span></div></div>';
-    if(!(typeof _isLite==='function'&&_isLite())){const ct=RW.fromCase&&RW.fromCase.tech,fam=ct?_tkFamOf(ct).tools:[],opts=[ct].concat(Object.keys(_moves()).sort((a,b)=>((fam.includes(b)?1:0)-(fam.includes(a)?1:0))||(_moves()[b].at||'').localeCompare(_moves()[a].at||''))).filter((x,i,a)=>x&&TECHNIQUES[x]&&a.indexOf(x)===i).slice(0,3);
-     if(opts.length){if(RW.equip===undefined)RW.equip=ct&&TECHNIQUES[ct]?ct:'';
-       h+='<div class="rw-equip"><div class="g-kick">Try a move <span>K checks if you used it</span></div><div class="rw-eqs">'+opts.map(t=>'<button class="rw-eq'+(RW.equip===t?' on':'')+(moveLearned(t)?'':' new')+'" data-equip="'+t+'"><img src="'+(TOOL_ICON[t]||'')+'" alt=""><b>'+escHtml(TECHNIQUES[t].title)+'</b>'+(moveLearned(t)?'':'<small>New</small>')+'</button>').join('')+'</div></div>';}}
-    h+='<div class="push"></div>'+_rwModeSwitch(true)+gCta('Start','start');
+    const b=_rwBriefOk()?RW.brief:null,cl=_rwIsClient(),lv=_rwLevel();
+    const cap=x=>String(x||'').replace(/^./,c=>c.toUpperCase());
+    const whoFull=b?String(b.c||b.who||''):(RW_ROLE[RW.scenario]||'The other person');
+    const role=whoFull.split(' · ')[1]||(b&&b.role)||'';
+    const tips=_rwTips(),bulb=tips.has?'<button class="bf-bulb" data-act="rw-tips" aria-label="Tips">'+_BULB+'</button>':'';
+    h+='<div class="g-bar bf-bar"><button class="g-back" data-go="rw-setup" aria-label="Back">'+ic('back')+'</button><div class="bf-tt"><h1>'+escHtml(_rwShort())+'</h1><span class="lvp">Level '+lv+' · '+_RW_LV[lv-1][0]+'<i>'+[1,2,3].map(n=>'<b'+(n<=lv?' class="on"':'')+'></b>').join('')+'</i></span></div>'+bulb+'</div>';
+    // The card: who you're talking to, on their scene
+    let nums='';
+    if(b&&b.c&&b.pos){const m=String(b.pos).match(/^(.*?)\.\s*Lowest you’ll accept:\s*(.+?)\.?$/);nums=m?'<div class="bf-nums"><div><b>'+escHtml(RW_POS_LBL[RW.scenario]||'Your price')+'</b><span>'+escHtml(m[1])+'</span></div><div><b>Lowest</b><span>'+escHtml(m[2])+'</span></div></div>':'<div class="bf-pos">'+escHtml(b.pos)+'</div>';}
+    const pr=(()=>{const L=(typeof LOOKS!=='undefined'&&typeof lookFor==='function')?LOOKS.find(l=>l.id===lookFor(name)):null;const d=L?L.d:'';return /^woman/.test(d)?'she':/^man/.test(d)?'he':_rwShe();})();
+    const sec=cl&&RW.secret?'<div class="bf-sec">'+ic('lock','s')+escHtml(pr==='he'?'He has a secret. Ask to find it.':pr==='they'?'They have a secret. Ask to find it.':'She has a secret. Ask to find it.')+'</div>':'';
+    h+='<div class="bf-card" style="background-image:url('+SETS[_vnSet()]+')"><img class="bf-pic" src="'+_vnChar('neutral')+'" alt=""><div class="bf-who"><small>You’re talking to</small><h2'+(name.length>10?' class="long"':'')+'>'+escHtml(name)+'</h2>'+(role?'<span>'+escHtml(cap(role))+'</span>':'')+'</div>'+((nums||sec)?'<div class="bf-bot">'+nums+sec+'</div>':'')+'</div>';
+    // The scene
+    const scene=b&&b.scene?_sting(b.scene):b&&b.moment?_sting(b.moment):escHtml(cap(RW.persona||''));
+    h+='<div class="bf-txt"><small>The scene</small><p>'+scene+'</p>'+(RW.fromCase&&RW.fromCase.feel?'<em>'+escHtml(RW.fromCase.feel)+'</em>':'')+
+      (RW.prevFix?'<div class="bf-note"><b>Last time, K said</b>'+escHtml(_kShort(RW.prevFix,160))+'</div>':'')+
+      (RW.fromReply?'<div class="bf-note"><b>Their message</b>'+escHtml(_kShort(RW.question,140))+'</div>':'')+'</div>';
+    h+=_rwModeSwitch(true)+gCta('Start','start');
   }else if(ph==='turn'){
     const line=RW.fuQ||RW.question,wait=RW.fuLoading||!line,inFu=RW.convo.length>0,n=_rwFuN();
     if(RW.mode==='live'){
@@ -6009,7 +6099,7 @@ function renderReal(app){
       else h+='<div class="g-hint">'+kav('xs')+'<span>'+escHtml(_rwHint())+'</span></div>';
       h+='<div class="push"></div><div class="g-callbar"><button class="g-cb'+(RW.rec?' on':'')+'" data-act="'+(RW.rec?'stop':'rec')+'" aria-label="Microphone">'+ic(RW.rec?'mic':'micoff')+'</button><button class="g-end" data-act="end">End · get notes</button><button class="g-cb" data-act="mode-type" aria-label="Switch to typing">'+ic('keyboard')+'</button></div>';
     }else{
-      h+=gBar(_rwShort(),'rw-restart',_rwDots());
+      h+=gBar(_rwShort(),'rw-restart',_rwDots()).replace(HUB_BTN,'');
       if(_vnOn()){
         const played=RW._vnPlayed===line;
         h+='<div class="vn'+(played?' vn-done':' vn-play')+(wait?' vn-wait':'')+' vn-set-'+_vnSet()+'">'+_vnBg()+(SND_ON&&SND_SET[_vnSet()]?sndBtnHtml().replace('snd-btn','snd-btn vn-snd'):'')+
@@ -6034,7 +6124,7 @@ function renderReal(app){
       if(_vnOn())h+='</div>';
     }
   }else if(ph==='done'){
-    h+=gBar('How it went','rw-restart',_rwDots());
+    h+=gBar('How it went','rw-restart',_rwDots()).replace(HUB_BTN,'');
     const busy=RW.loading&&!RW.decision&&!RW.review;
     if(busy)h+=kWritingHtml('K is taking notes…',_rwIsClient()?'And '+name+' is deciding.':'Working out how it landed.');else if(false)h+='<div class="g-card" style="display:flex;flex-direction:column;gap:14px"><div class="g-k">'+kav()+'<div><b style="font-size:15px">K is listening back</b><div class="small" style="margin-top:2px">'+(_rwIsClient()?'And '+escHtml(name)+' is deciding.':'Working out how it landed.')+'</div></div></div><div class="stack" style="gap:9px"><div class="sk w9"></div><div class="sk w7"></div><div class="sk w8"></div></div></div>';
     else{
@@ -6045,8 +6135,10 @@ function renderReal(app){
         else if(r){const vk=['yes','maybe','no'].includes(r.verdict)?r.verdict:'maybe',hd=(RW_VERDICT_H[RW.scenario]||RW_VERDICT_H.meeting)[vk];main=hd[0];sub=hd[1];tone=vk;say=r.say||'';}
         _castNote(name,main,sub);
         const dd=d||r||{};if(RW._learnedFor!==RW.transcript){RW._learnedFor=RW.transcript;RW._newMoves=(typeof _isLite==='function'&&_isLite())?[]:(dd.used||[]).filter(t=>moveLearn(t,dd.usedq));}
+        if(RW._lvUpFor!==RW.transcript){RW._lvUpFor=RW.transcript;RW._lvUp=_rwLevelCheck(dd);}
         const nm=(RW._newMoves||[])[0],eq=RW.equip&&TECHNIQUES[RW.equip]?RW.equip:'';
-        const card=nm?'<div class="vn-new"><img src="'+(TOOL_ICON[nm]||'')+'" alt=""><span><small>New move</small><b>'+escHtml(TECHNIQUES[nm].title)+'</b>'+(dd.usedq?'<em>“'+escHtml(_kShort(dd.usedq,70))+'”</em>':'')+'</span></div>'
+        const lvc=RW._lvUp>0?'<div class="vn-new vn-lv"><span class="lvn">'+RW._lvUp+'</span><span><small>Level '+RW._lvUp+' open</small><b>'+escHtml(name)+' pushes harder next time.</b><em>'+escHtml(_RW_LV[RW._lvUp-1][1])+'</em></span></div>':RW._lvUp===-1?'<div class="vn-new vn-lv"><span class="lvn">✓</span><span><small>All three levels cleared</small><b>You held it at its toughest.</b></span></div>':'';
+        const card=lvc?lvc:nm?'<div class="vn-new"><img src="'+(TOOL_ICON[nm]||'')+'" alt=""><span><small>New move</small><b>'+escHtml(TECHNIQUES[nm].title)+'</b>'+(dd.usedq?'<em>“'+escHtml(_kShort(dd.usedq,70))+'”</em>':'')+'</span></div>'
           :eq&&dd.equipped?'<div class="vn-new vn-eq-'+dd.equipped+'"><img src="'+(TOOL_ICON[eq]||'')+'" alt=""><span><small>'+({yes:'You used it',partly:'Almost',no:'Not this time'}[dd.equipped])+'</small><b>'+escHtml(TECHNIQUES[eq].title)+'</b>'+(dd.equipnote?'<em>'+escHtml(_kShort(dd.equipnote,90))+'</em>':'')+'</span></div>':'';
         h+='<div class="vn vn-done vn-end vn-set-'+_vnSet()+'">'+_vnBg()+
            '<div class="vn-char vn-'+({yes:'pleased',no:'unhappy'}[tone]||'neutral')+'" style="--vs:'+({yes:1.05,no:.92}[tone]||1)+'"><img src="'+_vnChar({yes:'pleased',no:'unhappy'}[tone]||'neutral')+'" alt="">'+_vnMarkHtml({yes:'sparkle',no:'gloom',maybe:'question'}[tone])+'</div>'+
@@ -6136,6 +6228,7 @@ function renderReal(app){
     if(nx)nx.addEventListener('click',()=>sl.scrollTo({left:(cur()+1)*sl.clientWidth,behavior:'smooth'}));}
   on('[data-act="rw-case"]',()=>{if(RW.fromCase&&RW.fromCase.id){V.caseOpen=RW.fromCase.id;openCase(RW.fromCase.id);}});
   on('[data-act="again"]',()=>{_rwResetConvo();RW.phase='brief';render();});
+  on('[data-act="rw-tips"]',openRwTips);
   on('[data-act="rw-finish"]',()=>{const offer=RW._liteRun&&!RW._taster;_rwResetConvo();RW.phase='setup';RW.question='';RW.fromCase=null;render();if(offer&&typeof openTasterSheet==='function')setTimeout(openTasterSheet,350);});
   on('[data-act="tougher"]',()=>{RW.tougher=true;RW.fromReply=null;rwFetchScene();});
   on('[data-act="new"]',()=>{RW.phase='setup';RW.question='';RW.fromReply=null;render();});
@@ -6198,7 +6291,7 @@ function _rwCtxPanel(){
 }
 function _rwModeSwitch(brief){
   const ch=brief&&RW.fromCase&&chHas(RW.fromCase.id);if(RW.mode==='choose'&&!ch)RW.mode='turns';if(RW.mode==='live')RW.mode='turns';
-  const b=(m,t)=>'<button data-mode="'+m+'"'+(RW.mode===m?' class="on"':'')+'>'+t+'</button>';
+  const I={turns:'mic',type:'keyboard',choose:'check'};const b=(m,t)=>'<button data-mode="'+m+'"'+(RW.mode===m?' class="on"':'')+'>'+(brief?ic(I[m],'s'):'')+t+'</button>';
   return '<div class="g-mode" role="radiogroup" aria-label="How you answer" style="grid-template-columns:repeat('+(ch?3:2)+',minmax(0,1fr))">'+b('turns','Speak')+b('type','Type')+(ch?b('choose','Choose'):'')+'</div>'+(ch&&RW.mode==='choose'?'<p class="quiet ch-hint">Not sure what you’d say? Pick from four real options.</p>':'');}
 function _rwHint(){const k=RW.scenario;const H={bargain:'Trade something, not your price.',ground:'Same position, same reason, warm every time.',difficult:'Calm first. Then the professional route.',proposal:'Their problem first. Then your plan.',interview:'One real example beats three claims.',pitch:'Hook, problem, proof, ask.',intro:'What you do for them, not your title.',meeting:'Point first. Then one reason.',tough:'Acknowledge, answer, then bridge.',smalltalk:'Answer, add a hook, hand it back.'};return 'Hint from K: '+(H[k]||'Say it the way you would.');}
 // ═══════════════════════════════════════════════════════════════════════════
