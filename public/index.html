@@ -1943,6 +1943,13 @@ html[data-theme="dark"] .tips b.do{color:#9BE36D}html[data-theme="dark"] .tips b
 .dk-tools button{position:relative}
 .dk-tools .newdot:after{content:"";position:absolute;top:8px;right:10px;width:9px;height:9px;border-radius:50%;background:#FF6B6B;box-shadow:0 0 0 2px var(--bg)}
 .bf-who h2.long{font-size:22px;line-height:1.1}
+
+/* Pro ending soon: one line under the hub top bar */
+.pro-end{display:flex;align-items:center;gap:9px;height:46px;padding:0 6px 0 14px;border-radius:999px;background:color-mix(in srgb,#F2CE6B 13%,var(--card));border:1px solid rgba(242,206,107,.55);flex-shrink:0}
+.pro-end .pe-ic{display:flex;color:#F2CE6B;flex-shrink:0}.pro-end .pe-ic svg{width:18px;height:18px}
+.pro-end .pe-t{flex:1;min-width:0;font-size:14.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pro-end .pe-go{height:32px;padding:0 14px;border-radius:999px;border:0;background:#F2CE6B;color:#2A1E00;font-size:13.5px;font-weight:900;white-space:nowrap}
+.pro-end .pe-x{width:30px;height:30px;border:0;background:none;color:var(--ink-3);font-size:18px;display:grid;place-items:center;flex-shrink:0}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -2445,7 +2452,7 @@ async function callCoach(systemPrompt,userMessage,opts){
       body:JSON.stringify(Object.assign({model,max_tokens:mt,system:systemPrompt,messages:[{role:'user',content:userMessage}]},_tools))});
     const rt=resp.headers.get('x-client-token');if(rt&&rt!==_clientToken())localStorage.setItem('grd-client-token',rt);
     ['x-usage-day','x-usage-month','x-limit-day','x-limit-month'].forEach(k=>{const v=resp.headers.get(k);if(v)localStorage.setItem('grd-'+k.slice(2),v);});
-    const tierH=resp.headers.get('x-tier');if(tierH==='lite'&&S.pro&&typeof _proUntil==='function'&&_proUntil()>Date.now()&&!(S.aiConfig&&S.aiConfig.ownerKey)){/* the server says the pass has ended */delete S.pro;save();}
+    const tierH=resp.headers.get('x-tier');if(tierH==='lite'&&S.pro&&typeof _proUntil==='function'&&_proUntil()>Date.now()&&!(S.aiConfig&&S.aiConfig.ownerKey)){/* the server says the pass has ended */if(typeof _proLapse==='function')_proLapse();else delete S.pro;save();}
     if(resp.status===403||resp.status===429){
       let d={};try{d=await resp.json();}catch(e){}
       if(/^(pro_only|practice_limit|free_paused|practice_long)$/.test(d.error||'')){const e=new Error('plan:'+d.error);e.plan=true;e.status=resp.status;throw e;}
@@ -2551,7 +2558,7 @@ async function ownerCodes(method,body){
 // Test link: …/#fresh turns this phone into a brand-new free user (owner mode off, no Pro, new device id,
 // today's counts and the taster reset, intro shown again). The notebook is kept.
 function _freshLink(){try{if(!/^#fresh$/.test(location.hash||''))return false;history.replaceState(null,'',location.pathname+location.search);
-  S.aiConfig=S.aiConfig||{};delete S.aiConfig.ownerKey;delete S.pro;delete S.tasterAt;delete S.tasterOn;delete S.tasterPick;delete S.seenTools;delete S.hubDots;delete S.levels;
+  S.aiConfig=S.aiConfig||{};delete S.aiConfig.ownerKey;delete S.pro;delete S.tasterAt;delete S.tasterOn;delete S.tasterPick;delete S.proLapsed;delete S.proLapsedSeen;delete S.proEndHide;delete S.seenTools;delete S.hubDots;delete S.levels;
   const u=S.usage||{};delete u.pday;u.pr=0;u.quick=0;S.onboarded=false;S.tourDone=false;
   try{localStorage.removeItem('grd-client-token');}catch(e){}
   save();setTimeout(()=>{try{showToast('Fresh start: you’re a new free user on this phone');}catch(e){}},900);return true;}catch(e){return false;}}
@@ -4123,7 +4130,7 @@ function movesForReview(){return Object.keys(TECHNIQUES).map(k=>k+' = '+TECHNIQU
 // Lite gets: 1 generic practice a day (plus one taster set in their world, ever), Quick answer (3 a day), the daily deck.
 const PLAN_ON=true;
 const PRO_PRICE={m:'$15',q:'$36',mCny:'¥98',qCny:'¥238',qPerMo:'$12'};
-const PAY_LINKS={paypalM:'https://www.paypal.me/kianhow/15',paypalQ:'https://www.paypal.me/kianhow/36',wechatQr:'art/wechat-pay.png'};
+const PAY_LINKS={paypalM:'https://www.paypal.me/kianhow/15',paypalQ:'https://www.paypal.me/kianhow/36',wechatQrM:'art/wechat-pay-30.png',wechatQrQ:'art/wechat-pay-90.png'};
 const LITE_PRACTICE_DAY=1,PRO_PRACTICE_DAY=3,LITE_QUICK_DAY=3;
 function _proUntil(){const p=S.pro;if(!p||!p.until)return 0;const t=Date.parse(p.until);return isFinite(t)?t:0;}
 function _isPro(){if(!PLAN_ON)return true;if(S.aiConfig&&S.aiConfig.ownerKey)return true;return _proUntil()>Date.now();}
@@ -4159,7 +4166,7 @@ async function planSync(){
   try{const cfg=S.aiConfig||{};const ep=(cfg.endpoint||'/.netlify/functions/ai').replace(/\/ai$/,'/codes');
     const r=await fetch(ep,{headers:_aiHeaders({})});if(!r.ok)return;const j=await r.json();
     if(j&&j.until){S.pro=Object.assign({},S.pro||{},{until:j.until});save();}
-    else if(j&&j.until===null&&S.pro&&_proUntil()<Date.now()){delete S.pro;save();}
+    else if(j&&j.until===null&&S.pro&&_proUntil()<Date.now()){_proLapse();save();}
   }catch(e){}
 }
 // ── Screens ──
@@ -4167,7 +4174,7 @@ function _proRow(c,icon,t,s){return '<div><i class="'+c+'">'+ic(icon,'s')+'</i><
 function renderPro(app){
   const q=V.proPlan!=='m';
   let h='<main class="scr pro-pg">'+gBar('Ground Pro',V._proBack||'hub');
-  h+='<div class="pro-hero"><img src="'+ART+'kpose/thumb.webp" alt=""><div class="t"><small>PRO</small><h1>'+(_isPro()?'You’re on Pro.':'Practice built around your life.')+'</h1><p>'+(_isPro()?_proDaysLeft()+' days left, ends '+escHtml(_proEndsLabel())+'. A new code extends it.':'Coached by Kian How. 20+ years making work, building products and guiding people.')+'</p></div></div>';
+  h+='<div class="pro-hero"><img src="'+ART+'kpose/thumb.webp" alt=""><div class="t"><small>PRO</small><h1>'+(_isPro()?'You’re on Pro.':'Practice built around your life.')+'</h1><p>'+(_isPro()?(_proDaysLeft()===1?'Ends tomorrow, '+escHtml(_proEndsLabel())+'. A new code extends it.':_proDaysLeft()+' days left, ends '+escHtml(_proEndsLabel())+'. A new code extends it.')+(_proDaysLeft()<=3?' Your notes stay either way.':''):'Coached by Kian How. 20+ years making work, building products and guiding people.')+'</p></div></div>';
   h+='<div class="pro-list pro-3">'+
     _proRow('p-teal','talk','Scenes set in your world','Your field, your people, your numbers. Practice the conversation you’re actually about to have.')+
     _proRow('p-lav','check','Every note from K','Three practices a day, what to say instead, and the moves you used.')+
@@ -4194,7 +4201,7 @@ function openPaySheet(how){
   h+='<div class="pw-tabs"><button class="'+(pp?'on':'')+'" data-how="pp">PayPal</button><button class="'+(pp?'':'on')+'" data-how="wx">WeChat Pay</button></div>';
   h+='<div class="pw-steps">';
   if(pp)h+='<div class="pw-step"><span class="n">1</span><div><b>Pay '+_planUsd()+' on PayPal</b><span>The button opens PayPal with the amount filled in. Add your email in the note.</span></div></div>';
-  else h+='<div class="pw-step"><span class="n">1</span><div><b>Scan and pay '+_planCny()+'</b><span>Put your email in the payment note so I can reach you.</span><img class="pw-qr" src="'+PAY_LINKS.wechatQr+'" alt="WeChat Pay QR code"></div></div>';
+  else h+='<div class="pw-step"><span class="n">1</span><div><b>Scan and pay '+_planCny()+'</b><span>Put your email in the payment note so I can reach you.</span><img class="pw-qr" src="'+(V.proPlan==='m'?PAY_LINKS.wechatQrM:PAY_LINKS.wechatQrQ)+'" alt="WeChat Pay QR code"></div></div>';
   h+='<div class="pw-step"><span class="n">2</span><div><b>I email you a code</b><span>Usually within a few hours.</span></div></div>';
   h+='<div class="pw-step"><span class="n">3</span><div><b>Enter it here</b><span>Pro starts straight away.</span></div></div></div>';
   if(pp)h+='<a class="pw-btn pp" href="'+escHtml(link)+'" target="_blank" rel="noopener">Open PayPal · '+_planUsd()+'</a>';
@@ -4259,6 +4266,20 @@ function openTasterSheet(){
   openSheet(h,{wire:sh=>{const i=sh.querySelector('#taste-field');sh.querySelector('[data-act="taste-go"]').addEventListener('click',()=>{const v=(i.value||'').trim();if(!v){i.focus();i.classList.add('bad');return;}S.rwField=v.slice(0,60);S.tasterOn=true;save();closeSheet();S.tasterPick=true;RW.phase='setup';RW.pickOpen=null;go('real');showToast('Pick a scene. This one is set in your world.');});}});
   return true;
 }
+
+// ── End of a pass: a one-line reminder on the hub in the last 3 days, and one sheet the day after ──
+function _proEndSoon(){if(!PLAN_ON||(S.aiConfig&&S.aiConfig.ownerKey)||!_isPro())return 0;const d=_proDaysLeft();return d>=1&&d<=3?d:0;}
+function _proEndPill(){const d=_proEndSoon();if(!d||S.proEndHide===_dayKey())return '';
+  return '<div class="pro-end"><span class="pe-ic">'+ic('clock','s')+'</span><span class="pe-t">'+(d===1?'Pro ends tomorrow':'Pro ends in '+d+' days')+'</span><button class="pe-go" data-act="pe-extend">Extend</button><button class="pe-x" data-act="pe-hide" aria-label="Hide">×</button></div>';}
+function _proLapse(){if(S.pro&&S.pro.until){S.proLapsed=S.pro.until;}delete S.pro;}
+function _proEndedCheck(){if(!PLAN_ON||(S.aiConfig&&S.aiConfig.ownerKey))return;
+  if(S.pro&&_proUntil()&&_proUntil()<=Date.now()){_proLapse();save();}
+  if(!S.proLapsed||S.proLapsedSeen===S.proLapsed||_isPro())return;
+  S.proLapsedSeen=S.proLapsed;save();
+  setTimeout(()=>{if(V.view!=='hub')return;openSheet('<div class="pw-k"><img src="'+ART+'kpose/wait.webp" alt=""><div><h2>Your Pro pass has ended.</h2><p>You’re back on Lite. Your notes and levels are all still here.</p></div></div>'+
+    '<div class="pw-pass"><div class="top"><b>Ground Pro</b><span>'+PRO_PRICE.m+' <small>/ 30 days</small></span></div><ul><li>Scenes set in your world</li><li>3 practices a day, every note from K</li><li>Pick up where you left off</li></ul></div>'+
+    '<button class="pw-btn gold" data-act="pe-again">Extend Pro</button><button class="btn btn-sec" data-close>Not now</button>',
+    {wire:sh=>{const b=sh.querySelector('[data-act="pe-again"]');if(b)b.addEventListener('click',()=>{closeSheet();openPro('hub');});}});},450);}
 // ═══ Sound: music and stingers. Off until the person taps; follows the iOS silent switch; never plays while the mic is open. ═══
 // Shelved for now: flip to true to bring the music back
 const SND_ON=false;
@@ -4411,6 +4432,7 @@ function openAskK(){
 function renderHub(app){
   let h='<main class="scr hub dk">';
   h+='<div class="top"><div class="wm"><b>Ground</b><i></i><small>by Kian How</small>'+(typeof _tierBadge==='function'?_tierBadge():'')+'</div><div class="ibtns"><button class="ibtn ib-set" data-go="settings" aria-label="Settings">'+ic('settings')+'</button></div></div>';
+  if(typeof _proEndPill==='function')h+=_proEndPill();
   h+='<div class="dk-stack" id="dk-deck"></div>';
   if(typeof _isLite==='function'&&_isLite())h+='<div class="dk-tools three"><button class="glow" data-go="real"><i class="p-teal">'+ic('talk','s')+'</i>Practice</button><button data-go="quick"><i class="p-lav">'+ic('mic','s')+'</i>Quick answer</button><button class="gopro" data-act="gopro"><i>'+ic('arrow','s')+'</i>Get Pro</button></div>';
   else{const d1=_hubDay1();if(d1&&!S.hubDots){S.hubDots=1;S.seenTools={};save();}const nd=k=>!d1&&_hubNew(k)?' newdot':'';h+='<div class="dk-tools'+(d1?' day1':'')+'"><button class="askk'+nd('askk')+'" data-act="askk"><i class="k">'+kav()+'</i>'+(V.deskBusy?'Reading…':'Ask K')+'</button><button data-go="real"'+(d1?' class="glow"':'')+'><i class="p-teal">'+ic('talk','s')+'</i>Practice</button><button data-go="library" class="'+nd('library')+'"><i class="p-green">'+ic('book','s')+'</i>Toolkit</button><button data-go="notebook" class="'+nd('notebook')+'"><i class="p-yellow">'+ic('list','s')+'</i>Notes</button></div>';}
@@ -4418,6 +4440,7 @@ function renderHub(app){
   app.innerHTML=h;
   app.querySelectorAll('.dk-tools [data-go]').forEach(b=>b.addEventListener('click',()=>_hubSeen(b.dataset.go),{capture:true}));
   {const ak=app.querySelector('[data-act="askk"]');if(ak)ak.addEventListener('click',()=>{_hubSeen('askk');if(!V.deskBusy)openAskK();});const gp=app.querySelector('[data-act="gopro"]');if(gp)gp.addEventListener('click',()=>openPro('hub'));}
+  {const pe=app.querySelector('[data-act="pe-extend"]');if(pe)pe.addEventListener('click',()=>openPro('hub'));const px=app.querySelector('[data-act="pe-hide"]');if(px)px.addEventListener('click',()=>{S.proEndHide=_dayKey();save();render();});if(typeof _proEndedCheck==='function'&&S.tourDone&&!document.querySelector('.tour'))_proEndedCheck();}
   _deckWire(app.querySelector('#dk-deck'));
   _kTakeRefresh();
   if(S.onboarded&&!S.tourDone)setTimeout(()=>{if(V.view==='hub'&&!document.getElementById('sheet')&&!document.querySelector('.tour'))hubTour(0);},350);
