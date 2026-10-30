@@ -4130,7 +4130,7 @@ function movesForReview(){return Object.keys(TECHNIQUES).map(k=>k+' = '+TECHNIQU
 // Lite gets: 1 generic practice a day (plus one taster set in their world, ever), Quick answer (3 a day), the daily deck.
 const PLAN_ON=true;
 const PRO_PRICE={m:'$15',q:'$36',mCny:'¥98',qCny:'¥238',qPerMo:'$12'};
-const PAY_LINKS={paypalM:'https://www.paypal.me/kianhow/15',paypalQ:'https://www.paypal.me/kianhow/36',wechatQrM:'art/wechat-pay-30.png',wechatQrQ:'art/wechat-pay-90.png'};
+const PAY_LINKS={paypalM:'https://www.paypal.com/ncp/payment/Z9Y73TWLJJ89N',paypalQ:'https://www.paypal.com/ncp/payment/TPZXPB6N3DYS8',wechatQrM:'art/wechat-pay-30.jpg',wechatQrQ:'art/wechat-pay-90.jpg'};
 const LITE_PRACTICE_DAY=1,PRO_PRACTICE_DAY=3,LITE_QUICK_DAY=3;
 function _proUntil(){const p=S.pro;if(!p||!p.until)return 0;const t=Date.parse(p.until);return isFinite(t)?t:0;}
 function _isPro(){if(!PLAN_ON)return true;if(S.aiConfig&&S.aiConfig.ownerKey)return true;return _proUntil()>Date.now();}
@@ -4200,7 +4200,7 @@ function openPaySheet(how){
   let h='<div class="pw-head"><h2 class="h2" style="font-size:21px">'+(pp?'Pay with PayPal':'Pay with WeChat')+'</h2><span class="pro-tag">'+escHtml(_planLabel())+' · '+(pp?_planUsd():_planCny())+'</span></div>';
   h+='<div class="pw-tabs"><button class="'+(pp?'on':'')+'" data-how="pp">PayPal</button><button class="'+(pp?'':'on')+'" data-how="wx">WeChat Pay</button></div>';
   h+='<div class="pw-steps">';
-  if(pp)h+='<div class="pw-step"><span class="n">1</span><div><b>Pay '+_planUsd()+' on PayPal</b><span>The button opens PayPal with the amount filled in. Add your email in the note.</span></div></div>';
+  if(pp)h+='<div class="pw-step"><span class="n">1</span><div><b>Pay '+_planUsd()+' on PayPal</b><span>The button opens PayPal with the price set. Your email comes to me with the payment.</span></div></div>';
   else h+='<div class="pw-step"><span class="n">1</span><div><b>Scan and pay '+_planCny()+'</b><span>Put your email in the payment note so I can reach you.</span><img class="pw-qr" src="'+(V.proPlan==='m'?PAY_LINKS.wechatQrM:PAY_LINKS.wechatQrQ)+'" alt="WeChat Pay QR code"></div></div>';
   h+='<div class="pw-step"><span class="n">2</span><div><b>I email you a code</b><span>Usually within a few hours.</span></div></div>';
   h+='<div class="pw-step"><span class="n">3</span><div><b>Enter it here</b><span>Pro starts straight away.</span></div></div></div>';
