@@ -1978,6 +1978,14 @@ html[data-theme="dark"] .tips b.do{color:#9BE36D}html[data-theme="dark"] .tips b
 .wq .it .t{flex:1;min-width:0}.wq .it b{display:block;font-size:15px}.wq .it span{font-size:13px;color:var(--ink2)}
 .wq .ap{height:38px;padding:0 16px;border-radius:999px;border:0;background:#F2CE6B;color:#2A1E00;font-weight:900;font-size:14px}
 .wq .no{height:38px;width:38px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:none;color:var(--ink2);font-size:16px;flex-shrink:0}
+
+/* People a step away: bigger, from about mid-thigh up, legs tucked behind the line box */
+.vn .vn-char{width:58%;right:5%}
+.vn .vn-char .vn-mark{width:24%;top:2%;right:-2%}
+.bf-card .bf-pic{height:116%;bottom:-24%;max-width:66%;right:2%}
+.bf-card .bf-bot{z-index:2}
+.bf-card .bf-nums div{background:rgba(14,16,22,.72);backdrop-filter:none;-webkit-backdrop-filter:none}
+.bf-card .bf-sec{text-shadow:0 1px 6px rgba(0,0,0,.8)}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -4149,7 +4157,7 @@ function castArt(look,mood){const n=Math.max(1,Math.min(LOOKS.length,+look||1));
 function _lookHash(name){let h=0;for(const ch of String(name||''))h=(h*31+ch.charCodeAt(0))|0;return ((h>>>0)%LOOKS.length)+1;}
 // Which look is this person? From their world if K cast them, otherwise a stable pick by name
 function lookFor(name){const n=String(name||'').split(' · ')[0].trim();if(typeof _worldFresh==='function'&&_worldFresh()){const c=S.world.cast.find(x=>x.name.toLowerCase()===n.toLowerCase());if(c&&c.look)return c.look;if(c)return _lookByRole(c.role,n)||_lookHash(n);}return _lookHash(n);}
-const SETS={};['office','room','cafe','studio','corridor','event','stage','shop','call','dinner','lobby','home','glass','street'].forEach(k=>SETS[k]=ART+'sets/'+k+'.webp');
+const SETS={};['office','room','cafe','studio','corridor','event','stage','shop','call','dinner','lobby','home','glass','street','pantry','hallway','elevator','expo','park','gallery','rooftop','ballroom','subway','nightstreet','backstage','afterhours'].forEach(k=>SETS[k]=ART+'sets/'+k+'.webp');
 // A sensible look from the role, used when K didn't pick one. Each role has a few faces, so the same role isn't always the same person.
 function _lookByRole(role,name){const r=String(role||'').toLowerCase(),p=a=>a[(_lookHash(name||role)-1)%a.length];
   if(/professor|teacher|lecturer|tutor|dean/.test(r))return p([2,16]);
@@ -4379,7 +4387,7 @@ const SND={ctx:null,gain:null,src:null,cur:'',buf:{},want:'',unlocked:false};
 const SND_TRACKS={title:{files:['art/audio/title.m4a','art/audio/title.mp3'],loop:[15.5,28.5],vol:.8},
   cafe:{files:['art/audio/cafe.m4a','art/audio/cafe.mp3'],loop:[0,9999],vol:.7}};
 // Which bed plays in which room. Rooms without their own track stay quiet for now.
-const SND_SET={cafe:'cafe',dinner:'cafe',lobby:'cafe'};
+const SND_SET={cafe:'cafe',dinner:'cafe',lobby:'cafe',rooftop:'cafe',ballroom:'cafe',pantry:'cafe'};
 function sndOn(){return S.sound!==false;}
 function _sndCtx(){if(SND.ctx)return SND.ctx;const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;
   try{if(navigator.audioSession)navigator.audioSession.type='ambient';}catch(e){}
@@ -6286,7 +6294,7 @@ function renderReal(app){
         h+=gCta('K’s notes','vn-notes',{icon:'arrow'});
         h+='</main>';app.innerHTML=h;wireCommon(app);
         app.querySelector('[data-act="vn-notes"]').addEventListener('click',()=>{RW._stamp=RW.transcript;render();});
-        {const vn=app.querySelector('.vn-end'),ch=vn&&vn.querySelector('.vn-char'),bx=vn&&vn.querySelector('.vn-box'),nw=vn&&vn.querySelector('.vn-new');if(ch){const top=Math.min(bx?bx.offsetTop:1e9,nw?nw.offsetTop:1e9);if(top<1e9)ch.style.bottom=(vn.clientHeight-top+12)+'px';}}
+        {const vn=app.querySelector('.vn-end'),ch=vn&&vn.querySelector('.vn-char'),bx=vn&&vn.querySelector('.vn-box'),nw=vn&&vn.querySelector('.vn-new');if(ch){const top=Math.min(bx?bx.offsetTop:1e9,nw?nw.offsetTop:1e9);if(top<1e9)ch.style.bottom=(vn.clientHeight-top+12-_vnSink(ch))+'px';}}
         // Keep the stamp off their face: shrink it until it clears the top of the picture
         {const vn=app.querySelector('.vn-end'),st=vn&&vn.querySelector('.vn-stamp'),im=vn&&vn.querySelector('.vn-char img');
          // measured without transforms (the stamp animates in), relative to the scene
@@ -6330,12 +6338,12 @@ function renderReal(app){
   on('[data-act="rw-redecide"]',async()=>{RW.loading=true;render();const r=await _rwDecide();RW.loading=false;RW.decideErr=!r;if(_rwIsClient())RW.decision=r;else RW.review=r;render();});
   {const sb=app.querySelector('.vn [data-act="snd"]');if(sb)sb.addEventListener('click',e=>{e.stopPropagation();const on=sndToggle();sb.classList.toggle('on',on);sb.innerHTML=(new DOMParser().parseFromString(sndBtnHtml(),'text/html').body.firstChild||sb).innerHTML;});}
   app.querySelectorAll('[data-equip]').forEach(b=>b.addEventListener('click',()=>{const t=b.dataset.equip;RW.equip=RW.equip===t?'':t;app.querySelectorAll('[data-equip]').forEach(x=>x.classList.toggle('on',x.dataset.equip===RW.equip));}));
-  {const vn=app.querySelector('.vn');if(vn){const box=vn.querySelector('.vn-box'),ch=vn.querySelector('.vn-char'),ln=vn.querySelector('.vn-line'),nw=vn.querySelector('.vn-new');if(nw&&box)box.style.marginBottom=(nw.offsetHeight+24)+'px';if(ln&&(ln.dataset.full||ln.textContent).length>150)ln.classList.add('long');if(box&&ch)ch.style.bottom=(box.offsetHeight+16)+'px';}}
+  {const vn=app.querySelector('.vn');if(vn){const box=vn.querySelector('.vn-box'),ch=vn.querySelector('.vn-char'),ln=vn.querySelector('.vn-line'),nw=vn.querySelector('.vn-new');if(nw&&box)box.style.marginBottom=(nw.offsetHeight+24)+'px';if(ln&&(ln.dataset.full||ln.textContent).length>150)ln.classList.add('long');if(box&&ch)ch.style.bottom=(box.offsetHeight+16-_vnSink(ch))+'px';}}
   {const vl=app.querySelector('.vn.vn-play #vn-line');if(vl){const full=vl.dataset.full||'',ctl=app.querySelector('.vn-ctl'),vn=vl.closest('.vn');
     // Long lines come in pages, like a game: the box stays one size, you tap for the next page
     const pages=_vnPages(full);let pg=0,i=0,t=null,typing=true;
     const ghost=document.createElement('div');ghost.className='vn-line vn-ghost';ghost.textContent=pages.reduce((a,b)=>a.length>=b.length?a:b,'');vl.parentNode.insertBefore(ghost,vl);vl.style.top=ghost.offsetTop+'px';
-    {const box=vn.querySelector('.vn-box'),ch=vn.querySelector('.vn-char');if(box&&ch)ch.style.bottom=(box.offsetHeight+16)+'px';}
+    {const box=vn.querySelector('.vn-box'),ch=vn.querySelector('.vn-char');if(box&&ch)ch.style.bottom=(box.offsetHeight+16-_vnSink(ch))+'px';}
     const finish=()=>{clearTimeout(t);vl.textContent=pages[pages.length-1];vl.classList.remove('more');vl.closest('.vn-box').classList.remove('has-more');RW._vnPlayed=full;vn.classList.remove('vn-play');vn.classList.add('vn-done');if(ctl)ctl.classList.remove('vn-hid');};
     const showPage=()=>{i=0;typing=true;vl.classList.remove('more');vl.closest('.vn-box').classList.remove('has-more');const cur=pages[pg];const tick=()=>{i+=1;vl.textContent=cur.slice(0,i);if(i>=cur.length){typing=false;if(pg<pages.length-1)(vl.classList.add('more'),vl.closest('.vn-box').classList.add('has-more'));else setTimeout(finish,350);return;}t=setTimeout(tick,/[.,!?…]/.test(cur[i-1])?140:28);};t=setTimeout(tick,pg?150:900);};
     vn.addEventListener('click',()=>{if(typing){clearTimeout(t);i=pages[pg].length;vl.textContent=pages[pg];typing=false;if(pg<pages.length-1)(vl.classList.add('more'),vl.closest('.vn-box').classList.add('has-more'));else finish();return;}if(pg<pages.length-1){pg++;showPage();}else finish();});
@@ -6405,8 +6413,10 @@ function _noDash(t){return String(t||'').replace(/\s*[—–]\s*/g,(m,o,str)=>{c
 function _vnOn(){return S.vn!==false&&RW.mode!=='live';}
 // Where the scene happens. Each kind of talk has a few places; one is picked per scene and kept for that scene.
 function _vnSet(){const k=RW.scenario,stu=_P().stage==='student';
-  const o={interview:['office','glass','call'],tough:stu?['studio','room']:['office','glass'],conflict:['corridor','glass'],meeting:['room','glass','call'],disagree:['room','glass','call'],feedback:stu?['studio','room']:['room','glass'],sayno:['room','call','home'],smalltalk:['cafe','lobby','dinner','street'],intro:['event','lobby','street'],pitch:['stage'],proposal:['shop','dinner','call'],bargain:['cafe','dinner','call'],difficult:['shop','call'],ground:['shop','cafe','call']}[k]||['office'];
+  const o={interview:['office','glass','call','elevator'],tough:stu?['studio','room','hallway']:['office','glass','afterhours'],conflict:['corridor','hallway','elevator','pantry','afterhours'],meeting:['room','glass','call','hallway'],disagree:['room','glass','call','hallway','pantry'],feedback:stu?['studio','room','hallway']:['room','glass','hallway','afterhours'],sayno:['room','call','home','pantry','hallway'],smalltalk:['cafe','lobby','dinner','street','pantry','elevator','park','subway','gallery','rooftop'],intro:['event','lobby','expo','gallery','rooftop','ballroom'],pitch:['stage','expo','ballroom'],proposal:['shop','dinner','call','glass'],bargain:['cafe','dinner','call','expo','nightstreet'],difficult:['shop','call','nightstreet'],ground:['shop','cafe','call','expo']}[k]||['office'];
   if(o.length<2)return o[0];const seed=_rwName()+'|'+k+'|'+((RW.brief&&(RW.brief.job||RW.brief.moment))||'');let h=0;for(const ch of seed)h=(h*31+ch.charCodeAt(0))|0;return o[(h>>>0)%o.length];}
+// People stand a step away: shown from about mid-thigh up, legs behind the line box, so faces read at phone size
+function _vnSink(ch){return Math.round(ch.offsetHeight*.27);}
 function _vnBg(){const k=_vnSet();return '<div class="vn-bg"><img src="'+SETS[k]+'" alt=""></div>';}
 // Stand-in faces until the cast sheet exists: one K image per mood
 function _vnMood(line){const t=String(line||'').toLowerCase();if(!t)return 'neutral';
