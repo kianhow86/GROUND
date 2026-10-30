@@ -194,9 +194,9 @@ exports.handler = async (event) => {
   const _ownerKey = process.env.OWNER_KEY || "";
   const _isOwner = !!_ownerKey && (event.headers["x-owner-key"] || "").trim() === _ownerKey;
 
-  // Pro gets a far bigger monthly ceiling: 5 practices a day is ~1,200 calls a month.
+  // Pro gets a bigger monthly ceiling: 3 practices a day is ~800 practice calls a month, plus Ask K and replies.
   const tier = _isOwner ? "pro" : await plan.tierOf(event, token);
-  const monthlyLimit = tier === "pro" ? 2500 : MONTHLY_LIMIT;
+  const monthlyLimit = tier === "pro" ? 2000 : MONTHLY_LIMIT;
 
   // ── Rate limit check via Netlify Blobs ──
   let dayUsage = 0, monthUsage = 0;
@@ -262,7 +262,7 @@ exports.handler = async (event) => {
 
   // ── Plans: Lite (free) and Pro ──
   // Lite: generic practice, 1 a day (plus one "your world" taster, ever), Quick answer, nothing else.
-  // Pro: 5 practices a day and every feature. A practice is counted once, by the X-Practice-Id the app
+  // Pro: 3 practices a day and every feature. A practice is counted once, by the X-Practice-Id the app
   // sends with every call inside it, and a single practice is capped in size.
   const practiceId = String(event.headers["x-practice-id"] || "").replace(/[^a-zA-Z0-9]/g, "").slice(0, 24);
   const wantTaster = (event.headers["x-taster"] || "") === "1";
@@ -293,7 +293,7 @@ exports.handler = async (event) => {
       // A new practice is starting.
       if (tier === "lite" && await plan.freePaused()) return deny(429, "free_paused");
       const isTaster = tier === "lite" && wantTaster && !tasterUsed;
-      const limit = tier === "pro" ? 5 : 1;
+      const limit = tier === "pro" ? 3 : 1;
       const counted = rec.ids.filter(id => !(rec.taster && rec.taster === id)).length;
       if (!isTaster && counted >= limit) return deny(429, "practice_limit", { used: counted, limit });
       if (tier === "lite") {

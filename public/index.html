@@ -2524,7 +2524,7 @@ function _errDetail(e){const m=String(e&&e.message||e||'').replace(/sk-[A-Za-z0-
 function renderAIError(err,retryAction){
   const msg=String(err&&err.message||err||'Something went wrong.');
   let title='K couldn’t answer',body='',badge='',btn='';
-  if(_isPlanErr(err)){const k=String(err.message).slice(5);title=k==='pro_only'?'That’s in Ground Pro':k==='free_paused'?'Free practice is full this month':k==='practice_long'?'That practice ran long':'That’s today’s practice done';body=k==='pro_only'?'Scenes in your world, every note from K, and more.':k==='free_paused'?'The free spots open again on '+_nextMonthLabel()+'.':k==='practice_long'?'Start a new one and keep going.':'More tomorrow. Pro gets five a day.';badge='<div class="badge g">'+ic('lock','l')+'</div>';btn='<button class="g-chip dark" data-act="see-pro">See Ground Pro</button>';}
+  if(_isPlanErr(err)){const k=String(err.message).slice(5);title=k==='pro_only'?'That’s in Ground Pro':k==='free_paused'?'Free practice is full this month':k==='practice_long'?'That practice ran long':'That’s today’s practice done';body=k==='pro_only'?'Scenes in your world, every note from K, and more.':k==='free_paused'?'The free spots open again on '+_nextMonthLabel()+'.':k==='practice_long'?'Start a new one and keep going.':'More tomorrow. Pro gets three a day.';badge='<div class="badge g">'+ic('lock','l')+'</div>';btn='<button class="g-chip dark" data-act="see-pro">See Ground Pro</button>';}
   else if(_isLimitErr(err)){title='You’ve used today’s allowance';body=/month/.test(msg)?'This month’s allowance is used up. It starts again on '+_nextMonthLabel()+'.':'It comes back at midnight. If I’ve sent you a code, enter it in Settings.';badge='<div class="badge g">'+ic('clock','l')+'</div>';btn='<button class="g-chip" data-go="settings">Open Settings</button>';}
   else if(_isOfflineErr(err)){title='No connection';body='K needs the internet. Check your connection and try again.';badge='<div class="badge err">'+ic('warn','l')+'</div>';if(retryAction)btn='<button class="g-chip dark" data-act="'+retryAction+'">Try again</button>';}
   else{title='Something went wrong';body='K didn’t answer. It isn’t anything you did. Try again in a moment.';badge='<div class="badge err">'+ic('warn','l')+'</div>';if(retryAction)btn='<button class="g-chip dark" data-act="'+retryAction+'">Try again</button>';}
@@ -3898,7 +3898,7 @@ function _sting(s){s=String(s||'');const end=/(^|[.!?”]\s)\[\[[^\]]+\]\]$/.tes
 function _unsting(s){return String(s||'').replace(/\[\[|\]\]/g,'');}
 // Kian's notes on a case: a method (how he does it) or a story (what happened), with a one-line teaser
 const STORY_META={gatekeeper:['s','The project where every choice needed one man’s approval'],discount:['m','Why I build a 10–20% buffer into every quote'],'free-now':['m','What I do when they promise ten paid jobs later'],'too-expensive':['s','From 50 dollars a minute to 30 times that'],'too-technical':['s','The day I realized I wasn’t selling music'],'too-long':['s','The Berklee lesson that stuck: subtraction'],'stand-out':['s','The student show that beat a perfect GPA'],introvert:['s','The shy kid who scared customers away'],'follow-up':['s','A LinkedIn message that paid off two years later'],'late-payment':['m','How I chase every late invoice'],'big-name':['s','Dishonored won a BAFTA. I made ten dollars an hour.'],'team-pay':['s','The conference job that made me an audio director'],delegate:['s','Why I stopped doing everything myself'],nervous:['s','Why I started making videos, scared'],'known-for-one':['s','What Wolf Warrior did to my label'],'career-change':['s','Three musicians, three new careers'],'all-over':['s','Going freelance used the other 80% of me'],'one-project':['s','Two dozen titles in two years'],teaching:['s','Teaching guitar at sixteen, with no experience'],internship:['s','How I got my first job: unpaid, in Boston'],'nothing-to-show':['s','The time I turned up with nothing to show'],'best-package':['s','Why Spicy Horse picked me'],'below-market':['m','Why I tell students to collect work first']};
-function _storyLbl(c){if(!c.story||!c.story.t)return '';if(c.story.src!=='kian')return 'A real story';return (STORY_META[c.id]||[])[0]==='m'?'Kian’s method':'Kian’s story';}
+function _storyLbl(c){if(!c.story||!c.story.t)return '';if(c.story.src!=='kian')return 'A real story';return (STORY_META[c.id]||[])[0]==='m'?'Kian’s method':'Kian’s take';}
 function renderCase(app){
   const c0=_case(V.caseId);if(!c0){go('library');return;}
   V.caseOrig=V.caseOrig||{};
@@ -4124,7 +4124,7 @@ function movesForReview(){return Object.keys(TECHNIQUES).map(k=>k+' = '+TECHNIQU
 const PLAN_ON=true;
 const PRO_PRICE={m:'$15',q:'$36',mCny:'¥98',qCny:'¥238',qPerMo:'$12'};
 const PAY_LINKS={paypalM:'https://www.paypal.me/kianhow/15',paypalQ:'https://www.paypal.me/kianhow/36',wechatQr:'art/wechat-pay.png'};
-const LITE_PRACTICE_DAY=1,PRO_PRACTICE_DAY=5,LITE_QUICK_DAY=3;
+const LITE_PRACTICE_DAY=1,PRO_PRACTICE_DAY=3,LITE_QUICK_DAY=3;
 function _proUntil(){const p=S.pro;if(!p||!p.until)return 0;const t=Date.parse(p.until);return isFinite(t)?t:0;}
 function _isPro(){if(!PLAN_ON)return true;if(S.aiConfig&&S.aiConfig.ownerKey)return true;return _proUntil()>Date.now();}
 function _isLite(){return !_isPro();}
@@ -4170,7 +4170,7 @@ function renderPro(app){
   h+='<div class="pro-hero"><img src="'+ART+'kpose/thumb.webp" alt=""><div class="t"><small>PRO</small><h1>'+(_isPro()?'You’re on Pro.':'Practice built around your life.')+'</h1><p>'+(_isPro()?_proDaysLeft()+' days left, ends '+escHtml(_proEndsLabel())+'. A new code extends it.':'Coached by Kian How. 20+ years making work, building products and guiding people.')+'</p></div></div>';
   h+='<div class="pro-list pro-3">'+
     _proRow('p-teal','talk','Scenes set in your world','Your field, your people, your numbers. Practice the conversation you’re actually about to have.')+
-    _proRow('p-lav','check','Every note from K','Five practices a day, what to say instead, and the moves you used.')+
+    _proRow('p-lav','check','Every note from K','Three practices a day, what to say instead, and the moves you used.')+
     _proRow('p-org','reply','K, before the real thing','Ask K what to do, or get help replying to the message in front of you.')+'</div>';
   h+='<div class="up-plans"><button class="up-plan'+(q?'':' on')+'" data-plan="m"><b>'+PRO_PRICE.m+'</b><span>30 days</span></button><button class="up-plan'+(q?' on':'')+'" data-plan="q"><small>BEST VALUE</small><b>'+PRO_PRICE.q+'</b><span>90 days · '+PRO_PRICE.qPerMo+'/mo</span></button></div>';
   h+='<div class="pw-btns"><button class="pw-btn pp" data-act="pay-pp">PayPal</button><button class="pw-btn wx" data-act="pay-wx">WeChat Pay</button></div>';
@@ -4210,7 +4210,7 @@ function _afterPro(){
   if(!_isPro()){render();return;}
   const need=!(_P().stage||S.rwField);
   const days=_proDaysLeft();
-  openSheet('<div class="welcome"><img src="'+ART+'kpose/cheer.webp" alt=""><span class="pro-tag">PRO · '+days+' DAYS</span><h2>Welcome to Pro.</h2><p>'+(need?'Three quick questions and every scene is set in your world: your field, your people, your numbers.':'Every scene is now set in your world. Five practices a day, and every note from K.')+'</p></div>'+
+  openSheet('<div class="welcome"><img src="'+ART+'kpose/cheer.webp" alt=""><span class="pro-tag">PRO · '+days+' DAYS</span><h2>Welcome to Pro.</h2><p>'+(need?'Three quick questions and every scene is set in your world: your field, your people, your numbers.':'Every scene is now set in your world. Three practices a day, and every note from K.')+'</p></div>'+
     '<button class="pw-btn gold" data-act="pro-start">'+(need?'Tell K about you':'Let’s go')+'</button>',
     {wire:sh=>{sh.querySelector('[data-act="pro-start"]').addEventListener('click',()=>{closeSheet();if(need){V.obStep=1;V._obPro=true;S.onboarded=false;render();}else go('hub');});}});
 }
@@ -4218,15 +4218,15 @@ function _afterPro(){
 function openPlanSheet(kind,extra){
   extra=extra||{};
   const pose=k=>'<img src="'+ART+'kpose/'+k+'.webp" alt="">';
-  const passCard='<div class="pw-pass"><div class="top"><b>Ground Pro</b><span>'+PRO_PRICE.m+' <small>/ 30 days</small></span></div><ul><li>Scenes set in your world</li><li>5 practices a day, every note from K</li><li>One payment. No auto-renew.</li></ul></div>';
+  const passCard='<div class="pw-pass"><div class="top"><b>Ground Pro</b><span>'+PRO_PRICE.m+' <small>/ 30 days</small></span></div><ul><li>Scenes set in your world</li><li>3 practices a day, every note from K</li><li>One payment. No auto-renew.</li></ul></div>';
   let h='',wire=null;
   if(kind==='practice'&&_isPro()){
-    h='<div class="pw-k">'+pose('cheer')+'<div><h2>Five today. That’s a real workout.</h2><p>Practice opens again tomorrow. Let it sink in tonight.</p></div></div>'+
+    h='<div class="pw-k">'+pose('cheer')+'<div><h2>Three today. That’s a real workout.</h2><p>Practice opens again tomorrow. Let it sink in tonight.</p></div></div>'+
       '<div class="pw-row"><div><b>Your pass</b><br><span>'+_proDaysLeft()+' days left</span></div><span>Ends '+escHtml(_proEndsLabel())+'</span></div>'+
       '<button class="btn btn-sec" data-go-nb>Read your notes</button>';
     wire=sh=>{sh.querySelector('[data-go-nb]').addEventListener('click',()=>{closeSheet();go('notebook');});};
   }else if(kind==='practice'){
-    h='<div class="pw-k">'+pose('shrug')+'<div><h2>That’s today’s free practice.</h2><p>Another one tomorrow. With Pro: five a day, set in your own world.</p></div></div>'+
+    h='<div class="pw-k">'+pose('shrug')+'<div><h2>That’s today’s free practice.</h2><p>Another one tomorrow. With Pro: three a day, set in your own world.</p></div></div>'+
       '<button class="pw-btn gold" data-act="see-pro">See Ground Pro</button><button class="btn btn-sec" data-act="go-quick">Try a Quick answer instead</button>';
   }else if(kind==='quick'){
     h='<div class="pw-k">'+pose('shrug')+'<div><h2>That’s today’s three Quick answers.</h2><p>More tomorrow. Pro gets fifteen a day.</p></div></div>'+
@@ -4963,7 +4963,7 @@ function _legalHtml(){
     '<p><b>Where it’s processed.</b> The AI services run outside mainland China. By using the AI features you agree to your text and audio being processed there.</p></div></details>'+
     '<details class="ab-d"><summary>Disclosure: K is AI'+ic('chev','s')+'</summary><div>'+
     '<p>K is not a person. It’s an AI model (Claude, by Anthropic) given Kian How’s principles, stories and way of coaching. Kian wrote and reviews the method; the AI writes the words in each session. It can be wrong, and it can misread what you said. If something K says doesn’t make sense, trust your judgment, and tell Kian so he can fix it.</p>'+
-    '<p>“Kian’s story” and “Kian’s method” are Kian’s own experience, in his words. Everything else is a practice scenario, not a real person or company.</p></div></details>'+
+    '<p>“Kian’s take” and “Kian’s method” are Kian’s own experience, in his words. Everything else is a practice scenario, not a real person or company.</p></div></details>'+
     '<p class="small" style="margin-top:10px">Questions: <a href="mailto:hello@kianhow.com">hello@kianhow.com</a> · Last updated October 2026</p>';
 }
 // ═══════════════════════════════════════════════════════════════════════════
