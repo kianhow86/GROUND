@@ -60,7 +60,8 @@ exports.handler = async (event) => {
   if (event.httpMethod === "GET" && !isOwner) {
     // The device asks: am I Pro? {until} or {until:null}
     const u = await plan.proUntil(token);
-    return reply(200, { until: u > 0 ? new Date(u).toISOString() : null, pro: u > Date.now() });
+    let code = null; try { const raw = token && await store.get("pass:" + token); if (raw) code = JSON.parse(raw).code || null; } catch (e) {}
+    return reply(200, { until: u > 0 ? new Date(u).toISOString() : null, pro: u > Date.now(), code: u > Date.now() ? code : null });
   }
   if (!isOwner) return reply(404, { error: "not_found" });
   if (event.httpMethod === "PUT") {

@@ -1950,6 +1950,34 @@ html[data-theme="dark"] .tips b.do{color:#9BE36D}html[data-theme="dark"] .tips b
 .pro-end .pe-t{flex:1;min-width:0;font-size:14.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pro-end .pe-go{height:32px;padding:0 14px;border-radius:999px;border:0;background:#F2CE6B;color:#2A1E00;font-size:13.5px;font-weight:900;white-space:nowrap}
 .pro-end .pe-x{width:30px;height:30px;border:0;background:none;color:var(--ink-3);font-size:18px;display:grid;place-items:center;flex-shrink:0}
+
+/* Paying: PayPal checkout and WeChat receipts */
+.pw-auto{display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:16px;background:var(--bg);font-size:14px;font-weight:600;color:var(--ink2)}
+.pw-auto svg{width:18px;height:18px;color:#7FE0DC;flex-shrink:0}
+.pw-code{justify-content:space-between}.pw-code b{color:var(--ink);font-family:ui-monospace,Menlo,monospace;font-size:15px;letter-spacing:.5px}
+#pp-area{display:flex;flex-direction:column;gap:12px}
+.ppb{min-height:112px;display:flex;flex-direction:column;justify-content:center}
+.pp-load{text-align:center;color:var(--ink2);font-weight:700;font-size:14.5px}
+.pw-small{font-size:12.5px;color:var(--ink2);text-align:center;margin:0}
+.wx-mini{display:flex;gap:12px;align-items:center;flex:1;min-width:0}.wx-mini img{width:96px;height:96px;border-radius:12px;background:#fff;object-fit:contain;flex-shrink:0}
+.wx-mini b{display:block;font-size:16px}.wx-mini span{display:block;font-size:13.5px;color:var(--ink2);margin-top:2px}
+.up{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:16px;border:1.5px dashed rgba(255,255,255,.22);margin-top:8px;cursor:pointer}
+.up.on{border-style:solid;border-color:rgba(127,224,220,.45)}
+.up .ph{width:44px;height:44px;border-radius:12px;background:var(--bg);display:grid;place-items:center;color:var(--ink2);flex-shrink:0}
+.up img{width:40px;height:54px;border-radius:8px;object-fit:cover;background:#fff;flex-shrink:0}
+.up .ut b{display:block;font-size:15px}.up .ut span{display:block;font-size:13px;color:var(--ink2);margin-top:1px}
+.pw-btn[disabled]{opacity:.45}
+.wait{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:8px 6px}
+.wait img{width:110px}.wait h2{font-size:22px;font-weight:900;margin:0}.wait p{color:var(--ink2);font-size:15px;margin:0}
+.wait-pill{padding-right:14px}
+.wq{border:1px solid rgba(242,206,107,.5);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:12px;background:color-mix(in srgb,#F2CE6B 7%,var(--card))}
+.wq .hd{display:flex;justify-content:space-between;align-items:center;font-weight:900;font-size:15px}
+.wq .hd em{font-style:normal;background:#F2CE6B;color:#2A1E00;border-radius:999px;padding:2px 10px;font-size:12.5px}
+.wq .it{display:flex;gap:12px;align-items:center}
+.wq .rc-im{padding:0;border:0;background:none;flex-shrink:0}.wq .rc-im img{width:46px;height:62px;border-radius:8px;object-fit:cover;background:#fff;display:block}
+.wq .it .t{flex:1;min-width:0}.wq .it b{display:block;font-size:15px}.wq .it span{font-size:13px;color:var(--ink2)}
+.wq .ap{height:38px;padding:0 16px;border-radius:999px;border:0;background:#F2CE6B;color:#2A1E00;font-weight:900;font-size:14px}
+.wq .no{height:38px;width:38px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:none;color:var(--ink2);font-size:16px;flex-shrink:0}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -2188,7 +2216,7 @@ const IC={
   health:'<path d="M12 20s-8-4.6-8-10.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 8 2.5C20 15.4 12 20 12 20z"/><path d="M7.5 12h2.5l1.5-2 2 4 1.5-2h2"/>',
   sales:'<path d="M3 10v4a1 1 0 0 0 1 1h2l5 4V5L6 9H4a1 1 0 0 0-1 1z"/><path d="M15 9.5a3.5 3.5 0 0 1 0 5M17.5 7a7 7 0 0 1 0 10"/>',
   phone:'<rect x="6.5" y="2.5" width="11" height="19" rx="3"/><path d="M11 18.5h2"/>',
-  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
   chev:'<path d="M9 5l7 7-7 7"/>',
   qr:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/>',
   user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c.9-4 4-6.5 8-6.5s7.1 2.5 8 6.5"/>',
@@ -2338,6 +2366,7 @@ function boot(){
   if(typeof _syInit==='function')_syInit();
   if(typeof _ownerLink==='function')_ownerLink();
   if(typeof planSync==='function'&&S.onboarded)setTimeout(planSync,1500);
+  if(typeof payCheck==='function'&&S.payPending){setTimeout(payCheck,2500);_payWatch();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&S.payPending)payCheck();});}
   if(document.readyState==='complete')setTimeout(_artWarm,300);else window.addEventListener('load',()=>setTimeout(_artWarm,300),{once:true});
   // Warm the K poses the sheets use, so K is there the moment a sheet opens
   setTimeout(()=>{try{['think','shrug','cheer','wait','invite','thumb'].forEach(k=>{const im=new Image();im.src=(typeof ART!=='undefined'?ART:'art/')+'kpose/'+k+'.webp';});}catch(e){}},1200);
@@ -2546,6 +2575,13 @@ async function redeemCode(code){
   if(r.ok&&j.ok){S.credits=(S.credits||0)+(j.sessions||0);if(j.until){S.pro={until:j.until,code:j.code};}S.codes=(S.codes||[]).concat([{code:j.code,sessions:j.sessions,days:j.days||0,at:new Date().toISOString()}]).slice(-20);save();return {ok:true,sessions:j.sessions,days:j.days||0,until:j.until||null};}
   return {ok:false,reason:j.error||('server_'+r.status)};
 }
+async function ownerReceipts(method,body){
+  const cfg=S.aiConfig||{};
+  const r=await fetch((cfg.endpoint||'/.netlify/functions/ai').replace(/\/ai$/,'/receipts')+'?owner=1',{method,headers:_aiHeaders(body?{'content-type':'application/json'}:{}),body:body?JSON.stringify(body):undefined});
+  let j={};try{j=await r.json();}catch(e){}
+  if(!r.ok)throw new Error(j.error||('server_'+r.status));
+  return j;
+}
 async function ownerCodes(method,body){
   const cfg=S.aiConfig||{};
   const endpoint=(cfg.endpoint||'/.netlify/functions/ai').replace(/\/ai$/,'/codes');
@@ -2558,7 +2594,7 @@ async function ownerCodes(method,body){
 // Test link: …/#fresh turns this phone into a brand-new free user (owner mode off, no Pro, new device id,
 // today's counts and the taster reset, intro shown again). The notebook is kept.
 function _freshLink(){try{if(!/^#fresh$/.test(location.hash||''))return false;history.replaceState(null,'',location.pathname+location.search);
-  S.aiConfig=S.aiConfig||{};delete S.aiConfig.ownerKey;delete S.pro;delete S.tasterAt;delete S.tasterOn;delete S.tasterPick;delete S.proLapsed;delete S.proLapsedSeen;delete S.proEndHide;delete S.seenTools;delete S.hubDots;delete S.levels;
+  S.aiConfig=S.aiConfig||{};delete S.aiConfig.ownerKey;delete S.pro;delete S.tasterAt;delete S.tasterOn;delete S.tasterPick;delete S.proLapsed;delete S.proLapsedSeen;delete S.proEndHide;delete S.payPending;delete S.seenTools;delete S.hubDots;delete S.levels;
   const u=S.usage||{};delete u.pday;u.pr=0;u.quick=0;S.onboarded=false;S.tourDone=false;
   try{localStorage.removeItem('grd-client-token');}catch(e){}
   save();setTimeout(()=>{try{showToast('Fresh start: you’re a new free user on this phone');}catch(e){}},900);return true;}catch(e){return false;}}
@@ -4165,7 +4201,7 @@ function _tierBadge(){if(!PLAN_ON||(S.aiConfig&&S.aiConfig.ownerKey))return '';r
 async function planSync(){
   try{const cfg=S.aiConfig||{};const ep=(cfg.endpoint||'/.netlify/functions/ai').replace(/\/ai$/,'/codes');
     const r=await fetch(ep,{headers:_aiHeaders({})});if(!r.ok)return;const j=await r.json();
-    if(j&&j.until){S.pro=Object.assign({},S.pro||{},{until:j.until});save();}
+    if(j&&j.until){S.pro=Object.assign({},S.pro||{},{until:j.until},j.code?{code:j.code}:{});save();}
     else if(j&&j.until===null&&S.pro&&_proUntil()<Date.now()){_proLapse();save();}
   }catch(e){}
 }
@@ -4194,20 +4230,67 @@ function openPro(back){V._proBack=back||V.view||'hub';if(!V.proPlan)V.proPlan='q
 function _planLabel(){return V.proPlan==='m'?'30 days':'90 days';}
 function _planUsd(){return V.proPlan==='m'?PRO_PRICE.m:PRO_PRICE.q;}
 function _planCny(){return V.proPlan==='m'?PRO_PRICE.mCny:PRO_PRICE.qCny;}
+// ── Paying ──
+// PayPal: PayPal's own checkout inside the app; the server checks the payment and Pro turns on by itself.
+// WeChat: nothing can check a personal WeChat payment, so the buyer sends the receipt and Kian approves it.
+function _payEp(name){const cfg=S.aiConfig||{};return (cfg.endpoint||'/.netlify/functions/ai').replace(/\/ai$/,'/'+name);}
+async function _ppConfig(){if(V._ppCfg)return V._ppCfg;try{const r=await fetch(_payEp('paypal'));const j=r.ok?await r.json():{};V._ppCfg=j&&j.clientId?j:{clientId:null};}catch(e){V._ppCfg={clientId:null};}return V._ppCfg;}
+function _ppSdk(cid){if(window.paypal&&window.paypal.Buttons)return Promise.resolve(window.paypal);if(V._ppSdkP)return V._ppSdkP;
+  V._ppSdkP=new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://www.paypal.com/sdk/js?client-id='+encodeURIComponent(cid)+'&currency=USD&intent=capture&components=buttons&enable-funding=card&disable-funding=paylater,venmo,credit';
+    s.onload=()=>window.paypal&&window.paypal.Buttons?ok(window.paypal):no(new Error('sdk'));s.onerror=()=>no(new Error('sdk'));document.head.appendChild(s);setTimeout(()=>no(new Error('sdk_timeout')),12000);});
+  V._ppSdkP.catch(()=>{V._ppSdkP=null;});return V._ppSdkP;}
+async function _ppCall(body){const r=await fetch(_payEp('paypal'),{method:'POST',headers:_aiHeaders({'content-type':'application/json'}),body:JSON.stringify(body)});let j={};try{j=await r.json();}catch(e){}if(!r.ok)throw new Error(j.error||('http_'+r.status));return j;}
+function _ppLinkHtml(){const link=V.proPlan==='m'?PAY_LINKS.paypalM:PAY_LINKS.paypalQ;
+  return '<div class="pw-steps"><div class="pw-step"><span class="n">1</span><div><b>Pay '+_planUsd()+' on PayPal</b><span>The button opens PayPal with the price set. Your email comes to me with the payment.</span></div></div><div class="pw-step"><span class="n">2</span><div><b>I email you a code</b><span>Usually within a few hours.</span></div></div></div>'+
+    '<a class="pw-btn pp" href="'+escHtml(link)+'" target="_blank" rel="noopener">Open PayPal · '+_planUsd()+'</a><div class="fieldset"><label class="lab">Have a code?</label>'+codeFieldHtml('pay-code')+'</div>';}
 function openPaySheet(how){
-  const pp=how!=='wx';
-  const link=V.proPlan==='m'?PAY_LINKS.paypalM:PAY_LINKS.paypalQ;
+  const pp=how!=='wx';V._payHow=pp?'pp':'wx';
   let h='<div class="pw-head"><h2 class="h2" style="font-size:21px">'+(pp?'Pay with PayPal':'Pay with WeChat')+'</h2><span class="pro-tag">'+escHtml(_planLabel())+' · '+(pp?_planUsd():_planCny())+'</span></div>';
-  h+='<div class="pw-tabs"><button class="'+(pp?'on':'')+'" data-how="pp">PayPal</button><button class="'+(pp?'':'on')+'" data-how="wx">WeChat Pay</button></div>';
-  h+='<div class="pw-steps">';
-  if(pp)h+='<div class="pw-step"><span class="n">1</span><div><b>Pay '+_planUsd()+' on PayPal</b><span>The button opens PayPal with the price set. Your email comes to me with the payment.</span></div></div>';
-  else h+='<div class="pw-step"><span class="n">1</span><div><b>Scan and pay '+_planCny()+'</b><span>Put your email in the payment note so I can reach you.</span><img class="pw-qr" src="'+(V.proPlan==='m'?PAY_LINKS.wechatQrM:PAY_LINKS.wechatQrQ)+'" alt="WeChat Pay QR code"></div></div>';
-  h+='<div class="pw-step"><span class="n">2</span><div><b>I email you a code</b><span>Usually within a few hours.</span></div></div>';
-  h+='<div class="pw-step"><span class="n">3</span><div><b>Enter it here</b><span>Pro starts straight away.</span></div></div></div>';
-  if(pp)h+='<a class="pw-btn pp" href="'+escHtml(link)+'" target="_blank" rel="noopener">Open PayPal · '+_planUsd()+'</a>';
-  h+='<div class="fieldset"><label class="lab">Have a code?</label>'+codeFieldHtml('pay-code')+'</div>';
-  openSheet(h,{wire:sh=>{wireCodeField(sh,'pay-code',()=>{closeSheet();_afterPro();});sh.querySelectorAll('[data-how]').forEach(b=>b.addEventListener('click',()=>openPaySheet(b.dataset.how)));}});
+  h+='<div class="pw-tabs"><button class="'+(pp?'on':'')+'" data-how="pp">PayPal or card</button><button class="'+(pp?'':'on')+'" data-how="wx">WeChat Pay</button></div>';
+  if(pp)h+='<div id="pp-area"><div class="pw-auto">'+ic('check','s')+'<span>Pro turns on the moment you pay. No code to wait for.</span></div><div class="ppb" id="pp-btns"><div class="pp-load">Loading PayPal…</div></div><p class="pw-small">One payment, no auto-renew.</p></div>';
+  else{const r=V._rcpt;
+    h+='<div class="pw-steps"><div class="pw-step"><span class="n">1</span><div class="wx-mini"><img src="'+(V.proPlan==='m'?PAY_LINKS.wechatQrM:PAY_LINKS.wechatQrQ)+'" alt="WeChat Pay QR code"><div><b>Scan and pay '+_planCny()+'</b><span>On this phone? Long-press to save it, then scan it from your photos in WeChat.</span></div></div></div>'+
+      '<div class="pw-step"><span class="n">2</span><div style="flex:1;min-width:0"><b>Add your receipt</b><span>A screenshot of the payment in WeChat.</span><label class="up'+(r?' on':'')+'">'+(r?'<img src="'+r+'" alt="">':'<span class="ph">'+ic('plus','s')+'</span>')+'<span class="ut"><b>'+(r?'Receipt added':'Choose screenshot')+'</b><span>'+(r?'Tap to change':'From your photos')+'</span></span><input type="file" accept="image/*" id="rc-file" hidden></label></div></div>'+
+      '<div class="pw-step"><span class="n">3</span><div><b>Pro turns on once it’s checked</b><span>Usually within a few hours. You don’t need to do anything else.</span></div></div></div>'+
+      '<button class="pw-btn wx" data-act="rc-send"'+(r&&!V._rcBusy?'':' disabled')+'>'+(V._rcBusy?'Sending…':'Send receipt')+'</button>'+(V._rcErr?'<div class="note err">'+ic('warn','s')+'<div>'+escHtml(V._rcErr)+'</div></div>':'');}
+  openSheet(h,{wire:sh=>{
+    sh.querySelectorAll('[data-how]').forEach(b=>b.addEventListener('click',()=>{V._rcErr=null;openPaySheet(b.dataset.how);}));
+    if(pp)_ppMount(sh);
+    else{const f=sh.querySelector('#rc-file');if(f)f.addEventListener('change',async()=>{const file=f.files&&f.files[0];if(!file)return;V._rcErr=null;try{V._rcpt=await _shrinkImg(file);}catch(e){V._rcErr='That picture didn’t open. Try another screenshot.';}openPaySheet('wx');});
+      const s=sh.querySelector('[data-act="rc-send"]');if(s)s.addEventListener('click',_sendReceipt);}
+  }});
 }
+async function _ppMount(sh){
+  const area=sh.querySelector('#pp-area'),box=sh.querySelector('#pp-btns');if(!box)return;
+  const fallback=()=>{if(!document.body.contains(area))return;area.innerHTML=_ppLinkHtml();wireCodeField(area,'pay-code',()=>{closeSheet();_afterPro();});};
+  const cfg=await _ppConfig();if(!cfg.clientId){fallback();return;}
+  let pp;try{pp=await _ppSdk(cfg.clientId);}catch(e){fallback();return;}
+  if(!document.body.contains(box))return;box.innerHTML='';
+  const plan=V.proPlan==='m'?'m':'q';
+  try{await pp.Buttons({style:{shape:'pill',color:'gold',label:'paypal',height:50,tagline:false},
+    createOrder:async()=>(await _ppCall({action:'create',plan})).id,
+    onApprove:async d=>{box.innerHTML='<div class="pp-load">Turning on Pro…</div>';
+      try{const g=await _ppCall({action:'capture',orderId:d.orderID});S.pro=Object.assign({},S.pro||{},{until:g.until,code:g.code});delete S.proLapsed;save();closeSheet();_afterPro();}
+      catch(e){_payFail(e.message==='paypal_declined'?'PayPal didn’t take that payment. Nothing was charged. Try another card, or WeChat Pay.':'The payment didn’t go through. If PayPal charged you, it will turn Pro on as soon as it can reach Ground. Open the app again in a minute.');}},
+    onError:()=>_payFail('PayPal had a problem. Nothing was charged. Try again in a moment.')}).render(box);}
+  catch(e){fallback();}
+}
+function _payFail(msg){openSheet('<div class="pw-k"><img src="'+ART+'kpose/shrug.webp" alt=""><div><h2>That didn’t go through.</h2><p>'+escHtml(msg)+'</p></div></div><button class="pw-btn gold" data-act="pf-again">Try again</button><button class="btn btn-sec" data-close>Not now</button>',{wire:sh=>{sh.querySelector('[data-act="pf-again"]').addEventListener('click',()=>openPaySheet(V._payHow||'pp'));}});}
+function _shrinkImg(file){return new Promise((ok,no)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{const m=1200,k=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);let q=.78,d=c.toDataURL('image/jpeg',q);while(d.length>1200000&&q>.3){q-=.15;d=c.toDataURL('image/jpeg',q);}ok(d);};im.onerror=()=>{URL.revokeObjectURL(u);no(new Error('img'));};im.src=u;});}
+async function _sendReceipt(){if(!V._rcpt||V._rcBusy)return;V._rcBusy=true;V._rcErr=null;openPaySheet('wx');
+  try{const r=await fetch(_payEp('receipts'),{method:'POST',headers:_aiHeaders({'content-type':'application/json'}),body:JSON.stringify({plan:V.proPlan==='m'?'m':'q',image:V._rcpt})});const j=await r.json().catch(()=>({}));if(!r.ok||!j.id)throw new Error(j.error||'http');
+    S.payPending={id:j.id,plan:V.proPlan==='m'?'m':'q',at:new Date().toISOString()};save();V._rcBusy=false;V._rcpt=null;
+    openSheet('<div class="wait"><img src="'+ART+'kpose/thumb.webp" alt=""><h2>Got it. Thanks.</h2><p>Your receipt is with Kian. Pro turns on by itself once it’s checked, usually within a few hours.</p></div><button class="pw-btn gold" data-close>Okay</button>',{});_payWatch();}
+  catch(e){V._rcBusy=false;V._rcErr='Your receipt didn’t send. Check your connection and try again.';openPaySheet('wx');}}
+// While a receipt waits, check now and then; when it's approved, Pro turns on and the welcome shows.
+async function payCheck(){if(!S.payPending)return;
+  try{const r=await fetch(_payEp('receipts'),{headers:_aiHeaders({})});if(!r.ok)return;const j=await r.json();
+    if(j.status==='approved'){await planSync();delete S.payPending;save();render();if(_isPro()&&!document.getElementById('sheet'))_afterPro();}
+    else if(j.status==='rejected'&&j.id===S.payPending.id){delete S.payPending;save();render();openSheet('<div class="pw-k"><img src="'+ART+'kpose/shrug.webp" alt=""><div><h2>That receipt didn’t match.</h2><p>Kian couldn’t find that payment. If you paid, send the receipt again from Ground Pro.</p></div></div><button class="pw-btn gold" data-act="rj-pro">Ground Pro</button><button class="btn btn-sec" data-close>Not now</button>',{wire:sh=>sh.querySelector('[data-act="rj-pro"]').addEventListener('click',()=>{closeSheet();openPro('hub');})});}
+    else if(!j.status){delete S.payPending;save();}
+  }catch(e){}}
+function _payWatch(){if(V._payIv)return;V._payIv=setInterval(()=>{if(!S.payPending){clearInterval(V._payIv);V._payIv=null;return;}if(document.visibilityState==='visible')payCheck();},60000);}
+function _payPendingPill(){if(!S.payPending||_isPro())return '';return '<div class="pro-end wait-pill"><span class="pe-ic">'+ic('clock','s')+'</span><span class="pe-t">Receipt sent. Pro is on its way.</span></div>';}
 function openCodeSheet(){
   openSheet('<h2 class="h2" style="font-size:21px">Enter your code</h2><p class="sub">The code from my email. Each code works on one phone.</p><div class="fieldset">'+codeFieldHtml('pro-code')+'</div>',
     {wire:sh=>{wireCodeField(sh,'pro-code',()=>{closeSheet();_afterPro();});const i=sh.querySelector('#pro-code');if(i)setTimeout(()=>i.focus(),100);}});
@@ -4218,6 +4301,7 @@ function _afterPro(){
   const need=!(_P().stage||S.rwField);
   const days=_proDaysLeft();
   openSheet('<div class="welcome"><img src="'+ART+'kpose/cheer.webp" alt=""><span class="pro-tag">PRO · '+days+' DAYS</span><h2>Welcome to Pro.</h2><p>'+(need?'Three quick questions and every scene is set in your world: your field, your people, your numbers.':'Every scene is now set in your world. Three practices a day, and every note from K.')+'</p></div>'+
+    (S.pro&&S.pro.code?'<div class="pw-auto pw-code"><span>Your code, for another phone</span><b>'+escHtml(S.pro.code)+'</b></div>':'')+
     '<button class="pw-btn gold" data-act="pro-start">'+(need?'Tell K about you':'Let’s go')+'</button>',
     {wire:sh=>{sh.querySelector('[data-act="pro-start"]').addEventListener('click',()=>{closeSheet();if(need){V.obStep=1;V._obPro=true;S.onboarded=false;render();}else go('hub');});}});
 }
@@ -4433,6 +4517,7 @@ function renderHub(app){
   let h='<main class="scr hub dk">';
   h+='<div class="top"><div class="wm"><b>Ground</b><i></i><small>by Kian How</small>'+(typeof _tierBadge==='function'?_tierBadge():'')+'</div><div class="ibtns"><button class="ibtn ib-set" data-go="settings" aria-label="Settings">'+ic('settings')+'</button></div></div>';
   if(typeof _proEndPill==='function')h+=_proEndPill();
+  if(typeof _payPendingPill==='function')h+=_payPendingPill();
   h+='<div class="dk-stack" id="dk-deck"></div>';
   if(typeof _isLite==='function'&&_isLite())h+='<div class="dk-tools three"><button class="glow" data-go="real"><i class="p-teal">'+ic('talk','s')+'</i>Practice</button><button data-go="quick"><i class="p-lav">'+ic('mic','s')+'</i>Quick answer</button><button class="gopro" data-act="gopro"><i>'+ic('arrow','s')+'</i>Get Pro</button></div>';
   else{const d1=_hubDay1();if(d1&&!S.hubDots){S.hubDots=1;S.seenTools={};save();}const nd=k=>!d1&&_hubNew(k)?' newdot':'';h+='<div class="dk-tools'+(d1?' day1':'')+'"><button class="askk'+nd('askk')+'" data-act="askk"><i class="k">'+kav()+'</i>'+(V.deskBusy?'Reading…':'Ask K')+'</button><button data-go="real"'+(d1?' class="glow"':'')+'><i class="p-teal">'+ic('talk','s')+'</i>Practice</button><button data-go="library" class="'+nd('library')+'"><i class="p-green">'+ic('book','s')+'</i>Toolkit</button><button data-go="notebook" class="'+nd('notebook')+'"><i class="p-yellow">'+ic('list','s')+'</i>Notes</button></div>';}
@@ -4659,6 +4744,9 @@ function renderOwner(app){
   const own=!!(S.aiConfig&&S.aiConfig.ownerKey);
   let h='<main class="scr" style="--gap:12px"><div class="bar"><button class="ibtn r" data-go="hub" aria-label="Back">'+ic('back')+'</button><div><h1 class="h1">Codes</h1><p class="sub" style="font-size:12.5px">Only you can see this page.</p></div></div>';
   if(!own){h+='<div class="note warn">'+ic('lock','s')+'<div><b>Owner mode is off on this device.</b><span>Open the app with #owner=YOUR_KEY once to turn it on.</span></div></div></main>';app.innerHTML=h;return;}
+  {const L=V._rcList;if(L&&L.length){const d=x=>{const t=new Date(x);return (t.toDateString()===new Date().toDateString()?'Today ':t.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' ')+t.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});};
+    h+='<div class="wq"><div class="hd">WeChat receipts to check<em>'+L.length+'</em></div>'+L.map(r=>'<div class="it"><button class="rc-im" data-rcimg="'+r.id+'"><img src="'+escHtml(r.image||'')+'" alt="Receipt"></button><div class="t"><b>'+escHtml(r.cny||'')+' · '+(r.plan==='m'?'30':'90')+' days</b><span>'+escHtml(d(r.at))+'</span></div><button class="ap" data-rcok="'+r.id+'"'+(V._rcBusyId===r.id?' disabled':'')+'>'+(V._rcBusyId===r.id?'…':'Approve')+'</button><button class="no" data-rcno="'+r.id+'" aria-label="Reject">×</button></div>').join('')+
+    '<p class="small" style="margin:0">Match it to the payment in WeChat, then Approve. Their Pro turns on by itself.</p></div>';}}
   const tab=V.ownTab||'all',codes=V._ownCodes||[];
   const n=x=>codes.filter(c=>x==='all'||(x==='unused'?c.status==='unused':c.status!=='unused')).length;
   h+='<div class="card stack" style="gap:12px"><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">'+
@@ -4687,6 +4775,11 @@ function renderOwner(app){
   if(!V._sugStats&&!V._sugStatsLoading){V._sugStatsLoading=true;const cfg=S.aiConfig||{};
     fetch((cfg.endpoint||'/.netlify/functions/ai').replace(/\/ai$/,'/stats'),{headers:{'x-owner-key':cfg.ownerKey||''}}).then(r=>r.ok?r.json():null).then(j=>{V._sugStats=j||{month:'Not available',now:{}};if(V.view==='owner')render();}).catch(()=>{V._sugStats={month:'Not available',now:{}};if(V.view==='owner')render();});}
   app.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{V.ownTab=b.dataset.tab;render();}));
+  if(!V._rcList&&!V._rcLoading){V._rcLoading=true;ownerReceipts('GET').then(j=>{V._rcList=j.receipts||[];}).catch(()=>{V._rcList=[];}).finally(()=>{V._rcLoading=false;if(V.view==='owner')render();});}
+  app.querySelectorAll('[data-rcimg]').forEach(b=>b.addEventListener('click',()=>{const r=(V._rcList||[]).find(x=>x.id===b.dataset.rcimg);if(r)openSheet('<img src="'+escHtml(r.image)+'" alt="Receipt" style="width:100%;max-height:70vh;object-fit:contain;border-radius:14px;background:#fff"><button class="btn btn-sec" data-close>Close</button>',{});}));
+  const rcAct=async(id,act)=>{V._rcBusyId=id;render();try{await ownerReceipts('POST',{id,act});V._rcList=(V._rcList||[]).filter(x=>x.id!==id);showToast(act==='approve'?'Approved. Their Pro is on.':'Rejected. They’ll be told.','check');}catch(e){showToast('Didn’t go through: '+e.message,'warn');}V._rcBusyId=null;render();};
+  app.querySelectorAll('[data-rcok]').forEach(b=>b.addEventListener('click',()=>rcAct(b.dataset.rcok,'approve')));
+  app.querySelectorAll('[data-rcno]').forEach(b=>b.addEventListener('click',()=>rcAct(b.dataset.rcno,'reject')));
   app.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',async()=>{await copyText(b.dataset.copy);showToast('Copied '+b.dataset.copy,'check');}));
   app.querySelector('[data-act="make"]').addEventListener('click',async()=>{
     const s=+app.querySelector('#ow-s').value||30,k=+app.querySelector('#ow-n').value||1,e=+app.querySelector('#ow-e').value||0;
