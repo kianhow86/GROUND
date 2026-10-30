@@ -4028,9 +4028,9 @@ function _worldWanted(){if(typeof _isLite==='function'&&_isLite()&&!(typeof _tas
 function _worldFresh(){return !!(S.world&&S.world.key===_worldKey()&&Array.isArray(S.world.cast)&&S.world.cast.length);}
 // A world built before the cast had pictures: ask K which look fits each person (one small call), names stay
 async function worldLooks(){const w=S.world;if(!w||!_aiOn()||!w.cast.length||w.cast.every(c=>c.look))return;if(W.lp)return W.lp;
-  W.lp=(async()=>{const sys='Match each person to the picture that fits them best. Reply with JSON only: {"looks":[a number 1-10 per person, in the same order, each number at most once]}\nLOOKS: '+LOOKS.map(l=>l.id+' = '+l.d).join('; ');
+  W.lp=(async()=>{const sys='Match each person to the picture that fits them best. Reply with JSON only: {"looks":[a number 1-'+LOOKS.length+' per person, in the same order, each number at most once]}\nLOOKS: '+LOOKS.map(l=>l.id+' = '+l.d).join('; ');
     const raw=await callCoach(sys,'PEOPLE:\n'+w.cast.map((c,i)=>(i+1)+'. '+c.name+', '+c.role+(c.detail?' ('+c.detail+')':'')).join('\n'),{json:true,maxTokens:80,featureId:'world',noLang:true});
-    const j=_jsonFrom(raw);const used=new Set();w.cast.forEach((c,i)=>{let l=parseInt(j.looks&&j.looks[i],10);if(!(l>=1&&l<=10)||used.has(l)){l=_lookByRole(c.role)||_lookHash(c.name);while(used.has(l))l=l%10+1;}c.look=l;used.add(l);});save();})().catch(()=>{}).finally(()=>{W.lp=null;});return W.lp;}
+    const j=_jsonFrom(raw);const used=new Set();w.cast.forEach((c,i)=>{let l=parseInt(j.looks&&j.looks[i],10);if(!(l>=1&&l<=LOOKS.length)||used.has(l)){l=_lookByRole(c.role,c.name)||_lookHash(c.name);while(used.has(l))l=l%LOOKS.length+1;}c.look=l;used.add(l);});save();})().catch(()=>{}).finally(()=>{W.lp=null;});return W.lp;}
 // The world as text for K's prompts. Empty when there is none.
 function worldText(){if(!_worldFresh())return '';const w=S.world;
   return 'THEIR WORLD (use these people and this kind of work, so every scene feels like their life):\n'+w.summary+'\nPeople: '+w.cast.map(c=>c.name+' ('+c.role+(c.detail?'; '+c.detail:'')+')').join('; ')+'\nWork they get asked to do: '+w.work.join('; ')+(w.money?'\nHow money comes up for them: '+w.money:'');}
@@ -4041,12 +4041,12 @@ async function worldEnsure(){
   if(W.p)return W.p;
   const key=_worldKey(),who=_adaptWho();
   W.p=(async()=>{
-    const sys='You build a small, believable world for a speaking-practice app, from what a person told you about themselves. The app will set every practice scene in this world, so it must feel like their real life: the people they actually deal with, the work they actually get asked to do.\nReply with JSON only, no markdown: {"summary":"what they do and where they are in it, one line, under 20 words","cast":[{"name":"a first name, varied and international, never Lena","role":"what this person is to the speaker, e.g. a client, a boss, a professor, a classmate, a recruiter, a teammate","detail":"one telling detail about them, under 10 words","look":"a number 1-10 from LOOKS, the picture that fits this person best; use each number at most once"}],"work":["three concrete things the speaker gets asked to do, under 8 words each"],"money":"how money usually comes up for them: a quote for a job, a day rate, a grade, a scholarship, an allowance. Under 12 words"}\nThe cast has exactly 4 people and must include: one with money or power over the speaker (a client, boss or professor), one peer (a classmate, teammate or friend), one stranger they might have to impress (a recruiter, a senior, someone at an event). Keep it universal: no country-specific details. Plain American English.\nLOOKS: '+LOOKS.map(l=>l.id+' = '+l.d).join('; ')+'.';
+    const sys='You build a small, believable world for a speaking-practice app, from what a person told you about themselves. The app will set every practice scene in this world, so it must feel like their real life: the people they actually deal with, the work they actually get asked to do.\nReply with JSON only, no markdown: {"summary":"what they do and where they are in it, one line, under 20 words","cast":[{"name":"a first name, varied and international, never Lena","role":"what this person is to the speaker, e.g. a client, a boss, a professor, a classmate, a recruiter, a teammate","detail":"one telling detail about them, under 10 words","look":"a number 1-'+LOOKS.length+' from LOOKS, the picture that fits this person best; use each number at most once"}],"work":["three concrete things the speaker gets asked to do, under 8 words each"],"money":"how money usually comes up for them: a quote for a job, a day rate, a grade, a scholarship, an allowance. Under 12 words"}\nThe cast has exactly 4 people and must include: one with money or power over the speaker (a client, boss or professor), one peer (a classmate, teammate or friend), one stranger they might have to impress (a recruiter, a senior, someone at an event). Keep it universal: no country-specific details. Plain American English.\nLOOKS: '+LOOKS.map(l=>l.id+' = '+l.d).join('; ')+'.';
     const raw=await Promise.race([callCoach(sys,'THE PERSON:\n'+who,{json:true,maxTokens:700,featureId:'world',noLang:true}),new Promise((_,rej)=>setTimeout(()=>rej(new Error('K took too long')),14000))]);
     const j=_jsonFrom(raw);if(!j||!Array.isArray(j.cast)||!j.cast.length||!Array.isArray(j.work))throw new Error('K gave an answer the app couldn’t use');
-    const w={key,summary:String(j.summary||'').trim(),cast:j.cast.slice(0,5).map(c=>({name:String(c.name||'').trim(),role:String(c.role||'').trim(),detail:String(c.detail||'').trim(),look:Math.max(1,Math.min(10,parseInt(c.look,10)||0))||0})).filter(c=>c.name&&c.role),work:j.work.slice(0,4).map(x=>String(x).trim()).filter(Boolean),money:String(j.money||'').trim(),made:new Date().toISOString()};
+    const w={key,summary:String(j.summary||'').trim(),cast:j.cast.slice(0,5).map(c=>({name:String(c.name||'').trim(),role:String(c.role||'').trim(),detail:String(c.detail||'').trim(),look:Math.max(1,Math.min(LOOKS.length,parseInt(c.look,10)||0))||0})).filter(c=>c.name&&c.role),work:j.work.slice(0,4).map(x=>String(x).trim()).filter(Boolean),money:String(j.money||'').trim(),made:new Date().toISOString()};
     if(!w.cast.length)throw new Error('K gave an answer the app couldn’t use');
-    {const used=new Set();w.cast.forEach(c=>{if(c.look&&!used.has(c.look))used.add(c.look);else{let l=_lookByRole(c.role)||_lookHash(c.name);while(used.has(l))l=l%10+1;c.look=l;used.add(l);}});}
+    {const used=new Set();w.cast.forEach(c=>{if(c.look&&!used.has(c.look))used.add(c.look);else{let l=_lookByRole(c.role,c.name)||_lookHash(c.name);while(used.has(l))l=l%LOOKS.length+1;c.look=l;used.add(l);}});}
     S.world=w;W.err=null;save();return w;
   })().catch(e=>{W.err=e;throw e;}).finally(()=>{W.p=null;});
   return W.p;
@@ -4126,7 +4126,7 @@ const ART='art/';
 const TOOL_ICON={};['aab','anchoring','bottom-line-first','buffer','give-to-get','good-question','know-your-lowest','labeling','monroe','pivot','pppp','prep','rule-of-3','star','subtraction','their-problem','two-good-options','walk-away','warm-then-firm'].forEach(k=>TOOL_ICON[k]=ART+'icons/'+k+'.webp');
 const TOOL_K={};['give-to-get','know-your-lowest','buffer','anchoring','walk-away','labeling','two-good-options','good-question','prep','monroe','pppp','rule-of-3','star','subtraction','their-problem','pivot','warm-then-firm','bottom-line-first','aab','point'].forEach(k=>TOOL_K[k]=ART+'k/'+k+'.webp');
 const CAT_K={};['job','client','disagree','work','people','pitch','surprise','thumbs'].forEach(k=>CAT_K[k]=ART+'k/cat2-'+k+'.webp');
-// The cast: ten looks, three faces each. K picks a look for each person in someone's world.
+// The cast: sixteen looks, three faces each. K picks a look for each person in someone's world.
 const LOOKS=[
   {id:1,d:'woman, early 20s, ponytail, denim jacket, backpack: a student'},
   {id:2,d:'man around 50, glasses, cardigan: a professor or senior manager'},
@@ -4137,20 +4137,28 @@ const LOOKS=[
   {id:7,d:'woman in her 30s, smart dark dress, hair up: an agency director'},
   {id:8,d:'man around 40, polo shirt and apron: a shop or café owner'},
   {id:9,d:'woman in her 50s, silver hair, sharp jacket: a senior client or executive'},
-  {id:10,d:'man in his late 20s, shirt and lanyard: a colleague or team lead'}
+  {id:10,d:'man in his late 20s, shirt and lanyard: a colleague or team lead'},
+  {id:11,d:'Western man in his mid 40s, charcoal suit, no tie: a foreign client, boss or investor'},
+  {id:12,d:'South Asian woman in her early 30s, long wavy hair, mustard top: a colleague, teammate or friend'},
+  {id:13,d:'young man in his mid 20s, navy suit and blue tie, folder: a junior interviewer, sales contact or new hire'},
+  {id:14,d:'man around 60, gray hair, glasses on his head, olive jacket: a landlord, relative, parent or older business owner'},
+  {id:15,d:'woman in her 30s, red bob, bright teal blazer: a creative client, designer or brand manager'},
+  {id:16,d:'woman in her late 50s, tight bun, gold glasses, burgundy jacket: a strict boss, teacher or senior partner'}
 ];
-function castArt(look,mood){const n=Math.max(1,Math.min(10,+look||1));return ART+'cast/c'+n+'_'+({neutral:1,pleased:1,unhappy:1}[mood]?mood:'neutral')+'.webp';}
-function _lookHash(name){let h=0;for(const ch of String(name||''))h=(h*31+ch.charCodeAt(0))|0;return ((h>>>0)%10)+1;}
+function castArt(look,mood){const n=Math.max(1,Math.min(LOOKS.length,+look||1));return ART+'cast/c'+n+'_'+({neutral:1,pleased:1,unhappy:1}[mood]?mood:'neutral')+'.webp';}
+function _lookHash(name){let h=0;for(const ch of String(name||''))h=(h*31+ch.charCodeAt(0))|0;return ((h>>>0)%LOOKS.length)+1;}
 // Which look is this person? From their world if K cast them, otherwise a stable pick by name
-function lookFor(name){const n=String(name||'').split(' · ')[0].trim();if(typeof _worldFresh==='function'&&_worldFresh()){const c=S.world.cast.find(x=>x.name.toLowerCase()===n.toLowerCase());if(c&&c.look)return c.look;if(c)return _lookByRole(c.role)||_lookHash(n);}return _lookHash(n);}
-const SETS={};['office','room','cafe','studio','corridor','event','stage','shop'].forEach(k=>SETS[k]=ART+'sets/'+k+'.webp');
-// A sensible look from the role, used when K didn't pick one
-function _lookByRole(role){const r=String(role||'').toLowerCase();
-  if(/professor|teacher|lecturer|tutor|senior manager|director of|dean/.test(r))return 2;
-  if(/recruiter|hr|hiring|talent/.test(r))return 4;if(/classmate|student|bandmate|roommate/.test(r))return 6;
-  if(/producer|indie|creative|founder|startup/.test(r))return 3;if(/caf|shop|owner|restaurant|bar /.test(r))return 8;
-  if(/executive|ceo|senior client|partner|investor/.test(r))return 9;if(/team lead|lead|colleague|co-?worker|teammate|manager/.test(r))return 10;
-  if(/agency|brand|marketing|label/.test(r))return 7;if(/client|customer/.test(r))return 5;return 0;}
+function lookFor(name){const n=String(name||'').split(' · ')[0].trim();if(typeof _worldFresh==='function'&&_worldFresh()){const c=S.world.cast.find(x=>x.name.toLowerCase()===n.toLowerCase());if(c&&c.look)return c.look;if(c)return _lookByRole(c.role,n)||_lookHash(n);}return _lookHash(n);}
+const SETS={};['office','room','cafe','studio','corridor','event','stage','shop','call','dinner','lobby','home','glass','street'].forEach(k=>SETS[k]=ART+'sets/'+k+'.webp');
+// A sensible look from the role, used when K didn't pick one. Each role has a few faces, so the same role isn't always the same person.
+function _lookByRole(role,name){const r=String(role||'').toLowerCase(),p=a=>a[(_lookHash(name||role)-1)%a.length];
+  if(/professor|teacher|lecturer|tutor|dean/.test(r))return p([2,16]);
+  if(/senior manager|director of|boss|supervisor|head of/.test(r))return p([16,11,2]);
+  if(/recruiter|hr|hiring|talent|interview/.test(r))return p([4,13]);if(/classmate|student|bandmate|roommate/.test(r))return p([6,1]);
+  if(/landlord|relative|parent|father|mother|uncle|aunt|neighbou?r/.test(r))return 14;
+  if(/producer|indie|creative|founder|startup|designer/.test(r))return p([3,15]);if(/caf|shop|owner|restaurant|bar /.test(r))return p([8,14]);
+  if(/executive|ceo|senior client|partner|investor/.test(r))return p([9,11,16]);if(/team lead|lead|colleague|co-?worker|teammate|manager|friend/.test(r))return p([10,12]);
+  if(/agency|brand|marketing|label/.test(r))return p([7,15]);if(/sales|vendor|supplier|new hire|junior/.test(r))return 13;if(/client|customer/.test(r))return p([5,11,15,9]);return 0;}
 // ═══ Moves: a tool is learned when K sees you use it in a round. Everything stays readable. ═══
 function _moves(){if(!S.moves||typeof S.moves!=='object')S.moves={};return S.moves;}
 function moveLearned(t){return !!_moves()[t];}
@@ -4371,7 +4379,7 @@ const SND={ctx:null,gain:null,src:null,cur:'',buf:{},want:'',unlocked:false};
 const SND_TRACKS={title:{files:['art/audio/title.m4a','art/audio/title.mp3'],loop:[15.5,28.5],vol:.8},
   cafe:{files:['art/audio/cafe.m4a','art/audio/cafe.mp3'],loop:[0,9999],vol:.7}};
 // Which bed plays in which room. Rooms without their own track stay quiet for now.
-const SND_SET={cafe:'cafe'};
+const SND_SET={cafe:'cafe',dinner:'cafe',lobby:'cafe'};
 function sndOn(){return S.sound!==false;}
 function _sndCtx(){if(SND.ctx)return SND.ctx;const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;
   try{if(navigator.audioSession)navigator.audioSession.type='ambient';}catch(e){}
@@ -6210,7 +6218,7 @@ function renderReal(app){
     // The card: who you're talking to, on their scene
     let nums='';
     if(b&&b.c&&b.pos){const m=String(b.pos).match(/^(.*?)\.\s*Lowest you’ll accept:\s*(.+?)\.?$/);nums=m?'<div class="bf-nums"><div><b>'+escHtml(RW_POS_LBL[RW.scenario]||'Your price')+'</b><span>'+escHtml(m[1])+'</span></div><div><b>Lowest</b><span>'+escHtml(m[2])+'</span></div></div>':'<div class="bf-pos">'+escHtml(b.pos)+'</div>';}
-    const pr=(()=>{const L=(typeof LOOKS!=='undefined'&&typeof lookFor==='function')?LOOKS.find(l=>l.id===lookFor(name)):null;const d=L?L.d:'';return /^woman/.test(d)?'she':/^man/.test(d)?'he':_rwShe();})();
+    const pr=(()=>{const L=(typeof LOOKS!=='undefined'&&typeof lookFor==='function')?LOOKS.find(l=>l.id===lookFor(name)):null;const d=L?L.d:'';return /\bwoman\b/.test(d)?'she':/\bman\b/.test(d)?'he':_rwShe();})();
     const sec=cl&&RW.secret?'<div class="bf-sec">'+ic('lock','s')+escHtml(pr==='he'?'He has a secret. Ask to find it.':pr==='they'?'They have a secret. Ask to find it.':'She has a secret. Ask to find it.')+'</div>':'';
     h+='<div class="bf-card" style="background-image:url('+SETS[_vnSet()]+')"><img class="bf-pic" src="'+_vnChar('neutral')+'" alt=""><div class="bf-who"><small>You’re talking to</small><h2'+(name.length>10?' class="long"':'')+'>'+escHtml(name)+'</h2>'+(role?'<span>'+escHtml(cap(role))+'</span>':'')+'</div>'+((nums||sec)?'<div class="bf-bot">'+nums+sec+'</div>':'')+'</div>';
     // The scene
@@ -6395,7 +6403,10 @@ function _vnPages(t){const max=130;const sents=String(t||'').match(/[^.!?…]+[.
 function _sentTrim(t,max){t=String(t||'').trim();if(t.length<=max)return t;const cut=t.slice(0,max);const i=Math.max(cut.lastIndexOf('. '),cut.lastIndexOf('! '),cut.lastIndexOf('? '));return i>40?cut.slice(0,i+1):cut.replace(/\s+\S*$/,'')+'…';}
 function _noDash(t){return String(t||'').replace(/\s*[—–]\s*/g,(m,o,str)=>{const after=str.slice(o+m.length,o+m.length+1);return /[A-Z“"]/.test(after)?'. ':', ';});}
 function _vnOn(){return S.vn!==false&&RW.mode!=='live';}
-function _vnSet(){const k=RW.scenario,stu=_P().stage==='student';return {interview:'office',tough:stu?'studio':'office',conflict:'corridor',meeting:'room',disagree:'room',feedback:stu?'studio':'room',sayno:'room',smalltalk:'cafe',intro:'event',pitch:'stage',proposal:'shop',bargain:'cafe',difficult:'shop',ground:'shop'}[k]||'office';}
+// Where the scene happens. Each kind of talk has a few places; one is picked per scene and kept for that scene.
+function _vnSet(){const k=RW.scenario,stu=_P().stage==='student';
+  const o={interview:['office','glass','call'],tough:stu?['studio','room']:['office','glass'],conflict:['corridor','glass'],meeting:['room','glass','call'],disagree:['room','glass','call'],feedback:stu?['studio','room']:['room','glass'],sayno:['room','call','home'],smalltalk:['cafe','lobby','dinner','street'],intro:['event','lobby','street'],pitch:['stage'],proposal:['shop','dinner','call'],bargain:['cafe','dinner','call'],difficult:['shop','call'],ground:['shop','cafe','call']}[k]||['office'];
+  if(o.length<2)return o[0];const seed=_rwName()+'|'+k+'|'+((RW.brief&&(RW.brief.job||RW.brief.moment))||'');let h=0;for(const ch of seed)h=(h*31+ch.charCodeAt(0))|0;return o[(h>>>0)%o.length];}
 function _vnBg(){const k=_vnSet();return '<div class="vn-bg"><img src="'+SETS[k]+'" alt=""></div>';}
 // Stand-in faces until the cast sheet exists: one K image per mood
 function _vnMood(line){const t=String(line||'').toLowerCase();if(!t)return 'neutral';

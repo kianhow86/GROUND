@@ -16,3 +16,7 @@
   for = "/art/*"
   [headers.values]
     Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
+# PAYPAL_ENV is just the word "live", which appears all over the app: don't treat it as a leaked secret
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "PAYPAL_ENV"
