@@ -2026,6 +2026,20 @@ html[data-theme="dark"] .tips b.do{color:#9BE36D}html[data-theme="dark"] .tips b
 
 /* K's animated loop (writes, thinks, writes): one picture, so no pose swapping */
 .kw2-k.live{animation:none;opacity:1;width:auto;height:min(52%,360px)}
+
+/* Reading and setting-the-scene loops are framed from the waist up: they rise from the bottom, under the text */
+.kw2-k.live.half{height:auto;width:min(92%,380px);bottom:0;transform:translateX(-50%)}
+.kw2-k.live.still{transition:opacity .25s}
+/* The words sit on a frosted panel, so K never fights the text; waist-up loops tuck behind it */
+.kw2-txt{left:12px;right:12px;bottom:12px;padding:16px 18px 18px;gap:6px;background:rgba(11,12,16,.84);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08);border-radius:22px}
+.kw2-steps{margin-bottom:2px}
+.kw2 .kw-title{font-size:21px;line-height:1.2}
+.kw2 .kw-sub{font-size:14.5px}
+.kw2-k.live{bottom:max(26%,168px)}
+.kw2-k.live.half{width:min(66%,280px);bottom:96px}
+.kw2-notes{bottom:calc(max(26%,168px) + 150px)}
+.kw2-card:after{background:linear-gradient(180deg,rgba(11,12,16,.15) 0%,rgba(11,12,16,0) 30%,rgba(11,12,16,0) 60%,rgba(11,12,16,.6) 100%)}
+.kw2 .kw-title,.kw2 .kw-sub{text-wrap:balance}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -2410,8 +2424,9 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){_setVH();
 document.addEventListener('touchstart',function _t(){_setVH();setTimeout(_setVH,200);},{passive:true});
 try{window.visualViewport&&window.visualViewport.addEventListener('resize',_setVH);}catch(e){}
 function boot(){
-  // K's writing loop is about 1MB: fetch it quietly after start, so the first loading screen already has it
+  // K's loops are about 1MB each: fetch them quietly after start, so loading screens already have them
   setTimeout(()=>{try{const i=new Image();i.src=ART+'kpose/kwrite.webp';}catch(e){}},4000);
+  setTimeout(()=>{try{['kread','kscene'].forEach(n=>{const i=new Image();i.src=ART+'kpose/'+n+'.webp';});}catch(e){}},12000);
   load();
   if(typeof _syInit==='function')_syInit();
   if(typeof _ownerLink==='function')_ownerLink();
@@ -2436,15 +2451,16 @@ document.addEventListener('DOMContentLoaded',boot);
 
 // K at work: the avatar with a notepad, scribbling in a loop while the AI thinks
 // K at work while the AI runs: K in a real scene, swapping between two poses, notes drifting up, and what K is doing right now
-const KW_KIND={notes:{p:['write','think'],steps:['Going back over what you said','Finding the moments that changed it','Writing it in plain words']},
-  read:{p:['think','write'],steps:['Reading it twice','Working out what’s really going on','Choosing what to say first']},
-  scene:{p:['think','wait'],steps:['Picking who you’ll talk to','Setting the place','Writing their first line']}};
+const KW_KIND={notes:{a:'kwrite',st:'write',steps:['Going back over what you said','Finding the moments that changed it','Writing it in plain words']},
+  read:{a:'kread',st:'phone',steps:['Reading it twice','Working out what’s really going on','Choosing what to say first']},
+  scene:{a:'kscene',st:'up',steps:['Picking who you’ll talk to','Setting the place','Writing their first line']}};
 function kWritingHtml(title,sub,set){
-  const t=String(title||''),k=/notes|writing a|taking/i.test(t)?'notes':/setting|picking/i.test(t)?'scene':'read',K=KW_KIND[k];
+  const t=String(title||''),k=/notes|writing a|taking/i.test(t)?'notes':/setting|picking|making this/i.test(t)?'scene':'read',K=KW_KIND[k];
   const bg=(typeof SETS!=='undefined'&&set&&SETS[set])?SETS[set]:ART+'sets/kdesk.webp';
   return '<div class="kw2" role="status" aria-live="polite"><div class="kw2-card"><img class="kw2-bg" src="'+bg+'" alt="">'+
-    '<div class="kw2-notes" aria-hidden="true"><i></i><i></i><i></i></div>'+
-    '<img class="kw2-k live" src="'+ART+'kpose/kwrite.webp" alt="">'+
+    (k==='notes'?'<div class="kw2-notes" aria-hidden="true"><i></i><i></i><i></i></div>':'')+
+    // A still pose shows until the moving K has loaded, then steps aside
+    (K.half?'':'<img class="kw2-k live still" src="'+ART+'kpose/'+K.st+'.webp" alt="">')+'<img class="kw2-k live'+(K.half?' half':'')+'" src="'+ART+'kpose/'+K.a+'.webp" alt="" onload="var p=this.previousElementSibling;if(p&&p.classList.contains(\'still\'))p.style.opacity=0">'+
     '<div class="kw2-txt"><div class="kw2-steps" aria-hidden="true">'+K.steps.map((x,i)=>'<span style="animation-delay:'+(i*2.4)+'s">'+escHtml(x)+'<em>…</em></span>').join('')+'</div>'+
     '<b class="kw-title">'+escHtml(t||'K is taking notes')+'</b>'+(sub?'<span class="kw-sub">'+escHtml(sub)+'</span>':'')+'</div></div></div>';
 }
@@ -4007,7 +4023,7 @@ function renderCase(app){
     const cc=_caseCat(c0.cat);
     let h='<main class="scr '+cc.p+'">'+gBar(cc.t,'library');
     if(werr)h+='<div class="g-block"><div class="g-kick">The moment</div><div class="g-big" style="font-size:24px">'+escHtml(c0.title)+'</div></div>'+renderAIError(werr,'case-world-retry')+'<div class="push"></div><button class="link case-peek" data-act="case-orig">Read the original instead →</button>';
-    else h+=kWritingHtml('K is setting this in your world…','Same situation, your kind of work.');
+    else h+=kWritingHtml('K is making this yours…','Your people, your work, your numbers.');
     h+='</main>';app.innerHTML=h;wireCommon(app);
     const r=app.querySelector('[data-act="case-world-retry"]');if(r)r.addEventListener('click',()=>{delete CW.err[wkey];W.err=null;render();});
     const o=app.querySelector('[data-act="case-orig"]');if(o)o.addEventListener('click',()=>{V.caseOrig[c0.id]=true;render();});
@@ -6279,7 +6295,7 @@ function renderReal(app){
     }
     if(!_aiOn())h+='<p class="small center-t">AI is off or you’re offline, so scenes come from the built-in set.</p>';
   }else if(ph==='brief'&&RW.adapting){
-    h+=gBar(_rwShort(),'rw-setup',_rwDots())+kWritingHtml('K is setting the scene in your world…','Same situation, your kind of work.');
+    h+=gBar(_rwShort(),'rw-setup',_rwDots())+kWritingHtml('K is making this yours…','Your people, your work, your numbers.');
   }else if(ph==='brief'&&RW.adaptErr){
     h+=gBar(_rwShort(),'rw-setup',_rwDots())+renderAIError(RW.adaptErr,'rw-adapt-retry')+'<div class="push"></div><button class="link case-peek" data-act="rw-adapt-orig">Practice the original instead →</button>';
   }else if(ph==='brief'){
@@ -7055,7 +7071,7 @@ function renderChoose(app){
   if(needs){
     let h='<main class="scr p-teal ch-scr">'+gBar('Choose','real');
     if(werr)h+=renderAIError(werr,'ch-world-retry')+'<div class="push"></div><button class="link case-peek" data-act="ch-orig">Use the original instead →</button>';
-    else h+=kWritingHtml('K is setting this in your world…','Same choice, your kind of work.');
+    else h+=kWritingHtml('K is making this yours…','Your people, your work, your numbers.');
     h+='</main>';app.innerHTML=h;wireCommon(app);
     const r=app.querySelector('[data-act="ch-world-retry"]');if(r)r.addEventListener('click',()=>{delete CW.err[wkey];W.err=null;render();});
     const o=app.querySelector('[data-act="ch-orig"]');if(o)o.addEventListener('click',()=>{V.chOrig[CH.id]=true;render();});
