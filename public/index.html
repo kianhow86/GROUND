@@ -2040,6 +2040,60 @@ html[data-theme="dark"] .tips b.do{color:#9BE36D}html[data-theme="dark"] .tips b
 .kw2-notes{bottom:calc(max(26%,168px) + 150px)}
 .kw2-card:after{background:linear-gradient(180deg,rgba(11,12,16,.15) 0%,rgba(11,12,16,0) 30%,rgba(11,12,16,0) 60%,rgba(11,12,16,.6) 100%)}
 .kw2 .kw-title,.kw2 .kw-sub{text-wrap:balance}
+/* Coming up: a real conversation on its way */
+.dk-card.up{gap:0}
+.up-top{display:flex;align-items:center;justify-content:space-between}
+.up-edit{font-size:14px;font-weight:800;color:var(--pi);opacity:.7;padding:8px 2px}
+.up-when{display:flex;align-items:center;gap:12px;margin-top:14px;padding:12px;border-radius:18px;background:rgba(18,12,36,.1)}
+.up-when b{flex:0 0 54px;height:54px;border-radius:14px;background:var(--pi);color:var(--p);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:24px;font-weight:900;line-height:1}
+.up-when b small{font-size:9.5px;letter-spacing:.12em;margin-top:3px}
+.up-when b .up-today{font-size:13px;letter-spacing:.02em}
+.up-when strong{display:block;font-size:16px;font-weight:800;line-height:1.25}
+.up-when em{display:block;font-style:normal;font-size:14px;opacity:.75;margin-top:2px;line-height:1.3}
+.up-body{justify-content:flex-end;padding:12px 0 14px}
+.up .dk-big{font-size:clamp(26px,4dvh,34px)}
+.up-steps{list-style:none;padding:0;margin:12px 0 0;display:flex;flex-direction:column;gap:2px}
+.up-steps button{display:flex;align-items:center;gap:10px;width:100%;padding:6px 0;font-size:15.5px;font-weight:800;color:var(--pi);text-align:left}
+.up-steps u{text-decoration:none;flex:0 0 26px;height:26px;border-radius:50%;border:2px solid var(--pi);display:grid;place-items:center;font-size:12.5px;font-weight:900}
+.up-steps li.ok button{opacity:.55}
+.up-steps li.ok u{background:var(--pi);color:var(--p)}
+.up-cal{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px;font-size:14px;font-weight:800;color:var(--pi);opacity:.75;text-decoration:none}
+.up-cal .ic{width:16px;height:16px}
+.up-later{align-self:center;margin-top:10px;font-size:14px;font-weight:800;color:var(--pi);opacity:.6;padding:4px 10px}
+.up-how{display:flex;gap:8px;margin-top:18px}
+.up-how button{flex:1;height:50px;border-radius:16px;border:2px solid var(--pi);color:var(--pi);font-size:15.5px;font-weight:800}
+.up-sh h2{font-size:24px;font-weight:900;letter-spacing:-.02em}
+.up-shs{font-size:15px;color:var(--ink-2);margin:4px 0 16px}
+.up-sh .g-kick{margin:14px 0 8px}
+.up-chips{display:flex;flex-wrap:wrap;gap:8px}
+.up-chips button,.up-pick{position:relative;height:42px;padding:0 14px;border-radius:14px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font-size:15px;font-weight:700;display:inline-flex;align-items:center}
+.up-chips .on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.up-pick input{position:absolute;inset:0;opacity:0;width:100%;height:100%}
+.up-sh .g-input{width:100%;height:48px;border-radius:14px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:0 14px;font-size:15.5px;outline:none}
+.up-sh .g-cta{margin-top:18px}
+.up-sh .g-answer{min-height:96px}
+.up-rm{display:block;margin:12px auto 0;font-size:14.5px}
+
+.up-top{align-self:stretch;width:100%}
+.up-body{justify-content:center}
+.up-how button{display:flex;align-items:center;justify-content:center;padding:0 6px}
+
+/* What moved them: intention vs incentive */
+.ln-split{display:flex;gap:8px;margin-bottom:10px}
+.ln-split div{flex:1;border-radius:16px;padding:12px 14px 10px}
+.ln-split b{display:block;font-size:28px;font-weight:900;line-height:1}
+.ln-split span{font-size:11.5px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.ln-in{background:rgba(246,168,200,.14);color:#F6A8C8}.ln-ic{background:rgba(127,224,224,.14);color:#7FE0E0}
+:root[data-theme="light"] .ln-in{color:#C2457A}:root[data-theme="light"] .ln-ic{color:#0E8C8C}
+.ln-card{padding:4px 16px}
+.ln-row{padding:12px 0;border-top:1px solid var(--line)}.ln-row:first-child{border-top:0}
+.ln-tag{display:inline-block;font-size:10.5px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;border-radius:8px;padding:4px 8px;margin-bottom:6px}
+.ln-tag.t-in{background:#F6A8C8;color:#2a0c18}.ln-tag.t-ic{background:#7FE0E0;color:#06201F}
+.ln-q{font-size:16px;font-weight:800;line-height:1.35}
+.ln-w{font-size:14px;color:var(--ink-2);margin-top:3px;line-height:1.4}
+.ln-k{margin-top:10px;border-radius:18px;padding:14px 16px;background:var(--card);border:1px solid var(--line);font-size:15px;line-height:1.45}
+.ln-k b{color:#7FE0E0}
+:root[data-theme="light"] .ln-k b{color:#0E8C8C}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -2872,8 +2926,10 @@ function nbContext(cat){
   const recent=_nbEntries(cat).filter(e=>e.fix).slice(0,3);
   const note=_nbNote();
   const sty=typeof chStyle==='function'?chStyle():null;
-  if(!recent.length&&!(note&&note.habits&&note.habits.length)&&!sty)return '';
+  const upc=typeof upContext==='function'?upContext():'';
+  if(!recent.length&&!(note&&note.habits&&note.habits.length)&&!sty&&!upc)return '';
   const lines=['','','YOUR NOTEBOOK ON THIS PERSON (what you noted in past sessions; use it, never recite it):'];
+  if(upc)lines.push(upc);
   if(note&&note.habits&&note.habits.length)lines.push('Habits you are tracking with them: '+note.habits.map(h=>h.name+(h.trend==='up'?' (improving)':h.trend==='flat'?' (still working on it)':'')+(h.next?'; next step you gave: '+h.next:'')).join('; ')+'.');
   if(sty)lines.push('In Choose (picking from four options), their instinct: '+CH_STYLE[sty].t.replace(/^You /,'they ')+'.');
   if(recent.length){lines.push('Their last '+(recent.length===1?'':recent.length+' ')+(NB_CAT_ONE[cat]||cat)+' session'+(recent.length===1?'':'s')+':');
@@ -4560,10 +4616,12 @@ function _dkPools(){
   return {practice:prac,read,choose:cho,quick:(()=>{const nq=qa.filter(x=>!sq.has(x.q)),mine=new Set(gs);return _dkDayShuffle(nq.filter(x=>mine.has(x.g))).concat(_dkDayShuffle(nq.filter(x=>!mine.has(x.g))),qa.filter(x=>sq.has(x.q)));})()};
 }
 function _dkSpecials(){
-  const out=[];
+  const out=[];const up=typeof _upSpecial==='function'?_upSpecial():null;
+  if(up&&up.st!=='ask')out.push(up);
   if(_checkinDue())out.push({kind:'checkin',p:'p-lav'});
   const note=S.nb&&S.nb.notes&&S.nb.notes[0],hb=note&&note.habits&&note.habits[0];
   if(hb&&note.practice&&TT_REAL[note.practice])out.push({kind:'focus',p:'p-green',tag:'Your one thing',big:_clean(hb.name).replace(/\.?$/,'.'),sub:hb.next?_kShort(_clean(hb.next),110):'',cta:'Practice it',scen:note.practice});
+  if(up&&up.st==='ask')out.push(up);
   return out;
 }
 function _dkCard(k,P,sp){
@@ -4589,11 +4647,12 @@ function _dkSeq(P,kind,j){
 }
 function _deckCardHtml(c,r){
   if(!c)return '';
-  const inner=c.kind==='checkin'?_checkinHtml():'<span class="dk-tag">'+escHtml(c.tag)+'</span><div class="dk-body">'+(c.pre?'<p class="dk-pre">'+escHtml(c.pre)+'</p>':'')+'<div class="dk-big">'+escHtml(c.big)+'</div>'+(c.sub?'<p class="dk-sub">'+escHtml(c.sub)+'</p>':'')+'</div><button class="dk-cta" data-dk="go">'+escHtml(c.cta)+'<span>'+ic('arrow','s')+'</span></button>';
-  return '<section class="dk-card '+c.p+'" data-r="'+r+'">'+inner+'</section>';
+  const inner=c.kind==='coming'?_upHtml(c):c.kind==='checkin'?_checkinHtml():'<span class="dk-tag">'+escHtml(c.tag)+'</span><div class="dk-body">'+(c.pre?'<p class="dk-pre">'+escHtml(c.pre)+'</p>':'')+'<div class="dk-big">'+escHtml(c.big)+'</div>'+(c.sub?'<p class="dk-sub">'+escHtml(c.sub)+'</p>':'')+'</div><button class="dk-cta" data-dk="go">'+escHtml(c.cta)+'<span>'+ic('arrow','s')+'</span></button>';
+  return '<section class="dk-card '+c.p+(c.kind==='coming'?' up up-'+c.st:'')+'" data-r="'+r+'">'+inner+'</section>';
 }
 function _dkOpen(c){
   if(!c)return;_track('deck_'+c.kind);
+  if(c.kind==='coming'){_upGo(c);return;}
   if(c.kind==='focus'){RW.scenario=c.scen;RW.goal=_rwGoalOf(c.scen).k;RW.fromCase=null;_rwResetConvo();RW.question='';RW.phase='setup';go('real');rwFetchScene();return;}
   if(c.kind==='practice'){const cs=_case(c.caseId);if(cs)caseToPractice(cs);return;}
   if(c.kind==='choose'){const cs=_case(c.caseId);if(cs){caseToPractice(cs,{noAdapt:true});openChoose(cs.id);}return;}
@@ -4605,6 +4664,8 @@ function openAskK(){
     {wire:sh=>{const t=sh.querySelector('#desk-text');t.addEventListener('input',()=>{V.deskText=t.value;});setTimeout(()=>t.focus(),80);sh.querySelector('[data-act="dk-ask"]').addEventListener('click',()=>{V.deskText=t.value;closeSheet();deskRead();});}});
 }
 function renderHub(app){
+  // Back on the hub: a coming-up practice that wasn't finished no longer counts
+  RW._up='';RW._upStep=null;
   let h='<main class="scr hub dk">';
   h+='<div class="top"><div class="wm"><b>Ground</b><i></i><small>by Kian How</small>'+(typeof _tierBadge==='function'?_tierBadge():'')+'</div><div class="ibtns"><button class="ibtn ib-set" data-go="settings" aria-label="Settings">'+ic('settings')+'</button></div></div>';
   if(typeof _proEndPill==='function')h+=_proEndPill();
@@ -4631,7 +4692,7 @@ function _deckWire(st){
     st._front=cs[0];
     st.querySelectorAll('.dk-card').forEach(c=>{const r=+c.dataset.r;c.style.zIndex=String(20-r);c.style.transform=r===0?'none':r===1?'translateX(16px) scale(.94)':'translateX(28px) scale(.88)';c.setAttribute('aria-hidden',r===0?'false':'true');});
     const cta=st.querySelector('.dk-card[data-r="0"] [data-dk="go"]');if(cta)cta.addEventListener('click',e=>{if(V._dkDragged){e.preventDefault();return;}_dkOpen(st._front);});
-    _wireCheckin(st);};
+    _wireCheckin(st);if(typeof _wireUp==='function')_wireUp(st);};
   draw();
   const front=()=>st.querySelector('.dk-card[data-r="0"]');
   const ease='cubic-bezier(.2,.8,.2,1)';
@@ -5545,6 +5606,111 @@ function openCheckinSheet(){
     sh.querySelector('[data-act="ci-save"]').addEventListener('click',()=>{_profTouch();closeSheet();showToast('Thanks. K will work on this with you now.');render();});
   }});
 }
+// ═══ Coming up: a real conversation on its way. People practice for a real deadline, not for a streak. ═══
+// S.up = {kind, what, date:'YYYY-MM-DD', made, done:[0,0,0]}  ·  S.upLog = [{kind, what, date, how, line}] (last 6)
+const UP_KIND={
+  interview:{t:'Interview',steps:[['interview','Tell me about yourself','The interviewer opens with “Tell me about yourself.”'],['interview','Why should we pick you?','The interviewer asks why they should pick the speaker over the other candidates.'],['tough','The salary question','The interviewer asks what salary the speaker expects, then questions the number.']]},
+  price:{t:'Price talk',steps:[['bargain','Saying your price','The client asks for the speaker’s price for the job.'],['ground','When they push back','The client pushes for a lower price after hearing it.'],['ground','Trade, don’t discount','The client asks for extra work for free.']]},
+  boss:{t:'Talk with my boss',steps:[['disagree','Raising what bothers you','The speaker brings up something their boss decided that isn’t working for them.'],['meeting','Asking for what you need','The speaker asks their boss for something they need: time, help, a raise or a change.'],['sayno','Saying no to more','The boss asks the speaker to take on more work.']]},
+  hard:{t:'A hard chat',steps:[['conflict','Opening it calmly','The speaker brings up a problem with someone, calmly, at the start.'],['feedback','Saying the hard part','The speaker has to say the hard, honest part.'],['conflict','When they get defensive','The other person gets defensive and pushes back.']]},
+  other:{t:'Something else',steps:[['meeting','Your opening','The speaker opens the conversation and says why they are there.'],['tough','The question you dread','The other person asks the question the speaker is most worried about.'],['smalltalk','Ending it well','The conversation is wrapping up and the speaker closes it with a clear next step.']]}
+};
+function _upDay(off){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()+off);return d.toISOString().slice(0,10);}
+function _upDate(s){const p=String(s||'').split('-').map(Number);return new Date(p[0],(p[1]||1)-1,p[2]||1,12);}
+function _upDaysLeft(){if(!S.up)return null;const t=new Date();t.setHours(12,0,0,0);return Math.round((_upDate(S.up.date)-t)/864e5);}
+// "today", "tomorrow", "Thursday", or "Nov 12"
+function _upWhen(s,cap1){const t=new Date();t.setHours(12,0,0,0);const n=Math.round((_upDate(s)-t)/864e5);
+  const w=n===0?'today':n===1?'tomorrow':n===-1?'yesterday':n>1&&n<7?_upDate(s).toLocaleDateString('en-US',{weekday:'long'}):_upDate(s).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  return cap1?w.charAt(0).toUpperCase()+w.slice(1):w;}
+function _upState(){
+  if(S.up){const n=_upDaysLeft();if(n>=0)return 'ready';if(n>=-10)return 'check';}
+  if(_sessionsDone()>=1&&!(S.upSnooze&&S.upSnooze>Date.now()))return 'ask';
+  return '';
+}
+function _upSpecial(){const s=_upState();if(!s)return null;return {kind:'coming',p:s==='check'?'p-org':'p-lav',st:s};}
+function _upHtml(c){
+  const st=c.st,U=S.up,K=U&&UP_KIND[U.kind]||UP_KIND.other;
+  if(st==='ask')return '<span class="dk-tag">Coming up</span><div class="dk-body"><div class="dk-big">Got a real talk coming up?</div><p class="dk-sub">Tell K what it is and when. You’ll practice that exact moment before it happens.</p></div>'+
+    '<button class="dk-cta" data-dk="go">Tell K<span>'+ic('arrow','s')+'</span></button><button class="up-later" data-up="later">Not now</button>';
+  if(st==='ready'){const n=_upDaysLeft(),next=U.done.findIndex(x=>!x),all=next<0;
+    const box='<div class="up-when"><b>'+(n===0?'<span class="up-today">Today</span>':n+'<small>'+(n===1?'DAY':'DAYS')+'</small>')+'</b><span><strong>'+escHtml(K.t)+' · '+escHtml(_upWhen(U.date,true))+'</strong>'+(U.what?'<em>'+escHtml(U.what)+'</em>':'')+'</span></div>';
+    const steps='<ul class="up-steps">'+K.steps.map((s,i)=>'<li'+(U.done[i]?' class="ok"':'')+'><button data-up="step" data-i="'+i+'"><u>'+(U.done[i]?'✓':i+1)+'</u>'+escHtml(s[1])+'</button></li>').join('')+'</ul>';
+    return '<div class="up-top"><span class="dk-tag">Coming up</span><button class="up-edit" data-up="edit">Change</button></div>'+box+
+      '<div class="dk-body up-body"><div class="dk-big">'+(all?'You’re ready.':n===0?'Get ready for today.':'Get ready for '+escHtml(_upWhen(U.date))+'.')+'</div>'+steps+'</div>'+
+      '<button class="dk-cta" data-dk="go">'+(all?'Run one more':'Practice step '+(next+1))+'<span>'+ic('arrow','s')+'</span></button>'+
+      '<a class="up-cal" href="'+_upIcsUrl()+'" data-up="cal">'+ic('plus','s')+'Add to my calendar</a>';}
+  // check-in: the day has passed
+  return '<span class="dk-tag">Check in</span><div class="dk-body"><div class="dk-big">How did '+escHtml(_upWhen(U.date)==='yesterday'?'yesterday':'it')+' go?</div><p class="dk-sub">Your '+escHtml(K.t.toLowerCase())+(U.what?': '+escHtml(U.what.charAt(0).toLowerCase()+U.what.slice(1)):'')+'.</p>'+
+    '<div class="up-how">'+[['good','Went well'],['mixed','Mixed'],['rough','Rough']].map(x=>'<button data-up="how" data-v="'+x[0]+'">'+x[1]+'</button>').join('')+'</div></div>'+
+    '<button class="up-later" data-up="skip">Skip</button>';
+}
+function _wireUp(st){
+  const card=st.querySelector('.dk-card[data-r="0"]');if(!card)return;
+  card.querySelectorAll('[data-up]').forEach(b=>b.addEventListener('click',e=>{if(V._dkDragged){e.preventDefault();return;}e.stopPropagation();const a=b.dataset.up;
+    if(a==='later'){S.upSnooze=Date.now()+7*864e5;save();V.dkK=null;render();}
+    else if(a==='edit')openUpSheet();
+    else if(a==='step')_upPractice(+b.dataset.i);
+    else if(a==='how')_upCheck(b.dataset.v);
+    else if(a==='skip'){_upLog('skipped','');S.up=null;save();V.dkK=null;render();}
+    else if(a==='cal'){_track('up_cal');}
+  }));
+}
+function _upGo(c){if(c.st==='ask'||!S.up)return openUpSheet();const i=S.up.done.findIndex(x=>!x);_upPractice(i<0?Math.floor(Math.random()*3):i);}
+// Ask what's coming: kind, day, a few words
+function openUpSheet(){
+  const U=S.up||{},sel={kind:U.kind||'',date:U.date||''};
+  const days=[['Today',_upDay(0)],['Tomorrow',_upDay(1)],[_upWhen(_upDay(2),true),_upDay(2)],[_upWhen(_upDay(3),true),_upDay(3)]];
+  const custom=sel.date&&!days.some(d=>d[1]===sel.date);
+  const h='<div class="up-sh"><h2>What’s coming up?</h2><p class="up-shs">K sets your practice around it.</p>'+
+    '<div class="g-kick">What is it</div><div class="up-chips" data-g="kind">'+Object.keys(UP_KIND).map(k=>'<button data-v="'+k+'"'+(sel.kind===k?' class="on"':'')+'>'+escHtml(UP_KIND[k].t)+'</button>').join('')+'</div>'+
+    '<div class="g-kick">When</div><div class="up-chips" data-g="date">'+days.map(d=>'<button data-v="'+d[1]+'"'+(sel.date===d[1]?' class="on"':'')+'>'+escHtml(d[0])+'</button>').join('')+'<label class="up-pick'+(custom?' on':'')+'">'+(custom?escHtml(_upWhen(sel.date,true)):'Pick a day')+'<input type="date" min="'+_upDay(0)+'" value="'+(custom?sel.date:'')+'"></label></div>'+
+    '<div class="g-kick">Who or what <span style="opacity:.6;text-transform:none;letter-spacing:0">(optional)</span></div><input class="g-input" id="up-what" maxlength="60" placeholder="e.g. design lead at a tea brand" value="'+escHtml(U.what||'')+'">'+
+    gCta('Get ready for it','up-save',{icon:'arrow'})+(S.up?'<button class="link up-rm" data-act="up-rm">Remove it</button>':'')+'</div>';
+  openSheet(h,{wire:sh=>{
+    const sv=sh.querySelector('[data-act="up-save"]');const upd=()=>{sv.disabled=!(sel.kind&&sel.date);};upd();
+    sh.querySelectorAll('.up-chips').forEach(g=>g.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{sel[g.dataset.g]=b.dataset.v;g.querySelectorAll('button,.up-pick').forEach(x=>x.classList.toggle('on',x===b));if(g.dataset.g==='date'){const pk=g.querySelector('.up-pick');pk.firstChild.textContent='Pick a day';}upd();})));
+    const di=sh.querySelector('.up-pick input');di.addEventListener('change',()=>{if(!di.value)return;sel.date=di.value;const g=di.closest('.up-chips');g.querySelectorAll('button').forEach(x=>x.classList.remove('on'));const pk=di.parentNode;pk.classList.add('on');pk.firstChild.textContent=_upWhen(di.value,true);upd();});
+    sv.addEventListener('click',()=>{if(!(sel.kind&&sel.date))return;const what=sh.querySelector('#up-what').value.trim().slice(0,60);
+      const same=S.up&&S.up.kind===sel.kind;S.up={kind:sel.kind,what,date:sel.date,made:new Date().toISOString(),done:same?S.up.done:[0,0,0]};S.upSnooze=0;save();_track('up_set_'+sel.kind);closeSheet();V.dkK=null;if(V.view==='hub')render();
+      showToast('K will get you ready for '+_upWhen(sel.date)+'.');});
+    const rm=sh.querySelector('[data-act="up-rm"]');if(rm)rm.addEventListener('click',()=>{S.up=null;save();closeSheet();V.dkK=null;render();});
+  }});
+}
+// Practice one step, set in the real conversation that's coming
+function _upPractice(i){
+  const U=S.up;if(!U)return;const K=UP_KIND[U.kind]||UP_KIND.other,s=K.steps[i]||K.steps[0];
+  RW.scenario=s[0];RW.goal=_rwGoalOf(s[0]).k;RW.fromCase=null;_rwResetConvo();RW.question='';RW.phase='setup';
+  RW._up='THE SPEAKER IS GETTING READY FOR A REAL CONVERSATION: '+K.t.toLowerCase()+(U.what?' ('+U.what+')':'')+', '+_upWhen(U.date)+'. Write the scene for exactly that conversation, at this moment: '+s[2]+' Use the real kind of person and work they named.';
+  RW._upStep=i;_track('up_step_'+i);go('real');rwFetchScene();
+}
+function _upLog(how,line){const U=S.up;if(!U)return;S.upLog=(S.upLog||[]).concat([{kind:U.kind,what:U.what||'',date:U.date,how,line:line||''}]).slice(-6);}
+function _upCheck(how){
+  const U=S.up;if(!U)return;const K=UP_KIND[U.kind]||UP_KIND.other;
+  const q={good:'What went right?',mixed:'What went well, and what threw you?',rough:'What threw you?'}[how];
+  openSheet('<div class="up-sh"><h2>'+({good:'Good to hear.',mixed:'Thanks for telling K.',rough:'Thanks for telling K.'}[how])+'</h2><p class="up-shs">One line on what happened. K remembers it next time.</p>'+
+    '<textarea class="g-answer" id="up-line" rows="3" maxlength="200" placeholder="'+escHtml(q)+'"></textarea>'+
+    gCta(how==='good'?'Save':'Save and practice that part','up-done',{icon:'arrow'})+(how==='good'?'':'<button class="link up-rm" data-act="up-only">Just save it</button>')+'</div>',
+  {wire:sh=>{const ta=sh.querySelector('#up-line');setTimeout(()=>ta.focus(),80);
+    const fin=practice=>{const line=ta.value.trim();_upLog(how,line);const kind=U.kind,what=U.what;S.up=null;save();_track('up_check_'+how);closeSheet();V.dkK=null;
+      if(practice){const st=(UP_KIND[kind]||UP_KIND.other).steps[how==='rough'?0:1];
+        RW.scenario=st[0];RW.goal=_rwGoalOf(st[0]).k;RW.fromCase=null;_rwResetConvo();RW.question='';RW.phase='setup';
+        RW._up='THE SPEAKER JUST HAD A REAL '+K.t.toUpperCase()+(what?' ('+what+')':'')+' AND IT WENT '+(how==='rough'?'BADLY':'SO-SO')+'.'+(line?' In their words: “'+line+'”.':'')+' Write the scene for the moment that threw them, so they can practice it again.';
+        go('real');rwFetchScene();}
+      else{render();showToast('Saved. K will remember it.');}};
+    sh.querySelector('[data-act="up-done"]').addEventListener('click',()=>fin(how!=='good'));
+    const o=sh.querySelector('[data-act="up-only"]');if(o)o.addEventListener('click',()=>fin(false));}});
+}
+// For K's notebook: what's coming and how the real ones went
+function upContext(){
+  const L=[];const U=S.up;
+  if(U&&_upDaysLeft()>=0)L.push('Coming up for them: a real '+(UP_KIND[U.kind]||UP_KIND.other).t.toLowerCase()+(U.what?' ('+U.what+')':'')+', '+_upWhen(U.date)+'. When it fits, connect your coaching to it.');
+  (S.upLog||[]).filter(x=>x.how!=='skipped').slice(-3).forEach(x=>L.push('Their real '+(UP_KIND[x.kind]||UP_KIND.other).t.toLowerCase()+' on '+_upDate(x.date).toLocaleDateString('en-US',{month:'short',day:'numeric'})+': '+({good:'went well',mixed:'mixed',rough:'went badly'}[x.how]||x.how)+(x.line?'. In their words: “'+x.line+'”':'')));
+  return L.join('\n');
+}
+// A calendar file from the server, so iPhone and Android both offer “Add to calendar”: the day itself,
+// a practice reminder the evening before, and a check-in the morning after.
+function _upIcsUrl(){const U=S.up;if(!U)return '#';const K=UP_KIND[U.kind]||UP_KIND.other;
+  return '/.netlify/functions/ics?d='+encodeURIComponent(U.date)+'&t='+encodeURIComponent(K.t)+'&w='+encodeURIComponent(U.what||'');}
 // ═══════════════════════════════════════════════════════════════════════════
 // HELP ME REPLY: paste their message, K drafts what to say, shows why line by
 // line with a technique on each, and refuses to write a yes below your lowest.
@@ -5911,6 +6077,8 @@ const RW_STANDARD={
 let RW={phase:'setup',goal:null,scenario:'bargain',question:'',source:'',item:null,brief:null,who:'',secret:null,convo:[],fuQ:null,fuLoading:false,mode:'turns',rec:false,elapsed:0,transcript:'',words:0,decision:null,review:null,notes:null,loading:false,fromReply:null,tougher:false,typed:'',loadingScene:false,promptN:0};
 function _rwIsClient(k){const sc=TT_REAL[k||RW.scenario];return !!(sc&&sc.grp==='client');}
 function _rwName(){const b=RW.brief;const s=b?(b.c||b.who||''):'';const n=String(s).split(' · ')[0].split(',')[0].trim();if(/^Your [a-z]+( [a-z]+)?$/i.test(n)&&n.length<=20)return n;return n&&n.length<=24&&!/^(Your|The|A|An|Someone)\b/i.test(n)?n:(_rwIsClient()?'The client':(RW_ROLE[RW.scenario]||'They'));}
+// he/she from the picture K shows for them, else from the name
+function _rwPron(){const n=_rwName();const L=(typeof LOOKS!=='undefined'&&typeof lookFor==='function')?LOOKS.find(l=>l.id===lookFor(n)):null;const d=L?L.d:'';return /\bwoman\b/.test(d)?'she':/\bman\b/.test(d)?'he':_rwShe();}
 function _rwShe(){const n=_rwName();return /^(Ms|Mrs|Sarah|Lena|Sophie|Aisha|Wen)\b/.test(n)?'she':/^(Mr|Daniel|Kevin|Marco|Jun)\b/.test(n)?'he':'they';}
 function _rwCtx(){const f=(S.rwField||'').trim(),pr=_rwIsClient()?[S.rwPrice?'Price: '+S.rwPrice:'',S.rwLowest?'the lowest they will accept: '+S.rwLowest:''].filter(Boolean).join(', '):'';return [f?'Field: '+f:'',pr].filter(Boolean).join('; ');}
 function _ttSeenList(){if(!Array.isArray(S.ttSeen))S.ttSeen=[];return S.ttSeen;}
@@ -5999,6 +6167,7 @@ async function rwFetchScene(){
         ground:'A client trying to move the speaker off a position they have already stated (price, timeline, scope, payment terms or quality). State the speaker’s position in a few words, then quote the client’s push.'
       }[RW.scenario];
       let msg='[Seed: '+Math.random().toString(36).slice(2,8)+']'+(ctx?'\nThe speaker’s role or situation: '+ctx+'. Tailor the prompt to it.':'\nKeep it general enough for anyone.')+(worldText()?'\n\n'+worldText()+'\nCAST FOR THIS SCENE: pick the person from their world whose role fits this situation type (an interview needs the recruiter or hiring manager, a classroom or feedback scene needs the professor, a price talk needs a client). If nobody in the cast fits, invent a new person who belongs in the same world. Never make a professor or classmate play a job interviewer.':'')+(RW.tougher?'\nMake this one tougher than usual: a harder push, a lower number, less patience.':'');
+      if(RW._up)msg+='\n\n'+RW._up;
       if(seen.length)msg+='\n\nDo not reuse or lightly reword any of these:\n- '+seen.join('\n- ');
       msg+='\n\nReply with the JSON only.';
       if(!_rwIsClient()){
@@ -6105,6 +6274,7 @@ async function _rwAfterTurn(r){
   if(RW.phase==='turn'&&V.view==='real'){render();if(RW.mode!=='type')rwSpeakLine();}
 }
 function _rwFinish(){
+  if(RW._upStep!=null&&S.up&&Array.isArray(S.up.done)){S.up.done[RW._upStep]=1;save();}RW._upStep=null;RW._up='';
   const c=RW.convo||[];RW.fuQ=null;RW.fuLoading=false;
   RW.elapsed=c.reduce((a,t)=>a+t.elapsed,0);RW.words=c.reduce((a,t)=>a+t.words,0);RW.transcript=c.map(t=>t.a).filter(Boolean).join(' ');
   RW._notesErr=null;RW.phase='done';RW.loading=true;render();
@@ -6129,13 +6299,16 @@ async function _rwDecide(){
   const voice='The turn tags (answer, fu1, fu2, fu3) are only for the "turn" fields: never write them in any sentence; say “your first answer”, “your second answer” and so on instead. WHO IS WHO: in every "reason" and "why", call the speaker "you" and the client or other person "they" (never "I" or "me"). '+K_PLAIN;
   const grounding='GROUNDING RULES (strict): every "quote" and "said" must be the speaker’s EXACT words, copied character for character from the tagged turn you name, 3 to 15 words, the shortest phrase that makes the point. Never paraphrase, never fix their grammar, never combine words from two turns. If you cannot find exact words for a point, leave that point out.';
   const kRule=(RW.fromCase&&RW.fromCase.k)?',"kline":"the coach\'s model answer for this case, rewritten so it uses ONLY facts the speaker actually said in the transcript (their real projects, numbers, names). Same technique and length as the model. Never invent projects, numbers or history they did not mention. Spoken, first person, under 45 words, no dashes"':'';
+  // Intention or incentive: on talks where the speaker wants the other person to do something
+  const lensOn=RW_LENS.includes(RW.scenario);
+  const lensRule=lensOn?',"lens":[2 or 3 of the speaker’s most important lines, each {"turn":"answer|fu1|fu2|fu3","quote":"their exact words, 3 to 15 words","kind":"intention" or "incentive","note":"one short sentence, in plain words, on how it landed with you"}],"lensline":"one short sentence as K: what actually moved you, or what would have"':'';
   const usedRule=',"used":[the ids of moves from the MOVES list the speaker clearly used, at most 2, only when their exact words show it],"usedq":"the speaker\'s exact words that show the first used move, 3 to 15 words, or empty"'+(RW.equip&&TECHNIQUES[RW.equip]?',"equipped":"yes|partly|no: did they use '+TECHNIQUES[RW.equip].title+'?","equipnote":"one short sentence to the speaker on how they used it or what using it would have sounded like, quoting their words when you can"':'');
   const improveRule='"improve": up to 2 moments that cost them most, each {"turn":"answer|fu1|fu2|fu3","said":"exact words","try":"a better line they could actually say, spoken, under 30 words","why":"one sentence on why it would help'+(cl?', tied to the outcome or your hidden brief':'')+', naming the principle (e.g. give to get, warm then firm, know your lowest, two good options, bottom line first, STAR)"}.';
   const sys=cl
-    ?'You are the client in a negotiation practice role-play. Who you are: '+(RW.who||'a client')+'.\nYour hidden brief, which the speaker never knew: '+(RW.secret?RW.secret.t:'none')+'\nWhen you reveal the brief in "secret", tell only what is true AND consistent with the transcript. Never say something was said or happened if it is not in the transcript (if you never mentioned a competitor, do not call it a bluff; say you had no other option lined up instead).\n\nThe conversation is over. Decide honestly, in character, as a real client with that brief would, based only on what the speaker actually said. Holding firm with good reasons and warmth often wins; caving fast can make you doubt them; rudeness or vagueness loses you.\n'+ended+'\n'+agreed+'\n'+grounding+'\n'+voice+'\nReply with JSON only, no markdown:\n{"decision":"deal"|"think"|"walk","say":"what you say to end the conversation, one short spoken sentence, in character","terms":"the deal in a few words if decision is deal (price or terms agreed), else empty","why":[up to 3 of {"turn":"answer|fu1|fu2|fu3","quote":"exact words","effect":"+" or "-","reason":"one sentence: how that line moved you toward or away from yes, consistent with your hidden brief"}],"secret":"two short sentences, under 45 words in total, first person as the client, revealing your hidden brief with a concrete figure where it applies, ending with how it shaped this outcome, e.g. \'My launch is in three weeks. I needed you more than I let on.\'",'+improveRule+kRule+usedRule+',"could":{"from":"how it ended, a few words, e.g. ¥5,500","to":"the likely better outcome if they had made those changes, a few words, e.g. ¥6,500"}}\n\nMOVES (ids for "used"):\n'+movesForReview()
-    :'You are the other person in a speaking-practice role-play ('+sc.name+'). Who you are: '+(RW.who||RW_ROLE[RW.scenario]||'the other person')+'.\nThe conversation is over. React honestly, the way that real person would, based only on what the speaker actually said: '+(RW_VERDICT_Q[RW.scenario]||'how did it land with you?')+'\nIF YOU AGREED SOMETHING: if by the end you and the speaker settled a concrete plan or next step (a date, a smaller first step, a trade), it is not “maybe”. It is “yes” if the plan moved toward what the speaker wanted, even partly. Use “maybe” only when nothing was settled. Put any catch the speaker accepted (a deadline, extra work) in “say” and in “improve”, not in the verdict.\nThen, as K the coach, find the moments where better words would have changed your reaction.\n'+ended+'\n'+grounding+'\n'+voice+'\nReply with JSON only, no markdown: {"verdict":"yes"|"maybe"|"no","say":"what you say or think at the end, one short spoken sentence, in character. It must make sense right after the speaker’s LAST words and keep who is who: if they invited you to talk or ask, you are the one who talks","why":[up to 3 of {"turn":"answer|fu1|fu2|fu3","quote":"exact words","effect":"+" or "-","reason":"one sentence: how that line changed your reaction"}],'+improveRule+kRule+usedRule+',"could":{"from":"how it ended, a few words","to":"the likely better outcome, a few words"}}\n\nMOVES (ids for "used"):\n'+movesForReview();
+    ?'You are the client in a negotiation practice role-play. Who you are: '+(RW.who||'a client')+'.\nYour hidden brief, which the speaker never knew: '+(RW.secret?RW.secret.t:'none')+'\nWhen you reveal the brief in "secret", tell only what is true AND consistent with the transcript. Never say something was said or happened if it is not in the transcript (if you never mentioned a competitor, do not call it a bluff; say you had no other option lined up instead).\n\nThe conversation is over. Decide honestly, in character, as a real client with that brief would, based only on what the speaker actually said. Holding firm with good reasons and warmth often wins; caving fast can make you doubt them; rudeness or vagueness loses you.\n'+ended+'\n'+agreed+'\n'+grounding+'\n'+voice+'\nReply with JSON only, no markdown:\n{"decision":"deal"|"think"|"walk","say":"what you say to end the conversation, one short spoken sentence, in character","terms":"the deal in a few words if decision is deal (price or terms agreed), else empty","why":[up to 3 of {"turn":"answer|fu1|fu2|fu3","quote":"exact words","effect":"+" or "-","reason":"one sentence: how that line moved you toward or away from yes, consistent with your hidden brief"}],"secret":"two short sentences, under 45 words in total, first person as the client, revealing your hidden brief with a concrete figure where it applies, ending with how it shaped this outcome, e.g. \'My launch is in three weeks. I needed you more than I let on.\'",'+improveRule+kRule+usedRule+lensRule+',"could":{"from":"how it ended, a few words, e.g. ¥5,500","to":"the likely better outcome if they had made those changes, a few words, e.g. ¥6,500"}}\n\nMOVES (ids for "used"):\n'+movesForReview()
+    :'You are the other person in a speaking-practice role-play ('+sc.name+'). Who you are: '+(RW.who||RW_ROLE[RW.scenario]||'the other person')+'.\nThe conversation is over. React honestly, the way that real person would, based only on what the speaker actually said: '+(RW_VERDICT_Q[RW.scenario]||'how did it land with you?')+'\nIF YOU AGREED SOMETHING: if by the end you and the speaker settled a concrete plan or next step (a date, a smaller first step, a trade), it is not “maybe”. It is “yes” if the plan moved toward what the speaker wanted, even partly. Use “maybe” only when nothing was settled. Put any catch the speaker accepted (a deadline, extra work) in “say” and in “improve”, not in the verdict.\nThen, as K the coach, find the moments where better words would have changed your reaction.\n'+ended+'\n'+grounding+'\n'+voice+'\nReply with JSON only, no markdown: {"verdict":"yes"|"maybe"|"no","say":"what you say or think at the end, one short spoken sentence, in character. It must make sense right after the speaker’s LAST words and keep who is who: if they invited you to talk or ask, you are the one who talks","why":[up to 3 of {"turn":"answer|fu1|fu2|fu3","quote":"exact words","effect":"+" or "-","reason":"one sentence: how that line changed your reaction"}],'+improveRule+kRule+usedRule+lensRule+',"could":{"from":"how it ended, a few words","to":"the likely better outcome, a few words"}}\n\nMOVES (ids for "used"):\n'+movesForReview();
   let j=null;
-  for(let a=0;a<2&&!j;a++){try{const raw=await callCoach(sys+RW_STT_NOTE,m+(a?'\n\nYour last reply was not valid JSON. Reply again with compact valid JSON only, nothing else.':''),{json:true,maxTokens:cl?1700:1200,noLang:true,featureId:'rw-turn',grace:true});j=_jsonFrom(raw);}catch(e){j=null;}}
+  for(let a=0;a<2&&!j;a++){try{const raw=await callCoach(sys+(lensOn?RW_LENS_RULE:'')+RW_STT_NOTE,m+(a?'\n\nYour last reply was not valid JSON. Reply again with compact valid JSON only, nothing else.':''),{json:true,maxTokens:cl?1700:1200,noLang:true,featureId:'rw-turn',grace:true});j=_jsonFrom(raw);}catch(e){j=null;}}
   try{
     if(!j)return null;
     // Never let the internal turn tags reach the screen
@@ -6145,9 +6318,9 @@ async function _rwDecide(){
     const clean=a=>(Array.isArray(a)?a:[]).slice(0,3);
     const could=j.could&&j.could.from&&j.could.to?{from:String(j.could.from).slice(0,80),to:String(j.could.to).slice(0,80)}:null;
     const aim=RW.aim&&j.aim&&!/^empty$/i.test(String(j.aim).trim())?_noDash(_sentTrim(String(j.aim),260)):'';
-    if(!cl)return {aim,verdict:['yes','maybe','no'].includes(j.verdict)?j.verdict:'maybe',say:_noDash(_sentTrim(String(j.say||''),220)),why:clean(j.why),improve:clean(j.improve),could,kline:_noDash(_sentTrim(String(j.kline||''),340)),used:(Array.isArray(j.used)?j.used:[]).filter(x=>TECHNIQUES[x]).slice(0,2),usedq:String(j.usedq||'').slice(0,160),equipped:['yes','partly','no'].includes(j.equipped)?j.equipped:'',equipnote:_noDash(_sentTrim(String(j.equipnote||''),220))};
+    if(!cl)return {aim,verdict:['yes','maybe','no'].includes(j.verdict)?j.verdict:'maybe',say:_noDash(_sentTrim(String(j.say||''),220)),why:clean(j.why),improve:clean(j.improve),could,kline:_noDash(_sentTrim(String(j.kline||''),340)),used:(Array.isArray(j.used)?j.used:[]).filter(x=>TECHNIQUES[x]).slice(0,2),usedq:String(j.usedq||'').slice(0,160),equipped:['yes','partly','no'].includes(j.equipped)?j.equipped:'',equipnote:_noDash(_sentTrim(String(j.equipnote||''),220)),...(lensOn?_rwLens(j):{})};
     if(!['deal','think','walk'].includes(j.decision))return null;
-    return {aim,decision:j.decision,say:_noDash(_sentTrim(String(j.say||''),220)),terms:String(j.terms||'').slice(0,80),secret:_noDash(_sentTrim(String(j.secret||''),320)),why:clean(j.why),improve:clean(j.improve),could,kline:_noDash(_sentTrim(String(j.kline||''),340)),used:(Array.isArray(j.used)?j.used:[]).filter(x=>TECHNIQUES[x]).slice(0,2),usedq:String(j.usedq||'').slice(0,160),equipped:['yes','partly','no'].includes(j.equipped)?j.equipped:'',equipnote:_noDash(_sentTrim(String(j.equipnote||''),220))};
+    return {aim,decision:j.decision,say:_noDash(_sentTrim(String(j.say||''),220)),terms:String(j.terms||'').slice(0,80),secret:_noDash(_sentTrim(String(j.secret||''),320)),why:clean(j.why),improve:clean(j.improve),could,kline:_noDash(_sentTrim(String(j.kline||''),340)),used:(Array.isArray(j.used)?j.used:[]).filter(x=>TECHNIQUES[x]).slice(0,2),usedq:String(j.usedq||'').slice(0,160),equipped:['yes','partly','no'].includes(j.equipped)?j.equipped:'',equipnote:_noDash(_sentTrim(String(j.equipnote||''),220)),...(lensOn?_rwLens(j):{})};
   }catch(e){return null;}
 }
 async function rwAnalyze(){
@@ -6204,6 +6377,17 @@ function _rwDots(){const n=_rwFuN()+1,k=(RW.convo||[]).length;return gDots(n+2,R
 // The end of every practice: how it landed → K's notes (what worked, one fix) → next time
 function _rwNoteBit(key){const t=String(RW.notes||'').replace(/\*\*|__/g,'');const sec=KN_SECTIONS.find(x=>x.key===key);if(!sec)return '';let out='',on=false;
   t.split('\n').forEach(l=>{const x=l.trim();if(!x)return;const hit=KN_SECTIONS.find(z=>z.re.test(x));if(hit){on=hit.key===key;if(on)out=x.replace(/^[^:：]*[:：]\s*/,'');return;}if(on)out+=' '+x;});return out.trim();}
+// Intention or incentive: K sorts the speaker's key lines. INTENTION = their wish, effort or feeling ("I really want this",
+// "trust me"). INCENTIVE = something concrete the other person gets or avoids (time saved, less risk, a smaller first step).
+const RW_LENS=['bargain','ground','proposal','pitch','interview','disagree','sayno','meeting'];
+const RW_LENS_RULE='\nINTENTION OR INCENTIVE (for "lens"): an INTENTION is the speaker’s own wish, effort or feeling (“I really want to work with you”, “trust me”, “I’ll do my best”); it gives you no reason to move. An INCENTIVE is something concrete YOU get or avoid (a launch two weeks sooner, less risk, a smaller first step, a saving). People move for incentives, not intentions. Be fair: a warm intention is fine as an opener, so judge whether it carried the weight.';
+function _rwLens(j){const L=(Array.isArray(j.lens)?j.lens:[]).filter(x=>x&&(x.kind==='intention'||x.kind==='incentive')).map(x=>({turn:x.turn,quote:String(x.quote||'').trim().replace(/^[“"]|[”"]$/g,''),kind:x.kind,note:_noDash(_sentTrim(String(x.note||''),160))}));
+  return {lens:_rwxGrounded(L,'quote',3),lensline:_noDash(_sentTrim(String(j.lensline||''),200))};}
+function _rwLensHtml(d){const L=d&&d.lens||[];if(!L.length)return '';
+  const ni=L.filter(x=>x.kind==='intention').length,nc=L.length-ni;
+  return '<div class="ln-split"><div class="ln-in"><b>'+ni+'</b><span>'+(ni===1?'Intention':'Intentions')+'</span></div><div class="ln-ic"><b>'+nc+'</b><span>'+(nc===1?'Incentive':'Incentives')+'</span></div></div>'+
+    '<div class="g-card ln-card">'+L.map(x=>'<div class="ln-row"><span class="ln-tag '+(x.kind==='intention'?'t-in':'t-ic')+'">'+(x.kind==='intention'?'Intention':'Incentive')+'</span><div class="ln-q">“'+escHtml(x.quote)+'”</div>'+(x.note?'<div class="ln-w">'+escHtml(x.note)+'</div>':'')+'</div>').join('')+'</div>'+
+    '<div class="ln-k">People move for what they get, not for what you mean.'+(d.lensline?' <b>'+escHtml(d.lensline)+'</b>':'')+'</div>';}
 function _rwEndSlides(){
   const d=RW.decision||RW.review,out=[];if(!d)return out;
   const top=_rwDoneCardsHtml(true);if(top)out.push({k:'How it landed',h:top});
@@ -6220,6 +6404,7 @@ function _rwEndSlides(){
   else if(fn)n+='<div class="g-card rw-kn"><div class="g-kick"><span class="g-minus">−</span> One thing to fix</div><p class="rw-knp">'+escHtml(fn)+'</p></div>';
   if(!n&&RW.loading)n='<p class="quiet">K’s notes are on their way…</p>';
   if(n)out.push({k:'K’s notes',h:n});
+  {const lh=_rwLensHtml(d);if(lh){const pr=_rwPron();out.push({k:'What moved '+(pr==='she'?'her':pr==='he'?'him':'them'),h:lh});}}
   // The technique
   const topic=(TT_REAL[RW.scenario]||{}).name?String(TT_REAL[RW.scenario].name).toLowerCase():'';
   const fc=RW.fromCase;
