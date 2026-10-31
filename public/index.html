@@ -1986,6 +1986,46 @@ html[data-theme="dark"] .tips b.do{color:#9BE36D}html[data-theme="dark"] .tips b
 .bf-card .bf-bot{z-index:2}
 .bf-card .bf-nums div{background:rgba(14,16,22,.72);backdrop-filter:none;-webkit-backdrop-filter:none}
 .bf-card .bf-sec{text-shadow:0 1px 6px rgba(0,0,0,.8)}
+
+/* K at work: a real scene, two poses trading places, notes drifting up, a ticker of what K is doing */
+.kw2{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:6px 0 10px}
+.kw2-card{position:relative;width:100%;height:clamp(250px,50vh,440px);border-radius:26px;overflow:hidden;background:#14161c;isolation:isolate;margin-bottom:6px}
+.kw2-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.95) brightness(.78);animation:kw2Pan 14s ease-in-out infinite alternate}
+.kw2-card:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,12,16,0) 45%,rgba(11,12,16,.85) 100%);z-index:1}
+.kw2-k{position:absolute;left:50%;bottom:-6%;height:96%;transform:translateX(-58%);z-index:2;filter:drop-shadow(0 14px 20px rgba(0,0,0,.5));animation:kw2Bob 2.4s ease-in-out infinite}
+.kw2-k.b{opacity:0;animation:kw2Bob 2.4s ease-in-out infinite,kw2Swap 7.2s steps(1) infinite}
+.kw2-k.a{animation:kw2Bob 2.4s ease-in-out infinite,kw2Swap 7.2s steps(1) -3.6s infinite}
+.kw2-notes{position:absolute;left:58%;bottom:40%;width:0;height:0;z-index:2}
+.kw2-notes i{position:absolute;left:0;bottom:0;width:34px;height:42px;border-radius:7px;background:#F7F3E8 linear-gradient(#2A2A33,#2A2A33) 7px 12px/20px 3px no-repeat;box-shadow:0 6px 14px rgba(0,0,0,.35);opacity:0;animation:kw2Note 3.6s ease-out infinite}
+.kw2-notes i:before,.kw2-notes i:after{content:"";position:absolute;left:7px;height:3px;border-radius:2px;background:#2A2A33}
+.kw2-notes i:before{top:20px;width:16px}.kw2-notes i:after{top:28px;width:12px;background:#C4AEFF}
+.kw2-notes i:nth-child(2){animation-delay:1.2s;--dx:46px;--r:14deg}
+.kw2-notes i:nth-child(3){animation-delay:2.4s;--dx:-8px;--r:-10deg}
+.kw2-steps{position:absolute;left:14px;right:14px;bottom:14px;height:22px;z-index:3}
+.kw2-steps span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;opacity:0;animation:kw2Step 7.2s infinite}
+.kw2-steps em{font-style:normal;color:#7FE0E0;margin-left:1px}
+@keyframes kw2Bob{0%,100%{translate:0 0}50%{translate:0 -6px}}
+@keyframes kw2Swap{0%{opacity:1}50%{opacity:0}}
+@keyframes kw2Note{0%{opacity:0;transform:translate(0,0) rotate(0) scale(.6)}15%{opacity:1}100%{opacity:0;transform:translate(var(--dx,22px),-150px) rotate(var(--r,8deg)) scale(1)}}
+@keyframes kw2Step{0%{opacity:0;transform:translateY(8px)}4%,30%{opacity:1;transform:none}34%,100%{opacity:0;transform:translateY(-8px)}}
+@keyframes kw2Pan{from{transform:scale(1.04) translateX(-1.5%)}to{transform:scale(1.08) translateX(1.5%)}}
+@media (prefers-reduced-motion:reduce){.kw2-bg,.kw2-k,.kw2-notes i{animation:none!important}.kw2-k.b{display:none}.kw2-k.a{opacity:1}.kw2-steps span{animation:none;opacity:0}.kw2-steps span:first-child{opacity:1}}
+
+/* The scene fills the screen; what K is doing sits on it at the bottom */
+.kw2{flex:1;display:flex;flex-direction:column;padding:4px 0 10px;gap:0;min-height:0}
+.kw2-card{flex:1;height:auto;min-height:340px;margin:0;border-radius:28px}
+.kw2-card:after{background:linear-gradient(180deg,rgba(11,12,16,.15) 0%,rgba(11,12,16,0) 30%,rgba(11,12,16,0) 50%,rgba(11,12,16,.92) 82%)}
+.kw2-k{height:auto;width:min(78%,330px);top:auto;bottom:max(24%,128px);transform:translateX(-50%)}
+.kw2-notes{left:62%;top:auto;bottom:calc(max(24%,128px) + 150px)}
+.kw2-txt{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:0 22px 26px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.kw2-steps{position:relative;left:auto;right:auto;bottom:auto;width:100%;height:22px;margin-bottom:6px}
+.kw2-steps span{font-size:14.5px;color:#7FE0E0}
+.kw2-steps em{color:#7FE0E0}
+.kw2 .kw-title{font-size:24px;font-weight:900;color:#fff;letter-spacing:-.01em}
+.kw2 .kw-sub{font-size:15px;color:rgba(255,255,255,.78);max-width:290px;line-height:1.45}
+
+/* K's animated loop (writes, thinks, writes): one picture, so no pose swapping */
+.kw2-k.live{animation:none;opacity:1;width:auto;height:min(52%,360px)}
 </style>
 <script>
 /* Theme: light · dark · same as phone. Runs before first paint. */
@@ -2370,6 +2410,8 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){_setVH();
 document.addEventListener('touchstart',function _t(){_setVH();setTimeout(_setVH,200);},{passive:true});
 try{window.visualViewport&&window.visualViewport.addEventListener('resize',_setVH);}catch(e){}
 function boot(){
+  // K's writing loop is about 1MB: fetch it quietly after start, so the first loading screen already has it
+  setTimeout(()=>{try{const i=new Image();i.src=ART+'kpose/kwrite.webp';}catch(e){}},4000);
   load();
   if(typeof _syInit==='function')_syInit();
   if(typeof _ownerLink==='function')_ownerLink();
@@ -2393,12 +2435,18 @@ window.render=render;
 document.addEventListener('DOMContentLoaded',boot);
 
 // K at work: the avatar with a notepad, scribbling in a loop while the AI thinks
-function kWritingHtml(title,sub){
-  return '<div class="kw"><div class="kw-stage"><span class="kw-av">'+kav('l')+'</span>'+
-    '<svg class="kw-pad" viewBox="0 0 120 140" aria-hidden="true"><rect x="6" y="10" width="108" height="124" rx="12" class="kw-paper"/><rect x="40" y="2" width="40" height="16" rx="5" class="kw-clip"/>'+
-    '<path class="kw-l l1" d="M22 42h76"/><path class="kw-l l2" d="M22 62h64"/><path class="kw-l l3" d="M22 82h72"/><path class="kw-l l4" d="M22 102h46"/>'+
-    '<g class="kw-pen"><path d="M0 0l6-22 10 4-8 21z" class="kw-pen-b"/><path d="M0 0l2-7 5 2z" class="kw-pen-t"/></g></svg></div>'+
-    '<b class="kw-title">'+escHtml(title||'K is taking notes')+'</b><span class="kw-sub">'+escHtml(sub||'')+'</span></div>';
+// K at work while the AI runs: K in a real scene, swapping between two poses, notes drifting up, and what K is doing right now
+const KW_KIND={notes:{p:['write','think'],steps:['Going back over what you said','Finding the moments that changed it','Writing it in plain words']},
+  read:{p:['think','write'],steps:['Reading it twice','Working out what’s really going on','Choosing what to say first']},
+  scene:{p:['think','wait'],steps:['Picking who you’ll talk to','Setting the place','Writing their first line']}};
+function kWritingHtml(title,sub,set){
+  const t=String(title||''),k=/notes|writing a|taking/i.test(t)?'notes':/setting|picking/i.test(t)?'scene':'read',K=KW_KIND[k];
+  const bg=(typeof SETS!=='undefined'&&set&&SETS[set])?SETS[set]:ART+'sets/kdesk.webp';
+  return '<div class="kw2" role="status" aria-live="polite"><div class="kw2-card"><img class="kw2-bg" src="'+bg+'" alt="">'+
+    '<div class="kw2-notes" aria-hidden="true"><i></i><i></i><i></i></div>'+
+    '<img class="kw2-k live" src="'+ART+'kpose/kwrite.webp" alt="">'+
+    '<div class="kw2-txt"><div class="kw2-steps" aria-hidden="true">'+K.steps.map((x,i)=>'<span style="animation-delay:'+(i*2.4)+'s">'+escHtml(x)+'<em>…</em></span>').join('')+'</div>'+
+    '<b class="kw-title">'+escHtml(t||'K is taking notes')+'</b>'+(sub?'<span class="kw-sub">'+escHtml(sub)+'</span>':'')+'</div></div></div>';
 }
 // Fill the screen: grow the given blocks (CSS zoom) to the largest size that still fits on one page
 function _fillZoom(els,fits,max){els=[...els].filter(Boolean);if(!els.length)return;max=max||1.45;
@@ -6291,7 +6339,7 @@ function renderReal(app){
   }else if(ph==='done'){
     h+=gBar('How it went','rw-restart',_rwDots()).replace(HUB_BTN,'');
     const busy=RW.loading&&!RW.decision&&!RW.review;
-    if(busy)h+=kWritingHtml('K is taking notes…',_rwIsClient()?'And '+name+' is deciding.':'Working out how it landed.');else if(false)h+='<div class="g-card" style="display:flex;flex-direction:column;gap:14px"><div class="g-k">'+kav()+'<div><b style="font-size:15px">K is listening back</b><div class="small" style="margin-top:2px">'+(_rwIsClient()?'And '+escHtml(name)+' is deciding.':'Working out how it landed.')+'</div></div></div><div class="stack" style="gap:9px"><div class="sk w9"></div><div class="sk w7"></div><div class="sk w8"></div></div></div>';
+    if(busy)h+=kWritingHtml('K is taking notes…',_rwIsClient()?'And '+name+' is deciding.':'Working out how it landed.',_vnSet());else if(false)h+='<div class="g-card" style="display:flex;flex-direction:column;gap:14px"><div class="g-k">'+kav()+'<div><b style="font-size:15px">K is listening back</b><div class="small" style="margin-top:2px">'+(_rwIsClient()?'And '+escHtml(name)+' is deciding.':'Working out how it landed.')+'</div></div></div><div class="stack" style="gap:9px"><div class="sk w9"></div><div class="sk w7"></div><div class="sk w8"></div></div></div>';
     else{
       const slides=_rwEndSlides();
       if(_vnOn()&&RW._stamp!==RW.transcript&&(RW.decision&&RW.decision.decision||RW.review)){
