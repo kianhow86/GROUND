@@ -1873,7 +1873,7 @@ main.hub.tour-mini:not(.tour-iso){transform:scale(.5) translateY(-18%)}
 .ob[data-n="3"] .g-cta .ar{background:#06201F;color:#7FE0E0}
 .ob[data-n="3"] .ob-lite-link{margin-top:8px}
 @media (max-width:380px){.obk-chips{gap:6px}.obk-chips span{font-size:12px;padding:0 10px;gap:5px}}
-@media (max-height:740px){.obk-bub b{font-size:22px}.obk-bub span{font-size:13.5px}.obk-bub{padding:13px 15px}.obk-chips span:nth-child(3){display:none}.ob[data-n="3"] .g-cta{margin-top:12px}}
+@media (max-height:740px){.obk-bub b{font-size:22px}.obk-bub span{font-size:13.5px}.obk-bub{padding:13px 15px}.obk-chips span:nth-child(1){display:none}.ob[data-n="3"] .g-cta{margin-top:12px}}
 /* pictures fade in together once all on the screen are ready */
 .ig-hide{opacity:0!important}
 img,[style*="background-image"]{transition:opacity .28s ease}
@@ -2122,7 +2122,7 @@ html[data-theme="dark"] .tips b.do{color:#9BE36D}html[data-theme="dark"] .tips b
 // hub, Help me reply, Pitch it and Quick answer are new, built to the handoff.
 // ═══════════════════════════════════════════════════════════════════════════
 'use strict';
-const APP_VERSION='1.7';
+const APP_VERSION='1.8';
 // Feature switches. Flip in code, ship, done.
 const PAYWALL_ON=false;   // free for now: the top-up screen and balance stay hidden
 const LIVE_ON=false;      // Live voice (real-time call) needs the relay server first
@@ -2130,6 +2130,12 @@ const TOPUP={price:'¥39',sessions:30};
 const FREE_LIMITS={sessions:40,replies:8}; // monthly sessions · daily replies (abuse stop while the paywall is off)
 
 const CHANGELOG=[
+  {v:'1.8',d:'2026-11-11',items:[
+    'If K loses the connection in the middle of a talk, you stay where you were with your answer kept. Send it again, and the talk carries on, so a dropped connection no longer costs you the practice.',
+    'The place you practice in matches the scene: a team meeting happens in a meeting room.',
+    'When something goes wrong, the message is short and readable.',
+    'On smaller phones, the first screen keeps the note that K is AI.'
+  ]},
   {v:'1.7',d:'2026-10-23',items:[
     'Every tool in the Toolkit now teaches: why it works, three steps, what it sounds like, and what to watch out for.',
     'Case pages read as a lesson: the trap, the move, and what to remember. Kian’s own stories and methods sit underneath.',
@@ -2682,7 +2688,9 @@ function _jsonFields(raw,keys){const s=String(raw||'');const out={};let ok=0;
 function _isLimitErr(e){return /^limit:/.test(String(e&&e.message||e));}
 function _isPlanErr(e){return /^plan:/.test(String(e&&e.message||e));}
 function _isOfflineErr(e){const m=String(e&&e.message||e);return navigator.onLine===false||/fetch|network|Failed to reach/i.test(m);}
-function _errDetail(e){const m=String(e&&e.message||e||'').replace(/sk-[A-Za-z0-9_-]+/g,'…');return m?'<p class="small center-t" style="opacity:.7;max-width:300px;margin:6px auto 0;word-break:break-word">Detail: '+escHtml(m.slice(0,160))+'</p>':'';}
+function _errDetail(e){let m=String(e&&e.message||e||'').replace(/sk-[A-Za-z0-9_-]+/g,'…');
+  // A server error can carry a whole web page: show the code, never the page
+  const st=m.match(/^Backend (\d{3})/);if(st)m='Server error '+st[1];else m=m.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();return m?'<p class="small center-t" style="opacity:.7;max-width:300px;margin:6px auto 0;word-break:break-word">Detail: '+escHtml(m.slice(0,160))+'</p>':'';}
 function renderAIError(err,retryAction){
   const msg=String(err&&err.message||err||'Something went wrong.');
   let title='K couldn’t answer',body='',badge='',btn='';
@@ -6091,7 +6099,7 @@ function _fixSpokenNums(s){
       (k==='2'&&!c&&!cur.trim()&&!/[¥$€£]\s*$/.test(p))?m:p+k+','+d+'00'+cur);
 }
 function _rwTooShort(){return RW.words<3&&(RW.convo||[]).length<2;}
-function _rwResetConvo(){RW.closing='';RW._final=false;RW.equip=undefined;RW.aim="";RW._newMoves=null;RW.convo=[];RW.fuQ=null;RW.fuLoading=false;RW.decision=null;RW.review=null;RW.notes=null;RW.transcript='';RW.words=0;RW.elapsed=0;RW.typed='';}
+function _rwResetConvo(){RW.fuRetry=null;RW.closing='';RW._final=false;RW.equip=undefined;RW.aim="";RW._newMoves=null;RW.convo=[];RW.fuQ=null;RW.fuLoading=false;RW.decision=null;RW.review=null;RW.notes=null;RW.transcript='';RW.words=0;RW.elapsed=0;RW.typed='';}
 // What the speaker is trying to achieve, and the default setting when a built-in scene has none
 const RW_AIM={interview:'Show them, with one real example, why you’re the person for this role.',pitch:'Get them to want the next conversation, inside a minute.',intro:'Leave them with one thing about you they’ll remember, and a reason to talk again.',smalltalk:'Turn a polite exchange into a real conversation, without forcing it.',meeting:'Be useful fast: your point first, then why, then what should happen next.',tough:'Stay calm, answer what they’re really worried about, and keep their trust.',disagree:'Change their mind, or at least get it reconsidered, and keep the relationship.',conflict:'Get the problem fixed without making an enemy.',feedback:'Say the hard thing so they hear it, and leave them able to act on it.',sayno:'Say no clearly, and keep the goodwill.',proposal:'Win the work at a price that works for you.',bargain:'Close the deal without giving away your price.',difficult:'Keep it calm, keep the client, and protect the agreement.',ground:'Keep your position, and the client, through three pushes.'};
 const RW_SETTING={interview:'A first-round interview for a job you really want. They have your CV in front of them and 30 minutes.',pitch:'You have about a minute of their attention, and they hear pitches all the time.',intro:'You’ve only just met. They’re friendly, but they meet a lot of people.',smalltalk:'An everyday moment. Nothing is at stake except whether this turns into a real conversation.',meeting:'A regular team meeting. Everyone is busy, and attention is short.',tough:'They’re not satisfied, and they want a straight answer.'};
@@ -6251,7 +6259,7 @@ async function _rwFollowup(allowEnd){
 async function _rwAfterTurn(r){
   RW.convo=RW.convo||[];
   const curQ=RW.fuQ||RW.question;
-  RW.fuQ=null;RW.fuLoading=true;RW.phase='turn';RW.rec=false;render();
+  RW.fuRetry=null;RW.fuQ=null;RW.fuLoading=true;RW.phase='turn';RW.rec=false;render();
   if(r.blob)await recWhisper(r);
   if(!String(r.transcript||'').trim()){RW.fuQ=curQ===RW.question&&!RW.convo.length?null:curQ;RW.fuLoading=false;render();showToast('I couldn’t hear anything. Check your mic and try again.','warn');return;}
   const turn={q:curQ,a:_fixSpokenNums((r.transcript||'').trim()),elapsed:r.elapsed||0,words:r.words||0};
@@ -6267,7 +6275,11 @@ async function _rwAfterTurn(r){
   const t0=Date.now();let q=null;RW.fuErr=null;
   try{q=await _rwFollowup(n>=L.min);}catch(e){RW.fuErr=e;}
   // K couldn’t reach the server: say so and wrap up, rather than slipping in a stock line that ignores what they said
-  if(RW.fuErr&&_aiOn()){RW.fuLoading=false;RW.closing='';RW.notes=renderAIError(RW.fuErr,'rw-retry');showToast(_isLimitErr(RW.fuErr)?'Today’s allowance is used up.':'K lost the connection.','warn');return _rwFinish();}
+  // K couldn’t reach the server mid-talk: stay on this turn with the answer kept, so a dropped connection doesn’t end the talk or use up a session
+  if(RW.fuErr&&_aiOn()&&!_isLimitErr(RW.fuErr)){RW.fuErr=null;RW.convo.pop();RW.fuQ=curQ===RW.question&&!RW.convo.length?null:curQ;RW.fuLoading=false;
+    RW.fuRetry={transcript:turn.a,words:turn.words,elapsed:turn.elapsed,blob:null};if(RW.mode==='type')RW.typed=turn.a;
+    if(RW.phase==='turn'&&V.view==='real')render();showToast('K lost the connection.','warn');return;}
+  if(RW.fuErr&&_aiOn()){RW.fuLoading=false;RW.closing='';RW.notes=renderAIError(RW.fuErr,'rw-retry');showToast('Today’s allowance is used up.','warn');return _rwFinish();}
   if(q&&q.end){RW.fuLoading=false;RW.closing=q.t||'';return _rwFinish();}
   const wait=1200-(Date.now()-t0);if(wait>0)await new Promise(res=>setTimeout(res,wait));
   RW.fuQ=_noDash(q||_rwBankFu());RW.fuLoading=false;RW.moodFor=RW.fuQ;
@@ -6527,6 +6539,7 @@ function renderReal(app){
          _rwCtxPanel()+
          '<div class="g-wave'+(RW.rec?' big':'')+'" id="rw-wave" style="justify-content:flex-start;--ink:var(--pi)">'+'<i></i>'.repeat(RW.rec?22:14)+'</div></div>';
       }
+      if(RW.fuRetry&&!wait)h+='<div class="note warn rw-lost">'+ic('warn','s')+'<div><b>K lost the connection.</b><span>'+(RW.mode==='type'?'Your answer is still here. Send it again when you’re ready.':'Your answer is kept. Send it again, or answer again.')+'</span>'+(RW.mode==='type'?'':'<button class="g-chip soft" data-act="fu-retry" style="margin-top:8px;min-height:36px">Send again</button>')+'</div></div>';
       if(RW.mode==='type'){
         h+='<textarea class="g-answer" id="rw-typed" placeholder="Type what you’d say…"'+(wait?' disabled':'')+'>'+escHtml(RW.typed||'')+'</textarea>';
         h+=gCta('Send','send',{disabled:wait});
@@ -6641,6 +6654,7 @@ function renderReal(app){
   on('[data-act="rec"]',()=>{speakStop();rwStartRec();});
   on('[data-act="stop"]',()=>rwStopRec());
   on('[data-act="send"]',()=>rwSendTyped());
+  on('[data-act="fu-retry"]',()=>{const r=RW.fuRetry;if(r)_rwAfterTurn(r);});
   const ta=app.querySelector('#rw-typed');if(ta){ta.addEventListener('input',()=>{RW.typed=ta.value;});ta.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.metaKey||e.ctrlKey))rwSendTyped();});}
   on('[data-act="end"]',async()=>{speakStop();if(RW.rec){await rwStopRec();return;}if(RW.convo.length)_rwFinish();else{RW.phase='brief';render();}});
   on('[data-act="mode-type"]',async()=>{if(RW.rec)await recStop();RW.rec=false;speakStop();RW.mode='type';render();});
@@ -6680,6 +6694,10 @@ function _noDash(t){return String(t||'').replace(/\s*[—–]\s*/g,(m,o,str)=>{c
 function _vnOn(){return S.vn!==false&&RW.mode!=='live';}
 // Where the scene happens. Each kind of talk has a few places; one is picked per scene and kept for that scene.
 function _vnSet(){const k=RW.scenario,stu=_P().stage==='student';
+  // The scene names a place: use it, so a team meeting never plays out in an elevator
+  {const b=RW.brief||{},t=String(b.scene||b.moment||RW.persona||'').toLowerCase();
+   const by=[[/\b(video call|phone call|on a call|zoom|on the phone)\b/,'call'],[/\b(meeting|stand-?up|all-hands|one-on-one|1:1|conference room|meeting room)\b/,'room'],[/\b(interview)\b/,'office'],[/\b(elevator|lift)\b/,'elevator'],[/\b(coffee|caf[eé])\b/,'cafe'],[/\b(dinner|restaurant|lunch)\b/,'dinner'],[/\b(pantry|kitchen)\b/,'pantry'],[/\b(hallway|corridor)\b/,'hallway'],[/\b(lobby|reception)\b/,'lobby'],[/\b(networking|party|wedding)\b/,'event']];
+   for(const [re,set] of by)if(re.test(t)&&SETS[set])return set;}
   const o={interview:['office','glass','call','elevator'],tough:stu?['studio','room','hallway']:['office','glass','afterhours'],conflict:['corridor','hallway','elevator','pantry','afterhours'],meeting:['room','glass','call','hallway'],disagree:['room','glass','call','hallway','pantry'],feedback:stu?['studio','room','hallway']:['room','glass','hallway','afterhours'],sayno:['room','call','home','pantry','hallway'],smalltalk:['cafe','lobby','dinner','street','pantry','elevator','park','subway','gallery','rooftop'],intro:['event','lobby','expo','gallery','rooftop','ballroom'],pitch:['stage','expo','ballroom'],proposal:['shop','dinner','call','glass'],bargain:['cafe','dinner','call','expo','nightstreet'],difficult:['shop','call','nightstreet'],ground:['shop','cafe','call','expo']}[k]||['office'];
   if(o.length<2)return o[0];const seed=_rwName()+'|'+k+'|'+((RW.brief&&(RW.brief.job||RW.brief.moment))||'');let h=0;for(const ch of seed)h=(h*31+ch.charCodeAt(0))|0;return o[(h>>>0)%o.length];}
 // People stand a step away: shown from about mid-thigh up, legs behind the line box, so faces read at phone size
